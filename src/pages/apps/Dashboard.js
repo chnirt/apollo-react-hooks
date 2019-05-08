@@ -86,12 +86,11 @@ export class Dashboard extends Component {
 				})
 			})
 			.catch(err => console.log(err))
+		this.gridApi.sizeColumnsToFit()
 	}
-
-	onFirstDataRendered(params) {
-		params.api.sizeColumnsToFit()
-	}
-
+	// onFirstDataRendered(params) {
+	// 	params.api.sizeColumnsToFit()
+	// }
 	render() {
 		return (
 			<>
@@ -122,7 +121,7 @@ export class Dashboard extends Component {
 						// 	this.state.noRowsOverlayComponentParams
 						// }
 						onGridReady={this.onGridReady}
-						onFirstDataRendered={this.onFirstDataRendered.bind(this)}
+						// onFirstDataRendered={this.onFirstDataRendered.bind(this)}
 						enableRangeSelection={true}
 						statusBar={this.state.statusBar}
 						pagination={true}
