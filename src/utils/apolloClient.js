@@ -24,13 +24,14 @@ const errorLink = new onError(({ graphQLErrors, networkError, operation }) => {
 	}
 })
 
-const authLink = setContext((_, { headers }) => {
+const authLink = setContext((_, { headers, ...rest }) => {
 	const token = localStorage.getItem('access-token')
 	const context = token
 		? {
+				...rest,
 				headers: {
 					...headers,
-					authorization: `Bearer ${token}`
+					authorization: token ? `Bearer ${token}` : null
 				}
 		  }
 		: null

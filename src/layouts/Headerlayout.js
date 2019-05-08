@@ -42,19 +42,22 @@ class Headerlayout extends Component {
 		const { me } = this.state
 		return (
 			<Header
-				id="components-layout-demo-fixed"
+				// id="components-layout-demo-fixed"
 				style={{
-					background: '#ffff',
-					position: 'fixed',
-					zIndex: '1',
-					width: '100%',
-					boxShadow: '0px 0px 5px 0px rgba(50, 50, 50, 0.75)'
+					background: '#ffff'
+					// position: 'fixed',
+					// zIndex: '1',
+					// width: '100%'
+					// boxShadow: '0px 0px 5px 0px rgba(50, 50, 50, 0.75)'
 				}}
 			>
-				<div className="logo" />
+				{/* <div className="logo" /> */}
 				<Menu
 					mode="horizontal"
-					style={{ float: 'right', lineHeight: '62px' }}
+					style={{
+						float: 'right',
+						lineHeight: '63px'
+					}}
 					defaultSelectedKeys={[location.pathname]}
 					selectable={false}
 				>

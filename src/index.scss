@@ -1,8 +1,6 @@
 @import './assets/fonts/DancingScript-Bold.ttf';
 @import './assets/fonts/DancingScript-Regular.ttf';
 
-$logo-img: url('./assets/images/logo-vertical.png');
-
 $odd-row-background-color: #ffccc7;
 
 $border-color: #ff4d4f;
@@ -26,14 +24,4 @@ body {
 
 code {
 	font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
-}
-
-#components-layout-demo-fixed {
-	.logo {
-		width: 120px;
-		height: 31px;
-		background: $logo-img;
-		margin: 16px 24px 16px 0;
-		float: left;
-	}
 }

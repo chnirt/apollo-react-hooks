@@ -1,0 +1,9 @@
+$logo-img: url('../assets/images/logo-vertical.png');
+
+#components-layout-demo-responsive {
+	.logo {
+		height: 32px;
+		background: $logo-img no-repeat;
+		margin: 16px;
+	}
+}
