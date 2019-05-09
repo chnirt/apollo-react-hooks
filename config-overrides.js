@@ -17,17 +17,17 @@ const addPlugins = () => config => {
 			// chalk.blue('( :elapsed s )')
 			complete: '▰',
 			incomplete: '▱'
-		}),
-		new BundleAnalyzerPlugin({
-			analyzerMode: 'disabled', // server, static, disabled
-			analyzerHost: 'localhost',
-			analyzerPort: 3001, // 8888
-			openAnalyzer: false, // true
-			// statsFilename: 'stats.json', // stats.json
-			// statsOptions: null, // null or {Object}
-			// generateStatsFile: true,
-			logLevel: 'info' // info, warn, error, silent
 		})
+		// new BundleAnalyzerPlugin({
+		// 	analyzerMode: 'disabled', // server, static, disabled
+		// 	analyzerHost: 'localhost',
+		// 	analyzerPort: 3001, // 8888
+		// 	openAnalyzer: false, // true
+		// 	// statsFilename: 'stats.json', // stats.json
+		// 	// statsOptions: null, // null or {Object}
+		// 	// generateStatsFile: true,
+		// 	logLevel: 'info' // info, warn, error, silent
+		// })
 	)
 	return config
 }
