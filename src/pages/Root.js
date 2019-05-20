@@ -7,7 +7,7 @@ const ScreensRoot = () => (
 	<BrowserRouter>
 		<Switch>
 			{routes.map((route, i) =>
-				route.private ? (
+				route.private === true ? (
 					<PrivateRoute key={i} {...route} />
 				) : (
 					<Route key={i} {...route} />

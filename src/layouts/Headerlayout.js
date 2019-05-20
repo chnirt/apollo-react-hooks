@@ -19,8 +19,7 @@ class Headerlayout extends Component {
 	}
 
 	componentDidMount() {
-		const { client } = this.props
-		client
+		this.props.client
 			.query({ query: ME })
 			.then(res => {
 				console.log(res.data.me)
@@ -31,10 +30,10 @@ class Headerlayout extends Component {
 			.catch(err => console.log(err))
 	}
 	onLogout = () => {
-		const { history } = this.props
 		Auth.logout(() => {
 			localStorage.removeItem('access-token')
-			history.push('/login')
+			this.props.history.push('/login')
+			this.props.client.resetStore()
 		})
 	}
 	render() {
