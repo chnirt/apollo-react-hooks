@@ -6,10 +6,10 @@ import { onError } from 'apollo-link-error'
 import { setContext } from 'apollo-link-context'
 
 const cache = new InMemoryCache()
-// const httpLink = new HttpLink({ uri: 'http://localhost:7000/graphql' })
-const httpLink = new HttpLink({
-	uri: 'https://chnirthgraphql.herokuapp.com/graphql'
-})
+const httpLink = new HttpLink({ uri: 'http://localhost:7000/graphql' })
+// const httpLink = new HttpLink({
+// 	uri: 'https://chnirthgraphql.herokuapp.com/graphql'
+// })
 
 const errorLink = new onError(({ graphQLErrors, networkError, operation }) => {
 	if (graphQLErrors) {
@@ -26,15 +26,13 @@ const errorLink = new onError(({ graphQLErrors, networkError, operation }) => {
 
 const authLink = setContext((_, { headers, ...rest }) => {
 	const token = localStorage.getItem('access-token')
-	const context = token
-		? {
-				...rest,
-				headers: {
-					...headers,
-					authorization: token ? `Bearer ${token}` : null
-				}
-		  }
-		: null
+	const context = {
+		...rest,
+		headers: {
+			...headers,
+			authorization: token ? `Bearer ${token}` : ''
+		}
+	}
 	return context
 })
 

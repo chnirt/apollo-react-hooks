@@ -8,15 +8,16 @@ const addPlugins = () => config => {
 	config.plugins.push(
 		new ProgressBarPlugin({
 			format:
-				chalk.blue('build ') +
-				chalk.hex('#2f54eb')('▯:bar▯ ') +
+				chalk.hex('#6c5ce7')('build ') +
+				chalk.hex('#0984e3')('▯:bar▯ ') +
 				// chalk.red('▯ :bar ▯ ') +
-				chalk.hex('#52c41a')(':percent ') +
+				chalk.hex('#00b894')('(:percent) ') +
 				// chalk.green(':percent ') +
-				chalk.hex('#ffec3d')(':elapseds'),
+				chalk.hex('#ffeaa7')(':msg'),
 			// chalk.blue('( :elapsed s )')
 			complete: '▰',
-			incomplete: '▱'
+			incomplete: '▱',
+			clear: false
 		})
 		// new BundleAnalyzerPlugin({
 		// 	analyzerMode: 'disabled', // server, static, disabled
