@@ -14,12 +14,14 @@ export class Register extends Component {
 		loading: false,
 		errors: []
 	}
+
 	componentWillMount() {
 		const token = localStorage.getItem('access-token')
 		if (token) {
 			this.props.history.push('/')
 		}
 	}
+
 	handleSubmit = e => {
 		e.preventDefault()
 		this.setState({ loading: true, spin: true })
@@ -27,9 +29,8 @@ export class Register extends Component {
 			if (!err) {
 				// console.log('Received values of form: ', values)
 			}
-			const { client } = this.props
 			const { email, password, username } = values
-			client
+			this.props.client
 				.mutate({
 					mutation: USER_REGISTER,
 					variables: {
@@ -76,8 +77,8 @@ export class Register extends Component {
 				})
 		})
 	}
+
 	render() {
-		const { email, password, username, loading } = this.state
 		const { getFieldDecorator } = this.props.form
 		return (
 			<>
@@ -100,7 +101,7 @@ export class Register extends Component {
 								<Form.Item>
 									{getFieldDecorator('username', {
 										valuePropName: 'defaultValue',
-										initialValue: username,
+										initialValue: this.state.username,
 										rules: [
 											{
 												required: true,
@@ -119,7 +120,7 @@ export class Register extends Component {
 								<Form.Item>
 									{getFieldDecorator('email', {
 										valuePropName: 'defaultValue',
-										initialValue: email,
+										initialValue: this.state.email,
 										rules: [
 											{
 												type: 'email',
@@ -142,7 +143,7 @@ export class Register extends Component {
 								<Form.Item>
 									{getFieldDecorator('password', {
 										valuePropName: 'defaultValue',
-										initialValue: password,
+										initialValue: this.state.password,
 										rules: [
 											{
 												required: true,
@@ -164,10 +165,10 @@ export class Register extends Component {
 										type="primary"
 										htmlType="submit"
 										className="login-form-button"
-										loading={loading}
-										disabled={loading}
+										loading={this.state.loading}
+										disabled={this.state.loading}
 									>
-										{!loading ? <Icon type="user-add" /> : null}
+										{!this.state.loading ? <Icon type="user-add" /> : null}
 										Register
 									</Button>
 									<Divider>OR</Divider>

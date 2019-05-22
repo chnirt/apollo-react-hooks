@@ -10,21 +10,20 @@ import openNotificationWithIcon from '../utils/openNotificationWithIcon'
 const { Title } = Typography
 
 export class Login extends Component {
-	constructor(props) {
-		super(props)
-		this.state = {
-			email: 'chin@gmail.com',
-			password: 'd3f4ultP4ssword!',
-			loading: false,
-			errors: []
-		}
+	state = {
+		email: 'chin@gmail.com',
+		password: 'd3f4ultP4ssword!',
+		loading: false,
+		errors: []
 	}
+
 	componentWillMount() {
 		const token = localStorage.getItem('access-token')
 		if (token) {
-			this.props.history.push('/')
+			this.props.history.push('/👻')
 		}
 	}
+
 	handleSubmit = e => {
 		e.preventDefault()
 		this.setState({ loading: true, spin: true })
@@ -47,7 +46,7 @@ export class Login extends Component {
 				.then(res => {
 					Auth.authenticate(() => {
 						localStorage.setItem('access-token', res.data.login.token)
-						this.props.history.push('/')
+						this.props.history.push('/👻')
 						this.setState({ loading: false, spin: false })
 					})
 				})
@@ -63,9 +62,9 @@ export class Login extends Component {
 				})
 		})
 	}
+
 	render() {
 		const { getFieldDecorator } = this.props.form
-		const { email, password, loading } = this.state
 		return (
 			<>
 				<Row id="layout-login">
@@ -84,7 +83,7 @@ export class Login extends Component {
 								<Form.Item>
 									{getFieldDecorator('email', {
 										valuePropName: 'defaultValue',
-										initialValue: email,
+										initialValue: this.state.email,
 										rules: [
 											{
 												type: 'email',
@@ -107,7 +106,7 @@ export class Login extends Component {
 								<Form.Item>
 									{getFieldDecorator('password', {
 										valuePropName: 'defaultValue',
-										initialValue: password,
+										initialValue: this.state.password,
 										rules: [
 											{
 												required: true,
@@ -129,10 +128,10 @@ export class Login extends Component {
 										type="primary"
 										htmlType="submit"
 										className="login-form-button"
-										loading={loading}
-										disabled={loading}
+										loading={this.state.loading}
+										disabled={this.state.loading}
 									>
-										{!loading ? <Icon type="login" /> : null}
+										{!this.state.loading ? <Icon type="login" /> : null}
 										Log in
 									</Button>
 								</Form.Item>

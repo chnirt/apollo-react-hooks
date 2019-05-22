@@ -3,26 +3,30 @@ import { Link, withRouter } from 'react-router-dom'
 import { Breadcrumb } from 'antd'
 
 const breadcrumbNameMap = {
-	'/': 'dashboard',
-	'/login': 'login',
-	'/register': 'register',
-	'/members': 'members',
-	'/posts': 'posts',
-	'/likes': 'likes',
-	'/profile': 'profile',
-	'/updateinformation': 'updateinformation',
-	'/changepassword': 'changepassword'
+	'/👻': 'dashboard',
+	'/👻/members': 'members',
+	'/👻/posts': 'posts',
+	'/👻/likes': 'likes',
+	'/👻/profile': 'profile',
+	'/👻/updateinformation': 'updateinformation',
+	'/👻/changepassword': 'changepassword'
 }
 
 const Breadcumblayout = props => {
 	const { location } = props
-	const pathSnippets = location.pathname.split('/').filter(i => i)
+	const pathSnippets = location.pathname.split('/👻').filter(i => i)
+	console.log('location.pathname: ', location.pathname)
+	console.log('pathSnippets:', pathSnippets)
 
 	const extraBreadcrumbItems = pathSnippets.map((_, index) => {
-		const url = `/${pathSnippets.slice(0, index + 1).join('/')}`
+		const url = `/👻${pathSnippets.slice(0, index + 1).join('/👻')}`
+		// console.log('url:', url)
 
-		const endpoint = `${pathSnippets.slice(0, index + 1)}`
-		if (Object.values(breadcrumbNameMap).indexOf(endpoint) > -1) {
+		const endpoint = `/👻${pathSnippets.slice(0, index + 1)}`
+		// console.log('endpoint:', endpoint)
+		const exist = Object.keys(breadcrumbNameMap).indexOf(endpoint)
+		// console.log('exist', exist)
+		if (exist > -1) {
 			return (
 				<Breadcrumb.Item key={url}>
 					{/* <Link to={url}>{breadcrumbNameMap[url].toUpperCase()}</Link> */}
@@ -34,14 +38,14 @@ const Breadcumblayout = props => {
 	})
 
 	const defaultBreadCrumb = [
-		<Breadcrumb.Item key="/">
-			{breadcrumbNameMap['/'].toUpperCase()}
+		<Breadcrumb.Item key="/👻">
+			{breadcrumbNameMap['/👻'].toUpperCase()}
 		</Breadcrumb.Item>
 	]
 
 	const breadcrumbItems = [
-		<Breadcrumb.Item key="/">
-			<Link to="/">{breadcrumbNameMap['/'].toUpperCase()}</Link>
+		<Breadcrumb.Item key="/👻">
+			<Link to="/👻">{breadcrumbNameMap['/👻'].toUpperCase()}</Link>
 		</Breadcrumb.Item>
 	].concat(extraBreadcrumbItems)
 

@@ -29,6 +29,7 @@ class Main extends Component {
 	}
 
 	toggle = () => {
+		console.log('toggle')
 		if (this.state.isMobile === false) {
 			if (this.state.collapsed) {
 				this.setState({
@@ -50,6 +51,7 @@ class Main extends Component {
 	}
 
 	toggoleRightDrawer = () => {
+		console.log('toggleRight')
 		this.setState({
 			rightVisible: !this.state.rightVisible
 		})
@@ -69,13 +71,14 @@ class Main extends Component {
 	}
 
 	handleClick = e => {
-		// console.log('click ', e)
+		console.log('handleClick ')
 		this.setState({
 			current: e.key
 		})
 	}
 
-	componentWillMount() {
+	componentDidMount() {
+		console.log('componentDidMount ')
 		this.props.client
 			.query({ query: ME })
 			.then(res => {
@@ -147,7 +150,7 @@ class Main extends Component {
 						width={256}
 						collapsedWidth={this.state.collapsedWidth}
 						onBreakpoint={broken => {
-							// console.log("broken", broken);
+							// console.log('broken', broken)
 							if (broken) {
 								this.setState({
 									isMobile: true,
@@ -220,13 +223,13 @@ class Main extends Component {
 								onClick={this.toggle}
 							/>
 							<Menu
+								onClick={this.handleClick}
 								mode="horizontal"
 								style={{
 									float: 'right',
 									lineHeight: '63px'
 								}}
 								defaultSelectedKeys={[this.props.location.pathname]}
-								selectable={false}
 							>
 								<SubMenu
 									key="sub1"

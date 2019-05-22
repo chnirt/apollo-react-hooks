@@ -14,7 +14,7 @@ export class Home extends Component {
 							routes.map((route, i) => (
 								<RouteWithSubRoutes key={i} {...route} />
 							))}
-						<Redirect to="/" />
+						<Redirect to="/👻" />
 					</Switch>
 				</Main>
 			</>

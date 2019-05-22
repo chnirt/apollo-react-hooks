@@ -34,44 +34,44 @@ export const routes = [
 	},
 	{
 		label: 'Home',
-		path: '/',
+		path: '/👻',
 		private: true,
 		component: Home,
 		routes: [
 			{
 				label: 'dashboard',
-				path: '/',
+				path: '/👻',
 				exact: true,
 				component: Dashboard
 			},
 			{
 				label: 'members',
-				path: '/members',
+				path: '/👻/members',
 				component: ScreenMember
 			},
 			{
 				label: 'posts',
-				path: '/posts',
+				path: '/👻/posts',
 				component: ScreenPost
 			},
 			{
 				label: 'likes',
-				path: '/likes',
+				path: '/👻/likes',
 				component: ScreenLike
 			},
 			{
 				label: 'profile',
-				path: '/profile',
+				path: '/👻/profile',
 				component: Profile
 			},
 			{
 				label: 'updateinformation',
-				path: '/updateinformation',
+				path: '/👻/updateinformation',
 				component: UpdateInformation
 			},
 			{
 				label: 'changepassword',
-				path: '/changepassword',
+				path: '/👻/changepassword',
 				component: ChangePassword
 			}
 		]
@@ -82,22 +82,22 @@ export const siderRoutes = [
 	{
 		label: 'dashboard',
 		icon: 'dashboard',
-		path: '/'
+		path: '/👻'
 	},
 	{
 		label: 'members',
 		icon: 'team',
-		path: '/members'
+		path: '/👻/members'
 	},
 	{
 		label: 'posts',
 		icon: 'file',
-		path: '/posts'
+		path: '/👻/posts'
 	},
 	{
 		label: 'likes',
 		icon: 'like',
-		path: '/likes'
+		path: '/👻/likes'
 	}
 ]
 
@@ -105,16 +105,16 @@ export const headerRoutes = [
 	{
 		label: 'my profile',
 		icon: 'user',
-		path: '/profile'
+		path: '/👻/profile'
 	},
 	{
 		label: 'update information',
 		icon: 'info-circle',
-		path: '/updateinformation'
+		path: '/👻/updateinformation'
 	},
 	{
 		label: 'change password',
 		icon: 'key',
-		path: '/changepassword'
+		path: '/👻/changepassword'
 	}
 ]
