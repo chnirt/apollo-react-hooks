@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Allura|Satisfy&display=swap');
+
 #components-layout-demo-custom-trigger .trigger {
 	font-size: 18px;
 	line-height: 64px;
@@ -7,11 +9,46 @@
 }
 
 #components-layout-demo-custom-trigger .trigger:hover {
-	color: #1890ff;
+	color: #ff4d4f;
 }
 
 #components-layout-demo-custom-trigger .logo {
+	/* height: 32px; */
+	/* background: url('https://www.fontspace.com/api/renderfont4/1XOe/eyJyIjoiZ2RpIiwiaCI6MzYsInciOjEwMDAsImZzIjozNiwiZmdjIjoiIzAwMDAwMCJ9/Y2huaXJ0/signerica-fat.png'); */
+	/* margin: 16px; */
+	position: relative;
+	height: 64px;
+	padding-left: 24px;
+	overflow: hidden;
+	line-height: 64px;
+	background: #fff;
+	transition: all 0.3s;
+	box-shadow: 1px 1px 0 0 #e8e8e8;
+}
+
+#components-layout-demo-custom-trigger .logo img {
+	display: inline-block;
 	height: 32px;
-	background: rgba(255, 255, 255, 0.2);
-	margin: 16px;
+	vertical-align: middle;
+}
+
+#components-layout-demo-custom-trigger .logo h1 {
+	display: inline-block;
+	margin: 0 0 0 12px;
+	color: #000;
+	font-weight: normal;
+	font-size: 40px;
+	/* font-family: 'Satisfy', cursive; */
+	font-family: 'Allura', cursive;
+	vertical-align: middle;
+	font-style: italic;
+}
+
+.antd-pro-components-setting-drawer-index-handle {
+	position: absolute;
+	top: 120px;
+	right: 300px;
+	border-radius: 4px 0 0 4px;
+	cursor: pointer;
+	pointer-events: auto;
 }

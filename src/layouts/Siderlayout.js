@@ -12,9 +12,9 @@ class Siderlayout extends React.Component {
 	}
 
 	handleClick = e => {
-		console.log('click sider: ', e.key)
+		// console.log('click ', e)
 		this.setState({
-			currentRoute: e.key
+			current: e.key
 		})
 	}
 	render() {
@@ -50,31 +50,6 @@ class Siderlayout extends React.Component {
 						))}
 				</Menu>
 			</Sider>
-			// <Sider
-			// 	theme="light"
-			// 	style={{
-			// 		overflow: 'auto',
-			// 		height: '100vh',
-			// 		position: 'fixed',
-			// 		left: 0
-			// 	}}
-			// >
-			// <Menu
-			// 	mode="inline"
-			// 	defaultSelectedKeys={[location.pathname]}
-			// 	onClick={e => this.handleClick(e)}
-			// >
-			// 	{siderRoutes &&
-			// 		siderRoutes.map((siderRoute, i) => (
-			// 			<Menu.Item key={siderRoute.path}>
-			// 				<Link to={siderRoute.path}>
-			// 					<Icon type={siderRoute.icon} />
-			// 					{siderRoute.label.toUpperCase()}
-			// 				</Link>
-			// 			</Menu.Item>
-			// 		))}
-			// </Menu>
-			// </Sider>
 		)
 	}
 }

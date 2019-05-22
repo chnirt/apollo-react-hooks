@@ -46,7 +46,10 @@ const Breadcumblayout = props => {
 	].concat(extraBreadcrumbItems)
 
 	return (
-		<Breadcrumb separator=">" style={{ margin: '16px 16px' }}>
+		<Breadcrumb
+			// separator=">"
+			style={{ margin: '16px 0' }}
+		>
 			{extraBreadcrumbItems.length > 0 ? breadcrumbItems : defaultBreadCrumb}
 		</Breadcrumb>
 	)
