@@ -222,26 +222,26 @@ class Main extends Component {
 								onClick={this.toggle}
 							/>
 							<Menu
-								onClick={this.handleClick}
+								// onClick={this.handleClick}
 								mode="horizontal"
 								style={{
 									float: 'right',
 									lineHeight: '63px'
 								}}
-								defaultSelectedKeys={[this.props.location.pathname]}
+								// defaultSelectedKeys={[this.props.location.pathname]}
 							>
 								<SubMenu
-									key="sub1"
+									key="hsub1"
 									title={
-										<span>
+										<>
 											<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
 											<span>{this.state.me && this.state.me.username}</span>
-										</span>
+										</>
 									}
 								>
 									{headerRoutes &&
 										headerRoutes.map((headerRoute, i) => (
-											<Menu.Item key={i}>
+											<Menu.Item key={`h${i}`}>
 												<Link to={headerRoute.path}>
 													<Icon type={headerRoute.icon} />
 													{headerRoute.label.toUpperCase()}
