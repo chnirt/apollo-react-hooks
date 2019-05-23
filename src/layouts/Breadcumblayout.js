@@ -1,16 +1,7 @@
 import React from 'react'
 import { Link, withRouter } from 'react-router-dom'
 import { Breadcrumb } from 'antd'
-
-const breadcrumbNameMap = {
-	'/👻': 'dashboard',
-	'/👻/members': 'members',
-	'/👻/posts': 'posts',
-	'/👻/likes': 'likes',
-	'/👻/profile': 'profile',
-	'/👻/updateinformation': 'updateinformation',
-	'/👻/changepassword': 'changepassword'
-}
+import { breadcrumbNameMap } from '../routes'
 
 const Breadcumblayout = props => {
 	const { location } = props

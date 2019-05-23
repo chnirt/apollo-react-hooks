@@ -1,25 +1,89 @@
-import Login from './pages/Login'
-import Register from './pages/Register'
+// // Landing
+// import Login from './pages/Login'
+// import Register from './pages/Register'
+// import Home from './pages/Home'
 
-// Application
-import Home from './pages/Home'
-import Dashboard from './pages/apps/Dashboard'
+// // Application
+// // Dashboard
+// import Dashboard from './pages/apps/Dashboard'
+// // Member
+// import ScreenMember from './pages/apps/Member'
+// // Post
+// import ScreenPost from './pages/apps/Post'
+// // Like
+// import ScreenLike from './pages/apps/Like'
+// // USER
+// import { Profile, UpdateInformation, ChangePassword } from './pages/apps/User'
 
-// Member
-import ScreenMember from './pages/apps/Member'
-// Post
-import ScreenPost from './pages/apps/Post'
-// Like
-import ScreenLike from './pages/apps/Like'
-// USER
-import Profile from './pages/apps/User/Profile'
-import UpdateInformation from './pages/apps/User/Updateinformation'
-import ChangePassword from './pages/apps/User/Changepassword'
-// import {
-// 	Profile,
-// 	UpdateInformation,
-// 	ChangePassword
-// } from './pages/Dashboard/User';
+import React from 'react'
+import Loadable from 'react-loadable'
+
+function Loading({ error }) {
+	if (error) {
+		return 'Oh nooess!'
+	} else {
+		return <h3>Loading...</h3>
+	}
+}
+
+const Login = Loadable({
+	loader: () => import('./pages/Login'),
+	loading: Loading,
+	delay: 300
+})
+
+const Register = Loadable({
+	loader: () => import('./pages/Register'),
+	loading: Loading,
+	delay: 300
+})
+
+const Home = Loadable({
+	loader: () => import('./pages/Home'),
+	loading: Loading,
+	delay: 300
+})
+
+const Dashboard = Loadable({
+	loader: () => import('./pages/apps/Dashboard'),
+	loading: Loading,
+	delay: 300
+})
+
+const Member = Loadable({
+	loader: () => import('./pages/apps/Member'),
+	loading: Loading
+})
+
+const Post = Loadable({
+	loader: () => import('./pages/apps/Post'),
+	loading: Loading,
+	delay: 300
+})
+
+const Like = Loadable({
+	loader: () => import('./pages/apps/Like'),
+	loading: Loading,
+	delay: 300
+})
+
+const Profile = Loadable({
+	loader: () => import('./pages/apps/User/Profile'),
+	loading: Loading,
+	delay: 300
+})
+
+const UpdateInformation = Loadable({
+	loader: () => import('./pages/apps/User/Updateinformation'),
+	loading: Loading,
+	delay: 300
+})
+
+const ChangePassword = Loadable({
+	loader: () => import('./pages/apps/User/Changepassword'),
+	loading: Loading,
+	delay: 300
+})
 
 export const routes = [
 	{
@@ -47,17 +111,17 @@ export const routes = [
 			{
 				label: 'members',
 				path: '/👻/members',
-				component: ScreenMember
+				component: Member
 			},
 			{
 				label: 'posts',
 				path: '/👻/posts',
-				component: ScreenPost
+				component: Post
 			},
 			{
 				label: 'likes',
 				path: '/👻/likes',
-				component: ScreenLike
+				component: Like
 			},
 			{
 				label: 'profile',
@@ -118,3 +182,13 @@ export const headerRoutes = [
 		path: '/👻/changepassword'
 	}
 ]
+
+export const breadcrumbNameMap = {
+	'/👻': 'dashboard',
+	'/👻/members': 'members',
+	'/👻/posts': 'posts',
+	'/👻/likes': 'likes',
+	'/👻/profile': 'profile',
+	'/👻/updateinformation': 'updateinformation',
+	'/👻/changepassword': 'changepassword'
+}
