@@ -260,12 +260,7 @@ class Main extends Component {
 						{/* Content */}
 						<Content
 							style={{
-								// marginTop: '64px',
-								// padding: '0 16px',
-								// height: 'calc( 100vh - 117px )',
-								// overflow: 'initial'
-
-								margin: '24px 16px 0',
+								margin: '24px 16px 16px',
 								paddingTop: '40px',
 								overflow: 'initial'
 							}}
@@ -434,7 +429,8 @@ class Main extends Component {
 								...
 								<br />
 							</div>
-							{/* <Footerlayout /> */}
+							{/* Footer */}
+							<Footerlayout />
 							{/* BackTop */}
 							<BackTop />
 						</Content>
