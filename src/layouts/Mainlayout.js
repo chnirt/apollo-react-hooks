@@ -263,7 +263,7 @@ class Main extends Component {
 								marginTop: '64px',
 								padding: '0 16px',
 								height: 'calc( 100vh - 64px )',
-								overflow: 'auto'
+								overflow: 'initial'
 							}}
 						>
 							{/* Breadcumb */}
