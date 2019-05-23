@@ -262,7 +262,7 @@ class Main extends Component {
 							style={{
 								// marginTop: '64px',
 								// padding: '0 16px',
-								height: 'calc( 100vh - 117px )',
+								// height: 'calc( 100vh - 117px )',
 								// overflow: 'initial'
 
 								margin: '24px 16px 0',
