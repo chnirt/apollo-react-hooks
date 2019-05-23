@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import RouteWithSubRoutes from '../utils/RouteWithSubRoutes'
-import Main from '../layouts/Mainlayout'
+import Main from './apps/layouts/Mainlayout'
 import { Switch, Redirect } from 'react-router-dom'
 
 export class Home extends Component {

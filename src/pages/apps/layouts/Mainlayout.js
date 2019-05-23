@@ -5,11 +5,10 @@ import Breadcumblayout from './Breadcumblayout'
 import Footerlayout from './Footerlayout'
 import './Mainlayout.scss'
 import { Layout, Menu, Avatar, Icon, Drawer, Affix, Button, BackTop } from 'antd'
-import logo from '../assets/images/logo.svg'
-import { siderRoutes } from '../routes'
+import logo from '../../../assets/images/logo.svg'
+import { siderRoutes, headerRoutes } from '../../../routes'
 import { Link, withRouter } from 'react-router-dom'
-import { headerRoutes } from '../routes'
-import Auth from '../auth/Authenticate'
+import Auth from '../../../auth/Authenticate'
 import { withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
 
@@ -92,7 +91,7 @@ class Main extends Component {
 
 	onLogout = () => {
 		Auth.logout(() => {
-			localStorage.removeItem('access-token')
+			window.localStorage.removeItem('access-token')
 			this.props.history.push('/login')
 			this.props.client.resetStore()
 		})

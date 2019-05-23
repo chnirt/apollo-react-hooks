@@ -1,5 +1,5 @@
 const Auth = {
-	isAuthenticated: localStorage.getItem('access-token') ? true : false,
+	isAuthenticated: window.localStorage.getItem('access-token') ? true : false,
 	authenticate(cb) {
 		this.isAuthenticated = true
 		setTimeout(cb, 100)

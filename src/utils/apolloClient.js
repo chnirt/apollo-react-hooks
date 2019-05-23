@@ -25,7 +25,7 @@ const errorLink = new onError(({ graphQLErrors, networkError, operation }) => {
 })
 
 const authLink = setContext((_, { headers, ...rest }) => {
-	const token = localStorage.getItem('access-token')
+	const token = window.localStorage.getItem('access-token')
 	const context = {
 		...rest,
 		headers: {

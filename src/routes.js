@@ -17,12 +17,26 @@
 
 import React from 'react'
 import Loadable from 'react-loadable'
+import { Spin } from 'antd'
 
 function Loading({ error }) {
 	if (error) {
 		return 'Oh nooess!'
 	} else {
-		return <h3>Loading...</h3>
+		return (
+			<div
+				style={{
+					textAlign: 'center',
+					borderRadius: '4px',
+					marginBottom: '20px',
+					padding: '30px 50px',
+					margin: '20px 0',
+					height: '100vh'
+				}}
+			>
+				<Spin size="large" />
+			</div>
+		)
 	}
 }
 

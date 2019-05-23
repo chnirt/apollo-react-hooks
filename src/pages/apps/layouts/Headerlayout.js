@@ -31,7 +31,7 @@ class Headerlayout extends Component {
 	}
 	onLogout = () => {
 		Auth.logout(() => {
-			localStorage.removeItem('access-token')
+			window.localStorage.removeItem('access-token')
 			this.props.history.push('/login')
 			this.props.client.resetStore()
 		})

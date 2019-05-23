@@ -1,13 +1,12 @@
 import React from 'react'
 import { Link, withRouter } from 'react-router-dom'
 import { Breadcrumb } from 'antd'
-import { breadcrumbNameMap } from '../routes'
+import { breadcrumbNameMap } from '../../../routes'
 
 const Breadcumblayout = props => {
 	const { location } = props
 	const pathSnippets = location.pathname.split('/👻').filter(i => i)
-	console.log('location.pathname: ', location.pathname)
-	console.log('pathSnippets:', pathSnippets)
+	// console.log('pathSnippets:', pathSnippets)
 
 	const extraBreadcrumbItems = pathSnippets.map((_, index) => {
 		const url = `/👻${pathSnippets.slice(0, index + 1).join('/👻')}`
