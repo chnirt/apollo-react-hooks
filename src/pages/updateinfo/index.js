@@ -1,7 +1,7 @@
 import React from 'react'
 
-const Updateinformation = () => {
+const Updateinfo = () => {
 	return <div>Update Information Page</div>
 }
 
-export default Updateinformation
+export default Updateinfo

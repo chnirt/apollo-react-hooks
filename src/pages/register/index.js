@@ -3,7 +3,7 @@ import { Form, Input, Icon, Button, Row, Col, Typography, Divider } from 'antd'
 import { Link } from 'react-router-dom'
 import { withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
-import openNotificationWithIcon from '../utils/openNotificationWithIcon'
+import openNotificationWithIcon from '../../utils/openNotificationWithIcon'
 
 const { Title } = Typography
 export class Register extends Component {

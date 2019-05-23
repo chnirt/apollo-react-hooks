@@ -3,9 +3,9 @@ import { Row, Col, Form, Typography, Icon, Input, Button, Divider } from 'antd'
 import { Link } from 'react-router-dom'
 import { withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
-import './Login.scss'
-import Auth from '../auth/Authenticate'
-import openNotificationWithIcon from '../utils/openNotificationWithIcon'
+import './style.scss'
+import Auth from '../../auth/Authenticate'
+import openNotificationWithIcon from '../../utils/openNotificationWithIcon'
 
 const { Title } = Typography
 

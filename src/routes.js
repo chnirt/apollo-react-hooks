@@ -19,10 +19,20 @@ import React from 'react'
 import Loadable from 'react-loadable'
 import { Spin } from 'antd'
 
-function Loading({ error }) {
-	if (error) {
-		return 'Oh nooess!'
-	} else {
+function Loading(props) {
+	if (props.error) {
+		return (
+			<div>
+				Error! <button onClick={props.retry}>Retry</button>
+			</div>
+		)
+	} else if (props.timedOut) {
+		return (
+			<div>
+				Taking a long time... <button onClick={props.retry}>Retry</button>
+			</div>
+		)
+	} else if (props.pastDelay) {
 		return (
 			<div
 				style={{
@@ -37,64 +47,66 @@ function Loading({ error }) {
 				<Spin size="large" />
 			</div>
 		)
+	} else {
+		return null
 	}
 }
 
 const Login = Loadable({
-	loader: () => import('./pages/Login'),
+	loader: () => import('./pages/login/'),
 	loading: Loading,
 	delay: 300
 })
 
 const Register = Loadable({
-	loader: () => import('./pages/Register'),
+	loader: () => import('./pages/register/'),
 	loading: Loading,
 	delay: 300
 })
 
 const Home = Loadable({
-	loader: () => import('./pages/Home'),
+	loader: () => import('./pages/home/'),
 	loading: Loading,
 	delay: 300
 })
 
 const Dashboard = Loadable({
-	loader: () => import('./pages/apps/Dashboard'),
+	loader: () => import('./pages/dashboard/'),
 	loading: Loading,
 	delay: 300
 })
 
 const Member = Loadable({
-	loader: () => import('./pages/apps/Member'),
+	loader: () => import('./pages/member/'),
 	loading: Loading
 })
 
 const Post = Loadable({
-	loader: () => import('./pages/apps/Post'),
+	loader: () => import('./pages/post/'),
 	loading: Loading,
 	delay: 300
 })
 
 const Like = Loadable({
-	loader: () => import('./pages/apps/Like'),
+	loader: () => import('./pages/like/'),
 	loading: Loading,
 	delay: 300
 })
 
 const Profile = Loadable({
-	loader: () => import('./pages/apps/User/Profile'),
+	loader: () => import('./pages/profile/'),
 	loading: Loading,
 	delay: 300
 })
 
 const UpdateInformation = Loadable({
-	loader: () => import('./pages/apps/User/Updateinformation'),
+	loader: () => import('./pages/updateinfo/'),
 	loading: Loading,
 	delay: 300
 })
 
 const ChangePassword = Loadable({
-	loader: () => import('./pages/apps/User/Changepassword'),
+	loader: () => import('./pages/changepwd/'),
 	loading: Loading,
 	delay: 300
 })

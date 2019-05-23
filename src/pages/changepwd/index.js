@@ -1,7 +1,7 @@
 import React from 'react'
 
-const Changepassword = () => {
+const Changepwd = () => {
 	return <div>Change Password Page</div>
 }
 
-export default Changepassword
+export default Changepwd

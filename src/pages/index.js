@@ -3,7 +3,7 @@ import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom'
 import { routes } from '../routes'
 import PrivateRoute from '../utils/PrivateRoute'
 
-const ScreensRoot = () => (
+const Root = () => (
 	<BrowserRouter>
 		<Switch>
 			{routes.map((route, i) =>
@@ -18,4 +18,4 @@ const ScreensRoot = () => (
 	</BrowserRouter>
 )
 
-export default ScreensRoot
+export default Root

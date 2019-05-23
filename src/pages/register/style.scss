@@ -1,0 +1,29 @@
+$bg-img: url('../../assets/images/bg-login.jpeg');
+
+#components-form-demo-normal-login {
+	text-align: center;
+	.login-form {
+		height: 100vh;
+		background-color: white;
+		padding: 56px 40px;
+		.login-form-header {
+			h1 {
+				color: #ff4d4f;
+				font-family: 'Allura', cursive;
+			}
+			h4 {
+				color: #8c8c8c;
+			}
+		}
+		.login-form-button {
+			width: 100%;
+		}
+	}
+}
+
+#layout-login {
+	background: $bg-img;
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-attachment: fixed;
+}
