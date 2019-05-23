@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Form, Input, Icon, Button, Row, Col, Typography, Divider } from 'antd'
+import './style.scss'
 import { Link } from 'react-router-dom'
 import { withApollo } from 'react-apollo'
 import gql from 'graphql-tag'

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link, withRouter } from 'react-router-dom'
 import { Layout, Menu, Icon } from 'antd'
-import { siderRoutes } from '../routes'
+import { siderRoutes } from '../../../routes'
 import './Siderlayout.scss'
 
 const { Sider } = Layout

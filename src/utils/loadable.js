@@ -23,8 +23,7 @@ function Loading(props) {
 					borderRadius: '4px',
 					marginBottom: '20px',
 					padding: '30px 50px',
-					margin: '20px 0',
-					height: '100vh'
+					margin: '20px 0'
 				}}
 			>
 				<Spin size="large" />
@@ -39,7 +38,7 @@ const MyComponent = importComponent =>
 	Loadable({
 		loader: () => importComponent,
 		loading: Loading,
-		delay: 300 // default
+		delay: 3000 // default
 	})
 
 export default MyComponent

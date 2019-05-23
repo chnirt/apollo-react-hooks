@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
 import './App.scss'
-import ScreenRoot from './pages/'
+import Root from './pages/'
 import { ApolloProvider } from 'react-apollo'
 import client from './utils/apolloClient'
 class App extends Component {
 	render() {
 		return (
 			<ApolloProvider client={client}>
-				<ScreenRoot />
+				<Root />
 			</ApolloProvider>
 		)
 	}

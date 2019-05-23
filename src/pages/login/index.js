@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import { Row, Col, Form, Typography, Icon, Input, Button, Divider } from 'antd'
+import './style.scss'
 import { Link } from 'react-router-dom'
 import { withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
-import './style.scss'
 import Auth from '../../auth/Authenticate'
 import openNotificationWithIcon from '../../utils/openNotificationWithIcon'
 

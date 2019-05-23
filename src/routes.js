@@ -21,15 +21,11 @@ import { Spin } from 'antd'
 
 function Loading(props) {
 	if (props.error) {
-		return (
-			<div>
-				Error! <button onClick={props.retry}>Retry</button>
-			</div>
-		)
+		return <div>{/* Error! <button onClick={props.retry}>Retry</button> */}</div>
 	} else if (props.timedOut) {
 		return (
 			<div>
-				Taking a long time... <button onClick={props.retry}>Retry</button>
+				{/* Taking a long time... <button onClick={props.retry}>Retry</button> */}
 			</div>
 		)
 	} else if (props.pastDelay) {
@@ -53,60 +49,60 @@ function Loading(props) {
 }
 
 const Login = Loadable({
-	loader: () => import('./pages/login/'),
+	loader: () => import('./pages/login'),
 	loading: Loading,
 	delay: 300
 })
 
 const Register = Loadable({
-	loader: () => import('./pages/register/'),
+	loader: () => import('./pages/register'),
 	loading: Loading,
 	delay: 300
 })
 
 const Home = Loadable({
-	loader: () => import('./pages/home/'),
+	loader: () => import('./pages/home'),
 	loading: Loading,
 	delay: 300
 })
 
 const Dashboard = Loadable({
-	loader: () => import('./pages/dashboard/'),
+	loader: () => import('./pages/dashboard'),
 	loading: Loading,
 	delay: 300
 })
 
 const Member = Loadable({
-	loader: () => import('./pages/member/'),
+	loader: () => import('./pages/member'),
 	loading: Loading
 })
 
 const Post = Loadable({
-	loader: () => import('./pages/post/'),
+	loader: () => import('./pages/post'),
 	loading: Loading,
 	delay: 300
 })
 
 const Like = Loadable({
-	loader: () => import('./pages/like/'),
+	loader: () => import('./pages/like'),
 	loading: Loading,
 	delay: 300
 })
 
 const Profile = Loadable({
-	loader: () => import('./pages/profile/'),
+	loader: () => import('./pages/profile'),
 	loading: Loading,
 	delay: 300
 })
 
 const UpdateInformation = Loadable({
-	loader: () => import('./pages/updateinfo/'),
+	loader: () => import('./pages/updateinfo'),
 	loading: Loading,
 	delay: 300
 })
 
 const ChangePassword = Loadable({
-	loader: () => import('./pages/changepwd/'),
+	loader: () => import('./pages/changepwd'),
 	loading: Loading,
 	delay: 300
 })
@@ -115,54 +111,64 @@ export const routes = [
 	{
 		label: 'Login',
 		path: '/login',
-		component: Login
+		component: Login,
+		component1: 'login'
 	},
 	{
 		label: 'Register',
 		path: '/register',
-		component: Register
+		component: Register,
+		component1: 'register'
 	},
 	{
 		label: 'Home',
 		path: '/👻',
 		private: true,
 		component: Home,
+		component1: 'home',
 		routes: [
 			{
 				label: 'dashboard',
 				path: '/👻',
 				exact: true,
-				component: Dashboard
+				component: Dashboard,
+				compoenent1: 'dashboard'
 			},
 			{
 				label: 'members',
 				path: '/👻/members',
-				component: Member
+				component: Member,
+				compoenent1: 'member'
 			},
 			{
 				label: 'posts',
 				path: '/👻/posts',
-				component: Post
+				component: Post,
+				compoenent1: 'post'
 			},
 			{
 				label: 'likes',
 				path: '/👻/likes',
-				component: Like
+				component: Like,
+				compoenent1: 'like'
 			},
 			{
 				label: 'profile',
 				path: '/👻/profile',
-				component: Profile
+				component: Profile,
+				compoenent1: 'profile'
 			},
 			{
 				label: 'updateinformation',
 				path: '/👻/updateinformation',
-				component: UpdateInformation
+				component: UpdateInformation,
+				compoenent1: 'updateinfo'
 			},
 			{
 				label: 'changepassword',
 				path: '/👻/changepassword',
-				component: ChangePassword
+				component: ChangePassword,
+				compoenent1: 'changepwd'
 			}
 		]
 	}
