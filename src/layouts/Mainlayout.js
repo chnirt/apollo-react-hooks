@@ -262,16 +262,16 @@ class Main extends Component {
 							style={{
 								// marginTop: '64px',
 								// padding: '0 16px',
-								// height: 'calc( 100vh - 64px )',
+								height: 'calc( 100vh - 117px )',
 								// overflow: 'initial'
 
 								margin: '24px 16px 0',
-								paddingTop: '64px',
+								paddingTop: '40px',
 								overflow: 'initial'
 							}}
 						>
 							{/* Breadcumb */}
-							{/* <Breadcumblayout /> */}
+							<Breadcumblayout />
 							<div
 								style={{
 									padding: 24,
