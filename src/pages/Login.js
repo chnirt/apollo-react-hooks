@@ -31,9 +31,8 @@ export class Login extends Component {
 			if (!err) {
 				console.log('Received values of form: ', values)
 			}
-			const { client } = this.props
 			const { email, password } = values
-			client
+			this.props.client
 				.mutate({
 					mutation: USER_LOGIN,
 					variables: {

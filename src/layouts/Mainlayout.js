@@ -260,14 +260,18 @@ class Main extends Component {
 						{/* Content */}
 						<Content
 							style={{
-								marginTop: '64px',
-								padding: '0 16px',
-								height: 'calc( 100vh - 64px )',
+								// marginTop: '64px',
+								// padding: '0 16px',
+								// height: 'calc( 100vh - 64px )',
+								// overflow: 'initial'
+
+								margin: '24px 16px 0',
+								paddingTop: '64px',
 								overflow: 'initial'
 							}}
 						>
 							{/* Breadcumb */}
-							<Breadcumblayout />
+							{/* <Breadcumblayout /> */}
 							<div
 								style={{
 									padding: 24,
@@ -430,7 +434,7 @@ class Main extends Component {
 								...
 								<br />
 							</div>
-							<Footerlayout />
+							{/* <Footerlayout /> */}
 							{/* BackTop */}
 							<BackTop />
 						</Content>
