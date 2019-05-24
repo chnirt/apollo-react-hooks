@@ -14,6 +14,7 @@
 		"apollo-link-error": "^1.1.10",
 		"apollo-link-http": "^1.5.14",
 		"babel-plugin-import": "^1.11.0",
+		"babel-plugin-styled-components": "^1.10.0",
 		"customize-cra": "^0.2.12",
 		"graphql": "^14.3.0",
 		"graphql-tag": "^2.10.1",

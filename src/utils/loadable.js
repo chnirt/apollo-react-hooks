@@ -38,7 +38,7 @@ const MyComponent = importComponent =>
 	Loadable({
 		loader: () => importComponent,
 		loading: Loading,
-		delay: 3000 // default
+		delay: 1000 // default 200ms = 0.2s
 	})
 
 export default MyComponent
