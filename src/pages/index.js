@@ -3,19 +3,21 @@ import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom'
 import { routes } from '../routes'
 import PrivateRoute from '../utils/PrivateRoute'
 
-const Root = () => (
-	<BrowserRouter>
-		<Switch>
-			{routes.map((route, i) =>
-				route.private === true ? (
-					<PrivateRoute key={i} {...route} />
-				) : (
-					<Route key={i} {...route} />
-				)
-			)}
-			<Redirect to="/login" />
-		</Switch>
-	</BrowserRouter>
-)
+function Root() {
+	return (
+		<BrowserRouter>
+			<Switch>
+				{routes.map((route, i) =>
+					route.private === true ? (
+						<PrivateRoute key={i} {...route} />
+					) : (
+						<Route key={i} {...route} />
+					)
+				)}
+				<Redirect to="/login" />
+			</Switch>
+		</BrowserRouter>
+	)
+}
 
 export default Root

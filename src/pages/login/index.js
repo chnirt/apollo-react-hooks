@@ -29,7 +29,7 @@ export class Login extends Component {
 		this.setState({ loading: true, spin: true })
 		this.props.form.validateFields((err, values) => {
 			if (!err) {
-				console.log('Received values of form: ', values)
+				// console.log('Received values of form: ', values)
 			}
 			const { email, password } = values
 			this.props.client

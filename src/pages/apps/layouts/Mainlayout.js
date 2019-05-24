@@ -28,7 +28,7 @@ class Main extends Component {
 	}
 
 	toggle = () => {
-		console.log('toggle')
+		// console.log('toggle')
 		if (this.state.isMobile === false) {
 			if (this.state.collapsed) {
 				this.setState({
@@ -50,7 +50,7 @@ class Main extends Component {
 	}
 
 	toggoleRightDrawer = () => {
-		console.log('toggleRight')
+		// console.log('toggleRight')
 		this.setState({
 			rightVisible: !this.state.rightVisible
 		})
@@ -70,18 +70,17 @@ class Main extends Component {
 	}
 
 	handleClick = e => {
-		console.log('handleClick ')
+		// console.log('handleClick ')
 		this.setState({
 			current: e.key
 		})
 	}
 
 	componentDidMount() {
-		console.log('componentDidMount ')
 		this.props.client
 			.query({ query: ME })
 			.then(res => {
-				console.log(res.data.me)
+				// console.log(res.data.me)
 				this.setState({
 					me: res.data.me
 				})
@@ -168,7 +167,7 @@ class Main extends Component {
 							}
 						}}
 						onCollapse={(collapsed, type) => {
-							console.log(collapsed, type)
+							// console.log(collapsed, type)
 						}}
 					>
 						{/* Logo */}

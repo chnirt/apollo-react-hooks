@@ -28,6 +28,22 @@ class Headerlayout extends Component {
 				})
 			})
 			.catch(err => console.log(err))
+
+		// KeepAwake
+		const timer = setInterval(function() {
+			this.props.client
+				.query({ query: ME })
+				.then(res => {
+					console.log(res.data.me)
+					this.setState({
+						me: res.data.me
+					})
+				})
+				.catch(err => console.log(err))
+		}, 300000)
+		return () => {
+			clearInterval(timer)
+		}
 	}
 	onLogout = () => {
 		Auth.logout(() => {
