@@ -89,16 +89,14 @@ class Main extends Component {
 
 		// KeepAwake
 		const timer = setInterval(function() {
-			this.props.client
-				.query({ query: ME })
+			fetch('https://chnirt-apollo-client.herokuapp.com/')
 				.then(res => {
-					console.log(res.data.me)
-					this.setState({
-						me: res.data.me
-					})
+					console.log(res)
 				})
-				.catch(err => console.log(err))
-		}, 300000)
+				.catch(err => {
+					console.log(err)
+				})
+		}, 1740000)
 		return () => {
 			clearInterval(timer)
 		}
