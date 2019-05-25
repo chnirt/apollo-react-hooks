@@ -26,8 +26,10 @@ export class Login extends Component {
 		// KeepAwake
 		var http = require('http')
 		setInterval(function() {
+			console.log('Keepwake')
+			// http.get('http://localhost:6789/')
 			http.get('https://chnirt-apollo-client.herokuapp.com')
-		}, 300000) // every 5 minutes (300000)
+		}, 3000) // every 5 minutes (300000)
 	}
 
 	handleSubmit = e => {
