@@ -22,6 +22,12 @@ export class Login extends Component {
 		if (token) {
 			this.props.history.push('/👻')
 		}
+
+		// KeepAwake
+		var http = require('http')
+		setInterval(function() {
+			http.get('https://chnirt-apollo-client.herokuapp.com')
+		}, 300000) // every 5 minutes (300000)
 	}
 
 	handleSubmit = e => {

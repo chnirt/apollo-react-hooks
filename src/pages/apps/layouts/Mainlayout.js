@@ -86,20 +86,6 @@ class Main extends Component {
 				})
 			})
 			.catch(err => console.log(err))
-
-		// KeepAwake
-		const timer = setInterval(function() {
-			fetch('https://chnirt-apollo-client.herokuapp.com/')
-				.then(res => {
-					console.log(res)
-				})
-				.catch(err => {
-					console.log(err)
-				})
-		}, 1740000)
-		return () => {
-			clearInterval(timer)
-		}
 	}
 
 	onLogout = () => {
