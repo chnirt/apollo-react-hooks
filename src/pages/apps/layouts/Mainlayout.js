@@ -7,7 +7,7 @@ import './Mainlayout.scss'
 import { Layout, Menu, Avatar, Icon, Drawer, Affix, Button, BackTop } from 'antd'
 import logo from '../../../assets/images/logo.svg'
 import { siderRoutes, headerRoutes } from '../../../routes'
-import { Link, withRouter } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 import Auth from '../../../auth/Authenticate'
 import { withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
@@ -49,7 +49,7 @@ class Main extends Component {
 		}
 	}
 
-	toggoleRightDrawer = () => {
+	toggleRightDrawer = () => {
 		// console.log('toggleRight')
 		this.setState({
 			rightVisible: !this.state.rightVisible
@@ -117,11 +117,14 @@ class Main extends Component {
 						>
 							{siderRoutes &&
 								siderRoutes.map((siderRoute, i) => (
-									<Menu.Item key={siderRoute.path}>
-										<Link to={siderRoute.path}>
-											<Icon type={siderRoute.icon} />
-											<span>{siderRoute.label.toUpperCase()}</span>
-										</Link>
+									<Menu.Item
+										key={siderRoute.path}
+										onClick={({ key }) => {
+											this.props.history.push(key)
+										}}
+									>
+										<Icon type={siderRoute.icon} />
+										<span>{siderRoute.label.toUpperCase()}</span>
 									</Menu.Item>
 								))}
 						</Menu>
@@ -183,11 +186,14 @@ class Main extends Component {
 						>
 							{siderRoutes &&
 								siderRoutes.map((siderRoute, i) => (
-									<Menu.Item key={siderRoute.path}>
-										<Link to={siderRoute.path}>
-											<Icon type={siderRoute.icon} />
-											<span>{siderRoute.label.toUpperCase()}</span>
-										</Link>
+									<Menu.Item
+										key={siderRoute.path}
+										onClick={({ key }) => {
+											this.props.history.push(key)
+										}}
+									>
+										<Icon type={siderRoute.icon} />
+										<span>{siderRoute.label.toUpperCase()}</span>
 									</Menu.Item>
 								))}
 						</Menu>
@@ -240,11 +246,14 @@ class Main extends Component {
 								>
 									{headerRoutes &&
 										headerRoutes.map((headerRoute, i) => (
-											<Menu.Item key={`h${i}`}>
-												<Link to={headerRoute.path}>
-													<Icon type={headerRoute.icon} />
-													{headerRoute.label.toUpperCase()}
-												</Link>
+											<Menu.Item
+												key={headerRoute.path}
+												onClick={({ key }) => {
+													this.props.history.push(key)
+												}}
+											>
+												<Icon type={headerRoute.icon} />
+												{headerRoute.label.toUpperCase()}
 											</Menu.Item>
 										))}
 									<Menu.Divider />
@@ -258,7 +267,7 @@ class Main extends Component {
 						{/* Content */}
 						<Content
 							style={{
-								margin: '24px 16px 16px',
+								margin: '24px 16px 0px',
 								paddingTop: '40px',
 								overflow: 'initial'
 							}}
@@ -269,7 +278,7 @@ class Main extends Component {
 								style={{
 									padding: 24,
 									background: '#fff',
-									minHeight: 'calc( 100vh - 207px )'
+									minHeight: 'calc( 100vh - 191px )'
 								}}
 							>
 								{this.props.children}
@@ -295,7 +304,7 @@ class Main extends Component {
 									type="primary"
 									icon="setting"
 									size="large"
-									onClick={this.toggoleRightDrawer}
+									onClick={this.toggleRightDrawer}
 									style={{ borderRadius: '4px 0 0 4px' }}
 								/>
 							)}
@@ -313,7 +322,7 @@ class Main extends Component {
 								type="primary"
 								icon={!this.state.rightVisible ? 'setting' : 'close'}
 								size="large"
-								onClick={this.toggoleRightDrawer}
+								onClick={this.toggleRightDrawer}
 							/>
 						</Drawer>
 					</Layout>

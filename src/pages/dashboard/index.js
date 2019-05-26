@@ -77,16 +77,17 @@ export class Dashboard extends Component {
 	onGridReady = params => {
 		this.gridApi = params.api
 		this.gridColumnApi = params.columnApi
-		const { client } = this.props
 		// this.setState({ rowData: [] })
-		client
+		this.props.client
 			.query({ query: USERS })
 			.then(res => {
 				this.setState({
 					rowData: res.data.users
 				})
 			})
-			.catch(err => console.log(err))
+			.catch(err => {
+				console.log(err)
+			})
 		this.gridApi.sizeColumnsToFit()
 	}
 

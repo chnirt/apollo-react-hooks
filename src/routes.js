@@ -27,9 +27,9 @@ export const routes = [
 				component: 'member'
 			},
 			{
-				label: 'posts',
-				path: '/👻/posts',
-				component: 'post'
+				label: 'dainties',
+				path: '/👻/dainties',
+				component: 'dainty'
 			},
 			{
 				label: 'likes',
@@ -67,9 +67,9 @@ export const siderRoutes = [
 		path: '/👻/members'
 	},
 	{
-		label: 'posts',
+		label: 'dainties',
 		icon: 'file',
-		path: '/👻/posts'
+		path: '/👻/dainties'
 	},
 	{
 		label: 'likes',
@@ -99,7 +99,7 @@ export const headerRoutes = [
 export const breadcrumbNameMap = {
 	'/👻': 'dashboard',
 	'/👻/members': 'members',
-	'/👻/posts': 'posts',
+	'/👻/dainties': 'dainties',
 	'/👻/likes': 'likes',
 	'/👻/profile': 'profile',
 	'/👻/updateinformation': 'updateinformation',
