@@ -36,12 +36,10 @@ function Dainty(props) {
 					<>
 						<Button
 							style={{ marginRight: 10 }}
-							type="primary"
 							icon="edit"
 							onClick={() => handleClick(record, 'update')}
 						/>
 						<Button
-							type="primary"
 							icon="delete"
 							onClick={() => handleClick(record, 'delete')}
 						/>
