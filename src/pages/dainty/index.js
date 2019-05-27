@@ -4,10 +4,12 @@ import gql from 'graphql-tag'
 import { Table, Button, Modal, Form, Input } from 'antd'
 // import { CTX } from '../../store'
 
+const uuidv4 = require('uuid/v4')
+
 function Dainty(props) {
 	const [visible, setVisible] = useState(false)
 	const [confirmLoading, setConfirmLoading] = useState(false)
-	const [rowData, setRowData] = useState([])
+	const [dataSource, setDataSource] = useState([])
 	const [loading, setLoading] = useState(true)
 	// const [appState] = React.useContext(CTX)
 	const columns = [
@@ -32,7 +34,7 @@ function Dainty(props) {
 			fixed: 'right',
 			width: 200,
 			render: (text, record) =>
-				rowData.length >= 1 ? (
+				dataSource.length >= 1 ? (
 					<>
 						<Button
 							style={{ marginRight: 10 }}
@@ -54,7 +56,7 @@ function Dainty(props) {
 			.query({ query: DAINTIES })
 			.then(res => {
 				// console.log(res)
-				setRowData(res.data.dainties)
+				setDataSource(res.data.dainties)
 				setLoading(false)
 			})
 			.catch(err => {
@@ -86,6 +88,9 @@ function Dainty(props) {
 				})
 				.then(res => {
 					console.log(res.data.createDainty)
+					if (res.data.createDainty === true) {
+						setDataSource([...dataSource, { ...values, _id: uuidv4() }])
+					}
 				})
 				.catch(err => {
 					console.log(err)
@@ -171,7 +176,7 @@ function Dainty(props) {
 			</Modal>
 			<Table
 				rowKey={record => record._id}
-				dataSource={rowData}
+				dataSource={dataSource}
 				columns={columns}
 				bordered
 				// title={() => 'Header'}
