@@ -1,0 +1,8 @@
+mutation {
+	createDainty(daintyInput: { imageUrl: "aa", name: "bb", quantity: 10 }) {
+		_id
+		imageUrl
+		name
+		quantity
+	}
+}

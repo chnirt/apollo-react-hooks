@@ -4,8 +4,6 @@ import gql from 'graphql-tag'
 import { Table, Button, Modal, Form, Input } from 'antd'
 // import { CTX } from '../../store'
 
-const uuidv4 = require('uuid/v4')
-
 function Dainty(props) {
 	const [visible, setVisible] = useState(false)
 	const [confirmLoading, setConfirmLoading] = useState(false)
@@ -32,7 +30,7 @@ function Dainty(props) {
 			title: 'Action',
 			dataIndex: 'action',
 			fixed: 'right',
-			width: 200,
+			width: 90,
 			render: (text, record) =>
 				dataSource.length >= 1 ? (
 					<>
@@ -62,18 +60,18 @@ function Dainty(props) {
 			.catch(err => {
 				console.log(err)
 			})
-	})
+	}, [props.client])
 	function showModal() {
 		setVisible(true)
 	}
 	function handleOk() {
-		setConfirmLoading(true)
+		setLoading(true)
 		props.form.validateFields((err, values) => {
 			if (err) {
 				setConfirmLoading(false)
 				return
 			}
-			console.log('Received values of form: ', values)
+			// console.log('Received values of form: ', values)
 			const { imageUrl, name, quantity } = values
 			props.client
 				.mutate({
@@ -87,9 +85,10 @@ function Dainty(props) {
 					}
 				})
 				.then(res => {
-					console.log(res.data.createDainty)
-					if (res.data.createDainty === true) {
-						setDataSource([...dataSource, { ...values, _id: uuidv4() }])
+					// console.log(res)
+					if (res.data.createDainty) {
+						setDataSource([...dataSource, res.data.createDainty])
+						setLoading(false)
 					}
 				})
 				.catch(err => {
@@ -105,7 +104,8 @@ function Dainty(props) {
 		setVisible(false)
 	}
 	function handleClick(record, type) {
-		console.log(record, type)
+		setLoading(true)
+		// console.log(record, type)
 		type === 'update'
 			? console.log('update')
 			: props.client
@@ -116,7 +116,13 @@ function Dainty(props) {
 						}
 					})
 					.then(res => {
-						console.log(res.data)
+						// console.log(res)
+						if (res.data.deleteDainty === true) {
+							setDataSource([
+								...dataSource.filter(item => item._id !== record._id)
+							])
+							setLoading(false)
+						}
 					})
 					.catch(err => {
 						console.log(err)
@@ -183,6 +189,7 @@ function Dainty(props) {
 				// footer={() => 'Footer'}
 				loading={loading}
 				size="small"
+				pagination={{ pageSize: 5 }}
 			/>
 		</>
 	)
@@ -203,7 +210,12 @@ const DAINTIES = gql`
 
 const CREATE_DAINTY = gql`
 	mutation($daintyInput: DaintyInput!) {
-		createDainty(daintyInput: $daintyInput)
+		createDainty(daintyInput: $daintyInput) {
+			_id
+			imageUrl
+			name
+			quantity
+		}
 	}
 `
 

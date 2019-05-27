@@ -236,7 +236,7 @@ class Main extends Component {
 								// defaultSelectedKeys={[this.props.location.pathname]}
 							>
 								<SubMenu
-									key="hsub1"
+									// key="hsub1"
 									title={
 										<>
 											<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
@@ -293,6 +293,7 @@ class Main extends Component {
 							offsetTop={120}
 							style={{
 								position: 'absolute',
+								zIndex: 0,
 								right: 0
 							}}
 							onChange={affixed => {
