@@ -96,7 +96,7 @@ export class Register extends Component {
 								<div className="login-form-header">
 									<Title level={1}>Chnirt</Title>
 									<Title level={4}>
-										Sign up to see photos and videos from your friends.
+										Sign up to watch Ant Design template from your friends.
 									</Title>
 								</div>
 								<Form.Item>
