@@ -61,9 +61,9 @@ export class Register extends Component {
 						})
 					}
 				})
-				.catch(res => {
-					// console.log(res)
-					const errors = res.graphQLErrors.map(error => error.message)
+				.catch(err => {
+					// console.log(err)
+					const errors = err.graphQLErrors.map(error => error.message)
 					openNotificationWithIcon(
 						'error',
 						'register',

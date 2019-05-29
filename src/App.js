@@ -10,7 +10,7 @@ import Store from './store'
 function App() {
 	useEffect(() => {
 		// KeepAwake
-		const wakeUp = setInterval(() => {
+		let wakeUp = setInterval(() => {
 			console.log('KeepAwake')
 			fetch('https://chnirt-apollo-client.herokuapp.com')
 				.then(res => {
@@ -19,11 +19,9 @@ function App() {
 				.catch(err => {
 					console.log(err)
 				})
-		}, 300000) // every 5 minutes (300000)
-		return () => {
-			clearInterval(wakeUp)
-		}
-	})
+		}, 60000) // every 5 minutes (300000)
+		return () => clearInterval(wakeUp)
+	}, [])
 	return (
 		<ApolloProvider client={client}>
 			<I18nextProvider i18n={i18n}>

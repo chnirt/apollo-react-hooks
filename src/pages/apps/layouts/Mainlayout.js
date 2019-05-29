@@ -8,6 +8,7 @@ import {
 	LocaleProvider,
 	Layout,
 	Menu,
+	Typography,
 	Avatar,
 	Icon,
 	Drawer,
@@ -28,6 +29,7 @@ import { withTranslation } from 'react-i18next'
 
 moment.locale('en')
 
+const { Title } = Typography
 const { Header, Content, Sider } = Layout
 const SubMenu = Menu.SubMenu
 
@@ -208,7 +210,7 @@ class Main extends Component {
 							{/* Logo */}
 							<div className="logo">
 								<img src={logo} alt="logo" />
-								<h1>Chnirt</h1>
+								<Title level={1}>Chnirt</Title>
 							</div>
 							<Menu
 								theme="light"

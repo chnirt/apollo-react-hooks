@@ -13,8 +13,7 @@ export class Login extends Component {
 	state = {
 		email: 'chin@gmail.com',
 		password: 'd3f4ultP4ssword!',
-		loading: false,
-		errors: []
+		loading: false
 	}
 
 	componentWillMount() {
@@ -49,9 +48,9 @@ export class Login extends Component {
 						this.setState({ loading: false, spin: false })
 					})
 				})
-				.catch(res => {
-					// console.log(res)
-					const errors = res.graphQLErrors.map(error => error.message)
+				.catch(err => {
+					// console.log(err)
+					const errors = err.graphQLErrors.map(error => error.message)
 					openNotificationWithIcon('error', 'login', 'Login Failed.', errors[0])
 					this.setState({
 						loading: false,

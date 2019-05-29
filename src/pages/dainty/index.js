@@ -47,12 +47,11 @@ function Dainty(props) {
 				) : null
 		}
 	]
-	// TODO: lo-op
 	useEffect(() => {
 		props.client
 			.query({ query: DAINTIES })
 			.then(res => {
-				console.log(res)
+				// console.log(res)
 				setDataSource(res.data.dainties)
 				setLoading(false)
 			})
