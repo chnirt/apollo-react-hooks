@@ -2,7 +2,7 @@ import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'
 
 import en from '../assets/i18n/locales/en.json'
-import vn from '../assets/i18n/locales/vn.json'
+import vi from '../assets/i18n/locales/vi.json'
 
 i18n
 	.use(initReactI18next) // passes i18n down to react-i18next
@@ -11,8 +11,8 @@ i18n
 			en: {
 				translations: en
 			},
-			vn: {
-				translations: vn
+			vi: {
+				translations: vi
 			}
 		},
 		lng: 'en',
