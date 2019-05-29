@@ -12,14 +12,7 @@ function App() {
 		// KeepAwake
 		const wakeUp = setInterval(() => {
 			console.log('KeepAwake')
-			fetch('https://chnirt-apollo-client.herokuapp.com/')
-				.then(res => {
-					console.log(res)
-				})
-				.catch(err => {
-					console.log(err)
-				})
-			fetch('https://chnirt-apollo-server.herokuapp.com/graphql')
+			fetch('https://chnirt-apollo-client.herokuapp.com')
 				.then(res => {
 					console.log(res)
 				})
