@@ -11,12 +11,8 @@ function App() {
 	useEffect(() => {
 		// KeepAwake
 		let wakeUp = setInterval(() => {
-			// fetch('http://localhost:3000', {
-			// 	mode: 'no-cors'
-			// })
-			fetch('https://chnirt-apollo-client.herokuapp.com', {
-				mode: 'no-cors'
-			})
+			// fetch('http://localhost:3000')
+			fetch('https://chnirt-apollo-client.herokuapp.com')
 				.then(res => {
 					console.log(res)
 				})
