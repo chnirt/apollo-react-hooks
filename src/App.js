@@ -12,7 +12,7 @@ function App() {
 		// KeepAwake
 		let wakeUp = setInterval(() => {
 			// fetch('http://localhost:3000')
-			fetch('https://chnirt-apollo-client.herokuapp.com')
+			fetch('http://chnirt-apollo-client.herokuapp.com')
 				.then(res => {
 					console.log(res)
 				})
