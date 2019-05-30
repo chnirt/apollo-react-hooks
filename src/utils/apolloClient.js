@@ -38,8 +38,10 @@ const authLink = setContext((_, { headers }) => {
 })
 
 const client = new ApolloClient({
-	cache: new InMemoryCache(),
-	link: ApolloLink.from([errorLink, authLink, httpLink])
+	// cache: new InMemoryCache(),
+	cache: new InMemoryCache().restore(window.__APOLLO_STATE__),
+	link: ApolloLink.from([errorLink, authLink, httpLink]),
+	ssrForceFetchDelay: 100
 })
 
 export default client
