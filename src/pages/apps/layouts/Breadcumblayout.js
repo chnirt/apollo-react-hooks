@@ -1,18 +1,19 @@
 import React from 'react'
 import { Link, withRouter } from 'react-router-dom'
+import { withTranslation } from 'react-i18next'
 import { Breadcrumb } from 'antd'
 import { breadcrumbNameMap } from '../../../routes'
 
 const Breadcumblayout = props => {
-	const { location } = props
-	const pathSnippets = location.pathname.split('/👻').filter(i => i)
+	const { location, t } = props
+	const pathSnippets = location.pathname.split('/👾').filter(i => i)
 	// console.log('pathSnippets:', pathSnippets)
 
 	const extraBreadcrumbItems = pathSnippets.map((_, index) => {
-		const url = `/👻${pathSnippets.slice(0, index + 1).join('/👻')}`
+		const url = `/👾${pathSnippets.slice(0, index + 1).join('/👾')}`
 		// console.log('url:', url)
 
-		const endpoint = `/👻${pathSnippets.slice(0, index + 1)}`
+		const endpoint = `/👾${pathSnippets.slice(0, index + 1)}`
 		// console.log('endpoint:', endpoint)
 		const exist = Object.keys(breadcrumbNameMap).indexOf(endpoint)
 		// console.log('exist', exist)
@@ -20,7 +21,7 @@ const Breadcumblayout = props => {
 			return (
 				<Breadcrumb.Item key={url}>
 					{/* <Link to={url}>{breadcrumbNameMap[url].toUpperCase()}</Link> */}
-					{breadcrumbNameMap[url].toUpperCase()}
+					{t(breadcrumbNameMap[url]).toUpperCase()}
 				</Breadcrumb.Item>
 			)
 		}
@@ -28,14 +29,14 @@ const Breadcumblayout = props => {
 	})
 
 	const defaultBreadCrumb = [
-		<Breadcrumb.Item key="/👻">
-			{breadcrumbNameMap['/👻'].toUpperCase()}
+		<Breadcrumb.Item key="/👾">
+			{t(breadcrumbNameMap['/👾']).toUpperCase()}
 		</Breadcrumb.Item>
 	]
 
 	const breadcrumbItems = [
-		<Breadcrumb.Item key="/👻">
-			<Link to="/👻">{breadcrumbNameMap['/👻'].toUpperCase()}</Link>
+		<Breadcrumb.Item key="/👾">
+			<Link to="/👾">{t(breadcrumbNameMap['/👾']).toUpperCase()}</Link>
 		</Breadcrumb.Item>
 	].concat(extraBreadcrumbItems)
 
@@ -49,4 +50,4 @@ const Breadcumblayout = props => {
 	)
 }
 
-export default withRouter(Breadcumblayout)
+export default withTranslation()(withRouter(Breadcumblayout))

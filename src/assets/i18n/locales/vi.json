@@ -1,3 +1,11 @@
 {
-	"hello": "Xin chào"
+	"hello": "xin chào, ",
+	"logout": "đăng xuất",
+	"my profile": "thông tin cá nhân",
+	"update information": "cập nhật thông tin",
+	"change password": "thay đổi mật khẩu",
+	"dashboard": "bảng điều khiển",
+	"members": "thành viên",
+	"dainties": "món ăn",
+	"likes": "thích"
 }

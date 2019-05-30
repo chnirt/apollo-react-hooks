@@ -158,7 +158,7 @@ class Main extends Component {
 											}}
 										>
 											<Icon type={siderRoute.icon} />
-											<span>{siderRoute.label.toUpperCase()}</span>
+											<span>{this.props.t(siderRoute.label).toUpperCase()}</span>
 										</Menu.Item>
 									))}
 							</Menu>
@@ -227,7 +227,7 @@ class Main extends Component {
 											}}
 										>
 											<Icon type={siderRoute.icon} />
-											<span>{siderRoute.label.toUpperCase()}</span>
+											<span>{this.props.t(siderRoute.label).toUpperCase()}</span>
 										</Menu.Item>
 									))}
 							</Menu>
@@ -287,7 +287,7 @@ class Main extends Component {
 											<>
 												<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
 												<span>
-													{this.props.t('hello')},
+													{this.props.t('hello').toUpperCase()}
 													{this.state.me && this.state.me.username}
 												</span>
 											</>
@@ -302,13 +302,13 @@ class Main extends Component {
 													}}
 												>
 													<Icon type={headerRoute.icon} />
-													{headerRoute.label.toUpperCase()}
+													{this.props.t(headerRoute.label).toUpperCase()}
 												</Menu.Item>
 											))}
 										<Menu.Divider />
 										<Menu.Item onClick={this.onLogout}>
 											<Icon type="logout" />
-											LOG OUT
+											{this.props.t('logout').toUpperCase()}
 										</Menu.Item>
 									</SubMenu>
 								</Menu>

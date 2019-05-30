@@ -1,3 +1,11 @@
 {
-	"hello": "Hello"
+	"hello": "hello, ",
+	"logout": "logout",
+	"my profile": "my profile",
+	"update information": "update information",
+	"change password": "change password",
+	"dashboard": "dashboard",
+	"members": "members",
+	"dainties": "dainties",
+	"likes": "likes"
 }
