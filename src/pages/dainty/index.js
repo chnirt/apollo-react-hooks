@@ -154,7 +154,7 @@ function Dainty(props) {
 									message: 'Please input the image of collection!'
 								}
 							]
-						})(<Input />)}
+						})(<Input style={{ fontSize: 16 }} />)}
 					</Form.Item>
 					<Form.Item label="Name">
 						{getFieldDecorator('name', {
@@ -164,7 +164,7 @@ function Dainty(props) {
 									message: 'Please input the name of collection!'
 								}
 							]
-						})(<Input />)}
+						})(<Input style={{ fontSize: 16 }} />)}
 					</Form.Item>
 					<Form.Item label="Quantity">
 						{getFieldDecorator('quantity', {
@@ -174,7 +174,7 @@ function Dainty(props) {
 									message: 'Please input the quantity of collection!'
 								}
 							]
-						})(<Input type="number" />)}
+						})(<Input style={{ fontSize: 16 }} type="number" />)}
 					</Form.Item>
 				</Form>
 			</Modal>
