@@ -1,136 +1,127 @@
-import React, { Component } from 'react'
+import React, { useState } from 'react'
 import { withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
 import { AgGridReact } from 'ag-grid-react'
 import CustomLoadingOverlay from '../../utils/customLoadingOverlay'
 import CustomNoRowsOverlay from '../../utils/customNoRowsOverlay'
-export class Dashboard extends Component {
-	state = {
-		columnDefs: [
-			{
-				headerName: 'Id',
-				field: '_id',
-				filter: 'agTextColumnFilter',
-				// suppressMenu: true,
-				// enablePivot: true,
-				// rowGroup: true
-				// suppressSizeToFit: true,
-				checkboxSelection: function(params) {
-					return params.columnApi.getRowGroupColumns().length === 0
-				},
-				headerCheckboxSelection: function(params) {
-					return params.columnApi.getRowGroupColumns().length === 0
-				}
-			},
-			{
-				headerName: 'Email',
-				field: 'email',
-				filter: 'agTextColumnFilter'
-			},
-			{
-				headerName: 'Username',
-				field: 'username',
-				filter: 'agTextColumnFilter'
-			}
-		],
-		defaultColDef: {
-			sortable: true,
-			filter: true,
-			resizable: true
-		},
-		rowSelection: 'multiple',
-		rowData: null,
-		frameworkComponents: {
-			customLoadingOverlay: CustomLoadingOverlay,
-			customNoRowsOverlay: CustomNoRowsOverlay
-		},
-		loadingOverlayComponent: 'customLoadingOverlay',
-		// loadingOverlayComponentParams: { loadingMessage: 'One moment please...' },
-		noRowsOverlayComponent: 'customNoRowsOverlay',
-		// noRowsOverlayComponentParams: {
-		// 	noRowsMessageFunc: function() {
-		// 		return 'Sorry - no rows! at: ' + new Date()
-		// 	}
-		// },
-		rowGroupPanelShow: 'always',
-		autoGroupColumnDef: {
-			headerName: 'Model',
-			field: 'model',
-			cellRenderer: 'agGroupCellRenderer',
-			cellRendererParams: {
-				checkbox: true
-			}
-		},
-		statusBar: {
-			statusPanels: [
-				{
-					statusPanel: 'agTotalRowCountComponent',
-					align: 'left'
-				},
-				{ statusPanel: 'agFilteredRowCountComponent' },
-				{ statusPanel: 'agSelectedRowCountComponent' },
-				{ statusPanel: 'agAggregationComponent' }
-			]
-		}
-	}
 
-	onGridReady = params => {
+function Dashboard(props) {
+	const [rowData, setRowData] = useState([])
+	const columnDefs = [
+		{
+			headerName: 'Id',
+			field: '_id',
+			filter: 'agTextColumnFilter',
+			// suppressMenu: true,
+			// enablePivot: true,
+			// rowGroup: true
+			// suppressSizeToFit: true,
+			checkboxSelection: function(params) {
+				return params.columnApi.getRowGroupColumns().length === 0
+			},
+			headerCheckboxSelection: function(params) {
+				return params.columnApi.getRowGroupColumns().length === 0
+			}
+		},
+		{
+			headerName: 'Email',
+			field: 'email',
+			filter: 'agTextColumnFilter'
+		},
+		{
+			headerName: 'Username',
+			field: 'username',
+			filter: 'agTextColumnFilter'
+		}
+	]
+	const defaultColDef = {
+		sortable: true,
+		filter: true,
+		resizable: true
+	}
+	const frameworkComponents = {
+		customLoadingOverlay: CustomLoadingOverlay,
+		customNoRowsOverlay: CustomNoRowsOverlay
+	}
+	const loadingOverlayComponent = 'customLoadingOverlay'
+	// const loadingOverlayComponentParams = {
+	// 	loadingMessage: 'One moment please...'
+	// }
+	const noRowsOverlayComponent = 'customNoRowsOverlay'
+	// const noRowsOverlayComponentParams = {
+	// 	noRowsMessageFunc: 'Sorry - no rows! at: ' + new Date()
+	// }
+	// const autoGroupColumnDef = {
+	// 	headerName: 'Model',
+	// 	field: 'model',
+	// 	cellRenderer: 'agGroupCellRenderer',
+	// 	cellRendererParams: {
+	// 		checkbox: true
+	// 	}
+	// }
+	const statusBar = {
+		statusPanels: [
+			{
+				statusPanel: 'agTotalRowCountComponent',
+				align: 'left'
+			},
+			{ statusPanel: 'agFilteredRowCountComponent' },
+			{ statusPanel: 'agSelectedRowCountComponent' },
+			{ statusPanel: 'agAggregationComponent' }
+		]
+	}
+	function onGridReady(params) {
 		this.gridApi = params.api
 		this.gridColumnApi = params.columnApi
 		// this.setState({ rowData: [] })
-		this.props.client
+		props.client
 			.query({ query: USERS })
 			.then(res => {
-				this.setState({
-					rowData: res.data.users
-				})
+				setRowData(res.data.users)
 			})
 			.catch(err => {
 				console.log(err)
 			})
 		this.gridApi.sizeColumnsToFit()
 	}
-
-	render() {
-		return (
-			<>
-				Dashboard
-				<div
-					className="ag-theme-balham"
-					style={{
-						height: '500px',
-						width: '100%'
-					}}
-				>
-					<AgGridReact
-						columnDefs={this.state.columnDefs}
-						defaultColDef={this.state.defaultColDef}
-						animateRows={true}
-						rowData={this.state.rowData}
-						onGridReady={this.onGridReady}
-						floatingFilter={true}
-						rowSelection={this.state.rowSelection}
-						// groupSelectsChildren={true}
-						// autoGroupColumnDef={this.state.autoGroupColumnDef}
-						frameworkComponents={this.state.frameworkComponents}
-						loadingOverlayComponent={this.state.loadingOverlayComponent}
-						// loadingOverlayComponentParams={
-						// 	this.state.loadingOverlayComponentParams
-						// }
-						noRowsOverlayComponent={this.state.noRowsOverlayComponent}
-						// noRowsOverlayComponentParams={
-						// 	this.state.noRowsOverlayComponentParams
-						// }
-						// onFirstDataRendered={this.onFirstDataRendered.bind(this)}
-						enableRangeSelection={true}
-						statusBar={this.state.statusBar}
-						pagination={true}
-						// debug={true}
-					/>
-				</div>
-			</>
-		)
-	}
+	return (
+		<>
+			Dashboard
+			<div
+				className="ag-theme-balham"
+				style={{
+					height: '500px',
+					width: '100%'
+				}}
+			>
+				<AgGridReact
+					columnDefs={columnDefs}
+					defaultColDef={defaultColDef}
+					animateRows={true}
+					rowData={rowData}
+					onGridReady={onGridReady}
+					floatingFilter={true}
+					rowSelection={'multiple'}
+					// groupSelectsChildren={true}
+					// autoGroupColumnDef={autoGroupColumnDef}
+					frameworkComponents={frameworkComponents}
+					loadingOverlayComponent={loadingOverlayComponent}
+					// loadingOverlayComponentParams={
+					// 	loadingOverlayComponentParams
+					// }
+					noRowsOverlayComponent={noRowsOverlayComponent}
+					// noRowsOverlayComponentParams={
+					// 	noRowsOverlayComponentParams
+					// }
+					// onFirstDataRendered={this.onFirstDataRendered.bind(this)}
+					enableRangeSelection={true}
+					statusBar={statusBar}
+					pagination={true}
+					// debug={true}
+				/>
+			</div>
+		</>
+	)
 }
 
 const USERS = gql`
