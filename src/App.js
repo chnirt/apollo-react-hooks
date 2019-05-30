@@ -11,17 +11,21 @@ function App() {
 	useEffect(() => {
 		// KeepAwake
 		let wakeUp = setInterval(() => {
-			console.log('KeepAwake')
-			fetch('https://chnirt-apollo-client.herokuapp.com')
+			// fetch('http://localhost:3000', {
+			// 	mode: 'no-cors'
+			// })
+			fetch('https://chnirt-apollo-client.herokuapp.com', {
+				mode: 'no-cors'
+			})
 				.then(res => {
 					console.log(res)
 				})
 				.catch(err => {
 					console.log(err)
 				})
-		}, 60000) // every 5 minutes (300000)
+		}, 3000) // every 5 minutes (300000)
 		return () => clearInterval(wakeUp)
-	}, [])
+	})
 	return (
 		<ApolloProvider client={client}>
 			<I18nextProvider i18n={i18n}>

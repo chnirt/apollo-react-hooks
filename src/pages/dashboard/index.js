@@ -107,6 +107,7 @@ export class Dashboard extends Component {
 						defaultColDef={this.state.defaultColDef}
 						animateRows={true}
 						rowData={this.state.rowData}
+						onGridReady={this.onGridReady}
 						floatingFilter={true}
 						rowSelection={this.state.rowSelection}
 						// groupSelectsChildren={true}
@@ -120,7 +121,6 @@ export class Dashboard extends Component {
 						// noRowsOverlayComponentParams={
 						// 	this.state.noRowsOverlayComponentParams
 						// }
-						onGridReady={this.onGridReady}
 						// onFirstDataRendered={this.onFirstDataRendered.bind(this)}
 						enableRangeSelection={true}
 						statusBar={this.state.statusBar}
