@@ -1,12 +1,6 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { Spin } from 'antd'
 
-export default class CustomLoadingOverlay extends Component {
-	render() {
-		return (
-			<>
-				<Spin tip="Loading..." />
-			</>
-		)
-	}
+export default function CustomLoadingOverlay() {
+	return <Spin tip="Loading..." />
 }

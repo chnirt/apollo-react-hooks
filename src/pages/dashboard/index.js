@@ -6,7 +6,7 @@ import CustomLoadingOverlay from '../../utils/customLoadingOverlay'
 import CustomNoRowsOverlay from '../../utils/customNoRowsOverlay'
 
 function Dashboard(props) {
-	const [rowData, setRowData] = useState([])
+	const [rowData, setRowData] = useState(null)
 	const columnDefs = [
 		{
 			headerName: 'Id',
@@ -73,7 +73,6 @@ function Dashboard(props) {
 	function onGridReady(params) {
 		this.gridApi = params.api
 		this.gridColumnApi = params.columnApi
-		// this.setState({ rowData: [] })
 		props.client
 			.query({ query: USERS })
 			.then(res => {

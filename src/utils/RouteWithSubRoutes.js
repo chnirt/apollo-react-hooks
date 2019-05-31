@@ -2,7 +2,7 @@ import React from 'react'
 import { Route } from 'react-router-dom'
 import withLoadable from './loadable'
 
-const RouteWithSubRoutes = route => {
+export default function RouteWithSubRoutes(route) {
 	return (
 		<Route
 			{...route}
@@ -13,5 +13,3 @@ const RouteWithSubRoutes = route => {
 		/>
 	)
 }
-
-export default RouteWithSubRoutes
