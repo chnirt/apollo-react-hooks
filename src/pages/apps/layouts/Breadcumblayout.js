@@ -6,14 +6,14 @@ import { breadcrumbNameMap } from '../../../routes'
 
 const Breadcumblayout = props => {
 	const { location, t } = props
-	const pathSnippets = location.pathname.split('/👾').filter(i => i)
+	const pathSnippets = location.pathname.split('/👻').filter(i => i)
 	// console.log('pathSnippets:', pathSnippets)
 
 	const extraBreadcrumbItems = pathSnippets.map((_, index) => {
-		const url = `/👾${pathSnippets.slice(0, index + 1).join('/👾')}`
+		const url = `/👻${pathSnippets.slice(0, index + 1).join('/👻')}`
 		// console.log('url:', url)
 
-		const endpoint = `/👾${pathSnippets.slice(0, index + 1)}`
+		const endpoint = `/👻${pathSnippets.slice(0, index + 1)}`
 		// console.log('endpoint:', endpoint)
 		const exist = Object.keys(breadcrumbNameMap).indexOf(endpoint)
 		// console.log('exist', exist)
@@ -29,14 +29,14 @@ const Breadcumblayout = props => {
 	})
 
 	const defaultBreadCrumb = [
-		<Breadcrumb.Item key="/👾">
-			{t(breadcrumbNameMap['/👾']).toUpperCase()}
+		<Breadcrumb.Item key="/👻">
+			{t(breadcrumbNameMap['/👻']).toUpperCase()}
 		</Breadcrumb.Item>
 	]
 
 	const breadcrumbItems = [
-		<Breadcrumb.Item key="/👾">
-			<Link to="/👾">{t(breadcrumbNameMap['/👾']).toUpperCase()}</Link>
+		<Breadcrumb.Item key="/👻">
+			<Link to="/👻">{t(breadcrumbNameMap['/👻']).toUpperCase()}</Link>
 		</Breadcrumb.Item>
 	].concat(extraBreadcrumbItems)
 

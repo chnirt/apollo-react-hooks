@@ -19,7 +19,7 @@ export class Register extends Component {
 	componentWillMount() {
 		const token = localStorage.getItem('access-token')
 		if (token) {
-			this.props.history.push('/👾')
+			this.props.history.push('/👻')
 		}
 	}
 

@@ -19,7 +19,7 @@ export class Login extends Component {
 	componentWillMount() {
 		const token = window.localStorage.getItem('access-token')
 		if (token) {
-			this.props.history.push('/👾')
+			this.props.history.push('/👻')
 		}
 	}
 
@@ -44,7 +44,7 @@ export class Login extends Component {
 				.then(res => {
 					Auth.authenticate(() => {
 						window.localStorage.setItem('access-token', res.data.login.token)
-						this.props.history.push('/👾')
+						this.props.history.push('/👻')
 						this.setState({ loading: false, spin: false })
 					})
 				})
