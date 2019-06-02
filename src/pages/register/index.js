@@ -15,14 +15,6 @@ export class Register extends Component {
 		loading: false,
 		errors: []
 	}
-
-	componentWillMount() {
-		const token = localStorage.getItem('access-token')
-		if (token) {
-			this.props.history.push('/👻')
-		}
-	}
-
 	handleSubmit = e => {
 		e.preventDefault()
 		this.setState({ loading: true, spin: true })
@@ -45,13 +37,6 @@ export class Register extends Component {
 				.then(res => {
 					// console.log(res.data.register)
 					if (res.data.register) {
-						openNotificationWithIcon(
-							'success',
-							'register',
-							'Registration Successful.',
-							'We welcome a new MEMBER.',
-							'bottomRight'
-						)
 						this.setState({
 							email: '',
 							password: '',
@@ -59,22 +44,28 @@ export class Register extends Component {
 							loading: false,
 							spin: false
 						})
+						openNotificationWithIcon(
+							'success',
+							'register',
+							'Registration Successful.',
+							'We welcome a new MEMBER.',
+							'bottomRight'
+						)
 					}
 				})
 				.catch(err => {
 					// console.log(err)
 					const errors = err.graphQLErrors.map(error => error.message)
+					this.setState({
+						loading: false,
+						spin: false
+					})
 					openNotificationWithIcon(
 						'error',
 						'register',
 						'Registration Failed.',
 						errors[0]
 					)
-					this.setState({
-						loading: false,
-						spin: false,
-						errors
-					})
 				})
 		})
 	}
@@ -95,9 +86,7 @@ export class Register extends Component {
 							<Form onSubmit={this.handleSubmit} className="login-form">
 								<div className="login-form-header">
 									<Title level={1}>Chnirt</Title>
-									<Title level={4}>
-										Sign up to watch Ant Design template from your friends.
-									</Title>
+									<Title level={4}>Sign up to watch Ant Design template.</Title>
 								</div>
 								<Form.Item>
 									{getFieldDecorator('username', {

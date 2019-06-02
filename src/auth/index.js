@@ -1,4 +1,4 @@
-const Auth = {
+export const Auth = {
 	isAuthenticated: window.localStorage.getItem('access-token') ? true : false,
 	authenticate(cb) {
 		this.isAuthenticated = true
@@ -9,5 +9,3 @@ const Auth = {
 		setTimeout(cb, 100)
 	}
 }
-
-export default Auth

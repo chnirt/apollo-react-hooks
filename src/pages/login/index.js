@@ -4,7 +4,7 @@ import './style.scss'
 import { Link } from 'react-router-dom'
 import { withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
-import Auth from '../../auth/Authenticate'
+import { Auth } from '../../auth'
 import openNotificationWithIcon from '../../utils/openNotificationWithIcon'
 
 const { Title } = Typography
@@ -15,14 +15,6 @@ export class Login extends Component {
 		password: 'd3f4ultP4ssword!',
 		loading: false
 	}
-
-	componentWillMount() {
-		const token = window.localStorage.getItem('access-token')
-		if (token) {
-			this.props.history.push('/👻')
-		}
-	}
-
 	handleSubmit = e => {
 		e.preventDefault()
 		this.setState({ loading: true, spin: true })
@@ -44,19 +36,18 @@ export class Login extends Component {
 				.then(res => {
 					Auth.authenticate(() => {
 						window.localStorage.setItem('access-token', res.data.login.token)
-						this.props.history.push('/👻')
 						this.setState({ loading: false, spin: false })
+						this.props.history.push('/')
 					})
 				})
 				.catch(err => {
 					// console.log(err)
 					const errors = err.graphQLErrors.map(error => error.message)
-					openNotificationWithIcon('error', 'login', 'Login Failed.', errors[0])
 					this.setState({
 						loading: false,
-						spin: false,
-						errors
+						spin: false
 					})
+					openNotificationWithIcon('error', 'login', 'Login Failed.', errors[0])
 				})
 		})
 	}

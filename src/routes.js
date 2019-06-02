@@ -1,19 +1,26 @@
+import Login from './pages/login'
+import Register from './pages/register'
+import Home from './pages/home'
+
 export const routes = [
 	{
 		label: 'Login',
 		path: '/login',
-		component: 'login'
+		component: 'login',
+		import: Login
 	},
 	{
 		label: 'Register',
 		path: '/register',
-		component: 'register'
+		component: 'register',
+		import: Register
 	},
 	{
 		label: 'Home',
-		path: '/👻',
+		path: '/',
 		private: true,
 		component: 'home',
+		import: Home,
 		routes: [
 			{
 				label: 'dashboard',

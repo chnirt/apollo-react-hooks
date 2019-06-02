@@ -7,5 +7,7 @@
 	"dashboard": "dashboard",
 	"members": "members",
 	"dainties": "dainties",
-	"likes": "likes"
+	"likes": "likes",
+	"menu": "menu",
+	"setting theme": "setting theme"
 }

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Link, withRouter } from 'react-router-dom'
 import { Layout, Menu, Icon, Avatar } from 'antd'
 import { headerRoutes } from '../../../routes'
-import Auth from '../../../auth/Authenticate'
+import { Auth } from '../../../auth'
 import { withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
 

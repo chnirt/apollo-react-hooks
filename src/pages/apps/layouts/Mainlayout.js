@@ -19,7 +19,7 @@ import {
 import logo from '../../../assets/images/logo.svg'
 import { siderRoutes, headerRoutes } from '../../../routes'
 import { withRouter } from 'react-router-dom'
-import Auth from '../../../auth/Authenticate'
+import { Auth } from '../../../auth'
 import { withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
 import vi_VN from 'antd/lib/locale-provider/vi_VN'
@@ -35,7 +35,7 @@ const SubMenu = Menu.SubMenu
 
 class Main extends Component {
 	state = {
-		current: '/',
+		current: '/👻',
 		isMobile: false,
 		collapsed: false,
 		collapsedWidth: 80,
@@ -93,6 +93,7 @@ class Main extends Component {
 		this.setState({
 			current: e.key
 		})
+		this.props.history.push(e.key)
 	}
 
 	componentDidMount() {
@@ -136,7 +137,7 @@ class Main extends Component {
 					<Layout id="components-layout-demo-custom-trigger">
 						{/* Sider Mobile */}
 						<Drawer
-							title="Menu"
+							title={this.props.t('menu').toUpperCase()}
 							placement="left"
 							closable={false}
 							onClose={this.onClose}
@@ -151,12 +152,7 @@ class Main extends Component {
 							>
 								{siderRoutes &&
 									siderRoutes.map((siderRoute, i) => (
-										<Menu.Item
-											key={siderRoute.path}
-											onClick={({ key }) => {
-												this.props.history.push(key)
-											}}
-										>
+										<Menu.Item key={siderRoute.path}>
 											<Icon type={siderRoute.icon} />
 											<span>{this.props.t(siderRoute.label).toUpperCase()}</span>
 										</Menu.Item>
@@ -177,8 +173,8 @@ class Main extends Component {
 								left: 0,
 								zIndex: 10,
 								minHeight: '100vh',
-								transition: 'all .2s',
-								boxShadow: '2px 0 6px rgba(0,21,41,.35)'
+								transition: 'all .2s'
+								// boxShadow: '2px 0 6px rgba(0,21,41,.35)'
 							}}
 							theme="light"
 							trigger={null}
@@ -216,16 +212,11 @@ class Main extends Component {
 								theme="light"
 								mode="inline"
 								onClick={this.handleClick}
-								defaultSelectedKeys={[this.props.location.pathname]}
+								selectedKeys={[this.props.location.pathname]}
 							>
 								{siderRoutes &&
 									siderRoutes.map((siderRoute, i) => (
-										<Menu.Item
-											key={siderRoute.path}
-											onClick={({ key }) => {
-												this.props.history.push(key)
-											}}
-										>
+										<Menu.Item key={siderRoute.path}>
 											<Icon type={siderRoute.icon} />
 											<span>{this.props.t(siderRoute.label).toUpperCase()}</span>
 										</Menu.Item>
@@ -267,17 +258,18 @@ class Main extends Component {
 										float: 'right',
 										lineHeight: '63px'
 									}}
-									// defaultSelectedKeys={[this.props.location.pathname]}
+									onClick={e => this.props.history.push(e.key)}
 								>
 									{/* LanguageMenu */}
-									<SubMenu title={<Icon type="global" />}>
+									<SubMenu
+										title={<Icon type="global" style={{ marginRight: 0 }} />}
+									>
 										<Menu.Item onClick={() => this.changeLocale('en')}>
+											<span role="img">🇺🇸</span>
 											English
 										</Menu.Item>
-										<Menu.Item
-											// key="vi"
-											onClick={() => this.changeLocale('vi')}
-										>
+										<Menu.Item onClick={() => this.changeLocale('vi')}>
+											<span role="img">🇻🇳</span>
 											Việt Nam
 										</Menu.Item>
 									</SubMenu>
@@ -292,15 +284,11 @@ class Main extends Component {
 												</span>
 											</>
 										}
+										style={{ marginRight: 10 }}
 									>
 										{headerRoutes &&
 											headerRoutes.map((headerRoute, i) => (
-												<Menu.Item
-													key={headerRoute.path}
-													onClick={({ key }) => {
-														this.props.history.push(key)
-													}}
-												>
+												<Menu.Item key={headerRoute.path}>
 													<Icon type={headerRoute.icon} />
 													{this.props.t(headerRoute.label).toUpperCase()}
 												</Menu.Item>
@@ -360,7 +348,7 @@ class Main extends Component {
 								)}
 							</Affix>
 							<Drawer
-								title="Custom theme"
+								title={this.props.t('setting theme').toUpperCase()}
 								width={300}
 								placement="right"
 								closable={false}

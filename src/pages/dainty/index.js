@@ -58,7 +58,7 @@ function Dainty(props) {
 			.catch(err => {
 				console.log(err)
 			})
-	}, [props.client])
+	})
 	function showModal() {
 		setVisible(true)
 	}
@@ -129,6 +129,7 @@ function Dainty(props) {
 	const { getFieldDecorator } = props.form
 	return (
 		<>
+			Dainty
 			<Button
 				style={{ marginBottom: 16, float: 'right', zIndex: 1 }}
 				icon="plus"
