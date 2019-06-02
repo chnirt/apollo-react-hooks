@@ -58,7 +58,7 @@ function Dainty(props) {
 			.catch(err => {
 				console.log(err)
 			})
-	})
+	}, [props.client])
 	function showModal() {
 		setVisible(true)
 	}
@@ -85,8 +85,8 @@ function Dainty(props) {
 				.then(res => {
 					// console.log(res)
 					if (res.data.createDainty) {
-						setDataSource([...dataSource, res.data.createDainty])
 						setLoading(false)
+						setDataSource([...dataSource, res.data.createDainty])
 					}
 				})
 				.catch(err => {
@@ -116,10 +116,10 @@ function Dainty(props) {
 					.then(res => {
 						// console.log(res)
 						if (res.data.deleteDainty === true) {
+							setLoading(false)
 							setDataSource([
 								...dataSource.filter(item => item._id !== record._id)
 							])
-							setLoading(false)
 						}
 					})
 					.catch(err => {

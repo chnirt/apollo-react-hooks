@@ -2,6 +2,15 @@ import Login from './pages/login'
 import Register from './pages/register'
 import Home from './pages/home'
 
+import Dashboard from './pages/dashboard'
+import Member from './pages/member'
+import Dainty from './pages/dainty'
+import Like from './pages/like'
+
+import Profile from './pages/profile'
+import ChangePwd from './pages/changepwd'
+import UpdateInfo from './pages/updateinfo'
+
 export const routes = [
 	{
 		label: 'Login',
@@ -26,37 +35,44 @@ export const routes = [
 				label: 'dashboard',
 				path: '/👻',
 				exact: true,
-				component: 'dashboard'
+				component: 'dashboard',
+				import: Dashboard
 			},
 			{
 				label: 'members',
 				path: '/👻/members',
-				component: 'member'
+				component: 'member',
+				import: Member
 			},
 			{
 				label: 'dainties',
 				path: '/👻/dainties',
-				component: 'dainty'
+				component: 'dainty',
+				import: Dainty
 			},
 			{
 				label: 'likes',
 				path: '/👻/likes',
-				component: 'like'
+				component: 'like',
+				import: Like
 			},
 			{
 				label: 'profile',
 				path: '/👻/profile',
-				component: 'profile'
+				component: 'profile',
+				import: Profile
 			},
 			{
 				label: 'updateinformation',
 				path: '/👻/updateinformation',
-				component: 'updateinfo'
+				component: 'updateinfo',
+				import: UpdateInfo
 			},
 			{
 				label: 'changepassword',
 				path: '/👻/changepassword',
-				component: 'changepwd'
+				component: 'changepwd',
+				import: ChangePwd
 			}
 		]
 	}

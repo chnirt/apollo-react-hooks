@@ -252,13 +252,11 @@ class Main extends Component {
 									onClick={this.toggle}
 								/>
 								<Menu
-									// onClick={this.handleClick}
 									mode="horizontal"
 									style={{
 										float: 'right',
 										lineHeight: '63px'
 									}}
-									onClick={e => this.props.history.push(e.key)}
 								>
 									{/* LanguageMenu */}
 									<SubMenu
@@ -288,7 +286,12 @@ class Main extends Component {
 									>
 										{headerRoutes &&
 											headerRoutes.map((headerRoute, i) => (
-												<Menu.Item key={headerRoute.path}>
+												<Menu.Item
+													key={headerRoute.path}
+													onClick={e =>
+														this.props.history.push(headerRoute.path)
+													}
+												>
 													<Icon type={headerRoute.icon} />
 													{this.props.t(headerRoute.label).toUpperCase()}
 												</Menu.Item>
