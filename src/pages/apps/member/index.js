@@ -1,9 +1,14 @@
 import React, { Component } from 'react'
+import { inject, observer } from 'mobx-react'
 
-export default class index extends Component {
+@inject('UiStore')
+@observer
+class index extends Component {
 	render() {
+		const { UiStore } = this.props
 		return (
 			<div>
+				{UiStore.theme}
 				Members ...
 				<br />
 				Really
@@ -162,3 +167,5 @@ export default class index extends Component {
 		)
 	}
 }
+
+export default index

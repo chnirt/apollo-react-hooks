@@ -1,10 +1,21 @@
-const { override, fixBabelImports, addLessLoader } = require('customize-cra')
+const {
+	override,
+	addDecoratorsLegacy,
+	disableEsLint,
+	// addBabelPlugins,
+	// addBabelPresets,
+	addBundleVisualizer,
+	// addWebpackAlias,
+	adjustWorkbox,
+	fixBabelImports,
+	addLessLoader
+} = require('customize-cra')
 const chalk = require('chalk')
 const ProgressBarPlugin = require('progress-bar-webpack-plugin')
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
-	.BundleAnalyzerPlugin
+// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
+// 	.BundleAnalyzerPlugin
 
-const addPlugins = () => config => {
+const addPlugins = () => (config, env) => {
 	config.plugins.push(
 		new ProgressBarPlugin({
 			format:
@@ -34,6 +45,44 @@ const addPlugins = () => config => {
 }
 
 module.exports = override(
+	addDecoratorsLegacy(),
+	disableEsLint(),
+	// ...addBabelPlugins(
+	// 	'polished',
+	// 	'emotion',
+	// 	'babel-plugin-transform-do-expressions'
+	// ),
+	// ...addBabelPresets([
+	// 	[
+	// 		'@babel/env',
+	// 		{
+	// 			targets: {
+	// 				browsers: ['> 1%', 'last 2 versions']
+	// 			},
+	// 			modules: 'commonjs'
+	// 		}
+	// 	],
+	// 	'@babel/preset-flow',
+	// 	'@babel/preset-react'
+	// ]),
+	// fixBabelImports('lodash', {
+	// 	libraryDirectory: '',
+	// 	camel2DashComponentName: false
+	// }),
+	fixBabelImports('react-feather', {
+		libraryName: 'react-feather',
+		libraryDirectory: 'dist/icons'
+	}),
+	process.env.BUNDLE_VISUALIZE == 1 && addBundleVisualizer(),
+	// addWebpackAlias({
+	// 	['ag-grid-react$']: path.resolve(__dirname, 'src/shared/agGridWrapper.js')
+	// }),
+	adjustWorkbox(wb =>
+		Object.assign(wb, {
+			skipWaiting: true,
+			exclude: (wb.exclude || []).concat('index.html')
+		})
+	),
 	fixBabelImports('import', {
 		libraryName: 'antd',
 		libraryDirectory: 'es',
