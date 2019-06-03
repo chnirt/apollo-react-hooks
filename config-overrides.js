@@ -3,7 +3,7 @@ const {
 	addDecoratorsLegacy,
 	disableEsLint,
 	// addBabelPlugins,
-	addBabelPresets,
+	// addBabelPresets,
 	addBundleVisualizer,
 	// addWebpackAlias,
 	// adjustWorkbox,
@@ -42,11 +42,19 @@ module.exports = override(
 	// 	'emotion',
 	// 	'babel-plugin-transform-do-expressions'
 	// ),
-	...addBabelPresets(
-		'@babel/preset-env',
-		'@babel/preset-flow',
-		'@babel/preset-react'
-	),
+	// ...addBabelPresets([
+	// 	[
+	// 		'@babel/preset-env',
+	// 		{
+	// 			targets: {
+	// 				browsers: ['> 1%', 'last 2 versions']
+	// 			},
+	// 			modules: 'commonjs'
+	// 		}
+	// 	],
+	// 	'@babel/preset-flow',
+	// 	'@babel/preset-react'
+	// ]),
 	// fixBabelImports('lodash', {
 	// 	libraryDirectory: '',
 	// 	camel2DashComponentName: false

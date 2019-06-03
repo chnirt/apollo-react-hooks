@@ -3,7 +3,7 @@
 	"version": "0.1.0",
 	"private": true,
 	"dependencies": {
-		"@babel/plugin-proposal-decorators": "^7.4.4",
+		"@babel/node": "^7.4.5",
 		"@babel/preset-env": "^7.4.5",
 		"@babel/preset-flow": "^7.0.0",
 		"@babel/preset-react": "^7.0.0",
@@ -20,7 +20,6 @@
 		"babel-plugin-import": "^1.11.0",
 		"babel-plugin-styled-components": "^1.10.0",
 		"customize-cra": "^0.2.12",
-		"express": "^4.17.1",
 		"graphql": "^14.3.0",
 		"graphql-tag": "^2.10.1",
 		"i18next": "^15.1.3",
