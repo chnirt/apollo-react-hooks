@@ -3,10 +3,10 @@ const {
 	addDecoratorsLegacy,
 	disableEsLint,
 	// addBabelPlugins,
-	// addBabelPresets,
-	addBundleVisualizer,
+	addBabelPresets,
+	// addBundleVisualizer,
 	// addWebpackAlias,
-	adjustWorkbox,
+	// adjustWorkbox,
 	fixBabelImports,
 	addLessLoader
 } = require('customize-cra')
@@ -15,7 +15,7 @@ const ProgressBarPlugin = require('progress-bar-webpack-plugin')
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
 // 	.BundleAnalyzerPlugin
 
-const addPlugins = () => (config, env) => {
+const addPlugins = () => config => {
 	config.plugins.push(
 		new ProgressBarPlugin({
 			format:
@@ -52,19 +52,19 @@ module.exports = override(
 	// 	'emotion',
 	// 	'babel-plugin-transform-do-expressions'
 	// ),
-	// ...addBabelPresets([
-	// 	[
-	// 		'@babel/env',
-	// 		{
-	// 			targets: {
-	// 				browsers: ['> 1%', 'last 2 versions']
-	// 			},
-	// 			modules: 'commonjs'
-	// 		}
-	// 	],
-	// 	'@babel/preset-flow',
-	// 	'@babel/preset-react'
-	// ]),
+	...addBabelPresets([
+		[
+			'@babel/env',
+			{
+				targets: {
+					browsers: ['> 1%', 'last 2 versions']
+				},
+				modules: 'commonjs'
+			}
+		],
+		'@babel/preset-flow',
+		'@babel/preset-react'
+	]),
 	// fixBabelImports('lodash', {
 	// 	libraryDirectory: '',
 	// 	camel2DashComponentName: false
@@ -73,16 +73,16 @@ module.exports = override(
 		libraryName: 'react-feather',
 		libraryDirectory: 'dist/icons'
 	}),
-	process.env.BUNDLE_VISUALIZE == 1 && addBundleVisualizer(),
+	// process.env.BUNDLE_VISUALIZE == 1 && addBundleVisualizer(),
 	// addWebpackAlias({
 	// 	['ag-grid-react$']: path.resolve(__dirname, 'src/shared/agGridWrapper.js')
 	// }),
-	adjustWorkbox(wb =>
-		Object.assign(wb, {
-			skipWaiting: true,
-			exclude: (wb.exclude || []).concat('index.html')
-		})
-	),
+	// adjustWorkbox(wb =>
+	// 	Object.assign(wb, {
+	// 		skipWaiting: true,
+	// 		exclude: (wb.exclude || []).concat('index.html')
+	// 	})
+	// ),
 	fixBabelImports('import', {
 		libraryName: 'antd',
 		libraryDirectory: 'es',
