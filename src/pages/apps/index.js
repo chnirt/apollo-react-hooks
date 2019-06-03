@@ -11,7 +11,7 @@ export default function Home(props) {
 						key={i}
 						{...route}
 						component={props => {
-							const MyComponent = withLoadable(import(`../${route.component}`))
+							const MyComponent = withLoadable(import(`./${route.component}`))
 							return <MyComponent {...props} {...route} />
 						}}
 					/>

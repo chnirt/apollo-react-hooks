@@ -13,9 +13,8 @@ function Root() {
 					routes.map((route, i) =>
 						route.private ? (
 							// Private
-							<Main>
+							<Main key={i}>
 								<Route
-									key={i}
 									{...route}
 									component={props => {
 										const MyComponent = withLoadable(

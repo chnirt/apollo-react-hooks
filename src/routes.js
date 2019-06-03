@@ -1,78 +1,55 @@
-import Login from './pages/login'
-import Register from './pages/register'
-import Home from './pages/home'
-
-import Dashboard from './pages/dashboard'
-import Member from './pages/member'
-import Dainty from './pages/dainty'
-import Like from './pages/like'
-
-import Profile from './pages/profile'
-import ChangePwd from './pages/changepwd'
-import UpdateInfo from './pages/updateinfo'
-
 export const routes = [
 	{
 		label: 'Login',
 		path: '/login',
-		component: 'login',
-		import: Login
+		component: 'login'
 	},
 	{
 		label: 'Register',
 		path: '/register',
-		component: 'register',
-		import: Register
+		component: 'register'
 	},
 	{
-		label: 'Home',
+		label: 'App',
 		path: '/',
 		private: true,
-		component: 'home',
-		import: Home,
+		component: 'apps',
 		routes: [
 			{
 				label: 'dashboard',
 				path: '/👻',
 				exact: true,
-				component: 'dashboard',
-				import: Dashboard
+				component: 'dashboard'
 			},
 			{
 				label: 'members',
 				path: '/👻/members',
-				component: 'member',
-				import: Member
+				component: 'member'
 			},
 			{
 				label: 'dainties',
 				path: '/👻/dainties',
-				component: 'dainty',
-				import: Dainty
+				component: 'dainty'
 			},
 			{
 				label: 'likes',
 				path: '/👻/likes',
-				component: 'like',
-				import: Like
+				component: 'like'
 			},
 			{
 				label: 'profile',
 				path: '/👻/profile',
-				component: 'profile',
-				import: Profile
+				component: 'profile'
 			},
 			{
 				label: 'updateinformation',
 				path: '/👻/updateinformation',
-				component: 'updateinfo',
-				import: UpdateInfo
+				component: 'updateinfo'
 			},
 			{
 				label: 'changepassword',
 				path: '/👻/changepassword',
-				component: 'changepwd',
-				import: ChangePwd
+				component: 'changepwd'
 			}
 		]
 	}

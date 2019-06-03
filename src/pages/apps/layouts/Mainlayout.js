@@ -263,11 +263,11 @@ class Main extends Component {
 										title={<Icon type="global" style={{ marginRight: 0 }} />}
 									>
 										<Menu.Item onClick={() => this.changeLocale('en')}>
-											<span role="img">🇺🇸</span>
+											{/* <span role="img">🇺🇸</span> */}
 											English
 										</Menu.Item>
 										<Menu.Item onClick={() => this.changeLocale('vi')}>
-											<span role="img">🇻🇳</span>
+											{/* <span role="img">🇻🇳</span> */}
 											Việt Nam
 										</Menu.Item>
 									</SubMenu>
