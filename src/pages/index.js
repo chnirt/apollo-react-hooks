@@ -7,7 +7,7 @@ import withLoadable from '../utils/loadable'
 
 function Root() {
 	return (
-		<BrowserRouter>
+		<BrowserRouter basename="/💩">
 			<Switch>
 				{routes &&
 					routes.map((route, i) =>
