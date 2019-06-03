@@ -3,7 +3,7 @@ const {
 	addDecoratorsLegacy,
 	disableEsLint,
 	// addBabelPlugins,
-	// addBabelPresets,
+	addBabelPresets,
 	addBundleVisualizer,
 	// addWebpackAlias,
 	// adjustWorkbox,
@@ -44,7 +44,7 @@ module.exports = override(
 	// ),
 	// ...addBabelPresets([
 	// 	[
-	// 		'@babel/preset-env',
+	// 		'@babel/env',
 	// 		{
 	// 			targets: {
 	// 				browsers: ['> 1%', 'last 2 versions']
