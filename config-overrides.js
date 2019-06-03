@@ -4,7 +4,7 @@ const {
 	disableEsLint,
 	// addBabelPlugins,
 	addBabelPresets,
-	// addBundleVisualizer,
+	addBundleVisualizer,
 	// addWebpackAlias,
 	// adjustWorkbox,
 	fixBabelImports,
@@ -30,16 +30,6 @@ const addPlugins = () => config => {
 			incomplete: '▱',
 			clear: false
 		})
-		// new BundleAnalyzerPlugin({
-		// 	analyzerMode: 'disabled', // server, static, disabled
-		// 	analyzerHost: 'localhost',
-		// 	analyzerPort: 3001, // 8888
-		// 	openAnalyzer: false, // true
-		// 	// statsFilename: 'stats.json', // stats.json
-		// 	// statsOptions: null, // null or {Object}
-		// 	// generateStatsFile: true,
-		// 	logLevel: 'info' // info, warn, error, silent
-		// })
 	)
 	return config
 }
@@ -52,19 +42,11 @@ module.exports = override(
 	// 	'emotion',
 	// 	'babel-plugin-transform-do-expressions'
 	// ),
-	...addBabelPresets([
-		[
-			'@babel/env',
-			{
-				targets: {
-					browsers: ['> 1%', 'last 2 versions']
-				},
-				modules: 'commonjs'
-			}
-		],
+	...addBabelPresets(
+		'@babel/preset-env',
 		'@babel/preset-flow',
 		'@babel/preset-react'
-	]),
+	),
 	// fixBabelImports('lodash', {
 	// 	libraryDirectory: '',
 	// 	camel2DashComponentName: false
@@ -73,6 +55,13 @@ module.exports = override(
 		libraryName: 'react-feather',
 		libraryDirectory: 'dist/icons'
 	}),
+	addBundleVisualizer(
+		{
+			analyzerMode: 'static',
+			reportFilename: 'report.html'
+		},
+		true
+	),
 	// process.env.BUNDLE_VISUALIZE == 1 && addBundleVisualizer(),
 	// addWebpackAlias({
 	// 	['ag-grid-react$']: path.resolve(__dirname, 'src/shared/agGridWrapper.js')
