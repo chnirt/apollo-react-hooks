@@ -1,11 +1,12 @@
 import React from 'react'
+import { inject, observer } from 'mobx-react'
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom'
 import { routes } from '../routes'
-import { Auth } from '../auth'
 import Main from './apps/layouts/Mainlayout'
 import withLoadable from '../utils/loadable'
 
-function Root() {
+function Root(props) {
+	const { isAuth } = props.store.authStore
 	return (
 		<BrowserRouter basename="/💩">
 			<Switch>
@@ -20,7 +21,7 @@ function Root() {
 										const MyComponent = withLoadable(
 											import(`./${route.component}`)
 										)
-										return Auth.isAuthenticated ? (
+										return isAuth ? (
 											<MyComponent {...props} {...route} />
 										) : (
 											<Redirect to="/login" />
@@ -37,7 +38,7 @@ function Root() {
 									const MyComponent = withLoadable(
 										import(`./${route.component}`)
 									)
-									return !Auth.isAuthenticated ? (
+									return !isAuth ? (
 										<MyComponent {...props} {...route} />
 									) : (
 										<Redirect to="/" />
@@ -50,5 +51,5 @@ function Root() {
 		</BrowserRouter>
 	)
 }
-
-export default Root
+// export default Root
+export default inject('store')(observer(Root))

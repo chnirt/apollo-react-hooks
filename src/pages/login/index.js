@@ -1,15 +1,17 @@
 import React, { Component } from 'react'
+import { inject, observer } from 'mobx-react'
 import { Row, Col, Form, Typography, Icon, Input, Button, Divider } from 'antd'
 import './style.scss'
 import { Link } from 'react-router-dom'
 import { withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
-import { Auth } from '../../auth'
 import openNotificationWithIcon from '../../utils/openNotificationWithIcon'
 
 const { Title } = Typography
 
-export class Login extends Component {
+@inject('store')
+@observer
+class Login extends Component {
 	state = {
 		email: 'chin@gmail.com',
 		password: 'd3f4ultP4ssword!',
@@ -34,11 +36,10 @@ export class Login extends Component {
 					}
 				})
 				.then(res => {
-					Auth.authenticate(() => {
-						window.localStorage.setItem('access-token', res.data.login.token)
-						this.setState({ loading: false, spin: false })
-						this.props.history.push('/')
-					})
+					window.localStorage.setItem('access-token', res.data.login.token)
+					this.props.store.authStore.authenticate()
+					this.setState({ loading: false, spin: false })
+					this.props.history.push('/')
 				})
 				.catch(err => {
 					// console.log(err)
@@ -51,7 +52,6 @@ export class Login extends Component {
 				})
 		})
 	}
-
 	render() {
 		const { getFieldDecorator } = this.props.form
 		return (

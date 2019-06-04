@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { inject, observer } from 'mobx-react'
 // import Headerlayout from './Headerlayout'
 // import Siderlayout from './Siderlayout'
 import Breadcumblayout from './Breadcumblayout'
@@ -19,7 +20,6 @@ import {
 import logo from '../../../assets/images/logo.svg'
 import { siderRoutes, headerRoutes } from '../../../routes'
 import { withRouter } from 'react-router-dom'
-import { Auth } from '../../../auth'
 import { withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
 import vi_VN from 'antd/lib/locale-provider/vi_VN'
@@ -33,6 +33,8 @@ const { Title } = Typography
 const { Header, Content, Sider } = Layout
 const SubMenu = Menu.SubMenu
 
+@inject('store')
+@observer
 class Main extends Component {
 	state = {
 		current: '/👻',
@@ -123,11 +125,9 @@ class Main extends Component {
 	}
 
 	onLogout = () => {
-		Auth.logout(() => {
-			window.localStorage.removeItem('access-token')
-			this.props.history.push('/login')
-			this.props.client.resetStore()
-		})
+		this.props.store.authStore.logout()
+		this.props.client.resetStore()
+		this.props.history.push('/login')
 	}
 
 	render() {
