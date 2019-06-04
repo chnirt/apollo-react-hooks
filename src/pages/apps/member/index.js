@@ -1,14 +1,15 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
 
-@inject('UiStore')
+@inject('store')
 @observer
 class index extends Component {
 	render() {
-		const { UiStore } = this.props
+		const { testStore } = this.props.store
 		return (
 			<div>
-				{UiStore.theme}
+				{testStore.test}
+				<button onClick={testStore.onClick}>Click</button>
 				Members ...
 				<br />
 				Really
