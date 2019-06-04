@@ -2,8 +2,9 @@ const {
 	override,
 	addDecoratorsLegacy,
 	disableEsLint,
-	// addBabelPlugins,
-	addBabelPresets,
+	addBabelPlugins,
+	// addBabelPresets,
+	useBabelRc,
 	addBundleVisualizer,
 	// addWebpackAlias,
 	// adjustWorkbox,
@@ -12,8 +13,6 @@ const {
 } = require('customize-cra')
 const chalk = require('chalk')
 const ProgressBarPlugin = require('progress-bar-webpack-plugin')
-// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
-// 	.BundleAnalyzerPlugin
 
 const addPlugins = () => config => {
 	config.plugins.push(
@@ -35,34 +34,13 @@ const addPlugins = () => config => {
 }
 
 module.exports = override(
-	addDecoratorsLegacy(),
 	disableEsLint(),
-	// ...addBabelPlugins(
-	// 	'polished',
-	// 	'emotion',
-	// 	'babel-plugin-transform-do-expressions'
-	// ),
-	// ...addBabelPresets([
-	// 	[
-	// 		'@babel/env',
-	// 		{
-	// 			targets: {
-	// 				browsers: ['> 1%', 'last 2 versions']
-	// 			},
-	// 			modules: 'commonjs'
-	// 		}
-	// 	],
-	// 	'@babel/preset-flow',
-	// 	'@babel/preset-react'
-	// ]),
-	// fixBabelImports('lodash', {
-	// 	libraryDirectory: '',
-	// 	camel2DashComponentName: false
-	// }),
-	fixBabelImports('react-feather', {
-		libraryName: 'react-feather',
-		libraryDirectory: 'dist/icons'
-	}),
+	...addBabelPlugins(
+		// 'polished',
+		// 'emotion',
+		// 'babel-plugin-transform-do-expressions',
+		'@babel/plugin-transform-arrow-functions'
+	),
 	addBundleVisualizer(
 		{
 			analyzerMode: 'static',
@@ -70,6 +48,31 @@ module.exports = override(
 		},
 		true
 	),
+	fixBabelImports('import', {
+		libraryName: 'antd',
+		libraryDirectory: 'es',
+		style: true
+	}),
+	fixBabelImports('lodash', {
+		libraryDirectory: '',
+		camel2DashComponentName: false
+	}),
+	fixBabelImports('react-feather', {
+		libraryName: 'react-feather',
+		libraryDirectory: 'dist/icons'
+	}),
+	addDecoratorsLegacy(),
+	useBabelRc(),
+	// ...addBabelPresets([
+	// 	['@babel/env'](
+	// 		targets: {
+	// 			browsers: ['> 1%', 'last 2 versions']
+	// 		},
+	// 		modules: 'commonjs'
+	// 	),
+	// 	'@babel/preset-flow',
+	// 	'@babel/preset-react'
+	// ]),
 	// process.env.BUNDLE_VISUALIZE == 1 && addBundleVisualizer(),
 	// addWebpackAlias({
 	// 	['ag-grid-react$']: path.resolve(__dirname, 'src/shared/agGridWrapper.js')
@@ -80,11 +83,6 @@ module.exports = override(
 	// 		exclude: (wb.exclude || []).concat('index.html')
 	// 	})
 	// ),
-	fixBabelImports('import', {
-		libraryName: 'antd',
-		libraryDirectory: 'es',
-		style: true
-	}),
 	addLessLoader({
 		javascriptEnabled: true,
 		modifyVars: { '@primary-color': '#ff4d4f' }
