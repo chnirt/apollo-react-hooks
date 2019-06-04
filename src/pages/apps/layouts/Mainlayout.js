@@ -39,8 +39,7 @@ class Main extends Component {
 		visible: false,
 		rightVisible: false,
 		headerWidth: 256,
-		me: {},
-		locale: null
+		me: {}
 	}
 
 	toggle = () => {
@@ -123,244 +122,240 @@ class Main extends Component {
 
 	render() {
 		return (
-			<>
-				<LocaleProvider locale={this.props.store.i18nStore.locale}>
-					<Layout id="components-layout-demo-custom-trigger">
-						{/* Sider Mobile */}
-						<Drawer
-							title={this.props.t('menu').toUpperCase()}
-							placement="left"
-							closable={false}
-							onClose={this.onClose}
-							visible={this.state.visible}
-							bodyStyle={{ padding: '0px' }}
+			<LocaleProvider locale={this.props.store.i18nStore.locale}>
+				<Layout id="components-layout-demo-custom-trigger">
+					{/* Sider Mobile */}
+					<Drawer
+						title={this.props.t('menu').toUpperCase()}
+						placement="left"
+						closable={false}
+						onClose={this.onClose}
+						visible={this.state.visible}
+						bodyStyle={{ padding: '0px' }}
+					>
+						<Menu
+							mode="inline"
+							onClick={this.handleClick}
+							defaultSelectedKeys={[this.props.location.pathname]}
+							style={{ width: 256 }}
 						>
-							<Menu
-								mode="inline"
-								onClick={this.handleClick}
-								defaultSelectedKeys={[this.props.location.pathname]}
-								style={{ width: 256 }}
-							>
-								{siderRoutes &&
-									siderRoutes.map((siderRoute, i) => (
-										<Menu.Item key={siderRoute.path}>
-											<Icon type={siderRoute.icon} />
-											<span>{this.props.t(siderRoute.label).toUpperCase()}</span>
-										</Menu.Item>
-									))}
-							</Menu>
-						</Drawer>
-						{/* Sider Laptop */}
-						<Sider
-							breakpoint="xs"
-							collapsible
-							collapsed={this.state.collapsed}
-							defaultCollapsed={this.state.collapsed}
-							reverseArrow={true}
+							{siderRoutes &&
+								siderRoutes.map((siderRoute, i) => (
+									<Menu.Item key={siderRoute.path}>
+										<Icon type={siderRoute.icon} />
+										<span>{this.props.t(siderRoute.label).toUpperCase()}</span>
+									</Menu.Item>
+								))}
+						</Menu>
+					</Drawer>
+					{/* Sider Laptop */}
+					<Sider
+						breakpoint="xs"
+						collapsible
+						collapsed={this.state.collapsed}
+						defaultCollapsed={this.state.collapsed}
+						reverseArrow={true}
+						style={{
+							// backgroundColor: "transparent",
+							position: 'fixed',
+							top: 0,
+							left: 0,
+							zIndex: 10,
+							minHeight: '100vh',
+							transition: 'all .2s'
+							// boxShadow: '2px 0 6px rgba(0,21,41,.35)'
+						}}
+						theme="light"
+						trigger={null}
+						width={256}
+						collapsedWidth={this.state.collapsedWidth}
+						onBreakpoint={broken => {
+							// console.log('broken', broken)
+							if (broken) {
+								this.setState({
+									isMobile: true,
+									collapsed: true,
+									collapsedWidth: 0,
+									headerWidth: 0
+								})
+							} else {
+								this.setState({
+									isMobile: false,
+									collapsed: false,
+									collapsedWidth: 80,
+									visible: false,
+									headerWidth: 256
+								})
+							}
+						}}
+						onCollapse={(collapsed, type) => {
+							// console.log(collapsed, type)
+						}}
+					>
+						{/* Logo */}
+						<div className="logo">
+							<img src={logo} alt="logo" />
+							<Title level={1}>Chnirt</Title>
+						</div>
+						<Menu
+							theme="light"
+							mode="inline"
+							onClick={this.handleClick}
+							selectedKeys={[this.props.location.pathname]}
+						>
+							{siderRoutes &&
+								siderRoutes.map((siderRoute, i) => (
+									<Menu.Item key={siderRoute.path}>
+										<Icon type={siderRoute.icon} />
+										<span>{this.props.t(siderRoute.label).toUpperCase()}</span>
+									</Menu.Item>
+								))}
+						</Menu>
+					</Sider>
+					<Layout
+						style={{
+							minHeight: '100vh',
+							paddingLeft: `${this.state.headerWidth}px`
+						}}
+					>
+						{/* Header */}
+						<Header
 							style={{
-								// backgroundColor: "transparent",
 								position: 'fixed',
 								top: 0,
-								left: 0,
-								zIndex: 10,
-								minHeight: '100vh',
-								transition: 'all .2s'
-								// boxShadow: '2px 0 6px rgba(0,21,41,.35)'
-							}}
-							theme="light"
-							trigger={null}
-							width={256}
-							collapsedWidth={this.state.collapsedWidth}
-							onBreakpoint={broken => {
-								// console.log('broken', broken)
-								if (broken) {
-									this.setState({
-										isMobile: true,
-										collapsed: true,
-										collapsedWidth: 0,
-										headerWidth: 0
-									})
-								} else {
-									this.setState({
-										isMobile: false,
-										collapsed: false,
-										collapsedWidth: 80,
-										visible: false,
-										headerWidth: 256
-									})
-								}
-							}}
-							onCollapse={(collapsed, type) => {
-								// console.log(collapsed, type)
+								right: 0,
+								// zIndex: 9,
+								// width: '100%',
+								transition: 'all .2s',
+								// padding: '0px',
+								width: `calc(100% - ${this.state.headerWidth}px)`,
+								zIndex: 2,
+								background: '#fff',
+								padding: '0px',
+								boxShadow: '0 1px 4px rgba(0,21,41,.08)'
 							}}
 						>
-							{/* Logo */}
-							<div className="logo">
-								<img src={logo} alt="logo" />
-								<Title level={1}>Chnirt</Title>
-							</div>
+							<Icon
+								className="trigger"
+								type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
+								onClick={this.toggle}
+							/>
 							<Menu
-								theme="light"
-								mode="inline"
-								onClick={this.handleClick}
-								selectedKeys={[this.props.location.pathname]}
+								mode="horizontal"
+								style={{
+									float: 'right',
+									lineHeight: '63px'
+								}}
 							>
-								{siderRoutes &&
-									siderRoutes.map((siderRoute, i) => (
-										<Menu.Item key={siderRoute.path}>
-											<Icon type={siderRoute.icon} />
-											<span>{this.props.t(siderRoute.label).toUpperCase()}</span>
-										</Menu.Item>
-									))}
+								{/* LanguageMenu */}
+								<SubMenu
+									title={<Icon type="global" style={{ marginRight: 0 }} />}
+								>
+									<Menu.Item onClick={() => this.changeLocale('en')}>
+										{/* <span role="img">🇺🇸</span> */}
+										English
+									</Menu.Item>
+									<Menu.Item onClick={() => this.changeLocale('vi')}>
+										{/* <span role="img">🇻🇳</span> */}
+										Việt Nam
+									</Menu.Item>
+								</SubMenu>
+								{/* AccountMenu */}
+								<SubMenu
+									title={
+										<>
+											<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+											<span>
+												{this.props.t('hello').toUpperCase()}
+												{this.state.me && this.state.me.username}
+											</span>
+										</>
+									}
+									style={{ marginRight: 10 }}
+								>
+									{headerRoutes &&
+										headerRoutes.map((headerRoute, i) => (
+											<Menu.Item
+												key={headerRoute.path}
+												onClick={e => this.props.history.push(headerRoute.path)}
+											>
+												<Icon type={headerRoute.icon} />
+												{this.props.t(headerRoute.label).toUpperCase()}
+											</Menu.Item>
+										))}
+									<Menu.Divider />
+									<Menu.Item onClick={this.onLogout}>
+										<Icon type="logout" />
+										{this.props.t('logout').toUpperCase()}
+									</Menu.Item>
+								</SubMenu>
 							</Menu>
-						</Sider>
-						<Layout
+						</Header>
+						{/* Content */}
+						<Content
 							style={{
-								minHeight: '100vh',
-								paddingLeft: `${this.state.headerWidth}px`
+								margin: '24px 16px 0px',
+								paddingTop: '40px',
+								overflow: 'initial'
 							}}
 						>
-							{/* Header */}
-							<Header
+							{/* Breadcumb */}
+							<Breadcumblayout />
+							<div
 								style={{
-									position: 'fixed',
-									top: 0,
-									right: 0,
-									// zIndex: 9,
-									// width: '100%',
-									transition: 'all .2s',
-									// padding: '0px',
-									width: `calc(100% - ${this.state.headerWidth}px)`,
-									zIndex: 2,
+									padding: 24,
 									background: '#fff',
-									padding: '0px',
-									boxShadow: '0 1px 4px rgba(0,21,41,.08)'
+									minHeight: 'calc( 100vh - 191px )'
 								}}
 							>
-								<Icon
-									className="trigger"
-									type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
-									onClick={this.toggle}
-								/>
-								<Menu
-									mode="horizontal"
-									style={{
-										float: 'right',
-										lineHeight: '63px'
-									}}
-								>
-									{/* LanguageMenu */}
-									<SubMenu
-										title={<Icon type="global" style={{ marginRight: 0 }} />}
-									>
-										<Menu.Item onClick={() => this.changeLocale('en')}>
-											{/* <span role="img">🇺🇸</span> */}
-											English
-										</Menu.Item>
-										<Menu.Item onClick={() => this.changeLocale('vi')}>
-											{/* <span role="img">🇻🇳</span> */}
-											Việt Nam
-										</Menu.Item>
-									</SubMenu>
-									{/* AccountMenu */}
-									<SubMenu
-										title={
-											<>
-												<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
-												<span>
-													{this.props.t('hello').toUpperCase()}
-													{this.state.me && this.state.me.username}
-												</span>
-											</>
-										}
-										style={{ marginRight: 10 }}
-									>
-										{headerRoutes &&
-											headerRoutes.map((headerRoute, i) => (
-												<Menu.Item
-													key={headerRoute.path}
-													onClick={e =>
-														this.props.history.push(headerRoute.path)
-													}
-												>
-													<Icon type={headerRoute.icon} />
-													{this.props.t(headerRoute.label).toUpperCase()}
-												</Menu.Item>
-											))}
-										<Menu.Divider />
-										<Menu.Item onClick={this.onLogout}>
-											<Icon type="logout" />
-											{this.props.t('logout').toUpperCase()}
-										</Menu.Item>
-									</SubMenu>
-								</Menu>
-							</Header>
-							{/* Content */}
-							<Content
-								style={{
-									margin: '24px 16px 0px',
-									paddingTop: '40px',
-									overflow: 'initial'
-								}}
-							>
-								{/* Breadcumb */}
-								<Breadcumblayout />
-								<div
-									style={{
-										padding: 24,
-										background: '#fff',
-										minHeight: 'calc( 100vh - 191px )'
-									}}
-								>
-									{this.props.children}
-								</div>
-								{/* Footer */}
-								<Footerlayout />
-								{/* BackTop */}
-								<BackTop />
-							</Content>
-							{/* Custom theme */}
-							<Affix
-								offsetTop={120}
-								style={{
-									position: 'absolute',
-									zIndex: 0,
-									right: 0
-								}}
-								onChange={affixed => {
-									// console.log("affixed", affixed)
-								}}
-							>
-								{!this.state.rightVisible && (
-									<Button
-										type="primary"
-										icon="setting"
-										size="large"
-										onClick={this.toggleRightDrawer}
-										style={{ borderRadius: '4px 0 0 4px' }}
-									/>
-								)}
-							</Affix>
-							<Drawer
-								title={this.props.t('setting theme').toUpperCase()}
-								width={300}
-								placement="right"
-								closable={false}
-								onClose={this.onClose}
-								visible={this.state.rightVisible}
-							>
+								{this.props.children}
+							</div>
+							{/* Footer */}
+							<Footerlayout />
+							{/* BackTop */}
+							<BackTop />
+						</Content>
+						{/* Custom theme */}
+						<Affix
+							offsetTop={120}
+							style={{
+								position: 'absolute',
+								zIndex: 0,
+								right: 0
+							}}
+							onChange={affixed => {
+								// console.log("affixed", affixed)
+							}}
+						>
+							{!this.state.rightVisible && (
 								<Button
-									className="antd-pro-components-setting-drawer-index-handle"
 									type="primary"
-									icon={!this.state.rightVisible ? 'setting' : 'close'}
+									icon="setting"
 									size="large"
 									onClick={this.toggleRightDrawer}
+									style={{ borderRadius: '4px 0 0 4px' }}
 								/>
-							</Drawer>
-						</Layout>
+							)}
+						</Affix>
+						<Drawer
+							title={this.props.t('setting theme').toUpperCase()}
+							width={300}
+							placement="right"
+							closable={false}
+							onClose={this.onClose}
+							visible={this.state.rightVisible}
+						>
+							<Button
+								className="antd-pro-components-setting-drawer-index-handle"
+								type="primary"
+								icon={!this.state.rightVisible ? 'setting' : 'close'}
+								size="large"
+								onClick={this.toggleRightDrawer}
+							/>
+						</Drawer>
 					</Layout>
-				</LocaleProvider>
-			</>
+				</Layout>
+			</LocaleProvider>
 		)
 	}
 }

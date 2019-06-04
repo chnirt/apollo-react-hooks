@@ -23,7 +23,7 @@ function App() {
 		}, 300000) // every 5 minutes (300000)
 		return () => clearInterval(wakeUp)
 	})
-	console.log(store)
+	// console.log(store)
 	return (
 		<Provider store={store}>
 			<ApolloProvider client={client}>
