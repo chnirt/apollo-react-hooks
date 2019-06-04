@@ -2,8 +2,8 @@ import React, { useState } from 'react'
 import { withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
 import { AgGridReact } from 'ag-grid-react'
-import CustomLoadingOverlay from '../../../utils/customLoadingOverlay'
-import CustomNoRowsOverlay from '../../../utils/customNoRowsOverlay'
+import CustomLoadingOverlay from '../../../components/shared/customLoadingOverlay'
+import CustomNoRowsOverlay from '../../../components/shared/customNoRowsOverlay'
 
 function Dashboard(props) {
 	const [rowData, setRowData] = useState(null)

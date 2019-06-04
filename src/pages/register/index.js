@@ -4,7 +4,7 @@ import './style.scss'
 import { Link } from 'react-router-dom'
 import { withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
-import openNotificationWithIcon from '../../utils/openNotificationWithIcon'
+import openNotificationWithIcon from '../../components/shared/openNotificationWithIcon'
 
 const { Title } = Typography
 export class Register extends Component {

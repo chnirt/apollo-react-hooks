@@ -3,10 +3,10 @@ import './App.scss'
 import Root from './pages/'
 import { ApolloProvider } from 'react-apollo'
 import { I18nextProvider } from 'react-i18next'
-import client from './utils/apolloClient'
-import i18n from './utils/i18n'
+import client from './tools/apollo'
+import i18n from './tools/i18n'
 import { Provider } from 'mobx-react'
-import Store from './tools/mobx'
+import store from './tools/mobx'
 
 function App() {
 	useEffect(() => {
@@ -23,14 +23,15 @@ function App() {
 		}, 300000) // every 5 minutes (300000)
 		return () => clearInterval(wakeUp)
 	})
+	console.log(store)
 	return (
-		<ApolloProvider client={client}>
-			<I18nextProvider i18n={i18n}>
-				<Provider store={Store}>
+		<Provider store={store}>
+			<ApolloProvider client={client}>
+				<I18nextProvider i18n={i18n}>
 					<Root />
-				</Provider>
-			</I18nextProvider>
-		</ApolloProvider>
+				</I18nextProvider>
+			</ApolloProvider>
+		</Provider>
 	)
 }
 

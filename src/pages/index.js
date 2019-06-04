@@ -3,12 +3,14 @@ import { inject, observer } from 'mobx-react'
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom'
 import { routes } from '../routes'
 import Main from './apps/layouts/Mainlayout'
-import withLoadable from '../utils/loadable'
+import withLoadable from '../tools/loadable'
 
 function Root(props) {
 	const { isAuth } = props.store.authStore
 	return (
-		<BrowserRouter basename="/💩">
+		<BrowserRouter
+		// basename="/💩"
+		>
 			<Switch>
 				{routes &&
 					routes.map((route, i) =>

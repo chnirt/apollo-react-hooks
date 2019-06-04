@@ -5,7 +5,7 @@ import './style.scss'
 import { Link } from 'react-router-dom'
 import { withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
-import openNotificationWithIcon from '../../utils/openNotificationWithIcon'
+import openNotificationWithIcon from '../../components/shared/openNotificationWithIcon'
 
 const { Title } = Typography
 
@@ -36,8 +36,7 @@ class Login extends Component {
 					}
 				})
 				.then(res => {
-					window.localStorage.setItem('access-token', res.data.login.token)
-					this.props.store.authStore.authenticate()
+					this.props.store.authStore.authenticate(res.data.login.token)
 					this.setState({ loading: false, spin: false })
 					this.props.history.push('/')
 				})

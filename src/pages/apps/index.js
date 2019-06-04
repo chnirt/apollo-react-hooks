@@ -1,6 +1,6 @@
 import React from 'react'
 import { Switch, Route, Redirect } from 'react-router-dom'
-import withLoadable from '../../utils/loadable'
+import withLoadable from '../../tools/loadable'
 
 export default function Home(props) {
 	return (

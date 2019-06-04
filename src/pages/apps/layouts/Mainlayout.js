@@ -22,12 +22,7 @@ import { siderRoutes, headerRoutes } from '../../../routes'
 import { withRouter } from 'react-router-dom'
 import { withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
-import vi_VN from 'antd/lib/locale-provider/vi_VN'
-import moment from 'moment'
-import 'moment/locale/vi'
 import { withTranslation } from 'react-i18next'
-
-moment.locale('en')
 
 const { Title } = Typography
 const { Header, Content, Sider } = Layout
@@ -113,14 +108,10 @@ class Main extends Component {
 	changeLocale = key => {
 		if (key === 'vi') {
 			this.props.i18n.changeLanguage('vi')
-			this.setState({
-				locale: vi_VN
-			})
+			this.props.store.i18nStore.changeLanguage('vi')
 		} else {
 			this.props.i18n.changeLanguage('en')
-			this.setState({
-				locale: null
-			})
+			this.props.store.i18nStore.changeLanguage('en')
 		}
 	}
 
@@ -133,7 +124,7 @@ class Main extends Component {
 	render() {
 		return (
 			<>
-				<LocaleProvider locale={this.state.locale}>
+				<LocaleProvider locale={this.props.store.i18nStore.locale}>
 					<Layout id="components-layout-demo-custom-trigger">
 						{/* Sider Mobile */}
 						<Drawer
