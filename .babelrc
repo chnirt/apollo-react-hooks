@@ -12,5 +12,14 @@
 		"@babel/preset-flow",
 		"@babel/preset-react"
 	]
-	// "plugins": ["emotion"]
+	// "plugins": [
+	// 	[
+	// 		"@babel/plugin-proposal-decorators",
+	// 		{
+	// 			"legacy": true
+	// 		}
+	// 	],
+	// 	"@babel/plugin-syntax-dynamic-import",
+	// 	"@babel/plugin-proposal-class-properties"
+	// ]
 }

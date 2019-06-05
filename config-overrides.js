@@ -39,7 +39,8 @@ module.exports = override(
 		// 'polished',
 		// 'emotion',
 		// 'babel-plugin-transform-do-expressions',
-		'@babel/plugin-transform-arrow-functions'
+		'@babel/plugin-transform-arrow-functions',
+		'@babel/plugin-syntax-dynamic-import'
 	),
 	addBundleVisualizer(
 		{

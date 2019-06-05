@@ -9,8 +9,12 @@ import Express from 'express'
 import { StaticRouter } from 'react-router'
 import { InMemoryCache } from 'apollo-cache-inmemory'
 import { getDataFromTree } from 'react-apollo'
+import { Provider } from 'mobx-react'
+import store from '../tools/mobx'
+import { I18nextProvider } from 'react-i18next'
+import i18n from '../tools/i18n'
 
-import Layout from '../App'
+import Root from '../pages'
 
 // Note you don't have to use any particular http server, but
 // we're using Express in this example
@@ -34,11 +38,15 @@ app.use((req, res) => {
 
 	// The client-side App will instead use <BrowserRouter>
 	const App = (
-		<ApolloProvider client={client}>
-			<StaticRouter location={req.url} context={context}>
-				<Layout />
-			</StaticRouter>
-		</ApolloProvider>
+		<Provider store={store}>
+			<ApolloProvider client={client}>
+				<I18nextProvider i18n={i18n}>
+					<StaticRouter location={req.url} context={context}>
+						<Root />
+					</StaticRouter>
+				</I18nextProvider>
+			</ApolloProvider>
+		</Provider>
 	)
 
 	// rendering code (see below)
@@ -79,7 +87,7 @@ app.use((req, res) => {
 	})
 })
 
-const basePort = 3000
+const basePort = 3010
 
 app.listen(basePort, () =>
 	console.log(
