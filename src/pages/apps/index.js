@@ -4,19 +4,21 @@ import withLoadable from '../../tools/loadable'
 
 export default function Home(props) {
 	return (
-		<Switch>
-			{props.routes &&
-				props.routes.map((route, i) => (
-					<Route
-						key={i}
-						{...route}
-						component={props => {
-							const MyComponent = withLoadable(import(`./${route.component}`))
-							return <MyComponent {...props} {...route} />
-						}}
-					/>
-				))}
-			<Redirect to="/👻" />
-		</Switch>
+		<>
+			<Switch>
+				{props.routes &&
+					props.routes.map((route, i) => (
+						<Route
+							key={i}
+							{...route}
+							component={props => {
+								const MyComponent = withLoadable(import(`./${route.component}`))
+								return <MyComponent {...props} {...route} />
+							}}
+						/>
+					))}
+				<Redirect to="/👻" />
+			</Switch>
+		</>
 	)
 }
