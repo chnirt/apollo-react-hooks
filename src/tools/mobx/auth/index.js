@@ -4,8 +4,9 @@ class AuthStore {
 	@observable isAuth = window.localStorage.getItem('access-token') ? true : false
 
 	@action
-	authenticate = token => {
+	authenticate = (token, refreshToken) => {
 		window.localStorage.setItem('access-token', token)
+		window.localStorage.setItem('refresh-token', refreshToken)
 		this.isAuth = true
 	}
 	logout = () => {

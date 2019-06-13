@@ -36,7 +36,8 @@ class Login extends Component {
 					}
 				})
 				.then(res => {
-					this.props.store.authStore.authenticate(res.data.login.token)
+					const { token, refreshToken } = res.data.login
+					this.props.store.authStore.authenticate(token, refreshToken)
 					this.setState({ loading: false, spin: false })
 					this.props.history.push('/')
 				})
@@ -142,6 +143,7 @@ const USER_LOGIN = gql`
 	mutation($userInput: LoginUserInput!) {
 		login(userInput: $userInput) {
 			token
+			refreshToken
 		}
 	}
 `
