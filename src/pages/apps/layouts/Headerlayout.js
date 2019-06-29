@@ -29,11 +29,11 @@ class Headerlayout extends Component {
 			.catch(err => console.log(err))
 	}
 	onLogout = () => {
-		Auth.logout(() => {
-			window.localStorage.removeItem('access-token')
-			this.props.history.push('/login')
-			this.props.client.resetStore()
-		})
+		// Auth.logout(() => {
+		// 	window.localStorage.removeItem('access-token')
+		// 	this.props.history.push('/login')
+		// 	this.props.client.resetStore()
+		// })
 	}
 	render() {
 		const { location } = this.props

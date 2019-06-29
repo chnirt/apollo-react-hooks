@@ -80,6 +80,7 @@
 		]
 	},
 	"devDependencies": {
+		"react-styleguidist": "^9.1.11",
 		"webpack-cli": "^3.3.2"
 	}
 }

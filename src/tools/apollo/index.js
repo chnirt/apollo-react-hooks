@@ -6,10 +6,10 @@ import { onError } from 'apollo-link-error'
 import { setContext } from 'apollo-link-context'
 import AuthStore from '../mobx/auth'
 
-// const httpLink = new HttpLink({ uri: 'http://localhost:7000/graphql' })
-const httpLink = new HttpLink({
-	uri: 'https://chnirt-apollo-server.herokuapp.com/graphql'
-})
+const httpLink = new HttpLink({ uri: 'http://localhost:7000/graphql' })
+// const httpLink = new HttpLink({
+// 	uri: 'https://chnirt-apollo-server.herokuapp.com/graphql'
+// })
 
 const errorLink = new onError(({ graphQLErrors, networkError, operation }) => {
 	if (graphQLErrors) {
@@ -20,11 +20,11 @@ const errorLink = new onError(({ graphQLErrors, networkError, operation }) => {
 		)
 	}
 	if (networkError) {
-		const authStore = new AuthStore()
-		if (networkError.statusCode === 500) {
-			authStore.logout()
-			this.props.history.push('/')
-		}
+		// const authStore = new AuthStore()
+		// if (networkError.statusCode === 500) {
+		// 	authStore.logout()
+		// 	this.props.history.push('/')
+		// }
 		console.log(
 			`[Network error ${operation.operationName}]: ${networkError.message}`
 		)
@@ -34,13 +34,11 @@ const errorLink = new onError(({ graphQLErrors, networkError, operation }) => {
 const authLink = setContext((_, { headers }) => {
 	// get the authentication token from local storage if it exists
 	const token = window.localStorage.getItem('access-token')
-	const refreshtoken = window.localStorage.getItem('refresh-token')
 	// return the headers to the context so httpLink can read them
 	return {
 		headers: {
 			...headers,
-			token: token ? token : '',
-			refreshtoken: refreshtoken ? refreshtoken : ''
+			token: token ? token : ''
 		}
 	}
 })
