@@ -13,8 +13,8 @@ const { Title } = Typography
 @observer
 class Login extends Component {
 	state = {
-		email: 'chin@gmail.com',
-		password: 'd3f4ultP4ssword!',
+		username: 'admin',
+		password: '12345678',
 		loading: false
 	}
 	handleSubmit = e => {
@@ -24,13 +24,13 @@ class Login extends Component {
 			if (!err) {
 				// console.log('Received values of form: ', values)
 			}
-			const { email, password } = values
+			const { username, password } = values
 			this.props.client
 				.mutate({
 					mutation: USER_LOGIN,
 					variables: {
-						userInput: {
-							email,
+						input: {
+							username,
 							password
 						}
 					}
@@ -70,14 +70,10 @@ class Login extends Component {
 									<Title level={1}>Chnirt</Title>
 								</div>
 								<Form.Item>
-									{getFieldDecorator('email', {
+									{getFieldDecorator('username', {
 										valuePropName: 'defaultValue',
-										initialValue: this.state.email,
+										initialValue: this.state.username,
 										rules: [
-											{
-												type: 'email',
-												message: 'The input is not valid E-mail!'
-											},
 											{
 												required: true,
 												message: 'Please input your E-mail!'
@@ -140,8 +136,8 @@ class Login extends Component {
 }
 
 const USER_LOGIN = gql`
-	mutation($userInput: LoginUserInput!) {
-		login(userInput: $userInput) {
+	mutation($input: LoginUserInput!) {
+		login(input: $input) {
 			token
 		}
 	}
