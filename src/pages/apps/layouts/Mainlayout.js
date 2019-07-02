@@ -195,7 +195,7 @@ class Main extends Component {
 						{/* Logo */}
 						<div className="logo">
 							<img src={logo} alt="logo" />
-							<Title level={1}>Chnirt</Title>
+							<Title level={1}>Luncheon</Title>
 						</div>
 						<Menu
 							theme="light"
@@ -315,44 +315,6 @@ class Main extends Component {
 							{/* BackTop */}
 							<BackTop />
 						</Content>
-						{/* Custom theme */}
-						<Affix
-							offsetTop={120}
-							style={{
-								position: 'absolute',
-								zIndex: 0,
-								right: 0
-							}}
-							onChange={affixed => {
-								// console.log("affixed", affixed)
-							}}
-						>
-							{!this.state.rightVisible && (
-								<Button
-									type="primary"
-									icon="setting"
-									size="large"
-									onClick={this.toggleRightDrawer}
-									style={{ borderRadius: '4px 0 0 4px' }}
-								/>
-							)}
-						</Affix>
-						<Drawer
-							title={this.props.t('setting theme').toUpperCase()}
-							width={300}
-							placement="right"
-							closable={false}
-							onClose={this.onClose}
-							visible={this.state.rightVisible}
-						>
-							<Button
-								className="antd-pro-components-setting-drawer-index-handle"
-								type="primary"
-								icon={!this.state.rightVisible ? 'setting' : 'close'}
-								size="large"
-								onClick={this.toggleRightDrawer}
-							/>
-						</Drawer>
 					</Layout>
 				</Layout>
 			</LocaleProvider>
@@ -366,7 +328,6 @@ const ME = gql`
 			_id
 			email
 			username
-			firstLetterOfEmail
 		}
 	}
 `

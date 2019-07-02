@@ -38,7 +38,7 @@ class Login extends Component {
 				.then(res => {
 					const { token } = res.data.login
 					this.props.store.authStore.authenticate(token)
-					this.setState({ loading: false, spin: false })
+					// this.setState({ loading: false, spin: false })
 					this.props.history.push('/')
 				})
 				.catch(err => {
@@ -67,7 +67,7 @@ class Login extends Component {
 						<div id="components-form-demo-normal-login">
 							<Form onSubmit={this.handleSubmit} className="login-form">
 								<div className="login-form-header">
-									<Title level={1}>Chnirt</Title>
+									<Title level={1}>Luncheon</Title>
 								</div>
 								<Form.Item>
 									{getFieldDecorator('username', {
@@ -76,7 +76,7 @@ class Login extends Component {
 										rules: [
 											{
 												required: true,
-												message: 'Please input your E-mail!'
+												message: 'Please input your username!'
 											}
 										]
 									})(
@@ -84,7 +84,7 @@ class Login extends Component {
 											prefix={
 												<Icon type="mail" style={{ color: 'rgba(0,0,0,.25)' }} />
 											}
-											placeholder="Your@email.com"
+											placeholder="username"
 										/>
 									)}
 								</Form.Item>
@@ -120,12 +120,12 @@ class Login extends Component {
 										Log in
 									</Button>
 								</Form.Item>
-								<Divider>OR</Divider>
+								{/* <Divider>OR</Divider>
 								<br />
 								<Link to="/forgot">Forgot password?</Link>
 								<br />
 								<span>Don't have an account?</span>
-								<Link to="/register"> Register.</Link>
+								<Link to="/register"> Register.</Link> */}
 							</Form>
 						</div>
 					</Col>

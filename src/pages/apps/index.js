@@ -17,7 +17,7 @@ export default function Home(props) {
 							}}
 						/>
 					))}
-				<Redirect to="/👻" />
+				<Redirect to="/🥢" />
 			</Switch>
 		</>
 	)
