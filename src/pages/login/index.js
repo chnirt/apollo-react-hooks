@@ -13,8 +13,8 @@ const { Title } = Typography
 @observer
 class Login extends Component {
 	state = {
-		username: 'admin',
-		password: '12345678',
+		username: 'toan',
+		password: '123',
 		loading: false
 	}
 	handleSubmit = e => {

@@ -4,11 +4,11 @@ export const routes = [
 		path: '/login',
 		component: 'login'
 	},
-	// {
-	// 	label: 'Register',
-	// 	path: '/register',
-	// 	component: 'register'
-	// },
+	{
+		label: 'Register',
+		path: '/register',
+		component: 'register'
+	},
 	{
 		label: 'App',
 		path: '/',
@@ -20,37 +20,62 @@ export const routes = [
 				path: '/🥢',
 				exact: true,
 				component: 'dashboard'
+			},
+			{
+				label: 'members',
+				path: '/🥢/members',
+				component: 'member'
+			},
+			{
+				label: 'dainties',
+				path: '/🥢/dainties',
+				component: 'dainty'
+			},
+			{
+				label: 'likes',
+				path: '/🥢/likes',
+				component: 'like'
+			},
+			{
+				label: 'profile',
+				path: '/🥢/profile',
+				component: 'profile'
+			},
+			{
+				label: 'updateinformation',
+				path: '/🥢/updateinformation',
+				component: 'updateinfo'
+			},
+			{
+				label: 'changepassword',
+				path: '/🥢/changepassword',
+				component: 'changepwd'
+			},
+			{
+				label: 'menumanage',
+				path: '/🥢/menumanage',
+				component: 'menumanage'
+			},
+			{
+				label: 'menudetail',
+				path: '/🥢/menudetail',
+				component: 'menudetail'
+			},
+			{
+				label: 'order',
+				path: '/🥢/order',
+				component: 'order'
+			},
+			{
+				label: 'usermanage',
+				path: '/🥢/usermanage',
+				component: 'usermanage'
+			},
+			{
+				label: 'report',
+				path: '/🥢/report',
+				component: 'report'
 			}
-			// {
-			// 	label: 'members',
-			// 	path: '/🥢/members',
-			// 	component: 'member'
-			// },
-			// {
-			// 	label: 'dainties',
-			// 	path: '/🥢/dainties',
-			// 	component: 'dainty'
-			// },
-			// {
-			// 	label: 'likes',
-			// 	path: '/🥢/likes',
-			// 	component: 'like'
-			// },
-			// {
-			// 	label: 'profile',
-			// 	path: '/🥢/profile',
-			// 	component: 'profile'
-			// }
-			// {
-			// 	label: 'updateinformation',
-			// 	path: '/🥢/updateinformation',
-			// 	component: 'updateinfo'
-			// },
-			// {
-			// 	label: 'changepassword',
-			// 	path: '/🥢/changepassword',
-			// 	component: 'changepwd'
-			// }
 		]
 	}
 ]
@@ -60,7 +85,7 @@ export const siderRoutes = [
 		label: 'dashboard',
 		icon: 'dashboard',
 		path: '/🥢'
-	}
+	},
 	// {
 	// 	label: 'members',
 	// 	icon: 'team',
@@ -75,7 +100,32 @@ export const siderRoutes = [
 	// 	label: 'likes',
 	// 	icon: 'like',
 	// 	path: '/🥢/likes'
-	// }
+	// },
+	{
+		label: 'menumanage',
+		path: '/🥢/menumanage',
+		component: 'menumanage'
+	},
+	{
+		label: 'menudetail',
+		path: '/🥢/menudetail',
+		component: 'menudetail'
+	},
+	{
+		label: 'order',
+		path: '/🥢/order',
+		component: 'order'
+	},
+	{
+		label: 'usermanage',
+		path: '/🥢/usermanage',
+		component: 'usermanage'
+	},
+	{
+		label: 'report',
+		path: '/🥢/report',
+		component: 'report'
+	}
 ]
 
 export const headerRoutes = [
@@ -83,17 +133,17 @@ export const headerRoutes = [
 		label: 'my profile',
 		icon: 'user',
 		path: '/🥢/profile'
+	},
+	{
+		label: 'update information',
+		icon: 'info-circle',
+		path: '/🥢/updateinformation'
+	},
+	{
+		label: 'change password',
+		icon: 'key',
+		path: '/🥢/changepassword'
 	}
-	// {
-	// 	label: 'update information',
-	// 	icon: 'info-circle',
-	// 	path: '/🥢/updateinformation'
-	// },
-	// {
-	// 	label: 'change password',
-	// 	icon: 'key',
-	// 	path: '/🥢/changepassword'
-	// }
 ]
 
 export const breadcrumbNameMap = {
@@ -101,7 +151,7 @@ export const breadcrumbNameMap = {
 	'/🥢/members': 'members',
 	'/🥢/dainties': 'dainties',
 	'/🥢/likes': 'likes',
-	'/🥢/profile': 'my profile'
+	'/🥢/profile': 'my profile',
 	// '/🥢/updateinformation': 'update information',
 	// '/🥢/changepassword': 'change password'
 }

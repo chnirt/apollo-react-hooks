@@ -49,6 +49,11 @@ module.exports = override(
 		},
 		true
 	),
+	fixBabelImports('@digihcs/innos-ui3', {
+    libraryName: '@digihcs/innos-ui3',
+    libraryDirectory: 'es',
+    style: true
+  }),
 	fixBabelImports('import', {
 		libraryName: 'antd',
 		libraryDirectory: 'es',
@@ -90,3 +95,4 @@ module.exports = override(
 	}),
 	addPlugins()
 )
+

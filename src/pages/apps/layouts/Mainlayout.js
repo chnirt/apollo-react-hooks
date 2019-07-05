@@ -235,6 +235,10 @@ class Main extends Component {
 								boxShadow: '0 1px 4px rgba(0,21,41,.08)'
 							}}
 						>
+							<h1 style={{ display: 'inline-block', marginLeft: 10 }} onClick={() => window.history.back()}>
+								<Icon type="arrow-left" />
+							</h1>
+
 							<Icon
 								className="trigger"
 								type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
