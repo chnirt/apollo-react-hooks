@@ -1,0 +1,14 @@
+.btn{
+  width: 45%;
+  margin-bottom: 20px;
+  height: 30vh;
+}
+
+.wrap-btn{
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.link-btn{
+  
+}

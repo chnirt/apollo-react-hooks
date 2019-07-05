@@ -15,6 +15,7 @@ function Root(props) {
 				{routes &&
 					routes.map((route, i) =>
 						route.private ? (
+							
 							// Private
 							<Main key={i}>
 								<Route

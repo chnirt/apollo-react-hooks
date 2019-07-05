@@ -1,0 +1,10 @@
+.dish-detail{
+  grid-template-columns: repeat(3, 1fr);
+  display: grid;
+  margin-bottom: 20px;
+  grid-gap: 10px
+}
+
+.dish-name{
+  width: 200px;
+}
