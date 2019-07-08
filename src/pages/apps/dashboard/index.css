@@ -1,14 +1,24 @@
+.wrap-btn {
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  grid-gap: 20px;
+  width: 50%;
+}
+
 .btn{
-  width: 45%;
-  margin-bottom: 20px;
-  height: 30vh;
+  width: 100%;
 }
 
-.wrap-btn{
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.link-btn{
+@media only screen and (max-width: 426px) {
+  .btn{
+    width: 45%;
+    margin-bottom: 20px;
+    height: 30vh;
+  }
   
+  .wrap-btn{
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+  }
 }

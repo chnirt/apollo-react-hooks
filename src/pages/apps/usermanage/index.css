@@ -4,9 +4,15 @@
   margin-bottom: 20px;
 }
 
+.title{
+  display: block;
+  margin-bottom: 20px;
+ }
+
 .add-user{
-  margin: 10px auto 0;
-  display: block
+  position: absolute;
+  bottom: 24px;
+  left: 24px;
 }
 
 .ant-form-item{
@@ -16,4 +22,25 @@
 
 .ant-checkbox-group-item{
   display: block;
+}
+
+
+@media only screen and (max-width: 426px) {
+  .title{
+    text-align: center;
+  }
+  
+  .dish-detail{
+    grid-template-columns: repeat(3, 1fr);
+    display: grid;
+    margin-bottom: 20px;
+    grid-gap: 10px;
+    width: 100%
+  }
+
+  .add-user{
+    position: unset;
+    margin: 0 auto;
+    display: block;
+  }
 }

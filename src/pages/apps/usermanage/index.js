@@ -2,6 +2,9 @@ import React from 'react'
 import { Button } from 'antd';
 import './index.css'
 import { Select, Modal, Form, Input, Checkbox } from 'antd';
+import gql from 'graphql-tag'
+
+import { withApollo } from 'react-apollo'
 
 const { Option } = Select;
 const CheckboxGroup = Checkbox.Group;
@@ -17,15 +20,6 @@ const options = [
 
 function onChange(checkedValues) {
 	console.log('checked = ', checkedValues);
-}
-
-function onBlur() {
-}
-
-function onFocus() {
-}
-
-function onSearch(val) {
 }
 
 const UserCreateForm = Form.create({ name: 'user_create' })(
@@ -56,15 +50,21 @@ const UserCreateForm = Form.create({ name: 'user_create' })(
 					<Form {...formItemLayout}>
 						<Form.Item label="Name">
 							{
-								getFieldDecorator('name', {
-									rules: [
-										{
-											required: true,
-											message: 'Please input your name!',
-										},
-									],
+								getFieldDecorator('fullName', {
+									// rules: [
+									// 	{
+									// 		required: true,
+									// 		message: 'Please input your name!',
+									// 	},
+									// ],
 								})(
 									<Input placeholder='Nhập tên' />)
+							}
+						</Form.Item>
+						<Form.Item label="Username">
+							{
+								getFieldDecorator('username', {})(
+									<Input placeholder='Nhập username' type='text' />)
 							}
 						</Form.Item>
 						<Form.Item label="Password">
@@ -73,12 +73,12 @@ const UserCreateForm = Form.create({ name: 'user_create' })(
 									<Input placeholder='Nhập password' type='password' />)
 							}
 						</Form.Item>
-						<Form.Item label="Email">
+						{/* <Form.Item label="Email">
 							{
 								getFieldDecorator('email', {})(
 									<Input placeholder='Nhập email' />)
 							}
-						</Form.Item>
+						</Form.Item> */}
 					</Form>
 				</Modal>
 			);
@@ -151,7 +151,23 @@ class UserManage extends React.Component {
 		visible: false,
 		isPublish: false,
 		visibleEditUser: false,
+		users: []
 	};
+
+	componentDidMount() {
+		this.props.client.query({
+			query: GET_ALL_USERS,
+		})
+			.then(({ data }) => {
+				this.setState({
+					users: data.users
+				})
+			})
+			.catch(err => {
+				console.log(err)
+				throw err
+			})
+	}
 
 	showModalEditUser = () => {
 		this.setState({ visibleEditUser: true });
@@ -188,8 +204,23 @@ class UserManage extends React.Component {
 			if (err) {
 				return;
 			}
-
-			console.log('Received values of form: ', values);
+			console.log(values)
+			this.props.client.mutate({
+        mutation: CREATE_USER,
+        variables: {
+          input: {
+            ...values,
+          }
+				},
+				fetchPolicy: 'no-cache',
+				refetchQueries: () => [{query: GET_ALL_USERS }]
+      })
+        .then((result) => {
+					console.log(result)
+        })
+        .catch((err) => {
+          console.log(err.message)
+        })
 			form.resetFields();
 			this.setState({ visible: false });
 		});
@@ -204,11 +235,23 @@ class UserManage extends React.Component {
 	};
 
 	render() {
+		console.log(this)
 		return (
 			<React.Fragment>
-				<Button className='user-name' onClick={this.showModalEditUser}>
+				<label className='title'>Quản lí User</label>
+
+				{
+					this.state.users && this.state.users.map(user => {
+						return (
+							<Button className='user-name' onClick={this.showModalEditUser} key={user.fullName+user.username}>
+								{user.fullName}
+							</Button>
+						)
+					})
+				}
+				{/* <Button className='user-name' onClick={this.showModalEditUser}>
 					Toàn
-				</Button>
+				</Button> */}
 
 				<UserEditForm
 					wrappedComponentRef={this.saveFormRefEditUser}
@@ -217,9 +260,9 @@ class UserManage extends React.Component {
 					onCreate={this.handleEditUser}
 				/>
 
-				<Button className='user-name'>Nam</Button>
+				{/* <Button className='user-name'>Nam</Button>
 				<Button className='user-name'>Bảo</Button>
-				<Button className='user-name'>Chung</Button>
+				<Button className='user-name'>Chung</Button> */}
 
 				<Button className='add-user' onClick={this.showModal}>
 					Thêm user
@@ -235,4 +278,26 @@ class UserManage extends React.Component {
 	}
 }
 
-export default UserManage
+const GET_ALL_USERS = gql`
+	query users	{
+		users(offset: 0, limit: 100){
+			username
+			fullName
+		}
+	}
+`
+
+const CREATE_USER = gql`mutation($input: CreateUserInput!){
+  register(input: $input){
+    username
+		fullName
+		password
+  }
+}`
+
+const INACTIVE_PATIENT = gql`
+  mutation deletePatient($patientId: ID!) {
+    deletePatient(patientId: $patientId) 
+  }`
+
+export default withApollo(UserManage)

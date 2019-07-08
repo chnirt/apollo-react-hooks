@@ -39,7 +39,8 @@ const authLink = setContext((_, { headers }) => {
 	return {
 		headers: {
 			...headers,
-			token: token ? token : ''
+			token: token ? token : '',
+			currentsite: "96a72280-9ed1-11e9-b000-69cb3d87cf8e"
 		}
 	}
 })

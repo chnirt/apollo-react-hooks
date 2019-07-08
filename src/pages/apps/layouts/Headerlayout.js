@@ -38,6 +38,7 @@ class Headerlayout extends Component {
 	render() {
 		const { location } = this.props
 		const { me } = this.state
+		console.log(me)
 		return (
 			<Header
 				// id="components-layout-demo-fixed"

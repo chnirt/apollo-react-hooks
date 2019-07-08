@@ -75,6 +75,12 @@ export const routes = [
 				label: 'report',
 				path: '/🥢/report',
 				component: 'report'
+			},
+			,
+			{
+				label: 'patient',
+				path: '/🥢/patient',
+				component: 'patient'
 			}
 		]
 	}
