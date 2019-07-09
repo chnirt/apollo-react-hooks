@@ -9,7 +9,6 @@ export const routes = [
 		path: '/register',
 		component: 'register'
 	},
-
 	{
 		label: 'App',
 		path: '/',
@@ -18,25 +17,25 @@ export const routes = [
 		routes: [
 			{
 				label: 'Manage Menu',
-				path: '/menu',
+				path: '/🥢/menu',
 				icon: 'bars',
 				component: 'menu'
 			},
 			{
 				label: 'Manage Order',
-				path: '/order',
+				path: '/🥢/order',
 				icon: 'shopping-cart',
 				component: 'order'
 			},
 			{
 				label: 'Manage User',
-				path: '/user',
+				path: '/🥢/user',
 				icon: 'user',
 				component: 'user'
 			},
 			{
 				label: 'Report',
-				path: '/report',
+				path: '/🥢/report',
 				icon: 'file-done',
 				component: 'report'
 			}
