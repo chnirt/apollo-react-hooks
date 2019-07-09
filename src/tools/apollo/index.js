@@ -21,11 +21,11 @@ const errorLink = new onError(({ graphQLErrors, networkError, operation }) => {
 		)
 	}
 	if (networkError) {
-		// const authStore = new AuthStore()
-		// if (networkError.statusCode === 500) {
-		// 	authStore.logout()
-		// 	this.props.history.push('/')
-		// }
+		const authStore = new AuthStore()
+		if (networkError.statusCode === 400) {
+			authStore.logout()
+			window.location.pathname = '/login'
+		}
 		console.log(
 			`[Network error ${operation.operationName}]: ${networkError.message}`
 		)
@@ -41,7 +41,7 @@ const authLink = setContext((_, { headers }) => {
 		headers: {
 			...headers,
 			token: token ? token : '',
-			currentsite: "96a72280-9ed1-11e9-b000-69cb3d87cf8e"
+			currentsite: currentsite ? currentsite : ''
 		}
 	}
 })

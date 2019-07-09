@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
-import { Row, Col, Form, Typography, Icon, Input, Button, Divider } from 'antd'
-import './style.scss'
-import { Link } from 'react-router-dom'
+import { Row, Col, Form, Typography, Icon, Input, Button } from 'antd'
+import './login.scss'
 import { withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
 import openNotificationWithIcon from '../../components/shared/openNotificationWithIcon'
@@ -14,8 +13,7 @@ const { Title } = Typography
 class Login extends Component {
 	state = {
 		username: 'admin',
-		password: '12345678',
-		loading: false
+		password: '12345678'
 	}
 	handleSubmit = e => {
 		e.preventDefault()
@@ -36,11 +34,14 @@ class Login extends Component {
 					}
 				})
 				.then(res => {
-					console.log(res.data.login)
+					// console.log(res.data.login)
 					const { token, sites } = res.data.login
+					this.setState({
+						loading: false,
+						spin: false
+					})
 					this.props.store.authStore.authenticate(token, sites)
-					// this.setState({ loading: false, spin: false })
-					this.props.history.push('/')
+					this.props.history.push('/🥢')
 				})
 				.catch(err => {
 					// console.log(err)
@@ -121,12 +122,6 @@ class Login extends Component {
 										Log in
 									</Button>
 								</Form.Item>
-								{/* <Divider>OR</Divider>
-								<br />
-								<Link to="/forgot">Forgot password?</Link>
-								<br />
-								<span>Don't have an account?</span>
-								<Link to="/register"> Register.</Link> */}
 							</Form>
 						</div>
 					</Col>
