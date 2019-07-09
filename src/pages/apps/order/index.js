@@ -1,12 +1,9 @@
 import React from 'react'
-import { Select, Button, List, Avatar, Skeleton } from 'antd'
+import { Select, Button, List } from 'antd'
 import { withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
 import './index.css'
-import reqwest from 'reqwest'
 
-const count = 3
-const fakeDataUrl = `https://randomuser.me/api/?results=${count}&inc=name,gender,email,nat&noinfo`
 class Order extends React.Component {
 	state = {
 		visible: false,
@@ -49,45 +46,39 @@ class Order extends React.Component {
 	componentDidMount () {
 		this.handleGetSite()
 		this.handleGetMenu()
-		this.getData(res => {
-      this.setState({
-        data: res.results,
-        list: res.results,
-      })
-    })
 	}
 
-	getData = callback => {
-    reqwest({
-      url: fakeDataUrl,
-      type: 'json',
-      method: 'get',
-      contentType: 'application/json',
-      success: res => {
-        callback(res)
-      },
-    })
-  }
+	// getData = callback => {
+  //   reqwest({
+  //     url: fakeDataUrl,
+  //     type: 'json',
+  //     method: 'get',
+  //     contentType: 'application/json',
+  //     success: res => {
+  //       callback(res)
+  //     },
+  //   })
+  // }
 
-  onLoadMore = () => {
-    this.setState({
-      loading: true,
-      list: this.state.data.concat([...new Array(count)].map(() => ({ loading: true, name: {} }))),
-    })
-    this.getData(res => {
-      const data = this.state.data.concat(res.results)
-      this.setState(
-        {
-          data,
-          list: data,
-          loading: false,
-        },
-        () => {
-          window.dispatchEvent(new Event('resize'))
-        },
-      )
-		})
-	}	
+  // onLoadMore = () => {
+  //   this.setState({
+  //     loading: true,
+  //     list: this.state.data.concat([...new Array(count)].map(() => ({ loading: true, name: {} }))),
+  //   })
+  //   this.getData(res => {
+  //     const data = this.state.data.concat(res.results)
+  //     this.setState(
+  //       {
+  //         data,
+  //         list: data,
+  //         loading: false,
+  //       },
+  //       () => {
+  //         window.dispatchEvent(new Event('resize'))
+  //       },
+  //     )
+	// 	})
+	// }	
 		
 
 	handleGetSite (siteName) {
@@ -118,6 +109,7 @@ class Order extends React.Component {
         }
       })
         .then(res => {
+					console.log('aaaa',res.data.Menus)
           this.setState({
 						menus: [...res.data.menus]
           })
@@ -139,20 +131,6 @@ class Order extends React.Component {
 				{dish.dishes.name}
 			</Button>
 		)
-		const { list } = this.state
-    // const loadMore =
-    //   !initLoading && !loading ? (
-    //     <div
-    //       style={{
-    //         textAlign: 'center',
-    //         marginTop: 12,
-    //         height: 32,
-    //         lineHeight: '32px',
-    //       }}
-    //     >
-    //       <Button onClick={this.onLoadMore}>loading more</Button>
-    //     </div>
-    //   ) : null
 		return (
 			<React.Fragment>
 				<Select
@@ -177,13 +155,11 @@ class Order extends React.Component {
 				}
 				<List
 					className='demo-loadmore-list'
-					// loading={initLoading}
-					// itemLayout='horizontal'
-					dataSource={list}
+					dataSource={getSite}
 					renderItem={item => (
 						<List.Item actions={[<Button className='minus'>-</Button>, <Button className='plus'>+</Button>]}>
 								<List.Item.Meta
-									title={<a href='https://ant.design'>{item.name.last}</a>}
+									title='dsadasdas'
 								/>
 						</List.Item>
 					)}
