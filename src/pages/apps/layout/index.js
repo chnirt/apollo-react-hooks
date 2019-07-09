@@ -72,7 +72,7 @@ function Layout(props) {
 									onClick={() => showDrawer(item.path)}
 								>
 									<Card.Grid style={gridStyle}>
-										{item.content}
+										{item.label}
 										<Icon
 											style={{
 												paddingLeft: '10px'
