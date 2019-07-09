@@ -41,7 +41,7 @@ class Login extends Component {
 						spin: false
 					})
 					this.props.store.authStore.authenticate(token, sites)
-					this.props.history.push('/🥢')
+					this.props.history.push('/')
 				})
 				.catch(err => {
 					// console.log(err)
