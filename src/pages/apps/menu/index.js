@@ -1,37 +1,44 @@
 import React from 'react'
-import { Select, Row } from 'antd'
+import { Row } from 'antd'
 import MenuList from './MenuList'
 import './index.less'
+import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation'
+import gql from 'graphql-tag'
 
-const { Option } = Select
-
-export default function Menu() {
+function Menu(props) {
+	const menus = props.data.menus
 	return (
-		<div className='menu'>
-			<Select
-					showSearch
-					style={{ width: '100%', marginBottom: 20 }}
-					// placeholder="Chọn Site"
-					defaultValue='Chọn Site'
-					optionFilterProp="children"
-					filterOption={(input, option) =>
-						option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-					}
-				>
-					<Option value="hh">Hoa Hồng</Option>
-					<Option value="svh">Sư Vạn Hạnh</Option>
-					<Option value="nt">Nha Trang</Option>
-				</Select>
-				<Row className='menu-list'>
-					<MenuList />
-					<MenuList />
-					<MenuList />
-					<MenuList />
-					<MenuList />
-					<MenuList />
-					<MenuList />
-					<MenuList />
-				</Row>
+		<div className="menu">
+			<Row className="menu-list">
+				{menus.map(menu => (
+					<MenuList>{menu.name}</MenuList>
+				))}
+			</Row>
 		</div>
 	)
 }
+
+const GET_ALL_MENU = gql`
+	query {
+		menus {
+			_id
+			name
+			siteId
+			dishes {
+				_id
+				name
+				count
+			}
+			isPublished
+			isLocked
+			isActived
+		}
+	}
+`
+
+export default HOCQueryMutation([
+	{
+		query: GET_ALL_MENU,
+		variables: {}
+	}
+])(Menu)
