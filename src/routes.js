@@ -16,6 +16,12 @@ export const routes = [
 		component: 'apps',
 		routes: [
 			{
+				label: 'Dashboard',
+				path: '/🥢',
+				exact: true,
+				component: 'dashboard'
+			},
+			{
 				label: 'Manage Menu',
 				path: '/🥢/menu',
 				icon: 'bars',
