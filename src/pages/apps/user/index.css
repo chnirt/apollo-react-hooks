@@ -48,3 +48,17 @@
     display: block
   }
 }
+
+.cb{
+  padding: .5rem;
+  width: 100%;
+}
+
+.cb > .ant-checkbox-group-item {
+  padding: .5rem;
+  display: flex;
+  justify-content: space-between;
+  margin-right: 0;
+  flex-direction: row-reverse
+}
+
