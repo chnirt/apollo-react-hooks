@@ -22,9 +22,9 @@ const errorLink = new onError(({ graphQLErrors, networkError, operation }) => {
 	}
 	if (networkError) {
 		// const authStore = new AuthStore()
-		// if (networkError.statusCode === 500) {
+		// if (networkError.statusCode === 400) {
 		// 	authStore.logout()
-		// 	this.props.history.push('/')
+		// 	window.location.pathname = '/login'
 		// }
 		console.log(
 			`[Network error ${operation.operationName}]: ${networkError.message}`

@@ -6,80 +6,15 @@ import './index.css'
 
 class Order extends React.Component {
 	state = {
-		visible: false,
-		isPublish: false,
 		sites: [],
-		menus: []
-	}
-
-	showModal = () => {
-		this.setState({ visible: true })
-	}
-
-	handleCancel = () => {
-		this.setState({ visible: false })
-	}
-
-	handleCreate = () => {
-		const { form } = this.formRef.props
-		form.validateFields((err, values) => {
-			if (err) {
-				return
-			}
-
-			console.log('Received values of form: ', values)
-			form.resetFields()
-			this.setState({ visible: false })
-		})
-	}
-
-	saveFormRef = formRef => {
-		this.formRef = formRef
-	}
-
-	isPublish = () => {
-		this.setState({
-			isPublish: !this.state.isPublish
-		})
+		menus: [],
+		sitesAllow: []
 	}
 
 	componentDidMount () {
 		this.handleGetSite()
 		this.handleGetMenu()
 	}
-
-	// getData = callback => {
-  //   reqwest({
-  //     url: fakeDataUrl,
-  //     type: 'json',
-  //     method: 'get',
-  //     contentType: 'application/json',
-  //     success: res => {
-  //       callback(res)
-  //     },
-  //   })
-  // }
-
-  // onLoadMore = () => {
-  //   this.setState({
-  //     loading: true,
-  //     list: this.state.data.concat([...new Array(count)].map(() => ({ loading: true, name: {} }))),
-  //   })
-  //   this.getData(res => {
-  //     const data = this.state.data.concat(res.results)
-  //     this.setState(
-  //       {
-  //         data,
-  //         list: data,
-  //         loading: false,
-  //       },
-  //       () => {
-  //         window.dispatchEvent(new Event('resize'))
-  //       },
-  //     )
-	// 	})
-	// }	
-		
 
 	handleGetSite (siteName) {
     if (String(siteName).length > 0) {
@@ -89,14 +24,14 @@ class Order extends React.Component {
           siteName: String(siteName)
         }
       })
-        .then(res => {
-          this.setState({
-						sites: [...res.data.sites]
-          })
-        })
-        .catch((error) => {
-          console.log(error)
-        })
+			.then(res => {
+				this.setState({
+					sites: [...res.data.sites]
+				})
+			})
+			.catch((error) => {
+				console.log(error)
+			})
     }
 	}
 
@@ -108,11 +43,54 @@ class Order extends React.Component {
           menu: String(menu)
         }
       })
+			.then(res => {
+				console.log('aaaa',res.data.menus)
+				console.log(res.data.menus.map(site => site.isActived))
+				this.setState({
+					menus: [...res.data.menus]
+				})
+			})
+			.catch((error) => {
+				console.log(error)
+			})
+    }
+	}
+
+	siteAccess (site) {
+    if (String(site).length > 0) {
+			window.localStorage.sites.split(',').map(aSite =>
+				this.props.client.query({
+					query: SITE,
+					variables: {
+						_id: aSite
+					}
+				})
+				.then(res => {
+					console.log(res.data)
+					this.setState({
+						siteAllow: [...res.data]
+					})
+				})
+				.catch((error) => {
+					console.log(error)
+				})
+			)
+    }
+	}
+
+	handleCurrentSite (currentSite) {
+		if (String(currentSite).length > 0) {
+      this.props.client.query({
+        query: MENU_BY_CURRENTSITE,
+        variables: {
+          currentSite: String(currentSite)
+        }
+      })
         .then(res => {
-					console.log('aaaa',res.data.Menus)
-          this.setState({
-						menus: [...res.data.menus]
-          })
+					console.log('aaaa',res.data)
+          // this.setState({
+					// 	menus: [...res.data.Menus]
+          // })
         })
         .catch((error) => {
           console.log(error)
@@ -127,12 +105,17 @@ class Order extends React.Component {
 			</Select.Option>
 		)
 		const getDishes = this.state.menus.map(dish =>
-			<Button key={dish.dishes.name} disabled>
-				{dish.dishes.name}
-			</Button>
+			<List.Item actions={[<Button className='minus'>-</Button>, <Button className='plus'>+</Button>]}>
+				<List.Item.Meta
+					title='dsadasdas'
+				/>
+			</List.Item>
 		)
 		return (
 			<React.Fragment>
+				<Button onClick={() => this.siteAccess()}>
+					Test
+				</Button>
 				<Select
 					showSearch
 					style={{ width: '100%', marginBottom: 20 }}
@@ -149,10 +132,7 @@ class Order extends React.Component {
 				<label style={{ textAlign: 'center', display: 'block', marginBottom: 20 }}>
 					Danh sách món
 				</label>
-
-				{
-					getDishes
-				}
+				
 				<List
 					className='demo-loadmore-list'
 					dataSource={getSite}
@@ -171,7 +151,7 @@ class Order extends React.Component {
 
 const MENUS = gql`
 	{
-		Menus {
+		menus {
 			_id
 			name
 			siteId
@@ -195,6 +175,29 @@ const SITES = gql`
     name
     createdAt
     updatedAt
+  }
+}
+`
+
+const SITE = gql`
+	query site($_id: String!) {
+  site(_id: $_id) {
+    _id
+    name
+    createdAt
+    updatedAt
+  }
+}
+`
+
+const MENU_BY_CURRENTSITE = gql`
+	{
+  menuPublishBySite {
+    _id
+    name
+    isPublished
+    isActived
+    isLocked
   }
 }
 `

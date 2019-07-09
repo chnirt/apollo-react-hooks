@@ -43,31 +43,6 @@ export const routes = [
 				icon: 'file-done',
 				component: 'report'
 			}
-			// {
-			// 	label: 'menumanage',
-			// 	path: '/🥢/menumanage',
-			// 	component: 'menumanage'
-			// },
-			// {
-			// 	label: 'menudetail',
-			// 	path: '/🥢/menudetail',
-			// 	component: 'menudetail'
-			// },
-			// {
-			// 	label: 'order',
-			// 	path: '/🥢/order',
-			// 	component: 'order'
-			// },
-			// {
-			// 	label: 'usermanage',
-			// 	path: '/🥢/usermanage',
-			// 	component: 'usermanage'
-			// }
-			// {
-			// 	label: 'report',
-			// 	path: '/🥢/report',
-			// 	component: 'report'
-			// }
 		]
 	}
 ]
