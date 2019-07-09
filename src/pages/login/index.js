@@ -13,8 +13,8 @@ const { Title } = Typography
 @observer
 class Login extends Component {
 	state = {
-		username: 'toan',
-		password: '123',
+		username: 'admin',
+		password: '12345678',
 		loading: false
 	}
 	handleSubmit = e => {
@@ -36,8 +36,9 @@ class Login extends Component {
 					}
 				})
 				.then(res => {
-					const { token } = res.data.login
-					this.props.store.authStore.authenticate(token)
+					console.log(res.data.login)
+					const { token, sites } = res.data.login
+					this.props.store.authStore.authenticate(token, sites)
 					// this.setState({ loading: false, spin: false })
 					this.props.history.push('/')
 				})
@@ -139,6 +140,7 @@ const USER_LOGIN = gql`
 	mutation($input: LoginUserInput!) {
 		login(input: $input) {
 			token
+			sites
 		}
 	}
 `

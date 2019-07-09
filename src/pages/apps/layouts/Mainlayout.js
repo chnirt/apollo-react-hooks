@@ -1,340 +1,117 @@
-import React, { Component } from 'react'
+import React, { useState } from 'react'
 import { inject, observer } from 'mobx-react'
-// import Headerlayout from './Headerlayout'
-// import Siderlayout from './Siderlayout'
-import Breadcumblayout from './Breadcumblayout'
-import Footerlayout from './Footerlayout'
-import './Mainlayout.scss'
-import {
-	LocaleProvider,
-	Layout,
-	Menu,
-	Typography,
-	Avatar,
-	Icon,
-	Drawer,
-	Affix,
-	Button,
-	BackTop
-} from 'antd'
-import logo from '../../../assets/images/logo.svg'
-import { siderRoutes, headerRoutes } from '../../../routes'
+import { LocaleProvider, Icon, Drawer, Button, Col, Row, Tabs, Card } from 'antd'
+// import logo from '../../../assets/images/logo.svg'
 import { withRouter } from 'react-router-dom'
 import { withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
 import { withTranslation } from 'react-i18next'
 
-const { Title } = Typography
-const { Header, Content, Sider } = Layout
-const SubMenu = Menu.SubMenu
+const { TabPane } = Tabs
 
-@inject('store')
-@observer
-class Main extends Component {
-	state = {
-		current: '/👻',
-		isMobile: false,
-		collapsed: false,
-		collapsedWidth: 80,
-		visible: false,
-		rightVisible: false,
-		headerWidth: 256,
-		me: {}
-	}
-
-	toggle = () => {
-		// console.log('toggle')
-		if (this.state.isMobile === false) {
-			if (this.state.collapsed) {
-				this.setState({
-					headerWidth: 256
-				})
-			} else {
-				this.setState({
-					headerWidth: 80
-				})
-			}
-			this.setState({
-				collapsed: !this.state.collapsed
-			})
-		} else {
-			this.setState({
-				visible: true
-			})
-		}
-	}
-
-	toggleRightDrawer = () => {
-		// console.log('toggleRight')
-		this.setState({
-			rightVisible: !this.state.rightVisible
-		})
-	}
-
-	showDrawer = () => {
-		this.setState({
-			visible: true
-		})
-	}
-
-	onClose = () => {
-		this.setState({
-			visible: false,
-			rightVisible: false
-		})
-	}
-
-	handleClick = e => {
-		// console.log('handleClick ')
-		this.setState({
-			current: e.key
-		})
-		this.props.history.push(e.key)
-	}
-
-	componentDidMount() {
-		this.props.client
-			.query({ query: ME })
-			.then(res => {
-				// console.log(res.data.me)
-				this.setState({
-					me: res.data.me
-				})
-			})
-			.catch(err => console.log(err))
-	}
-
-	changeLocale = key => {
-		if (key === 'vi') {
-			this.props.i18n.changeLanguage('vi')
-			this.props.store.i18nStore.changeLanguage('vi')
-		} else {
-			this.props.i18n.changeLanguage('en')
-			this.props.store.i18nStore.changeLanguage('en')
-		}
-	}
-
-	onLogout = () => {
-		this.props.store.authStore.logout()
-		this.props.client.resetStore()
-		this.props.history.push('/login')
-	}
-
-	render() {
-		return (
-			<LocaleProvider locale={this.props.store.i18nStore.locale}>
-				<Layout id="components-layout-demo-custom-trigger">
-					{/* Sider Mobile */}
-					<Drawer
-						title={this.props.t('menu').toUpperCase()}
-						placement="left"
-						closable={false}
-						onClose={this.onClose}
-						visible={this.state.visible}
-						bodyStyle={{ padding: '0px' }}
-					>
-						<Menu
-							mode="inline"
-							onClick={this.handleClick}
-							defaultSelectedKeys={[this.props.location.pathname]}
-							style={{ width: 256 }}
-						>
-							{siderRoutes &&
-								siderRoutes.map((siderRoute, i) => (
-									<Menu.Item key={siderRoute.path}>
-										<Icon type={siderRoute.icon} />
-										<span>{this.props.t(siderRoute.label).toUpperCase()}</span>
-									</Menu.Item>
-								))}
-						</Menu>
-					</Drawer>
-					{/* Sider Laptop */}
-					<Sider
-						breakpoint="xs"
-						collapsible
-						collapsed={this.state.collapsed}
-						defaultCollapsed={this.state.collapsed}
-						reverseArrow={true}
-						style={{
-							// backgroundColor: "transparent",
-							position: 'fixed',
-							top: 0,
-							left: 0,
-							zIndex: 10,
-							minHeight: '100vh',
-							transition: 'all .2s'
-							// boxShadow: '2px 0 6px rgba(0,21,41,.35)'
-						}}
-						theme="light"
-						trigger={null}
-						width={256}
-						collapsedWidth={this.state.collapsedWidth}
-						onBreakpoint={broken => {
-							// console.log('broken', broken)
-							if (broken) {
-								this.setState({
-									isMobile: true,
-									collapsed: true,
-									collapsedWidth: 0,
-									headerWidth: 0
-								})
-							} else {
-								this.setState({
-									isMobile: false,
-									collapsed: false,
-									collapsedWidth: 80,
-									visible: false,
-									headerWidth: 256
-								})
-							}
-						}}
-						onCollapse={(collapsed, type) => {
-							// console.log(collapsed, type)
-						}}
-					>
-						{/* Logo */}
-						<div className="logo">
-							<img src={logo} alt="logo" />
-							<Title level={1}>Luncheon</Title>
-						</div>
-						<Menu
-							theme="light"
-							mode="inline"
-							onClick={this.handleClick}
-							selectedKeys={[this.props.location.pathname]}
-						>
-							{siderRoutes &&
-								siderRoutes.map((siderRoute, i) => (
-									<Menu.Item key={siderRoute.path}>
-										<Icon type={siderRoute.icon} />
-										<span>{this.props.t(siderRoute.label).toUpperCase()}</span>
-									</Menu.Item>
-								))}
-						</Menu>
-					</Sider>
-					<Layout
-						style={{
-							minHeight: '100vh',
-							paddingLeft: `${this.state.headerWidth}px`
-						}}
-					>
-						{/* Header */}
-						<Header
-							style={{
-								position: 'fixed',
-								top: 0,
-								right: 0,
-								// zIndex: 9,
-								// width: '100%',
-								transition: 'all .2s',
-								// padding: '0px',
-								width: `calc(100% - ${this.state.headerWidth}px)`,
-								zIndex: 2,
-								background: '#fff',
-								padding: '0px',
-								boxShadow: '0 1px 4px rgba(0,21,41,.08)'
-							}}
-						>
-							<h1 style={{ display: 'inline-block', marginLeft: 10, cursor: 'pointer' }} onClick={() => window.history.back()}>
-								<Icon type="arrow-left" />
-							</h1>
-
-							<Icon
-								className="trigger"
-								type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
-								onClick={this.toggle}
-							/>
-							<Menu
-								mode="horizontal"
-								style={{
-									float: 'right',
-									lineHeight: '63px'
-								}}
-							>
-								{/* LanguageMenu */}
-								<SubMenu
-									title={<Icon type="global" style={{ marginRight: 0 }} />}
-								>
-									<Menu.Item onClick={() => this.changeLocale('en')}>
-										{/* <span role="img">🇺🇸</span> */}
-										English
-									</Menu.Item>
-									<Menu.Item onClick={() => this.changeLocale('vi')}>
-										{/* <span role="img">🇻🇳</span> */}
-										Việt Nam
-									</Menu.Item>
-								</SubMenu>
-								{/* AccountMenu */}
-								<SubMenu
-									title={
-										<>
-											<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
-											<span>
-												{this.props.t('hello').toUpperCase()}
-												{this.state.me && this.state.me.username}
-											</span>
-										</>
-									}
-									style={{ marginRight: 10 }}
-								>
-									{headerRoutes &&
-										headerRoutes.map((headerRoute, i) => (
-											<Menu.Item
-												key={headerRoute.path}
-												onClick={e => this.props.history.push(headerRoute.path)}
-											>
-												<Icon type={headerRoute.icon} />
-												{this.props.t(headerRoute.label).toUpperCase()}
-											</Menu.Item>
-										))}
-									<Menu.Divider />
-									<Menu.Item onClick={this.onLogout}>
-										<Icon type="logout" />
-										{this.props.t('logout').toUpperCase()}
-									</Menu.Item>
-								</SubMenu>
-							</Menu>
-						</Header>
-						{/* Content */}
-						<Content
-							style={{
-								margin: '24px 16px 0px',
-								paddingTop: '40px',
-								overflow: 'initial'
-							}}
-						>
-							{/* Breadcumb */}
-							<Breadcumblayout />
-							<div
-								style={{
-									padding: 24,
-									background: '#fff',
-									minHeight: 'calc( 100vh - 191px )',
-									position: 'relative'
-								}}
-							>
-								{this.props.children}
-							</div>
-							{/* Footer */}
-							<Footerlayout />
-							{/* BackTop */}
-							<BackTop />
-						</Content>
-					</Layout>
-				</Layout>
-			</LocaleProvider>
-		)
-	}
+const gridStyle = {
+	width: '100%',
+	height: '20vh',
+	marginBottom: '10%',
+	display: 'flex',
+	alignItems: 'center'
 }
 
-const ME = gql`
-	query {
-		me {
-			_id
-			email
-			username
-		}
-	}
-`
+function Main(props) {
+	const [visible, setVisible] = useState(false)
 
-export default withApollo(withTranslation()(withRouter(Main)))
+	function showDrawer(path) {
+		props.history.push(path)
+		setVisible(true)
+	}
+
+	function onClose() {
+		setVisible(false)
+	}
+
+	// function changeLocale(key) {
+	// 	if (key === 'vi') {
+	// 		props.i18n.changeLanguage('vi')
+	// 		props.store.i18nStore.changeLanguage('vi')
+	// 	} else {
+	// 		props.i18n.changeLanguage('en')
+	// 		props.store.i18nStore.changeLanguage('en')
+	// 	}
+	// }
+
+	function onLogout() {
+		props.store.authStore.logout()
+		props.client.resetStore()
+		props.history.push('/login')
+	}
+
+	return (
+		<LocaleProvider locale={props.store.i18nStore.locale}>
+			<Tabs defaultActiveKey="1">
+				<TabPane tab="Home" key="1">
+					<Row style={{ height: 'calc(100vh - 60px)' }}>
+						<Card
+							title="Quick actions"
+							bordered={false}
+							headStyle={{
+								border: 0,
+								margin: 0
+							}}
+						>
+							{props.children.props.routes.map((item, i) => (
+								<Col
+									key={i}
+									xs={{ span: 10, offset: 1 }}
+									sm={{ span: 10, offset: 1 }}
+									md={{ span: 10, offset: 1 }}
+									lg={{ span: 4, offset: 1 }}
+									onClick={() => showDrawer(item.path)}
+								>
+									<Card.Grid style={gridStyle}>
+										{item.content}
+										<Icon
+											style={{
+												paddingLeft: '10px'
+											}}
+											type={item.icon}
+										/>
+									</Card.Grid>
+								</Col>
+							))}
+						</Card>
+
+						<Drawer
+							title="Basic Drawer"
+							width={'100%'}
+							placement="right"
+							closable={true}
+							onClose={onClose}
+							visible={visible}
+						>
+							{props.children}
+						</Drawer>
+					</Row>
+				</TabPane>
+				<TabPane tab="User" key="2">
+					<Row type="flex" justify="center" style={{ height: '100vh' }}>
+						<Col
+							xs={{ span: 10, offset: 1 }}
+							sm={{ span: 10, offset: 1 }}
+							md={{ span: 10, offset: 1 }}
+							lg={{ span: 4, offset: 1 }}
+						>
+							Hello, Admin
+							<Button type="primary" block onClick={onLogout}>
+								Log out
+							</Button>
+						</Col>
+					</Row>
+				</TabPane>
+			</Tabs>
+		</LocaleProvider>
+	)
+}
+
+export default inject('store')(
+	observer(withApollo(withTranslation()(withRouter(Main))))
+)

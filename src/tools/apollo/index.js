@@ -35,6 +35,7 @@ const errorLink = new onError(({ graphQLErrors, networkError, operation }) => {
 const authLink = setContext((_, { headers }) => {
 	// get the authentication token from local storage if it exists
 	const token = window.localStorage.getItem('access-token')
+	const currentsite = window.localStorage.getItem('currentsite')
 	// return the headers to the context so httpLink can read them
 	return {
 		headers: {

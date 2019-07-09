@@ -15,7 +15,6 @@
 		"@babel/preset-flow": "^7.0.0",
 		"@babel/preset-react": "^7.0.0",
 		"@babel/register": "^7.4.4",
-		"@digihcs/innos-ui3": "^1.0.8",
 		"ag-grid-community": "^20.2.0",
 		"ag-grid-enterprise": "^20.2.0",
 		"ag-grid-react": "^20.2.0",
