@@ -16,30 +16,26 @@ export const routes = [
 		component: 'apps',
 		routes: [
 			{
-				label: 'Menu',
+				label: 'Manage Menu',
 				path: '/🥢/menu',
-				content: 'Manage Menu',
 				icon: 'bars',
 				component: 'menu'
 			},
 			{
-				label: 'Order',
+				label: 'Manage Order',
 				path: '/🥢/order',
-				content: 'Manage Order',
 				icon: 'shopping-cart',
 				component: 'order'
 			},
 			{
-				label: 'User',
+				label: 'Manage User',
 				path: '/🥢/user',
-				content: 'Manage User',
 				icon: 'user',
 				component: 'user'
 			},
 			{
 				label: 'Report',
 				path: '/🥢/report',
-				content: 'Report',
 				icon: 'file-done',
 				component: 'report'
 			}

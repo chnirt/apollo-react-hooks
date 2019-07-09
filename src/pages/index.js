@@ -14,21 +14,22 @@ function Root(props) {
 					routes.map((route, i) =>
 						route.private ? (
 							// Private
-							<Layout key={i}>
-								<Route
-									{...route}
-									component={props => {
-										const MyComponent = withLoadable(
-											import(`./${route.component}`)
-										)
-										return isAuth ? (
+							<Route
+								key={i}
+								{...route}
+								component={props => {
+									const MyComponent = withLoadable(
+										import(`./${route.component}`)
+									)
+									return isAuth ? (
+										<Layout>
 											<MyComponent {...props} {...route} />
-										) : (
-											<Redirect to="/login" />
-										)
-									}}
-								/>
-							</Layout>
+										</Layout>
+									) : (
+										<Redirect to="/login" />
+									)
+								}}
+							/>
 						) : (
 							// Not private
 							<Route
@@ -41,7 +42,7 @@ function Root(props) {
 									return !isAuth ? (
 										<MyComponent {...props} {...route} />
 									) : (
-										<Redirect to="/🥢" />
+										<Redirect to="/" />
 									)
 								}}
 							/>
