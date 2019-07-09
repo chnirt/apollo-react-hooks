@@ -1,52 +1,44 @@
 import React from 'react'
-import { Button } from 'antd';
+import { Select, Button, List, Avatar, Skeleton } from 'antd'
+import { withApollo } from 'react-apollo'
+import gql from 'graphql-tag'
 import './index.css'
-import { Select, Modal, Form, Input } from 'antd';
+import reqwest from 'reqwest'
 
-const { Option } = Select;
-
-function onChange(value) {
-}
-
-function onBlur() {
-}
-
-function onFocus() {
-}
-
-function onSearch(val) {
-}
-
+const count = 3
+const fakeDataUrl = `https://randomuser.me/api/?results=${count}&inc=name,gender,email,nat&noinfo`
 class Order extends React.Component {
 	state = {
 		visible: false,
-		isPublish: false
-	};
+		isPublish: false,
+		sites: [],
+		menus: []
+	}
 
 	showModal = () => {
-		this.setState({ visible: true });
-	};
+		this.setState({ visible: true })
+	}
 
 	handleCancel = () => {
-		this.setState({ visible: false });
-	};
+		this.setState({ visible: false })
+	}
 
 	handleCreate = () => {
-		const { form } = this.formRef.props;
+		const { form } = this.formRef.props
 		form.validateFields((err, values) => {
 			if (err) {
-				return;
+				return
 			}
 
-			console.log('Received values of form: ', values);
-			form.resetFields();
-			this.setState({ visible: false });
-		});
-	};
+			console.log('Received values of form: ', values)
+			form.resetFields()
+			this.setState({ visible: false })
+		})
+	}
 
 	saveFormRef = formRef => {
-		this.formRef = formRef;
-	};
+		this.formRef = formRef
+	}
 
 	isPublish = () => {
 		this.setState({
@@ -54,49 +46,181 @@ class Order extends React.Component {
 		})
 	}
 
+	componentDidMount () {
+		this.handleGetSite()
+		this.handleGetMenu()
+		this.getData(res => {
+      this.setState({
+        data: res.results,
+        list: res.results,
+      })
+    })
+	}
+
+	getData = callback => {
+    reqwest({
+      url: fakeDataUrl,
+      type: 'json',
+      method: 'get',
+      contentType: 'application/json',
+      success: res => {
+        callback(res)
+      },
+    })
+  }
+
+  onLoadMore = () => {
+    this.setState({
+      loading: true,
+      list: this.state.data.concat([...new Array(count)].map(() => ({ loading: true, name: {} }))),
+    })
+    this.getData(res => {
+      const data = this.state.data.concat(res.results)
+      this.setState(
+        {
+          data,
+          list: data,
+          loading: false,
+        },
+        () => {
+          window.dispatchEvent(new Event('resize'))
+        },
+      )
+		})
+	}	
+		
+
+	handleGetSite (siteName) {
+    if (String(siteName).length > 0) {
+      this.props.client.query({
+        query: SITES,
+        variables: {
+          siteName: String(siteName)
+        }
+      })
+        .then(res => {
+          this.setState({
+						sites: [...res.data.sites]
+          })
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    }
+	}
+
+	handleGetMenu (menu) {
+    if (String(menu).length > 0) {
+      this.props.client.query({
+        query: MENUS,
+        variables: {
+          menu: String(menu)
+        }
+      })
+        .then(res => {
+          this.setState({
+						menus: [...res.data.menus]
+          })
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    }
+	}
+
 	render() {
+		const getSite = this.state.sites.map(site =>
+			<Select.Option key={site.name}>
+					{site.name}
+			</Select.Option>
+		)
+		const getDishes = this.state.menus.map(dish =>
+			<Button key={dish.dishes.name} disabled>
+				{dish.dishes.name}
+			</Button>
+		)
+		const { list } = this.state
+    // const loadMore =
+    //   !initLoading && !loading ? (
+    //     <div
+    //       style={{
+    //         textAlign: 'center',
+    //         marginTop: 12,
+    //         height: 32,
+    //         lineHeight: '32px',
+    //       }}
+    //     >
+    //       <Button onClick={this.onLoadMore}>loading more</Button>
+    //     </div>
+    //   ) : null
 		return (
 			<React.Fragment>
 				<Select
 					showSearch
 					style={{ width: '100%', marginBottom: 20 }}
-					// placeholder="Chọn Site"
-					defaultValue='Chọn Site'
-					optionFilterProp="children"
+					placeholder='Chọn Site'
+					optionFilterProp='children'
 					filterOption={(input, option) =>
 						option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
 					}
+					onSelect={() => this.handleGetSite()}
 				>
-					<Option value="hh">Hoa Hồng</Option>
-					<Option value="svh">Sư Vạn Hạnh</Option>
-					<Option value="nt">Nha Trang</Option>
+					{getSite}
 				</Select>
 
 				<label style={{ textAlign: 'center', display: 'block', marginBottom: 20 }}>
 					Danh sách món
 				</label>
 
-				<div className='dish-detail'>
-					<Button className='dish-name' disabled>Canh chua cá lóc x0</Button>
-					<Button className='minus'>-</Button>
-					<Button className='plus'>+</Button>
-				</div>
-
-				<div className='dish-detail'>
-					<Button className='dish-name' disabled>Tôm hoàng kim x5</Button>
-					<Button className='minus'>-</Button>
-					<Button className='plus'>+</Button>
-				</div>
-
-				<div className='dish-detail'>
-					<Button className='dish-name' disabled>Bánh canh cua x2</Button>
-					<Button className='minus'>-</Button>
-					<Button className='plus'>+</Button>
-				</div>
-
+				{
+					getDishes
+				}
+				<List
+					className='demo-loadmore-list'
+					// loading={initLoading}
+					// itemLayout='horizontal'
+					dataSource={list}
+					renderItem={item => (
+						<List.Item actions={[<Button className='minus'>-</Button>, <Button className='plus'>+</Button>]}>
+								<List.Item.Meta
+									title={<a href='https://ant.design'>{item.name.last}</a>}
+								/>
+						</List.Item>
+					)}
+				/>
 			</React.Fragment>
 		)
 	}
 }
 
-export default Order
+const MENUS = gql`
+	{
+		Menus {
+			_id
+			name
+			siteId
+			dishes {
+				_id
+				name
+				count
+			}
+			isPublished
+			isLocked
+			isActived
+			createAt
+			updateAt
+		}
+	}
+`
+const SITES = gql`
+	{
+  sites {
+    _id
+    name
+    createdAt
+    updatedAt
+  }
+}
+`
+
+export default withApollo(Order)
