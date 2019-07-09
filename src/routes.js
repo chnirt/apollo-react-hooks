@@ -11,9 +11,8 @@ export const routes = [
 	},
 	{
 		label: 'App',
-		path: '/🥢',
+		path: '/',
 		private: true,
-		exact: true,
 		component: 'apps',
 		routes: [
 			{
