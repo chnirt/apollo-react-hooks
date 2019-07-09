@@ -6,7 +6,6 @@ import { onError } from 'apollo-link-error'
 import { setContext } from 'apollo-link-context'
 import AuthStore from '../mobx/auth'
 
-// const httpLink = new HttpLink({ uri: 'http://localhost:4000/graphql' })
 const httpLink = new HttpLink({ uri: 'http://localhost:4000/graphql' })
 // const httpLink = new HttpLink({
 // 	uri: 'https://chnirt-apollo-server.herokuapp.com/graphql'
@@ -21,11 +20,11 @@ const errorLink = new onError(({ graphQLErrors, networkError, operation }) => {
 		)
 	}
 	if (networkError) {
-		// const authStore = new AuthStore()
-		// if (networkError.statusCode === 500) {
-		// 	authStore.logout()
-		// 	this.props.history.push('/')
-		// }
+		const authStore = new AuthStore()
+		if (networkError.statusCode === 400) {
+			authStore.logout()
+			window.location.pathname = '/login'
+		}
 		console.log(
 			`[Network error ${operation.operationName}]: ${networkError.message}`
 		)
@@ -40,8 +39,8 @@ const authLink = setContext((_, { headers }) => {
 	return {
 		headers: {
 			...headers,
-			token: token ? token : ''
-			// currentsite: currentsite ? currentsite : ''
+			token: token ? token : '',
+			currentsite: currentsite ? currentsite : ''
 		}
 	}
 })
