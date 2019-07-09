@@ -1,8 +1,6 @@
 import React from 'react'
 import { Modal, Form, Button, Icon } from 'antd'
 
-let id = 0
-
 export default function MenuModal(props) {
 	return (
 		<Modal

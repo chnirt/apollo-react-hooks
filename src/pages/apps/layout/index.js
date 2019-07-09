@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { inject, observer } from 'mobx-react'
 import { LocaleProvider, Icon, Drawer, Button, Col, Row, Tabs, Card } from 'antd'
 // import logo from '../../../assets/images/logo.svg'
@@ -17,9 +17,22 @@ const gridStyle = {
 	alignItems: 'center'
 }
 
-function Main(props) {
-	console.log(props)
+function Layout(props) {
 	const [visible, setVisible] = useState(false)
+	const [me, setMe] = useState('')
+
+	useEffect(() => {
+		// code to run on component mount
+		props.client
+			.query({ query: ME })
+			.then(res => {
+				// console.log(res.data.me)
+				setMe(res.data.me)
+			})
+			.catch(err => {
+				// console.log(err)
+			})
+	})
 
 	function showDrawer(path) {
 		props.history.push(path)
@@ -29,16 +42,6 @@ function Main(props) {
 	function onClose() {
 		setVisible(false)
 	}
-
-	// function changeLocale(key) {
-	// 	if (key === 'vi') {
-	// 		props.i18n.changeLanguage('vi')
-	// 		props.store.i18nStore.changeLanguage('vi')
-	// 	} else {
-	// 		props.i18n.changeLanguage('en')
-	// 		props.store.i18nStore.changeLanguage('en')
-	// 	}
-	// }
 
 	function onLogout() {
 		props.store.authStore.logout()
@@ -101,7 +104,7 @@ function Main(props) {
 							md={{ span: 10, offset: 1 }}
 							lg={{ span: 4, offset: 1 }}
 						>
-							Hello, Admin
+							Hello, {me && me.username}
 							<Button type="primary" block onClick={onLogout}>
 								Log out
 							</Button>
@@ -113,6 +116,12 @@ function Main(props) {
 	)
 }
 
-export default inject('store')(
-	observer(withApollo(withTranslation()(withRouter(Main))))
-)
+const ME = gql`
+	query {
+		me {
+			username
+		}
+	}
+`
+
+export default inject('store')(observer(withApollo(withRouter(Layout))))

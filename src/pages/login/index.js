@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
-import { Row, Col, Form, Typography, Icon, Input, Button, Divider } from 'antd'
-import './style.scss'
-import { Link } from 'react-router-dom'
+import { Row, Col, Form, Typography, Icon, Input, Button } from 'antd'
+import './login.scss'
 import { withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
 import openNotificationWithIcon from '../../components/shared/openNotificationWithIcon'
@@ -13,9 +12,8 @@ const { Title } = Typography
 @observer
 class Login extends Component {
 	state = {
-		username: 'toan',
-		password: '123',
-		loading: false
+		username: 'admin',
+		password: '12345678'
 	}
 	handleSubmit = e => {
 		e.preventDefault()
@@ -36,10 +34,14 @@ class Login extends Component {
 					}
 				})
 				.then(res => {
-					const { token } = res.data.login
-					this.props.store.authStore.authenticate(token)
-					// this.setState({ loading: false, spin: false })
-					this.props.history.push('/')
+					// console.log(res.data.login)
+					const { token, sites } = res.data.login
+					this.setState({
+						loading: false,
+						spin: false
+					})
+					this.props.store.authStore.authenticate(token, sites)
+					this.props.history.push('/🥢')
 				})
 				.catch(err => {
 					// console.log(err)
@@ -120,12 +122,6 @@ class Login extends Component {
 										Log in
 									</Button>
 								</Form.Item>
-								{/* <Divider>OR</Divider>
-								<br />
-								<Link to="/forgot">Forgot password?</Link>
-								<br />
-								<span>Don't have an account?</span>
-								<Link to="/register"> Register.</Link> */}
 							</Form>
 						</div>
 					</Col>
@@ -139,6 +135,7 @@ const USER_LOGIN = gql`
 	mutation($input: LoginUserInput!) {
 		login(input: $input) {
 			token
+			sites
 		}
 	}
 `

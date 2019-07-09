@@ -2,22 +2,19 @@ import React from 'react'
 import { inject, observer } from 'mobx-react'
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom'
 import { routes } from '../routes'
-import Main from './apps/layouts/Mainlayout'
+import Layout from './apps/layout'
 import withLoadable from '../tools/loadable'
 
 function Root(props) {
 	const { isAuth } = props.store.authStore
 	return (
-		<BrowserRouter
-		// basename="/💩"
-		>
+		<BrowserRouter>
 			<Switch>
 				{routes &&
 					routes.map((route, i) =>
 						route.private ? (
-							
 							// Private
-							<Main key={i}>
+							<Layout key={i}>
 								<Route
 									{...route}
 									component={props => {
@@ -31,7 +28,7 @@ function Root(props) {
 										)
 									}}
 								/>
-							</Main>
+							</Layout>
 						) : (
 							// Not private
 							<Route
@@ -44,7 +41,7 @@ function Root(props) {
 									return !isAuth ? (
 										<MyComponent {...props} {...route} />
 									) : (
-										<Redirect to="/" />
+										<Redirect to="/🥢" />
 									)
 								}}
 							/>
