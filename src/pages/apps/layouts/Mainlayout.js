@@ -18,7 +18,6 @@ const gridStyle = {
 }
 
 function Main(props) {
-	console.log(props)
 	const [visible, setVisible] = useState(false)
 
 	function showDrawer(path) {

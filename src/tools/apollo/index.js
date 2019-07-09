@@ -7,7 +7,7 @@ import { setContext } from 'apollo-link-context'
 import AuthStore from '../mobx/auth'
 
 // const httpLink = new HttpLink({ uri: 'http://localhost:4000/graphql' })
-const httpLink = new HttpLink({ uri: 'http://devcloud3.digihcs.com:11068/graphql' })
+const httpLink = new HttpLink({ uri: 'http://localhost:4000/graphql' })
 // const httpLink = new HttpLink({
 // 	uri: 'https://chnirt-apollo-server.herokuapp.com/graphql'
 // })
@@ -35,11 +35,13 @@ const errorLink = new onError(({ graphQLErrors, networkError, operation }) => {
 const authLink = setContext((_, { headers }) => {
 	// get the authentication token from local storage if it exists
 	const token = window.localStorage.getItem('access-token')
+	const currentsite = window.localStorage.getItem('currentsite')
 	// return the headers to the context so httpLink can read them
 	return {
 		headers: {
 			...headers,
 			token: token ? token : ''
+			// currentsite: currentsite ? currentsite : ''
 		}
 	}
 })
