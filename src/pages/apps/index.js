@@ -1,11 +1,9 @@
 import React from 'react'
 import { Switch, Route, Redirect } from 'react-router-dom'
 import withLoadable from '../../tools/loadable'
-import Layout from './layout'
 
 export default function Root(props) {
 	return (
-		// <Layout routes={props.routes}>
 		<Switch>
 			{props.routes &&
 				props.routes.map((route, i) => (
@@ -20,6 +18,5 @@ export default function Root(props) {
 				))}
 			<Redirect to="/🥢" />
 		</Switch>
-		// </Layout>
 	)
 }

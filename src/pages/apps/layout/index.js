@@ -5,6 +5,7 @@ import { Icon, Drawer, Button, Col, Row, Tabs, Card } from 'antd'
 import { withRouter, Link } from 'react-router-dom'
 import { withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
+import { log } from 'util'
 
 const { TabPane } = Tabs
 
@@ -21,6 +22,13 @@ function Layout(props) {
 	const [me, setMe] = useState('')
 
 	useEffect(() => {
+		// history listen goBack()
+		props.history.listen((location, action) => {
+			if (action === 'POP') {
+				setVisible(false)
+			}
+		})
+
 		// code to run on component mount
 		props.client
 			.query({ query: ME })
@@ -39,7 +47,8 @@ function Layout(props) {
 	}
 
 	function onClose() {
-		props.history.goBack()
+		// props.history.goBack()
+		props.history.push('/')
 		setVisible(false)
 	}
 
@@ -48,8 +57,6 @@ function Layout(props) {
 		props.client.resetStore()
 		props.history.push('/login')
 	}
-
-	// console.log(props)
 
 	return (
 		<Tabs defaultActiveKey="1">
