@@ -41,7 +41,7 @@ function Root(props) {
 									return !isAuth ? (
 										<MyComponent {...props} {...route} />
 									) : (
-										<Redirect to="/🥢" />
+										<Redirect to="/" />
 									)
 								}}
 							/>

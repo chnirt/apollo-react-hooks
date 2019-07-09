@@ -11,35 +11,35 @@ export const routes = [
 	},
 	{
 		label: 'App',
-		path: '/🥢',
+		path: '/',
 		private: true,
 		exact: true,
 		component: 'apps',
 		routes: [
 			{
 				label: 'Menu',
-				path: '/🥢/menu',
+				path: '/menu',
 				content: 'Manage Menu',
 				icon: 'bars',
 				component: 'menu'
 			},
 			{
 				label: 'Order',
-				path: '/🥢/order',
+				path: '/order',
 				content: 'Manage Order',
 				icon: 'shopping-cart',
 				component: 'order'
 			},
 			{
 				label: 'User',
-				path: '/🥢/user',
+				path: '/user',
 				content: 'Manage User',
 				icon: 'user',
 				component: 'user'
 			},
 			{
 				label: 'Report',
-				path: '/🥢/report',
+				path: '/report',
 				content: 'Report',
 				icon: 'file-done',
 				component: 'report'
