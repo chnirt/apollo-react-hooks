@@ -3,7 +3,9 @@ import { Card, Icon, Col } from 'antd'
 import MenuModal from './MenuModal'
 
 function MenuList(props) {
+	const { menuData } = props
 	const [visible, setVisible] = useState(false)
+
 	return (
 		<>
 			<Col
@@ -21,7 +23,11 @@ function MenuList(props) {
 					<p style={{ height: '50px', lineHeight: '50px' }}>{props.children}</p>
 				</Card>
 			</Col>
-			<MenuModal visible={visible} handleCancel={() => setVisible(false)} />
+			<MenuModal
+				listDish={menuData.dishes}
+				visible={visible}
+				handleCancel={() => setVisible(false)}
+			/>
 		</>
 	)
 }

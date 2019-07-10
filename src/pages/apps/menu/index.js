@@ -11,7 +11,7 @@ function Menu(props) {
 		<div className="menu">
 			<Row className="menu-list">
 				{menus.map(menu => (
-					<MenuList>{menu.name}</MenuList>
+					<MenuList menuData={menu}>{menu.name}</MenuList>
 				))}
 			</Row>
 		</div>

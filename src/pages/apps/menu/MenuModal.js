@@ -1,48 +1,30 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Modal, Form, Button, Icon, Input, Col, Row, InputNumber } from 'antd'
-import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation'
-import gql from 'graphql-tag'
-
-let id = 0
 
 function MenuModal(props) {
-	const data = props.data
-	console.log(data)
-	function remove(k) {
-		const { form } = props
-		// can use data-binding to get
-		const keys = form.getFieldValue('keys')
-		// We need at least one passenger
-		if (keys.length === 0) {
-			return
-		}
+	const { listDish } = props
+	const [dishes, setDishes] = useState(listDish)
 
-		// can use data-binding to set
-		form.setFieldsValue({
-			keys: keys.filter(key => key !== k)
-		})
+	function remove(id) {
+		setDishes(dishes.filter(d => d._id !== id))
 	}
 
 	function add() {
-		const { form } = props
-		// can use data-binding to get
-		const keys = form.getFieldValue('keys')
-		const nextKeys = keys.concat(id++)
-		// can use data-binding to set
-		// important! notify form to detect changes
-		form.setFieldsValue({
-			keys: nextKeys
-		})
+		setDishes(
+			dishes.push({
+				name: '',
+				count: 0,
+				__typename: 'DishInfo'
+			})
+		)
+		console.log(dishes)
 	}
-	const { getFieldDecorator, getFieldValue } = props.form
-
-	getFieldDecorator('keys', { initialValue: [] })
-	const keys = getFieldValue('keys')
-	const formItems = keys.map((k, index) => (
+	const { getFieldDecorator } = props.form
+	const formItems = dishes.map((dish, index) => (
 		<Row>
 			<Col xs={{ span: 12 }} sm={{ span: 12 }} lg={{ span: 16 }}>
-				<Form.Item required={false} key={k}>
-					{getFieldDecorator(`dish[${k}]`, {
+				<Form.Item required={false} key={dish.name}>
+					{getFieldDecorator(`${dish.name}`, {
 						validateTrigger: ['onChange', 'onBlur'],
 						rules: [
 							{
@@ -50,20 +32,19 @@ function MenuModal(props) {
 								whitespace: true,
 								message: 'Nhập tên món'
 							}
-						]
+						],
+						initialValue: dish.name
 					})(<Input style={{ width: '90%' }} />)}
 				</Form.Item>
 			</Col>
 			<Col xs={{ span: 12 }} sm={{ span: 12 }} lg={{ span: 8 }}>
 				<Form.Item>
-					<InputNumber width="50px" defaultValue={0} />
-					{keys.length > 1 ? (
-						<Icon
-							style={{ marginLeft: '10px' }}
-							type="minus-circle-o"
-							onClick={() => remove(k)}
-						/>
-					) : null}
+					<InputNumber width="50px" defaultValue={dish.count} />
+					<Icon
+						style={{ marginLeft: '10px', fontSize: '18px' }}
+						type="minus-circle-o"
+						onClick={() => remove(dish._id || '')}
+					/>
 				</Form.Item>
 			</Col>
 		</Row>
@@ -75,7 +56,8 @@ function MenuModal(props) {
 			visible={props.visible}
 			//	onOk={this.handleOk}
 			onCancel={props.handleCancel}
-			destroyOnClose="true"
+			okText="Lưu"
+			cancelText="Hủy"
 		>
 			<Form>
 				{formItems}
@@ -89,27 +71,4 @@ function MenuModal(props) {
 	)
 }
 
-const GET_MENU = gql`
-	query getMenu($id: String!) {
-		menu(id: $id) {
-			_id
-			name
-			siteId
-			dishes {
-				_id
-				name
-				count
-			}
-			isPublished
-			isLocked
-			isActived
-		}
-	}
-`
-
-export default HOCQueryMutation([
-	{
-		query: GET_MENU,
-		name: 'getMenu'
-	}
-])(Form.create()(MenuModal))
+export default Form.create()(MenuModal)
