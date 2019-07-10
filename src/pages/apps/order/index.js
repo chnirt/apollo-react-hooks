@@ -67,6 +67,10 @@ class Order extends React.Component {
 	}
 
 	render() {
+		const sites = window.localStorage.getItem('sites')
+		sites.map(item => {
+			console.log(item._id)
+		})
 		const currentsite = window.localStorage.getItem('currentsite')
 		const options = this.state.sites.map(item =>
 			<Select.Option value={item._id} key={item._id}>
