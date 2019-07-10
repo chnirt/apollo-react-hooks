@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 import { Modal, Form, Button, Icon, Input, Col, Row, InputNumber } from 'antd'
+import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation'
+import gql from 'graphql-tag'
 
 function MenuModal(props) {
 	const { listDish } = props
@@ -9,42 +11,52 @@ function MenuModal(props) {
 		setDishes(dishes.filter(d => d._id !== id))
 	}
 
-	function add() {
-		setDishes(
-			dishes.push({
+	async function add() {
+		if (dishes[dishes.length - 1]._id) {
+			const list = dishes.slice(0)
+			list.push({
 				name: '',
-				count: 0,
-				__typename: 'DishInfo'
+				count: 0
 			})
-		)
-		console.log(dishes)
+			setDishes(list)
+		} else {
+			const { name, count } = dishes[dishes.length - 1]
+			await props.mutate.addDish({
+				varibles: {
+					id: props.menuId,
+					dishInput: { name, count }
+				}
+			})
+		}
 	}
 	const { getFieldDecorator } = props.form
 	const formItems = dishes.map((dish, index) => (
-		<Row>
+		<Row key={index}>
 			<Col xs={{ span: 12 }} sm={{ span: 12 }} lg={{ span: 16 }}>
-				<Form.Item required={false} key={dish.name}>
-					{getFieldDecorator(`${dish.name}`, {
+				<Form.Item>
+					{getFieldDecorator(`dish[${dish._id}]`, {
 						validateTrigger: ['onChange', 'onBlur'],
 						rules: [
 							{
 								required: true,
 								whitespace: true,
-								message: 'Nhập tên món'
+								message: 'Nhập tên món ăn'
 							}
 						],
-						initialValue: dish.name
+						initialValue: dish.name || ''
 					})(<Input style={{ width: '90%' }} />)}
 				</Form.Item>
 			</Col>
 			<Col xs={{ span: 12 }} sm={{ span: 12 }} lg={{ span: 8 }}>
 				<Form.Item>
 					<InputNumber width="50px" defaultValue={dish.count} />
-					<Icon
-						style={{ marginLeft: '10px', fontSize: '18px' }}
-						type="minus-circle-o"
-						onClick={() => remove(dish._id || '')}
-					/>
+					{index >= 0 ? (
+						<Icon
+							style={{ marginLeft: '10px', fontSize: '18px' }}
+							type="minus-circle-o"
+							onClick={() => remove(dish._id)}
+						/>
+					) : null}
 				</Form.Item>
 			</Col>
 		</Row>
@@ -59,10 +71,18 @@ function MenuModal(props) {
 			okText="Lưu"
 			cancelText="Hủy"
 		>
+			<Row style={{ marginBottom: '20px' }}>
+				<Col xs={{ span: 12 }} sm={{ span: 12 }} lg={{ span: 16 }}>
+					<b>Món ăn</b>
+				</Col>
+				<Col xs={{ span: 12 }} sm={{ span: 12 }} lg={{ span: 8 }}>
+					<b>Số lượng</b>
+				</Col>
+			</Row>
 			<Form>
 				{formItems}
 				<Form.Item>
-					<Button type="dashed" onClick={add} style={{ width: '90%' }}>
+					<Button type="dashed" onClick={add} style={{ width: '60%' }}>
 						<Icon type="plus" /> Thêm món
 					</Button>
 				</Form.Item>
@@ -71,4 +91,16 @@ function MenuModal(props) {
 	)
 }
 
-export default Form.create()(MenuModal)
+const ADD_DISH = gql`
+	mutation addDish($id: String!, $dishInput: DishInput!) {
+		addDish(id: $id, dishInput: $dishInput)
+	}
+`
+
+export default HOCQueryMutation([
+	{
+		mutation: ADD_DISH,
+		name: 'addDish',
+		options: {}
+	}
+])(Form.create()(MenuModal))

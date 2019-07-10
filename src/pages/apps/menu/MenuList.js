@@ -25,6 +25,7 @@ function MenuList(props) {
 			</Col>
 			<MenuModal
 				listDish={menuData.dishes}
+				menuId={menuData._id}
 				visible={visible}
 				handleCancel={() => setVisible(false)}
 			/>

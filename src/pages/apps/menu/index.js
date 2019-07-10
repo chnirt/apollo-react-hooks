@@ -10,8 +10,10 @@ function Menu(props) {
 	return (
 		<div className="menu">
 			<Row className="menu-list">
-				{menus.map(menu => (
-					<MenuList menuData={menu}>{menu.name}</MenuList>
+				{menus.map((menu, index) => (
+					<MenuList key={index} menuData={menu}>
+						{menu.name}
+					</MenuList>
 				))}
 			</Row>
 		</div>
