@@ -8,92 +8,89 @@ class Order extends React.Component {
 	state = {
 		sites: [],
 		menuId: null,
-		dishes: []
+		dishes: [],
+		condition: []
 	}
 
 	componentDidMount () {
-		this.handleGetSites(window.localStorage.getItem('sites').split(','))
+		this.handleDefaultDishes()
 	}
 
-	handleChange (selectedItems) {
-		window.localStorage.setItem('currentsite', selectedItems)
+	handleDefaultDishes () {
 		this.props.client.query({
 			query: MENU_BY_SELECTED_SITE
 		})
 		.then(res => {
-			console.log('aaaa',res.data.menuPublishBySite._id)
-			this.setState({
-				menuId: res.data.menuPublishBySite._id
-			})
+			if (res.data.menuPublishBySite.isPublished === true && res.data.menuPublishBySite.isActived === true) {
+				this.setState({
+					menuId: res.data.menuPublishBySite._id,
+					dishes: [...res.data.menuPublishBySite.dishes],
+					condition: res.data.menuPublishBySite
+				})
+			}
+		})
+		.catch((error) => {
+			console.log(error)
+		})
+	}
+
+	async handleChange (selectedItems) {
+		await window.localStorage.setItem('currentsite', selectedItems)
+		await this.props.client.cache.reset()
+		await this.props.client.query({
+			query: MENU_BY_SELECTED_SITE
+		})
+		.then(res => {
+			if (res.data.menuPublishBySite.isPublished === true && res.data.menuPublishBySite.isActived) {
+				this.setState({
+					menuId: res.data.menuPublishBySite._id,
+					dishes: [...res.data.menuPublishBySite.dishes],
+					condition: res.data.menuPublishBySite
+				})
+			}
 		})
 		.catch((error) => {
 			console.log(error)
 		})
   }
 
-	handleGetSites (sitesIds) {
-		this.props.client.query({
-			query: SITES_BY_IDS,
-			variables: {
-				ids: sitesIds
-			}
-		})
-		.then(res => {
-			this.setState({
-				sites: [...res.data.sitesByIds]
-			})
-		})
-		.catch((error) => {
-			console.log(error)
-		})
+	handleMinus (e, item) {
+		console.log(item)
 	}
 
-	handleGetDishes (menuId) {
-		this.props.client.query({
-			query: MENU,
+	handlePlus (item) {
+		console.log(item)
+	}
+
+	handleOrder (e) {
+		this.props.client.mutate({
+			mutation: ORDER_DISH,
 			variables: {
-				id: String(menuId)
+				input: {
+					menuId: this.state.menuId,
+					dishId: this.state.dishes[0]._id,
+					count: 1
+				}
 			}
 		})
-		.then(res => {
-			this.setState({
-				dishes: [...res.data.menu.dishes]
-			})
-			console.log(this.state.dishes)
+		.then((res) => {
+			console.log(res)
 		})
 		.catch((error) => {
-			console.log(error)
+			console.dir(error)
 		})
 	}
 
 	render() {
-		const sites = window.localStorage.getItem('sites')
-		sites.map(item => {
-			console.log(item._id)
-		})
 		const currentsite = window.localStorage.getItem('currentsite')
-		const options = this.state.sites.map(item =>
+		const options = JSON.parse(window.localStorage.getItem('sites')).map(item =>
 			<Select.Option value={item._id} key={item._id}>
 					{item.name}
 			</Select.Option>
 		)
-		// const x = this.state.sites.map(site =>
-		// 	if (site._id === currentsite) {
-		// 		return site._id
-		// 	}
-		// )
-		// const getDishes = this.state.menus.map(dish =>
-		// 	<List.Item actions={[<Button className='minus'>-</Button>, <Button className='plus'>+</Button>]}>
-		// 		<List.Item.Meta
-		// 			title='dsadasdas'
-		// 		/>
-		// 	</List.Item>
-		// )
+		// consosle.log(this.state.condition)
 		return (
 			<React.Fragment>
-				<Button onClick={() => this.handleGetDishes(this.state.menuId)}>
-					get dishes
-				</Button>
 				<Select
 					showSearch
 					style={{ width: '100%', marginBottom: 20 }}
@@ -104,41 +101,46 @@ class Order extends React.Component {
 					{options}
 				</Select>
 
-				<label style={{ textAlign: 'center', display: 'block', marginBottom: 20 }}>
+				{/* <label style={{ textAlign: 'center', display: 'block', marginBottom: 20 }}>
 					Danh sách món
-				</label>
-				
-				<List
-					className='demo-loadmore-list'
-					dataSource={this.state.dishes}
-					renderItem={item => (
-						<List.Item actions={[<Button className='minus'>-</Button>, <Button className='plus'>+</Button>]}>
-								<List.Item.Meta
-									title={item.name}
-									description={item.count}
+				</label> */}
+
+				{
+					this.state.condition.isActived === true && this.state.condition.isLocked === false && this.state.condition.isPublished === true
+					? <List
+							dataSource={this.state.dishes}
+							renderItem={item => (
+								<List.Item actions={[<Button className='minus' onClick={(e, item) => this.handleMinus(e,item)}>-</Button>, <Button className='plus' onClick={(item) => this.handlePlus(item)}>+</Button>]}>
+									<List.Item.Meta
+										title={item.name}
+										description={item.count}
+									/>
+								</List.Item>
+							)}
+						/>
+					: ( this.state.condition.isActived === true && this.state.condition.isLocked === true && this.state.condition.isPublished === true
+							? <List
+									dataSource={this.state.dishes}
+									renderItem={item => (
+										<List.Item actions={[<Button className='minus' disabled>-</Button>, <Button className='plus' disabled>+</Button>]}>
+											<List.Item.Meta
+												title={item.name}
+												description={item.count}
+											/>
+										</List.Item>
+									)}
 								/>
-						</List.Item>
-					)}
-				/>
+							:	'Hệ thống đã khóa'	
+						)
+				}
 			</React.Fragment>
 		)
 	}
 }
 
-const SITES_BY_IDS = gql`
-	query sitesByIds($ids: [String!]) {
-		sitesByIds(ids: $ids) {
-			_id
-			name
-			createdAt
-			updatedAt
-		}
-	}
-`
-
-const MENU = gql`
-	query	menu($id: String!) {
-		menu(id: $id) {
+const MENU_BY_SELECTED_SITE = gql`
+	{
+		menuPublishBySite {
 			_id
 			name
 			siteId
@@ -148,24 +150,18 @@ const MENU = gql`
 				count
 			}
 			isPublished
-			isLocked
 			isActived
+			isLocked
 			createAt
 			updateAt
 		}
 	}
 `
 
-const MENU_BY_SELECTED_SITE = gql`
-	{
-  menuPublishBySite {
-    _id
-    name
-    isPublished
-    isActived
-    isLocked
-  }
-}
+const ORDER_DISH = gql`
+	mutation orderDish($input: CreateOrderInput!) {
+  	orderDish(input: $input)
+	}
 `
 
 export default withApollo(Order)
