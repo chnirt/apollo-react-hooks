@@ -1,15 +1,19 @@
 import React from 'react'
 import { Modal, Form, Button, Icon, Input, Col, Row, InputNumber } from 'antd'
+import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation'
+import gql from 'graphql-tag'
 
 let id = 0
 
 function MenuModal(props) {
+	const data = props.data
+	console.log(data)
 	function remove(k) {
 		const { form } = props
 		// can use data-binding to get
 		const keys = form.getFieldValue('keys')
 		// We need at least one passenger
-		if (keys.length === 1) {
+		if (keys.length === 0) {
 			return
 		}
 
@@ -56,7 +60,6 @@ function MenuModal(props) {
 					{keys.length > 1 ? (
 						<Icon
 							style={{ marginLeft: '10px' }}
-							className="dynamic-delete-button"
 							type="minus-circle-o"
 							onClick={() => remove(k)}
 						/>
@@ -86,4 +89,27 @@ function MenuModal(props) {
 	)
 }
 
-export default Form.create()(MenuModal)
+const GET_MENU = gql`
+	query getMenu($id: String!) {
+		menu(id: $id) {
+			_id
+			name
+			siteId
+			dishes {
+				_id
+				name
+				count
+			}
+			isPublished
+			isLocked
+			isActived
+		}
+	}
+`
+
+export default HOCQueryMutation([
+	{
+		query: GET_MENU,
+		name: 'getMenu'
+	}
+])(Form.create()(MenuModal))
