@@ -135,7 +135,10 @@ const USER_LOGIN = gql`
 	mutation($input: LoginUserInput!) {
 		login(input: $input) {
 			token
-			sites
+			sites {
+				_id
+				name
+			}
 		}
 	}
 `
