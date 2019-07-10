@@ -110,7 +110,7 @@ class Order extends React.Component {
 					? <List
 							dataSource={this.state.dishes}
 							renderItem={item => (
-								<List.Item actions={[<Button className='minus' onClick={(e, item) => this.handleMinus(e,item)}>-</Button>, <Button className='plus' onClick={(item) => this.handlePlus(item)}>+</Button>]}>
+								<List.Item actions={[<Button className='minus' onClick={(e, item) => this.handleMinus(e, item)}>-</Button>, <Button className='plus' onClick={(item) => this.handlePlus(item)}>+</Button>]}>
 									<List.Item.Meta
 										title={item.name}
 										description={item.count}
