@@ -97,7 +97,7 @@ function Dashboard(props) {
 								}}
 								onClick={() => {
 									props.history.push(item.path)
-									showDrawer(item.path)
+									// showDrawer(item.path)
 								}}
 							>
 								<Card.Grid style={gridStyle}>
