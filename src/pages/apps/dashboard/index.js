@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { inject, observer } from 'mobx-react'
-import { Icon, Drawer, Button, Col, Row, Tabs, Card } from 'antd'
+import { Icon, Button, Col, Row, Tabs, Card } from 'antd'
 // import logo from '../../../assets/images/logo.svg'
 import { withRouter } from 'react-router-dom'
 import { withApollo } from 'react-apollo'
@@ -18,16 +18,18 @@ const gridStyle = {
 }
 
 function Dashboard(props) {
-	const [visible, setVisible] = useState(false)
+	const { showDrawer } = props.store.navigationStore
+	// console.log('TCL: Dashboard -> visible', visible)
+	// const [visible, setVisible] = useState(false)
 	const [me, setMe] = useState('')
 
 	useEffect(() => {
 		// history listen goBack()
-		props.history.listen((location, action) => {
-			if (action === 'POP') {
-				setVisible(false)
-			}
-		})
+		// props.history.listen((location, action) => {
+		// 	if (action === 'POP') {
+		// 		setVisible(false)
+		// 	}
+		// })
 
 		// code to run on component mount
 		props.client
@@ -41,15 +43,15 @@ function Dashboard(props) {
 			})
 	})
 
-	function showDrawer(path) {
-		props.history.push(path)
-		// setVisible(true)
-	}
+	// function showDrawer(path) {
+	// 	// props.history.push(path)
+	// 	// setVisible(true)
+	// }
 
 	// function onClose() {
 	// 	// props.history.goBack()
-	// 	props.history.push('/')
-	// 	setVisible(false)
+	// 	// props.history.push('/')
+	// 	// setVisible(false)
 	// }
 
 	function onLogout() {
@@ -58,12 +60,14 @@ function Dashboard(props) {
 		props.history.push('/login')
 	}
 
-	console.log(menuRoutes)
-
 	return (
 		<Tabs defaultActiveKey="1">
 			<TabPane tab="Home" key="1">
-				<Row style={{ height: 'calc(100vh - 60px)' }}>
+				<Row
+					style={{
+						height: 'calc(100vh - 60px)'
+					}}
+				>
 					<Card
 						title="Quick actions"
 						bordered={false}
@@ -75,11 +79,26 @@ function Dashboard(props) {
 						{menuRoutes.map((item, i) => (
 							<Col
 								key={i}
-								xs={{ span: 10, offset: 1 }}
-								sm={{ span: 10, offset: 1 }}
-								md={{ span: 10, offset: 1 }}
-								lg={{ span: 4, offset: 1 }}
-								onClick={() => showDrawer(item.path)}
+								xs={{
+									span: 10,
+									offset: 1
+								}}
+								sm={{
+									span: 10,
+									offset: 1
+								}}
+								md={{
+									span: 10,
+									offset: 1
+								}}
+								lg={{
+									span: 4,
+									offset: 1
+								}}
+								onClick={() => {
+									props.history.push(item.path)
+									showDrawer(item.path)
+								}}
 							>
 								<Card.Grid style={gridStyle}>
 									{item.label}
@@ -96,12 +115,30 @@ function Dashboard(props) {
 				</Row>
 			</TabPane>
 			<TabPane tab="User" key="2">
-				<Row type="flex" justify="center" style={{ height: '100vh' }}>
+				<Row
+					type="flex"
+					justify="center"
+					style={{
+						height: '100vh'
+					}}
+				>
 					<Col
-						xs={{ span: 10, offset: 1 }}
-						sm={{ span: 10, offset: 1 }}
-						md={{ span: 10, offset: 1 }}
-						lg={{ span: 4, offset: 1 }}
+						xs={{
+							span: 10,
+							offset: 1
+						}}
+						sm={{
+							span: 10,
+							offset: 1
+						}}
+						md={{
+							span: 10,
+							offset: 1
+						}}
+						lg={{
+							span: 4,
+							offset: 1
+						}}
 					>
 						Hello, {me && me.username}
 						<Button type="primary" block onClick={onLogout}>
@@ -122,4 +159,4 @@ const ME = gql`
 	}
 `
 
-export default inject('store')(observer(withApollo(withRouter(Dashboard))))
+export default withApollo(withRouter(inject('store')(observer(Dashboard))))
