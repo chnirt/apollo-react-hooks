@@ -21,10 +21,11 @@ function MenuModal(props) {
 			setDishes(list)
 		} else {
 			const { name, count } = dishes[dishes.length - 1]
+			console.log(typeof props.menuId)
 			await props.mutate.addDish({
-				varibles: {
+				variables: {
 					id: props.menuId,
-					dishInput: { name, count }
+					dishInput: { name: name, count: count }
 				}
 			})
 		}
