@@ -7,7 +7,7 @@ class AuthStore {
 	authenticate = (token, sites) => {
 		window.localStorage.setItem('access-token', token)
 		window.localStorage.setItem('currentsite', sites[0]._id)
-		window.localStorage.setItem('sites', sites)
+		window.localStorage.setItem('sites', JSON.stringify(sites))
 		this.isAuth = true
 	}
 	logout = () => {
