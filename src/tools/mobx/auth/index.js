@@ -6,7 +6,7 @@ class AuthStore {
 	@action
 	authenticate = (token, sites) => {
 		window.localStorage.setItem('access-token', token)
-		window.localStorage.setItem('currentsite', sites[0])
+		window.localStorage.setItem('currentsite', sites[0]._id)
 		window.localStorage.setItem('sites', sites)
 		this.isAuth = true
 	}
