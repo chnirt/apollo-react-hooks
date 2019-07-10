@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import './App.scss'
 import Root from './pages/'
 import { ApolloProvider } from 'react-apollo'
@@ -9,20 +9,6 @@ import { Provider } from 'mobx-react'
 import store from './tools/mobx'
 
 function App() {
-	// useEffect(() => {
-	// 	// KeepAwake
-	// 	let wakeUp = setInterval(() => {
-	// 		// fetch('http://localhost:3000')
-	// 		fetch('https://chnirt-apollo-client.herokuapp.com/')
-	// 			.then(res => {
-	// 				console.log(res)
-	// 			})
-	// 			.catch(err => {
-	// 				console.log(err)
-	// 			})
-	// 	}, 300000) // every 5 minutes (300000)
-	// 	return () => clearInterval(wakeUp)
-	// })
 	return (
 		<Provider store={store}>
 			<ApolloProvider client={client}>

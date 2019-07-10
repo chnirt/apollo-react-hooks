@@ -4,7 +4,7 @@ import { ApolloLink } from 'apollo-link'
 import { HttpLink } from 'apollo-link-http'
 import { onError } from 'apollo-link-error'
 import { setContext } from 'apollo-link-context'
-import AuthStore from '../mobx/auth'
+import store from '../mobx'
 
 // const httpLink = new HttpLink({ uri: 'http://localhost:4000/graphql' })
 const httpLink = new HttpLink({ uri: 'http://devcloud3.digihcs.com:11029/graphql' })
@@ -14,18 +14,19 @@ const httpLink = new HttpLink({ uri: 'http://devcloud3.digihcs.com:11029/graphql
 
 const errorLink = new onError(({ graphQLErrors, networkError, operation }) => {
 	if (graphQLErrors) {
-		graphQLErrors.forEach(({ message, locations, path }) =>
+		graphQLErrors.forEach(({ message, locations, path, extensions }) => {
 			console.log(
-				`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
+				`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}, Code: ${
+					extensions.code
+				}`
 			)
-		)
+			if (extensions.code === '498') {
+				store.authStore.logout()
+				window.location.pathname = '/login'
+			}
+		})
 	}
 	if (networkError) {
-		// const authStore = new AuthStore()
-		// if (networkError.statusCode === 400) {
-		// 	authStore.logout()
-		// 	window.location.pathname = '/login'
-		// }
 		console.log(
 			`[Network error ${operation.operationName}]: ${networkError.message}`
 		)

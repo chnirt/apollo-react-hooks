@@ -7,126 +7,97 @@ import './index.css'
 class Order extends React.Component {
 	state = {
 		sites: [],
-		menus: [],
-		sitesAllow: []
+		menuId: null,
+		dishes: []
 	}
 
 	componentDidMount () {
-		this.handleGetSite()
-		this.handleGetMenu()
+		this.handleGetSites(window.localStorage.getItem('sites').split(','))
 	}
 
-	handleGetSite (siteName) {
-    if (String(siteName).length > 0) {
-      this.props.client.query({
-        query: SITES,
-        variables: {
-          siteName: String(siteName)
-        }
-      })
-			.then(res => {
-				this.setState({
-					sites: [...res.data.sites]
-				})
+	handleChange (selectedItems) {
+		window.localStorage.setItem('currentsite', selectedItems)
+		this.props.client.query({
+			query: MENU_BY_SELECTED_SITE
+		})
+		.then(res => {
+			console.log('aaaa',res.data.menuPublishBySite._id)
+			this.setState({
+				menuId: res.data.menuPublishBySite._id
 			})
-			.catch((error) => {
-				console.log(error)
+		})
+		.catch((error) => {
+			console.log(error)
+		})
+  }
+
+	handleGetSites (sitesIds) {
+		this.props.client.query({
+			query: SITES_BY_IDS,
+			variables: {
+				ids: sitesIds
+			}
+		})
+		.then(res => {
+			this.setState({
+				sites: [...res.data.sitesByIds]
 			})
-    }
+		})
+		.catch((error) => {
+			console.log(error)
+		})
 	}
 
-	handleGetMenu (menu) {
-    if (String(menu).length > 0) {
-      this.props.client.query({
-        query: MENUS,
-        variables: {
-          menu: String(menu)
-        }
-      })
-			.then(res => {
-				console.log('aaaa',res.data.menus)
-				console.log(res.data.menus.map(site => site.isActived))
-				this.setState({
-					menus: [...res.data.menus]
-				})
+	handleGetDishes (menuId) {
+		this.props.client.query({
+			query: MENU,
+			variables: {
+				id: String(menuId)
+			}
+		})
+		.then(res => {
+			this.setState({
+				dishes: [...res.data.menu.dishes]
 			})
-			.catch((error) => {
-				console.log(error)
-			})
-    }
-	}
-
-	siteAccess (site) {
-    if (String(site).length > 0) {
-			window.localStorage.sites.split(',').map(aSite =>
-				this.props.client.query({
-					query: SITE,
-					variables: {
-						_id: aSite
-					}
-				})
-				.then(res => {
-					console.log(res.data)
-					this.setState({
-						siteAllow: [...res.data]
-					})
-				})
-				.catch((error) => {
-					console.log(error)
-				})
-			)
-    }
-	}
-
-	handleCurrentSite (currentSite) {
-		if (String(currentSite).length > 0) {
-      this.props.client.query({
-        query: MENU_BY_CURRENTSITE,
-        variables: {
-          currentSite: String(currentSite)
-        }
-      })
-        .then(res => {
-					console.log('aaaa',res.data)
-          // this.setState({
-					// 	menus: [...res.data.Menus]
-          // })
-        })
-        .catch((error) => {
-          console.log(error)
-        })
-    }
+			console.log(this.state.dishes)
+		})
+		.catch((error) => {
+			console.log(error)
+		})
 	}
 
 	render() {
-		const getSite = this.state.sites.map(site =>
-			<Select.Option key={site.name}>
-					{site.name}
+		const currentsite = window.localStorage.getItem('currentsite')
+		const options = this.state.sites.map(item =>
+			<Select.Option value={item._id} key={item._id}>
+					{item.name}
 			</Select.Option>
 		)
-		const getDishes = this.state.menus.map(dish =>
-			<List.Item actions={[<Button className='minus'>-</Button>, <Button className='plus'>+</Button>]}>
-				<List.Item.Meta
-					title='dsadasdas'
-				/>
-			</List.Item>
-		)
+		// const x = this.state.sites.map(site =>
+		// 	if (site._id === currentsite) {
+		// 		return site._id
+		// 	}
+		// )
+		// const getDishes = this.state.menus.map(dish =>
+		// 	<List.Item actions={[<Button className='minus'>-</Button>, <Button className='plus'>+</Button>]}>
+		// 		<List.Item.Meta
+		// 			title='dsadasdas'
+		// 		/>
+		// 	</List.Item>
+		// )
 		return (
 			<React.Fragment>
-				<Button onClick={() => this.siteAccess()}>
-					Test
+				<Button onClick={() => this.handleGetDishes(this.state.menuId)}>
+					get dishes
 				</Button>
 				<Select
 					showSearch
 					style={{ width: '100%', marginBottom: 20 }}
 					placeholder='Chọn Site'
-					optionFilterProp='children'
-					filterOption={(input, option) =>
-						option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-					}
-					onSelect={() => this.handleGetSite()}
+					defaultValue={currentsite}
+					onChange={(e) => this.handleChange(e)}
 				>
-					{getSite}
+					{options}
 				</Select>
 
 				<label style={{ textAlign: 'center', display: 'block', marginBottom: 20 }}>
@@ -135,11 +106,12 @@ class Order extends React.Component {
 				
 				<List
 					className='demo-loadmore-list'
-					dataSource={getSite}
+					dataSource={this.state.dishes}
 					renderItem={item => (
 						<List.Item actions={[<Button className='minus'>-</Button>, <Button className='plus'>+</Button>]}>
 								<List.Item.Meta
-									title='dsadasdas'
+									title={item.name}
+									description={item.count}
 								/>
 						</List.Item>
 					)}
@@ -149,9 +121,20 @@ class Order extends React.Component {
 	}
 }
 
-const MENUS = gql`
-	{
-		menus {
+const SITES_BY_IDS = gql`
+	query sitesByIds($ids: [String!]) {
+		sitesByIds(ids: $ids) {
+			_id
+			name
+			createdAt
+			updatedAt
+		}
+	}
+`
+
+const MENU = gql`
+	query	menu($id: String!) {
+		menu(id: $id) {
 			_id
 			name
 			siteId
@@ -168,29 +151,8 @@ const MENUS = gql`
 		}
 	}
 `
-const SITES = gql`
-	{
-  sites {
-    _id
-    name
-    createdAt
-    updatedAt
-  }
-}
-`
 
-const SITE = gql`
-	query site($_id: String!) {
-  site(_id: $_id) {
-    _id
-    name
-    createdAt
-    updatedAt
-  }
-}
-`
-
-const MENU_BY_CURRENTSITE = gql`
+const MENU_BY_SELECTED_SITE = gql`
 	{
   menuPublishBySite {
     _id
