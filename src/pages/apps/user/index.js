@@ -137,7 +137,6 @@ const UserEditForm = Form.create({ name: 'user_edit' })(
 		render() {
 			const { visible, onCancel, onEdit, onDelete, form } = this.props;
 			const { getFieldDecorator } = form;
-			console.log(this.props)
 			return (
 				<Modal
 					visible={visible}
@@ -163,7 +162,7 @@ const UserEditForm = Form.create({ name: 'user_edit' })(
 					<Form>
 						<Form.Item>
 							{
-								getFieldDecorator('fullName',  {
+								getFieldDecorator('fullName', {
 
 								})(
 									<Input placeholder='New name' />)
@@ -212,7 +211,7 @@ class UserManage extends React.Component {
 		visibleEditUser: false,
 		users: [],
 		userId: "",
-		userName: ""
+		userName: "",
 	};
 
 	componentDidMount() {
@@ -300,18 +299,16 @@ class UserManage extends React.Component {
 					}
 				},
 				fetchPolicy: 'no-cache',
-				// refetchQueries: () => [
-				// 	{
-				// 		query: GET_ALL_USERS,
-				// 		variables:
-				// 		{
-				// 			offset: 0, limit: 100
-				// 		}
-				// 	}
-				// ]
-				refetchQueries: [{
-					query: GET_ALL_USERS
-				}]
+				refetchQueries: () => [
+					{
+						query: GET_ALL_USERS,
+						variables:
+						{
+							offset: 0,
+							limit: 100
+						}
+					}
+				]
 			})
 				.then((result) => {
 					console.log(result)
