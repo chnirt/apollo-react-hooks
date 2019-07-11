@@ -74,19 +74,19 @@ const authLink = setContext((_, { headers }) => {
 	}
 })
 
-const defaultOptions = {
-	watchQuery: {
-		fetchPolicy: 'cache-and-network',
-		errorPolicy: 'ignore'
-	},
-	query: {
-		fetchPolicy: 'network-only',
-		errorPolicy: 'all'
-	},
-	mutate: {
-		errorPolicy: 'all'
-	}
-}
+// const defaultOptions = {
+// 	watchQuery: {
+// 		fetchPolicy: 'cache-and-network',
+// 		errorPolicy: 'ignore'
+// 	},
+// 	query: {
+// 		fetchPolicy: 'network-only',
+// 		errorPolicy: 'all'
+// 	},
+// 	mutate: {
+// 		errorPolicy: 'all'
+// 	}
+// }
 
 const client = new ApolloClient({
 	// cache: new InMemoryCache(),

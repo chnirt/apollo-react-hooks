@@ -10,6 +10,7 @@ export default function openNotificationWithIcon(
 		key,
 		message,
 		description,
-		placement: 'bottomRight'
+		placement: 'bottomRight',
+		duration: 1
 	})
 }
