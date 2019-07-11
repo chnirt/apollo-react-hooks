@@ -4,8 +4,6 @@ import { withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
 // import './index.css'
 
-let myRef = React.createRef()
-
 class Order extends React.Component {
 	state = {
 		sites: [],
@@ -27,7 +25,7 @@ class Order extends React.Component {
 			if (res.data.menuPublishBySite.isPublished === true && res.data.menuPublishBySite.isActived === true) {
 				this.setState({
 					menuId: res.data.menuPublishBySite._id,
-					dishes: [...res.data.menuPublishBySite.dishes],
+					dishes: [...res.data.menuPublishBySite.dishes].map(dish => ({...dish, orderNumber: 0})),
 					condition: res.data.menuPublishBySite
 				})
 			}
@@ -47,7 +45,7 @@ class Order extends React.Component {
 			if (res.data.menuPublishBySite.isPublished === true && res.data.menuPublishBySite.isActived) {
 				this.setState({
 					menuId: res.data.menuPublishBySite._id,
-					dishes: [...res.data.menuPublishBySite.dishes],
+					dishes: [...res.data.menuPublishBySite.dishes].map(dish => ({...dish, orderNumber: 0})),
 					condition: res.data.menuPublishBySite
 				})
 			}
@@ -55,12 +53,30 @@ class Order extends React.Component {
 		.catch((error) => {
 			console.log(error)
 		})
+	}
+	
+	handleActions(item) {
+		const x = this.state.dishes.map(dish => 'chay gium').indexOf(item._id)
+    if (this.handleActions === 'plus') {
+			// const x = this.state.dishes.map(dish => 'chay gium').indexOf(item._id)
+			this.selectDishHandler(x,item)
+    } else {
+			// const x = this.state.dishes.map(dish => 'chay ho').indexOf(item._id)
+			this.unselectDishHandler(x,item)
+    }
   }
 
-	async handleMinus (item, number) {
-		console.log(number)
-		console.log(item)
-		console.log(window.clicks)
+	handleMinus (item) {
+		const x = this.state.dishes.map(dish => 'chay ho').indexOf(item._id)
+		this.unselectDishHandler(x,item)
+		// console.log(item._id)
+		// this.state.dishes.map(dish =>
+		// 	(item._id === dish._id) ? 
+		// 		// this.setState({
+		// 		// 	dishCountOrdered: this.state.dishCountOrdered-1
+		// 		// })
+		// 		: null
+		// )
 		// await this.props.client.mutate({
 		// 	mutation: ORDER_DISH,
 		// 	variables: {
@@ -82,32 +98,53 @@ class Order extends React.Component {
 		// .catch((error) => {
 		// 	console.dir(error)
 		// })
-		this.handleCountOrder()
 	}
 
-	async handlePlus (item) {
-		console.log(item)
-		await this.props.client.mutate({
-			mutation: ORDER_DISH,
-			variables: {
-				input: {
-					menuId: this.state.menuId,
-					dishId: item._id,
-					count: 2
-				}
-			}
+	selectDishHandler (id, item) {
+		let theDish = [...this.state.dishes]
+		theDish[id] = {...theDish[id], orderNumber: item.orderNumber++}
+		console.log(theDish[id].orderNumber)
+
+		this.setState({dishes: theDish}, () => {
+			console.log(this.state.dishes[id].orderNumber)
 		})
-		.then((res) => {
-			console.log(res)
-			// this.setState({
-			// 	dishCountOrdered: this.state.dishCountOrdered++
-			// })
-			this.setState({ dishCountOrdered: this.myRef.current.value+1})
-			console.log(this.state.dishCountOrdered)
+	}
+
+	unselectDishHandler (id, item) {
+		let theDish = [...this.state.dishes]
+		theDish[id] = {...theDish[id], orderNumber: item.orderNumber--}
+		console.log(theDish[id].orderNumber)
+
+		this.setState({dishes: theDish}, () => {
+			console.log(this.state.dishes[id].orderNumber)
 		})
-		.catch((error) => {
-			console.dir(error)
-		})
+	}
+
+	handlePlus (item) {
+		const x = this.state.dishes.map(dish => 'chay gium').indexOf(item._id)
+		this.selectDishHandler(x,item)
+		
+		// await this.props.client.mutate({
+		// 	mutation: ORDER_DISH,
+		// 	variables: {
+		// 		input: {
+		// 			menuId: this.state.menuId,
+		// 			dishId: item._id,
+		// 			count: 2
+		// 		}
+		// 	}
+		// })
+		// .then((res) => {
+		// 	console.log(res)
+		// 	// this.setState({
+		// 	// 	dishCountOrdered: this.state.dishCountOrdered++
+		// 	// })
+		// 	this.setState({ dishCountOrdered: this.myRef.current.value+1})
+		// 	console.log(this.state.dishCountOrdered)
+		// })
+		// .catch((error) => {
+		// 	console.dir(error)
+		// })
 	}
 
 	handleCountOrder (number) {
@@ -176,7 +213,7 @@ class Order extends React.Component {
 	}
 
 	render() {
-		console.log(myRef)
+		console.log(this.state.dishes)
 		const currentsite = window.localStorage.getItem('currentsite')
 		const options = JSON.parse(window.localStorage.getItem('sites')).map(item =>
 			<Select.Option value={item._id} key={item._id}>
@@ -205,11 +242,13 @@ class Order extends React.Component {
 							dataSource={this.state.dishes}
 							renderItem={item => (
 								<List.Item key={item._id} actions={[<Button className='minus' onClick={() => this.handleMinus(item)}>-</Button>, <Button className='plus' onClick={() => this.handlePlus(item)}>+</Button>]}>
+								{/* <List.Item key={item._id} actions={[<Button className='minus' onClick={() => this.handleActions(item) === 'minus'}>-</Button>, <Button className='plus' onClick={() => this.handleActions(item) === 'plus'}>+</Button>]}> */}
 									<List.Item.Meta
 										title={item.name}
 										description={`${this.totalOrder(item)}/${item.count}`}
 									/>
-									<div ref={myRef}>{this.state.dishCountOrdered}</div>
+									{/* <div ref={myRef}>{this.state.dishCountOrdered}</div> */}
+									<div>{item.orderNumber}</div>
 								</List.Item>
 							)}
 						/>
@@ -222,13 +261,14 @@ class Order extends React.Component {
 												title={item.name}
 												description={`${this.totalOrder(item)}/${item.count}`}
 											/>
-											<div ref={this.myRef}>{this.state.dishCountOrdered}</div>
+											<div>{item.orderNumber}</div>
 										</List.Item>
 									)}
 								/>
 							:	'Hệ thống đã khóa'	
 						)
 				}
+				<Button style={{ display: 'block', textAlign: 'center' }}>Order</Button>
 			</React.Fragment>
 		)
 	}
