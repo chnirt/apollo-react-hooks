@@ -18,19 +18,9 @@ const gridStyle = {
 }
 
 function Dashboard(props) {
-	const { showDrawer } = props.store.navigationStore
-	// console.log('TCL: Dashboard -> visible', visible)
-	// const [visible, setVisible] = useState(false)
 	const [me, setMe] = useState('')
 
 	useEffect(() => {
-		// history listen goBack()
-		// props.history.listen((location, action) => {
-		// 	if (action === 'POP') {
-		// 		setVisible(false)
-		// 	}
-		// })
-
 		// code to run on component mount
 		props.client
 			.query({ query: ME })
@@ -42,17 +32,6 @@ function Dashboard(props) {
 				// console.log(err)
 			})
 	})
-
-	// function showDrawer(path) {
-	// 	// props.history.push(path)
-	// 	// setVisible(true)
-	// }
-
-	// function onClose() {
-	// 	// props.history.goBack()
-	// 	// props.history.push('/')
-	// 	// setVisible(false)
-	// }
 
 	function onLogout() {
 		props.store.authStore.logout()
@@ -116,16 +95,14 @@ function Dashboard(props) {
 			</TabPane>
 			<TabPane tab="User" key="2">
 				<Row
-					type="flex"
-					justify="center"
 					style={{
-						height: '100vh'
+						height: 'calc(100vh - 60px)'
 					}}
 				>
 					<Col
 						xs={{
-							span: 10,
-							offset: 1
+							span: 20,
+							offset: 2
 						}}
 						sm={{
 							span: 10,

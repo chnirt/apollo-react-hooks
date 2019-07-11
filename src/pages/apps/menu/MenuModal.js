@@ -8,21 +8,23 @@ function MenuModal(props) {
 	const { _id, dishes } = data.menusBySite[0]
 	const [dishName, setDishName] = useState('')
 	const [count, setCount] = useState(0)
-	// data.refetch()
 	async function remove(id) {
-		await props.mutate
-			.deleteDish({
-				variables: {
-					menuId: _id,
-					dishId: id
-				},
-				refetchQueries: [
-					{
-						query: GET_MENU_SITE
-					}
-				]
-			})
-			.then(result => data.refetch())
+		Modal.confirm({
+			title: 'Bạn có chắc chắn muốn xóa?',
+			async onOk() {
+				await props.mutate.deleteDish({
+					variables: {
+						menuId: _id,
+						dishId: id
+					},
+					refetchQueries: [
+						{
+							query: GET_MENU_SITE
+						}
+					]
+				})
+			}
+		})
 	}
 
 	async function submit(e) {
@@ -49,7 +51,6 @@ function MenuModal(props) {
 							setDishName('')
 							setCount(0)
 							form.resetFields(['name', 'count'])
-							data.refetch()
 						}
 					})
 					.catch(err)
@@ -169,9 +170,7 @@ const DELETE_DISH = gql`
 export default HOCQueryMutation([
 	{
 		query: GET_MENU_SITE,
-		variables: {},
-		partialRefetch: true,
-		fetchPolicy: 'network-only'
+		variables: {}
 	},
 	{
 		mutation: ADD_DISH,

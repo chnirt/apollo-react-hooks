@@ -25,6 +25,7 @@
 		"apollo-link-context": "^1.0.17",
 		"apollo-link-error": "^1.1.10",
 		"apollo-link-http": "^1.5.14",
+		"apollo-link-ws": "^1.0.18",
 		"babel-loader": "^8.0.6",
 		"babel-plugin-import": "^1.11.0",
 		"babel-plugin-styled-components": "^1.10.0",
@@ -48,6 +49,7 @@
 		"react-loadable": "^5.5.0",
 		"react-router-dom": "^5.0.0",
 		"react-scripts": "3.0.1",
+		"subscriptions-transport-ws": "^0.9.16",
 		"svg-inline-loader": "^0.8.0",
 		"webpack-bundle-analyzer": "^3.3.2"
 	},
