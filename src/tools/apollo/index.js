@@ -8,6 +8,7 @@ import { setContext } from 'apollo-link-context'
 // import { getMainDefinition } from 'apollo-utilities'
 import store from '../mobx'
 
+// const httpLink = new HttpLink({ uri: 'http://localhost:4000/graphql' })
 const token = window.localStorage.getItem('access-token')
 const currentsite = window.localStorage.getItem('currentsite')
 
@@ -75,19 +76,19 @@ const authLink = setContext((_, { headers }) => {
 	}
 })
 
-const defaultOptions = {
-	watchQuery: {
-		fetchPolicy: 'cache-and-network',
-		errorPolicy: 'ignore'
-	},
-	query: {
-		fetchPolicy: 'network-only',
-		errorPolicy: 'all'
-	},
-	mutate: {
-		errorPolicy: 'all'
-	}
-}
+// const defaultOptions = {
+// 	watchQuery: {
+// 		fetchPolicy: 'cache-and-network',
+// 		errorPolicy: 'ignore'
+// 	},
+// 	query: {
+// 		fetchPolicy: 'network-only',
+// 		errorPolicy: 'all'
+// 	},
+// 	mutate: {
+// 		errorPolicy: 'all'
+// 	}
+// }
 
 const client = new ApolloClient({
 	// cache: new InMemoryCache(),
