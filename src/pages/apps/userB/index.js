@@ -14,7 +14,7 @@ function UserB(props) {
 			.query({
 				query: USERS,
 				variables: { offset: 0, limit: 100 },
-				options: { fetchPolicy: 'network-only', awaitRefetchQueries: true }
+				options: { fetchPolicy: 'network-only' }
 			})
 			.then(res => {
 				// console.log(res.data.users)
