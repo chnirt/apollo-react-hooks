@@ -1,41 +1,162 @@
-import React from 'react'
-import { Button } from 'antd';
-import './index.css'
-import { siderRoutes } from '../../../routes'
+import React, { useState, useEffect } from 'react'
+import { inject, observer } from 'mobx-react'
+import { Icon, Button, Col, Row, Tabs, Card } from 'antd'
+// import logo from '../../../assets/images/logo.svg'
+import { withRouter } from 'react-router-dom'
+import { withApollo } from 'react-apollo'
+import gql from 'graphql-tag'
+import { menuRoutes } from '../../../routes'
 
-import { Link, withRouter } from 'react-router-dom'
+const { TabPane } = Tabs
 
-function Dashboard() {
-	// console.log(siderRoutes)
+const gridStyle = {
+	width: '100%',
+	height: '20vh',
+	marginBottom: '10%',
+	display: 'flex',
+	alignItems: 'center'
+}
+
+function Dashboard(props) {
+	const { showDrawer } = props.store.navigationStore
+	// console.log('TCL: Dashboard -> visible', visible)
+	// const [visible, setVisible] = useState(false)
+	const [me, setMe] = useState('')
+
+	useEffect(() => {
+		// history listen goBack()
+		// props.history.listen((location, action) => {
+		// 	if (action === 'POP') {
+		// 		setVisible(false)
+		// 	}
+		// })
+
+		// code to run on component mount
+		props.client
+			.query({ query: ME })
+			.then(res => {
+				// console.log(res.data.me)
+				setMe(res.data.me)
+			})
+			.catch(err => {
+				// console.log(err)
+			})
+	})
+
+	// function showDrawer(path) {
+	// 	// props.history.push(path)
+	// 	// setVisible(true)
+	// }
+
+	// function onClose() {
+	// 	// props.history.goBack()
+	// 	// props.history.push('/')
+	// 	// setVisible(false)
+	// }
+
+	function onLogout() {
+		props.store.authStore.logout()
+		props.client.resetStore()
+		props.history.push('/login')
+	}
+
 	return (
-		<React.Fragment>
-			<label style={{ display: 'block', width: '100%', marginBottom: '20px' }}>QUICK ACTIONS</label>
-			<div className='wrap-btn'>
-
-				<Button className='btn'>
-					<Link to='/🥢/menumanage'>
-						Quản lí Menu
-					</Link>
-				</Button>
-
-				<Button className='btn' style={{ marginLeft: 'auto' }}>
-					<Link to='/🥢/order'>
-						Đặt món
-					</Link>
-				</Button>
-				<Button className='btn'>
-					<Link to='/🥢/usermanage'>
-						Quản lí Tài Khoản
-					</Link>
-				</Button>
-				<Button className='btn' style={{ marginLeft: 'auto' }}>
-					<Link to='/🥢/report'>
-						Báo cáo
-					</Link>
-				</Button>
-			</div>
-		</React.Fragment>
+		<Tabs defaultActiveKey="1">
+			<TabPane tab="Home" key="1">
+				<Row
+					style={{
+						height: 'calc(100vh - 60px)'
+					}}
+				>
+					<Card
+						title="Quick actions"
+						bordered={false}
+						headStyle={{
+							border: 0,
+							margin: 0
+						}}
+					>
+						{menuRoutes.map((item, i) => (
+							<Col
+								key={i}
+								xs={{
+									span: 10,
+									offset: 1
+								}}
+								sm={{
+									span: 10,
+									offset: 1
+								}}
+								md={{
+									span: 10,
+									offset: 1
+								}}
+								lg={{
+									span: 4,
+									offset: 1
+								}}
+								onClick={() => {
+									props.history.push(item.path)
+									// showDrawer(item.path)
+								}}
+							>
+								<Card.Grid style={gridStyle}>
+									{item.label}
+									<Icon
+										style={{
+											paddingLeft: '10px'
+										}}
+										type={item.icon}
+									/>
+								</Card.Grid>
+							</Col>
+						))}
+					</Card>
+				</Row>
+			</TabPane>
+			<TabPane tab="User" key="2">
+				<Row
+					type="flex"
+					justify="center"
+					style={{
+						height: '100vh'
+					}}
+				>
+					<Col
+						xs={{
+							span: 10,
+							offset: 1
+						}}
+						sm={{
+							span: 10,
+							offset: 1
+						}}
+						md={{
+							span: 10,
+							offset: 1
+						}}
+						lg={{
+							span: 4,
+							offset: 1
+						}}
+					>
+						Hello, {me && me.username}
+						<Button type="primary" block onClick={onLogout}>
+							Log out
+						</Button>
+					</Col>
+				</Row>
+			</TabPane>
+		</Tabs>
 	)
 }
 
-export default withRouter(Dashboard)
+const ME = gql`
+	query {
+		me {
+			username
+		}
+	}
+`
+
+export default withApollo(withRouter(inject('store')(observer(Dashboard))))

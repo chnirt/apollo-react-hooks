@@ -16,9 +16,14 @@ export const routes = [
 		component: 'apps',
 		routes: [
 			{
+				label: 'Dashboard',
+				path: '/🥢',
+				exact: true,
+				component: 'dashboard'
+			},
+			{
 				label: 'Manage Menu',
 				path: '/🥢/menu',
-				icon: 'bars',
 				component: 'menu'
 			},
 			{
@@ -30,15 +35,36 @@ export const routes = [
 			{
 				label: 'Manage User',
 				path: '/🥢/user',
-				icon: 'user',
 				component: 'user'
 			},
 			{
 				label: 'Report',
 				path: '/🥢/report',
-				icon: 'file-done',
 				component: 'report'
 			}
 		]
+	}
+]
+
+export const menuRoutes = [
+	{
+		label: 'Manage Menu',
+		path: '/🥢/menu',
+		icon: 'bars'
+	},
+	{
+		label: 'Manage Order',
+		path: '/🥢/order',
+		icon: 'shopping-cart'
+	},
+	{
+		label: 'Manage User',
+		path: '/🥢/user',
+		icon: 'user'
+	},
+	{
+		label: 'Report',
+		path: '/🥢/report',
+		icon: 'file-done'
 	}
 ]
