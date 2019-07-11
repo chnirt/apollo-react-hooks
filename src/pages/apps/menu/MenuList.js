@@ -6,6 +6,10 @@ function MenuList(props) {
 	const { menuData } = props
 	const [visible, setVisible] = useState(false)
 
+	function openModal() {
+		window.localStorage.setItem('currentsite', menuData.siteId)
+		setVisible(true)
+	}
 	return (
 		<>
 			<Col
@@ -16,7 +20,7 @@ function MenuList(props) {
 			>
 				<Card
 					actions={[
-						<Icon type="edit" onClick={() => setVisible(true)} />,
+						<Icon type="edit" onClick={openModal} />,
 						<Icon type="ellipsis" />
 					]}
 				>
@@ -24,7 +28,6 @@ function MenuList(props) {
 				</Card>
 			</Col>
 			<MenuModal
-				listDish={menuData.dishes}
 				menuId={menuData._id}
 				visible={visible}
 				handleCancel={() => setVisible(false)}

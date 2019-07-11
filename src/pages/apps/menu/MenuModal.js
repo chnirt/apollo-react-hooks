@@ -4,93 +4,155 @@ import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation
 import gql from 'graphql-tag'
 
 function MenuModal(props) {
-	const { listDish } = props
-	const [dishes, setDishes] = useState(listDish)
-
-	function remove(id) {
-		setDishes(dishes.filter(d => d._id !== id))
-	}
-
-	async function add() {
-		if (dishes[dishes.length - 1]._id) {
-			const list = dishes.slice(0)
-			list.push({
-				name: '',
-				count: 0
-			})
-			setDishes(list)
-		} else {
-			const { name, count } = dishes[dishes.length - 1]
-			console.log(typeof props.menuId)
-			await props.mutate.addDish({
+	const { form, data } = props
+	const { _id, dishes } = data.menusBySite[0]
+	const [dishName, setDishName] = useState('')
+	const [count, setCount] = useState(0)
+	// data.refetch()
+	async function remove(id) {
+		await props.mutate
+			.deleteDish({
 				variables: {
-					id: props.menuId,
-					dishInput: { name: name, count: count }
-				}
+					menuId: _id,
+					dishId: id
+				},
+				refetchQueries: [
+					{
+						query: GET_MENU_SITE
+					}
+				]
 			})
-		}
+			.then(result => data.refetch())
 	}
-	const { getFieldDecorator } = props.form
+
+	async function submit(e) {
+		e.preventDefault()
+		props.form.validateFieldsAndScroll(async (err, values) => {
+			if (!err) {
+				await props.mutate
+					.addDish({
+						variables: {
+							id: _id,
+							dishInput: {
+								name: dishName,
+								count: count
+							}
+						},
+						refetchQueries: [
+							{
+								query: GET_MENU_SITE
+							}
+						]
+					})
+					.then(result => {
+						if (result) {
+							setDishName('')
+							setCount(0)
+							form.resetFields(['name', 'count'])
+							data.refetch()
+						}
+					})
+					.catch(err)
+			}
+		})
+	}
+	function enterDishName(e) {
+		setDishName(e.target.value)
+	}
+	function changeCount(value) {
+		setCount(value)
+	}
 	const formItems = dishes.map((dish, index) => (
 		<Row key={index}>
-			<Col xs={{ span: 12 }} sm={{ span: 12 }} lg={{ span: 16 }}>
-				<Form.Item>
-					{getFieldDecorator(`dish[${dish._id}]`, {
-						validateTrigger: ['onChange', 'onBlur'],
-						rules: [
-							{
-								required: true,
-								whitespace: true,
-								message: 'Nhập tên món ăn'
-							}
-						],
-						initialValue: dish.name || ''
-					})(<Input style={{ width: '90%' }} />)}
-				</Form.Item>
+			<Col xs={{ span: 16 }} sm={{ span: 16 }} lg={{ span: 16 }}>
+				<Form.Item>{dish.name}</Form.Item>
 			</Col>
-			<Col xs={{ span: 12 }} sm={{ span: 12 }} lg={{ span: 8 }}>
+			<Col xs={{ span: 4 }} sm={{ span: 4 }} lg={{ span: 4 }}>
+				<Form.Item>{dish.count}</Form.Item>
+			</Col>
+			<Col xs={{ span: 4 }} sm={{ span: 4 }} lg={{ span: 4 }}>
 				<Form.Item>
-					<InputNumber width="50px" defaultValue={dish.count} />
-					{index >= 0 ? (
-						<Icon
-							style={{ marginLeft: '10px', fontSize: '18px' }}
-							type="minus-circle-o"
-							onClick={() => remove(dish._id)}
-						/>
-					) : null}
+					<Icon
+						style={{ marginLeft: '25px' }}
+						className="dynamic-delete-button"
+						type="delete"
+						onClick={() => remove(dish._id)}
+					/>
 				</Form.Item>
 			</Col>
 		</Row>
 	))
+	const { getFieldDecorator } = form
 	return (
 		<Modal
 			width="80%"
 			title="Danh sách món"
 			visible={props.visible}
-			//	onOk={this.handleOk}
 			onCancel={props.handleCancel}
-			okText="Lưu"
-			cancelText="Hủy"
+			cancelText="Đóng"
 		>
 			<Row style={{ marginBottom: '20px' }}>
-				<Col xs={{ span: 12 }} sm={{ span: 12 }} lg={{ span: 16 }}>
+				<Col span={16}>
 					<b>Món ăn</b>
 				</Col>
-				<Col xs={{ span: 12 }} sm={{ span: 12 }} lg={{ span: 8 }}>
+				<Col span={6}>
 					<b>Số lượng</b>
 				</Col>
 			</Row>
-			<Form>
-				{formItems}
-				<Form.Item>
-					<Button type="dashed" onClick={add} style={{ width: '60%' }}>
-						<Icon type="plus" /> Thêm món
-					</Button>
-				</Form.Item>
+			{formItems}
+			<Form onSubmit={submit}>
+				<Row>
+					<Col span={16}>
+						<Form.Item>
+							{getFieldDecorator('name', {
+								rules: [{ required: true, message: 'Nhập tên món ăn!' }],
+								initialValue: ''
+							})(
+								<Input
+									placeholder="Nhập tên món ăn"
+									onChange={enterDishName}
+									style={{ width: '90%' }}
+								/>
+							)}
+						</Form.Item>
+					</Col>
+					<Col span={8}>
+						<Form.Item>
+							{getFieldDecorator('count', {
+								initialValue: 0
+							})(<InputNumber min={0} onChange={changeCount} width="50px" />)}
+						</Form.Item>
+					</Col>
+					<Col span={16}>
+						<Form.Item>
+							<Button htmlType="submit" type="dashed" style={{ width: '90%' }}>
+								<Icon type="plus" /> Thêm món
+							</Button>
+						</Form.Item>
+					</Col>
+				</Row>
 			</Form>
 		</Modal>
 	)
 }
+
+const GET_MENU_SITE = gql`
+	query {
+		menusBySite {
+			_id
+			name
+			siteId
+			dishes {
+				_id
+				name
+				count
+			}
+			isPublished
+			isLocked
+			isActived
+		}
+	}
+`
 
 const ADD_DISH = gql`
 	mutation addDish($id: String!, $dishInput: DishInput!) {
@@ -98,10 +160,27 @@ const ADD_DISH = gql`
 	}
 `
 
+const DELETE_DISH = gql`
+	mutation deleteDish($menuId: String!, $dishId: String!) {
+		deleteDish(menuId: $menuId, dishId: $dishId)
+	}
+`
+
 export default HOCQueryMutation([
+	{
+		query: GET_MENU_SITE,
+		variables: {},
+		partialRefetch: true,
+		fetchPolicy: 'network-only'
+	},
 	{
 		mutation: ADD_DISH,
 		name: 'addDish',
+		options: {}
+	},
+	{
+		mutation: DELETE_DISH,
+		name: 'deleteDish',
 		options: {}
 	}
 ])(Form.create()(MenuModal))
