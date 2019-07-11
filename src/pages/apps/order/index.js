@@ -2,14 +2,17 @@ import React from 'react'
 import { Select, Button, List } from 'antd'
 import { withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
-import './index.css'
+// import './index.css'
+
+let myRef = React.createRef()
 
 class Order extends React.Component {
 	state = {
 		sites: [],
 		menuId: null,
 		dishes: [],
-		condition: []
+		condition: [],
+		dishCountOrdered: 0
 	}
 
 	componentDidMount () {
@@ -54,49 +57,140 @@ class Order extends React.Component {
 		})
   }
 
-	handleMinus (e, item) {
+	async handleMinus (item, number) {
+		console.log(number)
 		console.log(item)
+		console.log(window.clicks)
+		// await this.props.client.mutate({
+		// 	mutation: ORDER_DISH,
+		// 	variables: {
+		// 		input: {
+		// 			menuId: this.state.menuId,
+		// 			dishId: item._id,
+		// 			count: 2
+		// 		}
+		// 	}
+		// })
+		// .then((res) => {
+		// 	console.log(res)
+		// 	let a = this.state.dishCountOrdered
+		// 	this.setState({
+		// 		dishCountOrdered: a--
+		// 	})
+		// 	console.log(this.state.dishCountOrdered)
+		// })
+		// .catch((error) => {
+		// 	console.dir(error)
+		// })
+		this.handleCountOrder()
 	}
 
-	handlePlus (item) {
+	async handlePlus (item) {
 		console.log(item)
-	}
-
-	handleOrder (e) {
-		this.props.client.mutate({
+		await this.props.client.mutate({
 			mutation: ORDER_DISH,
 			variables: {
 				input: {
 					menuId: this.state.menuId,
-					dishId: this.state.dishes[0]._id,
-					count: 1
+					dishId: item._id,
+					count: 2
 				}
 			}
 		})
 		.then((res) => {
 			console.log(res)
+			// this.setState({
+			// 	dishCountOrdered: this.state.dishCountOrdered++
+			// })
+			this.setState({ dishCountOrdered: this.myRef.current.value+1})
+			console.log(this.state.dishCountOrdered)
 		})
 		.catch((error) => {
 			console.dir(error)
 		})
 	}
 
+	handleCountOrder (number) {
+		// let count = number
+		// this.props.client.mutate({
+		// 	mutation: ORDER_DISH,
+		// 	variables: {
+		// 		input: {
+		// 			menuId: this.state.menuId,
+		// 			dishId: item._id,
+		// 			count: 1
+		// 		}
+		// 	}
+		// })
+		// .then(res => {
+		// 	console.log(res.data)
+		// 	console.log(count)
+		// })
+		// .catch((error) => {
+		// 	console.dir(error)
+		// })
+		return number
+	}
+
+	// handleConfirmOrder (e) {
+	// 	this.props.client.mutate({
+	// 		mutation: ORDER_DISH,
+	// 		variables: {
+	// 			input: {
+	// 				menuId: this.state.menuId,
+	// 				dishId: this.state.dishes[0]._id,
+	// 				count: 1
+	// 			}
+	// 		}
+	// 	})
+	// 	.then((res) => {
+	// 		console.log(res)
+	// 	})
+	// 	.catch((error) => {
+	// 		console.dir(error)
+	// 	})
+	// }
+
+	totalOrder (item) {
+		let total = 0
+		// this.props.client.mutate({
+		// 	mutation: ORDERS_DISH,
+		// 	variables: {
+		// 		menuId: this.state.menuId,
+		// 		dishId: item._id
+		// 	}
+		// })
+		// .then(res => {
+			// console.log(res.data.ordersDish[0].count)
+			// res.data.ordersDish.map(order =>
+			// 	console.log(order.count)
+			// //stotal += order.count
+			// )
+		// 	total = res.data.ordersDish[0].count
+		// 	console.log(total)
+		// })
+		// .catch((error) => {
+		// 	console.dir(error)
+		// })
+		return total
+	}
+
 	render() {
+		console.log(myRef)
 		const currentsite = window.localStorage.getItem('currentsite')
 		const options = JSON.parse(window.localStorage.getItem('sites')).map(item =>
 			<Select.Option value={item._id} key={item._id}>
 					{item.name}
 			</Select.Option>
 		)
-		// consosle.log(this.state.condition)
 		return (
 			<React.Fragment>
 				<Select
-					showSearch
 					style={{ width: '100%', marginBottom: 20 }}
 					placeholder='Chọn Site'
 					defaultValue={currentsite}
-					onChange={(e) => this.handleChange(e)}
+					onChange={() => this.setState({dishes: []})}
+					onSelect={(e) => this.handleChange(e)}
 				>
 					{options}
 				</Select>
@@ -110,11 +204,12 @@ class Order extends React.Component {
 					? <List
 							dataSource={this.state.dishes}
 							renderItem={item => (
-								<List.Item actions={[<Button className='minus' onClick={(e, item) => this.handleMinus(e, item)}>-</Button>, <Button className='plus' onClick={(item) => this.handlePlus(item)}>+</Button>]}>
+								<List.Item key={item._id} actions={[<Button className='minus' onClick={() => this.handleMinus(item)}>-</Button>, <Button className='plus' onClick={() => this.handlePlus(item)}>+</Button>]}>
 									<List.Item.Meta
 										title={item.name}
-										description={item.count}
+										description={`${this.totalOrder(item)}/${item.count}`}
 									/>
+									<div ref={myRef}>{this.state.dishCountOrdered}</div>
 								</List.Item>
 							)}
 						/>
@@ -122,11 +217,12 @@ class Order extends React.Component {
 							? <List
 									dataSource={this.state.dishes}
 									renderItem={item => (
-										<List.Item actions={[<Button className='minus' disabled>-</Button>, <Button className='plus' disabled>+</Button>]}>
+										<List.Item key={item._id} actions={[<Button className='minus' disabled>-</Button>, <Button className='plus' disabled>+</Button>]}>
 											<List.Item.Meta
 												title={item.name}
-												description={item.count}
+												description={`${this.totalOrder(item)}/${item.count}`}
 											/>
+											<div ref={this.myRef}>{this.state.dishCountOrdered}</div>
 										</List.Item>
 									)}
 								/>
@@ -158,9 +254,31 @@ const MENU_BY_SELECTED_SITE = gql`
 	}
 `
 
+const ORDERS_DISH = gql`
+	query ordersDish($menuId: String!, $dishId: String!) {
+		ordersDish(menuId: $menuId, dishId: $dishId) {
+			_id
+			userId
+			menuId
+			dishId
+			note
+			count
+			isConfirmed
+			createdAt
+			updatedAt
+		}  
+	}
+`
+
 const ORDER_DISH = gql`
 	mutation orderDish($input: CreateOrderInput!) {
   	orderDish(input: $input)
+	}
+`
+
+const UPDATE_DISH = gql`
+	mutation updateDish($menuId: String!, $dishId: String!, $dishInput: DishInput!) {
+		updateDish(menuId: $menuId, dishId: $dishId, dishInput: $dishInput)
 	}
 `
 
