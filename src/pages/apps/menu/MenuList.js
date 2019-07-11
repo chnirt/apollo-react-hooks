@@ -27,7 +27,11 @@ function MenuList(props) {
 					<p style={{ height: '50px', lineHeight: '50px' }}>{props.children}</p>
 				</Card>
 			</Col>
-			<MenuModal visible={visible} handleCancel={() => setVisible(false)} />
+			<MenuModal
+				menuId={menuData._id}
+				visible={visible}
+				handleCancel={() => setVisible(false)}
+			/>
 		</>
 	)
 }
