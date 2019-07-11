@@ -1,16 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { Row, Col, Card, Button } from 'antd'
+import { Row, Col, Card, Button, Icon } from 'antd'
 import { withRouter } from 'react-router-dom'
 import { withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
-
-const gridStyle = {
-	width: '100%',
-	height: '10vh',
-	marginBottom: '10%',
-	display: 'flex',
-	alignItems: 'center'
-}
+import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
 
 function UserB(props) {
 	const [users, setUsers] = useState([])
@@ -20,10 +13,8 @@ function UserB(props) {
 		props.client
 			.query({
 				query: USERS,
-				variables: {
-					offset: 1,
-					limit: 100
-				}
+				variables: { offset: 0, limit: 100 },
+				options: { fetchPolicy: 'network-only', awaitRefetchQueries: true }
 			})
 			.then(res => {
 				// console.log(res.data.users)
@@ -34,12 +25,50 @@ function UserB(props) {
 			})
 	})
 
-	function onClick(_id) {
-		console.log(_id)
-	}
-
 	function onCreate() {
 		console.log('Create')
+	}
+
+	function onEdit(_id) {
+		console.log('Edit', _id)
+	}
+
+	function onLockAndUnlock(_id) {
+		console.log('LockAndUnlock', _id)
+		props.client
+			.mutate({
+				mutation: USER_LOCK_AND_UNLOCK,
+				variables: {
+					_id
+				},
+				options: { fetchPolicy: 'network-only' },
+				refetchQueries: [
+					{
+						query: USERS,
+						variables: { offset: 0, limit: 100 }
+					}
+				]
+			})
+			.then(res => {
+				// console.log(res)
+				openNotificationWithIcon('success', 'success', 'Success', _id)
+			})
+			.catch(err => {
+				// console.log(err)
+				const errors = err.graphQLErrors.map(error => error.message)
+				openNotificationWithIcon('error', 'failed', 'Failed', errors[0])
+			})
+
+		// props.client.refetchQueries([
+		// 	{
+		// 		query: USERS,
+		// 		variables: { offset: 0, limit: 100 }
+		// 	}
+		// ])
+	}
+
+	function onDelete(_id) {
+		console.log('Delete', _id)
 	}
 
 	return (
@@ -58,8 +87,7 @@ function UserB(props) {
 						</Button>
 					}
 					headStyle={{
-						border: 0,
-						margin: 0
+						border: 0
 					}}
 				>
 					{users &&
@@ -82,9 +110,29 @@ function UserB(props) {
 									span: 4,
 									offset: 1
 								}}
-								onClick={() => onClick(item._id)}
+								style={{
+									marginBottom: 20
+								}}
 							>
-								<Card.Grid style={gridStyle}>{item.fullName}</Card.Grid>
+								<Card
+									actions={[
+										<Icon type="edit" onClick={() => onEdit(item._id)} />,
+										item.isLocked ? (
+											<Icon
+												type="unlock"
+												onClick={() => onLockAndUnlock(item._id)}
+											/>
+										) : (
+											<Icon
+												type="lock"
+												onClick={() => onLockAndUnlock(item._id)}
+											/>
+										),
+										<Icon type="delete" onClick={() => onDelete(item._id)} />
+									]}
+								>
+									{item.fullName}
+								</Card>
 							</Col>
 						))}
 				</Card>
@@ -106,6 +154,12 @@ const USERS = gql`
 			createdAt
 			updatedAt
 		}
+	}
+`
+
+const USER_LOCK_AND_UNLOCK = gql`
+	mutation($_id: String!) {
+		lockAndUnlockUser(_id: $_id)
 	}
 `
 
