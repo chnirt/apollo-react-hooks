@@ -1,6 +1,6 @@
 import { ApolloClient } from 'apollo-client'
 import { InMemoryCache } from 'apollo-cache-inmemory'
-import { ApolloLink } from 'apollo-link'
+import { ApolloLink, split } from 'apollo-link'
 import { HttpLink } from 'apollo-link-http'
 import { onError } from 'apollo-link-error'
 import { setContext } from 'apollo-link-context'
@@ -74,11 +74,13 @@ const defaultOptions = {
 	}
 }
 
+const requestLink = split(wsLink, httpLink)
+
 const client = new ApolloClient({
 	// cache: new InMemoryCache(),
 	defaultOptions,
 	cache: new InMemoryCache().restore(window.__APOLLO_STATE__),
-	link: ApolloLink.from([errorLink, authLink, httpLink, wsLink]),
+	link: ApolloLink.from([authLink, errorLink, requestLink]),
 	ssrForceFetchDelay: 100
 })
 
