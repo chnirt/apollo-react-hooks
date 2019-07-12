@@ -12,12 +12,18 @@ class ListDishes extends React.Component {
   componentDidMount () {
 		this.handleDefaultDishes()
 	}
-
 	async handleDefaultDishes () {
+		const orderNumbers = {
+			"0": 1,
+			"1": 2,
+			"2": 3,
+			"3": 4,
+			"4": 5
+		}
 		if (this.props.data.menuPublishBySite.isPublished === true && this.props.data.menuPublishBySite.isActive === true) {
 			this.setState({
 				menuId: this.props.data.menuPublishBySite._id,
-				dishes: [...this.props.data.menuPublishBySite.dishes].map(dish => ({...dish, orderNumber: 0}))
+				dishes: [...this.props.data.menuPublishBySite.dishes].map((dish, index) => ({...dish, orderNumber: orderNumbers[index]}))
 			})
 		}
 
