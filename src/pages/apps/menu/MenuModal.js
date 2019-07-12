@@ -63,12 +63,21 @@ function MenuModal(props) {
 			}
 		})
 	}
+
 	function enterDishName(e) {
 		setDishName(e.target.value)
 	}
+
 	function changeCount(value) {
 		setCount(value)
 	}
+
+	async function publishAndUnpublish() {
+		await props.mutate.publishAndUnpublish({
+			variables: { id: data.menu._id }
+		})
+	}
+
 	const formItems = dishes.map((dish, index) => (
 		<Row key={index}>
 			<Col xs={{ span: 16 }} sm={{ span: 16 }} lg={{ span: 16 }}>
@@ -97,6 +106,8 @@ function MenuModal(props) {
 			visible={props.visible}
 			onCancel={props.handleCancel}
 			cancelText="Đóng"
+			okText={data.menu.isPublished ? 'Unpublish' : 'Publish'}
+			onOk={publishAndUnpublish}
 		>
 			<Row style={{ marginBottom: '20px' }}>
 				<Col span={16}>
@@ -173,6 +184,12 @@ const DELETE_DISH = gql`
 	}
 `
 
+const PUBLISH_UNPUBLISH = gql`
+	mutation publishAndUnpublish($id: String!) {
+		publishAndUnpublish(id: $id)
+	}
+`
+
 export default HOCQueryMutation([
 	{
 		query: GET_MENU,
@@ -181,6 +198,11 @@ export default HOCQueryMutation([
 				id: props.menuId
 			}
 		})
+	},
+	{
+		mutation: PUBLISH_UNPUBLISH,
+		name: 'publishAndUnpublish',
+		options: {}
 	},
 	{
 		mutation: ADD_DISH,

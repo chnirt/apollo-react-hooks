@@ -24,10 +24,12 @@ const HOCQueryMutation = data => Component => {
 					if (!!QueryOrMutate.options) {
 						return graphql(QueryOrMutate.query, {
 							options: QueryOrMutate.options,
-							props: QueryOrMutate.props
+							name: QueryOrMutate.name
 						})
 					}
-					return graphql(QueryOrMutate.query)
+					return graphql(QueryOrMutate.query, {
+						name: QueryOrMutate.name
+					})
 				} else {
 					if (k === -1) k = idx
 					return graphql(QueryOrMutate.mutation, {
