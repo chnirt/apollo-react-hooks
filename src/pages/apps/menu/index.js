@@ -1,7 +1,6 @@
 import React from 'react'
 import { Row } from 'antd'
 import MenuList from './MenuList'
-import './index.less'
 import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation'
 import gql from 'graphql-tag'
 
