@@ -14,13 +14,14 @@ const HOCQueryMutation = data => Component => {
 			let k = -1
 			const GraphQLComponent = data.map((QueryOrMutate, idx) => {
 				if (QueryOrMutate.query) {
-					if (!!QueryOrMutate.variables) {
-						return graphql(QueryOrMutate.query, {
-							// variables: QueryOrMutate.variables,
-							// fetchPolicy: 'network-only'
-							options: QueryOrMutate.options
-						})
-					} else if (!!QueryOrMutate.options) {
+					// if (!!QueryOrMutate.variables) {
+					// 	return graphql(QueryOrMutate.query, {
+					// 		// variables: QueryOrMutate.variables,
+					// 		// fetchPolicy: 'network-only'
+					// 		options: QueryOrMutate.options
+					// 	})
+					// } else
+					if (!!QueryOrMutate.options) {
 						return graphql(QueryOrMutate.query, {
 							options: QueryOrMutate.options,
 							props: QueryOrMutate.props
