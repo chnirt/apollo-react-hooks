@@ -1,12 +1,18 @@
-/* .user-name{
+.user-name{
   display: block;
   width: 100%;
   margin-bottom: 20px;
 }
 
+.title{
+  display: block;
+  margin-bottom: 20px;
+ }
+
 .add-user{
-  margin: 10px auto 0;
-  display: block
+  position: absolute;
+  bottom: 24px;
+  left: 24px;
 }
 
 .ant-form-item{
@@ -16,4 +22,4 @@
 
 .ant-checkbox-group-item{
   display: block;
-} */
+}

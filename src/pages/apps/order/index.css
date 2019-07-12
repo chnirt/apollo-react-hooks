@@ -1,32 +1,31 @@
-.dish-detail {
+.dish-detail{
   display: flex;
   width: 30%;
   justify-content: space-between;
   margin-bottom: 20px;
 }
 
-.dish-name{
-  width: 200px;
+.select-site{
+  width: 50%;
+  margin-bottom: 20px;
 }
 
 .title{
- display: block;
- margin-bottom: 20px;
-}
+  display: block;
+  margin-bottom: 20px;
+ }
 
-.add-dish{
-  margin-right: 20px;
-}
-
-.wrap-btn{
-  position: absolute;
-  bottom: 24px;
-  left: 24px;
+.dish-name{
+  width: 200px;
 }
 
 @media only screen and (max-width: 426px) {
   .title{
     text-align: center;
+  }
+
+  .select-site{
+    width: 100%;
   }
   
   .dish-detail{
@@ -37,7 +36,4 @@
     width: 100%
   }
 
-  .wrap-btn{
-    position: unset;
-  }
 }

@@ -7,7 +7,7 @@ function Layouts(props) {
 			<Link to="/🥢">Dashboard</Link>
 			<Link to="/🥢/menu">Menu</Link>
 			<Link to="/🥢/order">Order</Link>
-			<Link to="/🥢/user">User</Link>
+			<Link to="/🥢/userB">User</Link>
 			<Link to="/🥢/report">Report</Link>
 			{props.children}
 		</>
