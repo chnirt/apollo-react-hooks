@@ -167,7 +167,7 @@ const GET_MENU = gql`
 			}
 			isPublished
 			isLocked
-			isActived
+			isActive
 		}
 	}
 `
