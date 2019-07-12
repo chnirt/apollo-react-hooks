@@ -7,6 +7,15 @@ import { UserModal} from './UserModal'
 
 
 function UserList(props) {
+  const [visible, setVisible] = useState(false)
+
+	function openModal() {
+		setVisible(true)
+	}
+
+	function closeModal() {
+		setVisible(false)
+	}
 
   function onDelete(_id) {
     Modal.confirm({
@@ -125,5 +134,3 @@ export default HOCQueryMutation([
     option: {}
   }
 ])(UserList)
-
-// export default withApollo(UserList)
