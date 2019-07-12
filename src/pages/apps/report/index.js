@@ -177,7 +177,7 @@ class MenuDetail extends React.Component {
 }
 
 const GET_MENU_BY_SITE = gql`
-	query menusBySite{
+	mutation menusBySite{
 		menusBySite{
 			_id
 			name

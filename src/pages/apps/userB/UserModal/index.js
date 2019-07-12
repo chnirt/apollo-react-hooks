@@ -7,16 +7,47 @@ import { CREATE_USER, GET_ALL_USERS, GET_ALL_PERMISSIONS, GET_ALL_SITES } from '
 function UserModel(props) {
 
 	function onCreate() {
-		
+    props.form.validateFields((err, values) => {
+      if (err) {
+        return;
+      }
+
+      console.log('Received values of form: ', values);
+      props.form.resetFields();
+			props.handleCancel()
+    });
 	}
 
-	function onChange() {
-		console.log('cancel')
+	function onChange(checkedValues) {
 	}
 
-	console.log(props)
-
+	const { Option } = Select;
 	const { getFieldDecorator } = props.form
+	const children = [];
+	const formItemLayout = {
+		labelCol: {
+			xs: { span: 24 },
+			sm: { span: 8 },
+		},
+		wrapperCol: {
+			xs: { span: 24 },
+			sm: { span: 16 },
+		},
+	};
+	props.getAllPermissions.permissions && props.getAllPermissions.permissions.map((permission,i) => {
+		return (
+			children.push(<Option key={permission} value={permission.code}>{permission.code}</Option>)
+		)
+	})
+
+	// const a = props.getAllPermissions.permissions && props.getAllPermissions.permissions.map((permission,i) => {
+	// 	return (
+	// 		a.push(<Option key={permission} value={permission.code}>{permission.code}</Option>)
+	// 	)
+	// })
+
+	// console.log(a)
+
 	return (
 		<Modal
 			visible={props.visible}
@@ -26,8 +57,8 @@ function UserModel(props) {
 			onCancel={props.handleCancel}
 			onOk={onCreate}
 		>
-			<Form>
-				<Form.Item>
+			<Form {...formItemLayout}>
+				<Form.Item label='Tên'>
 					{
 						getFieldDecorator('fullName', {
 
@@ -35,41 +66,37 @@ function UserModel(props) {
 							<Input placeholder='Nhập tên' />)
 					}
 				</Form.Item>
-				<Form.Item>
+				<Form.Item label='Tên đăng nhập'>
 					{
 						getFieldDecorator('username', {})(
 							<Input placeholder='Nhập username' type='text' />)
 					}
 				</Form.Item>
-				<Form.Item>
+				<Form.Item label='Mật khẩu'>
 					{
 						getFieldDecorator('password', {})(
 							<Input placeholder='Nhập password' type='password' />)
 					}
 				</Form.Item>
-				{/* {
-					this.state.sites && this.state.sites.map(site => {
+				{
+					props.getAllSites.sites && props.getAllSites.sites.map((site, i) => {
 						return (
-							<Form.Item>
+							<Form.Item key={i} label={site.name}>
 								{
-									getFieldDecorator(site.name, {})(
+									getFieldDecorator(site._id, {})(
 										<Select
+											mode="multiple"
 											placeholder={site.name}
-											dropdownRender={menu => {
-												return (
-													<div>
-														<Checkbox.Group className='cb' options={options} onChange={onChange} />
-													</div>
-												)
-											}}
+											onChange={onChange}
 										>
+											{children}
 										</Select>
 									)
 								}
 							</Form.Item>
 						)
 					})
-				} */}
+				}
 			</Form>
 		</Modal>
 	);

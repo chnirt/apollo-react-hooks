@@ -27,11 +27,11 @@ function UserB(props) {
 				}}
 			>
 				<Card
-					title="Manage user"
+					title="Quản lí user"
 					bordered={false}
 					extra={
 						<Button type="primary" block onClick={openModal}>
-							Create a new user
+							Tạo user
 						</Button>
 					}
 					headStyle={{
@@ -39,7 +39,7 @@ function UserB(props) {
 					}}
 				>
 					{users &&
-						users.map((user, i) => (
+						users.filter(user=> user.isActive).map((user, i) => (
 							<UserList userData={user} key={i} />
 						))}
 				</Card>

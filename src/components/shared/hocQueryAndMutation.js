@@ -13,7 +13,6 @@ const HOCQueryMutation = data => Component => {
 		try {
 			let k = -1
 			const GraphQLComponent = data.map((QueryOrMutate, idx) => {
-				console.log(QueryOrMutate)
 				if (QueryOrMutate.query) {
 					// if (!!QueryOrMutate.variables) {
 					// 	return graphql(QueryOrMutate.query, {
@@ -23,12 +22,13 @@ const HOCQueryMutation = data => Component => {
 
 					if (!!QueryOrMutate.options) {
 						return graphql(QueryOrMutate.query, {
-							name: QueryOrMutate.name,
-							props: QueryOrMutate.props,
-							options: QueryOrMutate.options
+							options: QueryOrMutate.options,
+							name: QueryOrMutate.name
 						})
 					}
-					return graphql(QueryOrMutate.query)
+					return graphql(QueryOrMutate.query, {
+						name: QueryOrMutate.name
+					})
 				} else {
 					if (k === -1) k = idx
 					return graphql(QueryOrMutate.mutation, {
@@ -56,15 +56,6 @@ const HOCQueryMutation = data => Component => {
 					
 						delete wrapProps[QueryOrMutate.name]
 						
-					}
-
-					if(QueryOrMutate.query) {
-						wrapProps.query = {
-							...wrapProps.query,
-							[QueryOrMutate.props]: props[QueryOrMutate.props],
-							[QueryOrMutate.name]: props[QueryOrMutate.name]
-						}
-						delete wrapProps[QueryOrMutate.name]
 					}
 					
 				}

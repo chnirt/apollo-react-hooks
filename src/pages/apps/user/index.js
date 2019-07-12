@@ -65,8 +65,7 @@ const UserCreateForm = Form.create({ name: 'user_create' })(
 				return (
 					{ label: permission.code, value: permission._id }
 				)
-			}
-			)
+			})
 			return (
 				<Modal
 					visible={visible}
