@@ -5,7 +5,7 @@ import gql from 'graphql-tag'
 
 function MenuModal(props) {
 	const { form, data } = props
-	const { _id, dishes } = data.menusBySite[0]
+	const { _id, dishes } = data.menu
 	const [dishName, setDishName] = useState('')
 	const [count, setCount] = useState(0)
 	async function remove(id) {
@@ -19,7 +19,10 @@ function MenuModal(props) {
 					},
 					refetchQueries: [
 						{
-							query: GET_MENU_SITE
+							query: GET_MENU,
+							variables: {
+								id: props.menuId
+							}
 						}
 					]
 				})
@@ -42,14 +45,17 @@ function MenuModal(props) {
 						},
 						refetchQueries: [
 							{
-								query: GET_MENU_SITE
+								query: GET_MENU,
+								variables: {
+									id: props.menuId
+								}
 							}
 						]
 					})
 					.then(result => {
 						if (result) {
-							setDishName('')
-							setCount(0)
+							// setDishName('')
+							// setCount(0)
 							form.resetFields(['name', 'count'])
 						}
 					})
@@ -137,9 +143,9 @@ function MenuModal(props) {
 	)
 }
 
-const GET_MENU_SITE = gql`
-	query {
-		menusBySite {
+const GET_MENU = gql`
+	query menu($id: String!) {
+		menu(id: $id) {
 			_id
 			name
 			siteId
@@ -169,8 +175,12 @@ const DELETE_DISH = gql`
 
 export default HOCQueryMutation([
 	{
-		query: GET_MENU_SITE,
-		variables: {}
+		query: GET_MENU,
+		options: props => ({
+			variables: {
+				id: props.menuId
+			}
+		})
 	},
 	{
 		mutation: ADD_DISH,

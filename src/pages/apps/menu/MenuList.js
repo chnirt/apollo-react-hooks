@@ -7,9 +7,13 @@ function MenuList(props) {
 	const [visible, setVisible] = useState(false)
 
 	function openModal() {
-		window.localStorage.setItem('currentsite', menuData.siteId)
 		setVisible(true)
 	}
+
+	function closeModal() {
+		setVisible(false)
+	}
+
 	return (
 		<>
 			<Col
@@ -27,7 +31,11 @@ function MenuList(props) {
 					<p style={{ height: '50px', lineHeight: '50px' }}>{props.children}</p>
 				</Card>
 			</Col>
-			<MenuModal visible={visible} handleCancel={() => setVisible(false)} />
+			<MenuModal
+				menuId={menuData._id}
+				visible={visible}
+				handleCancel={closeModal}
+			/>
 		</>
 	)
 }
