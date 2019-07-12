@@ -162,7 +162,7 @@ const UserEditForm = Form.create({ name: 'user_edit' })(
 					<Form>
 						<Form.Item>
 							{
-								getFieldDecorator('fullName', {
+								getFieldDecorator('fullName',  {
 
 								})(
 									<Input placeholder='New name' />)
@@ -211,8 +211,13 @@ class UserManage extends React.Component {
 		visibleEditUser: false,
 		users: [],
 		userId: "",
-		userName: "",
+		userName: ""
 	};
+
+	componentWillReceiveProps(nextProps) {
+		console.log('ok')
+		console.log(nextProps)
+	}
 
 	componentDidMount() {
 		this.props.client.query({
@@ -290,7 +295,7 @@ class UserManage extends React.Component {
 			if (err) {
 				return;
 			}
-			console.log(values)
+			console.log(this.props.client.cache)
 			this.props.client.mutate({
 				mutation: CREATE_USER,
 				variables: {
@@ -301,14 +306,10 @@ class UserManage extends React.Component {
 				fetchPolicy: 'no-cache',
 				refetchQueries: () => [
 					{
-						query: GET_ALL_USERS,
-						variables:
-						{
-							offset: 0,
-							limit: 100
-						}
+						query: GET_ALL_USERS
 					}
 				]
+			
 			})
 				.then((result) => {
 					console.log(result)
@@ -317,6 +318,7 @@ class UserManage extends React.Component {
 					console.log(err.message)
 				})
 			form.resetFields();
+			this.props.client.cache.reset()
 			this.setState({ visible: false });
 		});
 	};
@@ -378,10 +380,6 @@ class UserManage extends React.Component {
 					onEdit={this.handleEditUser}
 					onDelete={this.deleteUser}
 				/>
-
-				{/* <Button className='user-name'>Nam</Button>
-				<Button className='user-name'>Bảo</Button>
-				<Button className='user-name'>Chung</Button> */}
 
 				<Button className='add-user' onClick={this.showModal}>
 					Thêm user
