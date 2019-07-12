@@ -19,9 +19,13 @@ class MenuDetail extends React.Component {
 
 	componentDidMount() {
 		this.props.client.query({
-			query: GET_MENU_BY_SITE
+			query: GET_MENU_BY_SITE,
+			variables: {
+				siteId: localStorage.getItem('currentsite')
+			}
 		})
 			.then(({ data }) => {
+				console.log(data)
 				this.setState({
 					menusBySite: data.menusBySite
 				})
@@ -95,6 +99,8 @@ class MenuDetail extends React.Component {
 	};
 
 	render() {
+		console.log(this.props)
+		console.log(typeof localStorage.getItem('currentsite'))
 		const options = JSON.parse(localStorage.getItem('sites'))
 			.map((site, i) => {
 				return (
@@ -177,11 +183,11 @@ class MenuDetail extends React.Component {
 }
 
 const GET_MENU_BY_SITE = gql`
-	mutation menusBySite{
-		menusBySite{
+	query menusBySite($siteId: String!){
+		menusBySite(siteId: $siteId){
 			_id
 			name
-			isActived
+			isActive
 			isLocked
 			dishes{
 				name
