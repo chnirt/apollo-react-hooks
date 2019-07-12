@@ -14,8 +14,7 @@ const { Option } = Select;
 class MenuDetail extends React.Component {
 	state = {
 		isActive: false,
-		menusBySite: [],
-		menuIdBySite: '',
+		menusBySite: []
 	};
 
 	isActive = (menuId) => {
@@ -48,7 +47,6 @@ class MenuDetail extends React.Component {
 	}
 
 	isLock = (menuId) => {
-		console.log(menuId)
 		this.props.mutate
 		.lockAndUnLockMenu({
 			mutation: LOCK_AND_UNLOCK_MENU,
@@ -78,6 +76,10 @@ class MenuDetail extends React.Component {
 		console.log(currentsite)
 		localStorage.setItem('currentsite', currentsite)
 		this.props.getMenuBySite.variables.siteId = localStorage.getItem('currentsite')
+		this.props.getMenuBySite.refetch({
+			siteId: localStorage.getItem('currentsite')
+		})
+		console.log(this.props.getMenuBySite)
 	}
 
 	onRequest(menu) {
