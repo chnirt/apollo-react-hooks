@@ -115,12 +115,12 @@ class ListDishes extends React.Component {
 		return (
 			<React.Fragment>
 				{
-					data.menuPublishBySite.isActive === true && data.menuPublishBySite.isLocked === false && data.menuPublishBySite.isPublished === true
+					data.menuPublishBySite.isPublished === true
 					? <>
 							<List
 								dataSource={this.state.dishes}
 								renderItem={item => (
-									<List.Item key={item._id} actions={[<Button className='minus' onClick={() => this.handleMinus(item)}>-</Button>, <Button className='plus' onClick={() => this.handlePlus(item)}>+</Button>]}>
+									<List.Item key={item._id} actions={[<Button className='minus' disabled={data.menuPublishBySite.isLocked} onClick={() => this.handleMinus(item)}>-</Button>, <Button className='plus' disabled={data.menuPublishBySite.isLocked} onClick={() => this.handlePlus(item)}>+</Button>]}>
 										<List.Item.Meta
 											title={item.name}
 											description={`${this.totalOrder(item)}/${item.count}`}
@@ -131,24 +131,7 @@ class ListDishes extends React.Component {
 							/>
 							{confirmButton}
 						</>
-					: ( data.menuPublishBySite.isActive === true && data.menuPublishBySite.isLocked === true && data.menuPublishBySite.isPublished === true
-						? <>
-								<List
-									dataSource={this.state.dishes}
-									renderItem={item => (
-										<List.Item key={item._id} actions={[<Button className='minus' disabled>-</Button>, <Button className='plus' disabled>+</Button>]}>
-											<List.Item.Meta
-												title={item.name}
-												description={`${this.totalOrder(item)}/${item.count}`}
-											/>
-											<div>{item.orderNumber}</div>
-										</List.Item>
-									)}
-								/>
-								{confirmButton}
-							</>	
-				:	<div>Hệ thống đã khóa</div>
-						)
+					:	<div>Hệ thống đã khóa</div>
 				}
 			</React.Fragment>
 		)
@@ -167,7 +150,36 @@ const CONFIRM_ORDER = gql`
 	}
 `
 
+const MENU_BY_SELECTED_SITE = gql`
+	query menuPublishBySite($siteId: String!) {
+		menuPublishBySite(siteId: $siteId) {
+			_id
+			name
+			siteId
+			dishes {
+				_id
+				name
+				count
+			}
+			isPublished
+			isActive
+			isLocked
+			createAt
+			updateAt
+		}
+	}
+`
+
 export default HOCQueryMutation([
+	{
+		query: MENU_BY_SELECTED_SITE,
+		options: (props) => ({
+			variables: {
+				siteId: props.siteId
+			},
+			fetchPolicy: 'network-only'
+		})
+	},
   {
     mutation: ORDER_DISH,
     name: 'orderDish',
