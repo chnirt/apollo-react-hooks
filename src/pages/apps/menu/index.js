@@ -40,7 +40,6 @@ const GET_ALL_MENU = gql`
 
 export default HOCQueryMutation([
 	{
-		query: GET_ALL_MENU,
-		variables: {}
+		query: GET_ALL_MENU
 	}
 ])(Menu)
