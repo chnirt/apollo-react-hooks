@@ -1,6 +1,6 @@
 import React from 'react'
 import { Select, Button, List } from 'antd'
-import { withApollo } from 'react-apollo'
+import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation'
 import gql from 'graphql-tag'
 
 class Order extends React.Component {
@@ -8,8 +8,7 @@ class Order extends React.Component {
 		sites: [],
 		menuId: null,
 		dishes: [],
-		condition: [],
-		dishCountOrdered: 0
+		condition: []
 	}
 
 	componentDidMount () {
@@ -17,51 +16,37 @@ class Order extends React.Component {
 	}
 
 	async handleDefaultDishes () {
-		await this.props.client.query({
-			query: MENU_BY_SELECTED_SITE,
-			variables: {
-				siteId: window.localStorage.getItem('currentsite')
-			}	
-		})
-		.then(res => {
-			if (res.data.menuPublishBySite.isPublished === true && res.data.menuPublishBySite.isActived === true) {
-				this.setState({
-					menuId: res.data.menuPublishBySite._id,
-					dishes: [...res.data.menuPublishBySite.dishes].map(dish => ({...dish, orderNumber: 0})),
-					condition: res.data.menuPublishBySite
-				})
-			}
-		})
-		.catch((error) => {
-			console.log(error)
-		})
+		if (this.props.data.menuPublishBySite.isPublished === true && this.props.data.menuPublishBySite.isActived === true) {
+			this.setState({
+				menuId: this.props.data.menuPublishBySite._id,
+				dishes: [...this.props.data.menuPublishBySite.dishes].map(dish => ({...dish, orderNumber: 0})),
+				condition: this.props.data.menuPublishBySite
+			})
+		}
+
+		if(this.props.data.error) {
+			console.log(this.props.data.error)
+		}
 	}
 
 	async handleChange (selectedItems) {
 		await window.localStorage.setItem('currentsite', selectedItems)
-		await this.props.client.query({
-			query: MENU_BY_SELECTED_SITE,
-			variables: {
-				siteId: window.localStorage.getItem('currentsite')
-			}	
-		})
-		.then(res => {
-			if (res.data.menuPublishBySite.isPublished === true && res.data.menuPublishBySite.isActived) {
-				this.setState({
-					menuId: res.data.menuPublishBySite._id,
-					dishes: [...res.data.menuPublishBySite.dishes].map(dish => ({...dish, orderNumber: 0})),
-					condition: res.data.menuPublishBySite
-				})
-			}
-		})
-		.catch((error) => {
-			console.log(error)
-		})
+
+		if (this.props.data.menuPublishBySite.isPublished === true && this.props.data.menuPublishBySite.isActived) {
+			this.setState({
+				menuId: this.props.data.menuPublishBySite._id,
+				dishes: [...this.props.data.menuPublishBySite.dishes].map(dish => ({...dish, orderNumber: 0})),
+				condition: this.props.data.menuPublishBySite
+			})
+		}
+
+		if(this.props.data.error) {
+			console.log(this.props.data.error)
+		}
 	}
 
 	async createOrder (item) {
-		await this.props.client.mutate({
-			mutation: ORDER_DISH,
+		await this.props.mutate.orderDish({
 			variables: {
 				input: {
 					menuId: this.state.menuId,
@@ -71,7 +56,7 @@ class Order extends React.Component {
 			}
 		})
 		.then((res) => {
-			(res.data.orderDish)
+			(res)
 			? console.log('success')
 			: console.log('something went wrong')
 		})
@@ -114,24 +99,24 @@ class Order extends React.Component {
 		this.selectDishHandler(index, item)
 	}
 
-	handleConfirmOrder (e) {
-		this.props.client.mutate({
-			mutation: ORDER_DISH,
-			variables: {
-				input: {
-					menuId: this.state.menuId,
-					dishId: this.state.dishes[0]._id,
-					count: 1
-				}
-			}
-		})
-		.then((res) => {
-			console.log(res)
-		})
-		.catch((error) => {
-			console.dir(error)
-		})
-	}
+	// handleConfirmOrder (e) {
+	// 	this.props.client.mutate({
+	// 		mutation: ORDER_DISH,
+	// 		variables: {
+	// 			input: {
+	// 				menuId: this.state.menuId,
+	// 				dishId: this.state.dishes[0]._id,
+	// 				count: 1
+	// 			}
+	// 		}
+	// 	})
+	// 	.then((res) => {
+	// 		console.log(res)
+	// 	})
+	// 	.catch((error) => {
+	// 		console.dir(error)
+	// 	})
+	// }
 
 	totalOrder (item) {
 		let total = 0
@@ -186,7 +171,6 @@ class Order extends React.Component {
 							dataSource={this.state.dishes}
 							renderItem={item => (
 								<List.Item key={item._id} actions={[<Button className='minus' onClick={() => this.handleMinus(item)}>-</Button>, <Button className='plus' onClick={() => this.handlePlus(item)}>+</Button>]}>
-								{/* <List.Item key={item._id} actions={[<Button className='minus' onClick={() => this.handleActions(item) === 'minus'}>-</Button>, <Button className='plus' onClick={() => this.handleActions(item) === 'plus'}>+</Button>]}> */}
 									<List.Item.Meta
 										title={item.name}
 										description={`${this.totalOrder(item)}/${item.count}`}
@@ -237,32 +221,24 @@ const MENU_BY_SELECTED_SITE = gql`
 	}
 `
 
-// const ORDERS_DISH = gql`
-// 	query ordersDish($menuId: String!, $dishId: String!) {
-// 		ordersDish(menuId: $menuId, dishId: $dishId) {
-// 			_id
-// 			userId
-// 			menuId
-// 			dishId
-// 			note
-// 			count
-// 			isConfirmed
-// 			createdAt
-// 			updatedAt
-// 		}  
-// 	}
-// `
-
 const ORDER_DISH = gql`
 	mutation orderDish($input: CreateOrderInput!) {
   	orderDish(input: $input)
 	}
 `
 
-// const UPDATE_DISH = gql`
-// 	mutation updateDish($menuId: String!, $dishId: String!, $dishInput: DishInput!) {
-// 		updateDish(menuId: $menuId, dishId: $dishId, dishInput: $dishInput)
-// 	}
-// `
-
-export default withApollo(Order)
+export default HOCQueryMutation([
+	{
+    query: MENU_BY_SELECTED_SITE,
+    options: props => ({
+			variables: {
+				siteId: window.localStorage.getItem('currentsite')
+			}
+		})
+  },
+  {
+    mutation: ORDER_DISH,
+    name: 'orderDish',
+    options: {}
+  }
+])(Order)
