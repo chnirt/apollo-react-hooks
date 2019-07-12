@@ -11,30 +11,68 @@ function UserModel(props) {
 			if (err) {
 				return;
 			}
-			console.log('Received values of form: ', values);
-			console.log()
+			// console.log('Received values of form: ', values);
+			let sites = []
 
-			// props.mutate
-			// .createUser({
-			// 	mutation: CREATE_USER,
-			// 	variables: {
-			// 		input: {
-			// 			...values,
-			// 		}
-			// 	},
-			// 	refetchQueries: () => [
-			// 		{
-			// 			query: GET_ALL_USERS
-			// 		}
-			// 	]
-			// })
-			// 	.then((result) => {
-			// 		// console.log(result)
+			for (let [key, value] of Object.entries(values.sites)) {
+				// console.log(Array.isArray(value));
+				// console.log(key, value)
+				if (Array.isArray(value) && value.length > 1) {
+					// console.log("------Array");
+					// console.log(value);
+					const permissions = [];
+					value.map(item => {
+						// console.log(item);
+						return permissions.push({
+							code: item.split(' ')[0],
+								_id: item.split(' ')[1]
+						});
+					});
+					// console.log(permissions);
+					sites.push({
+						siteId: key,
+						permissions
+					});
+				} 
+				else {
+					// console.log("------String");
+					console.log(value)
+					sites.push({
+						siteId: key,
+						permissions: [
+							{
+								code: value[0].split(' ')[0],
+								_id: value[0].split(' ')[1]
+							}
+						]
+					});
+				}
+			}
 
-			// 	})
-			// 	.catch((err) => {
-			// 		// console.log(err.message)
-			// 	})
+			values.sites = sites
+
+			console.log(values)
+			props.mutate
+			.createUser({
+				mutation: CREATE_USER,
+				variables: {
+					input: {
+						...values,
+					}
+				},
+				refetchQueries: () => [
+					{
+						query: GET_ALL_USERS
+					}
+				]
+			})
+				.then((result) => {
+					// console.log(result)
+
+				})
+				.catch((err) => {
+					// console.log(err.message)
+				})
 				
 			props.form.resetFields();
 			props.handleCancel()
@@ -62,15 +100,6 @@ function UserModel(props) {
 			children.push(<Option key={i} value={permission.code + ' ' + permission._id}>{permission.code}</Option>)
 		)
 	})
-
-	// const a = props.getAllPermissions.permissions && props.getAllPermissions.permissions.map((permission,i) => {
-	// 	return (
-	// 		a.push(<Option key={permission} value={permission.code}>{permission.code}</Option>)
-	// 	)
-	// })
-
-	// console.log(a)
-	console.log(props)
 
 	return (
 		<Modal
@@ -107,7 +136,14 @@ function UserModel(props) {
 						return (
 							<Form.Item key={i} label={site.name}>
 								{
-									getFieldDecorator(site._id, {})(
+									getFieldDecorator(`sites.${site._id}`, {
+										// rules: [
+										// 	{
+										// 		required: true,
+										// 		message: `Please chose permission of ${site.name}`,
+										// 	},
+										// ]
+									})(
 										<Select
 											mode="multiple"
 											placeholder={site.name}
