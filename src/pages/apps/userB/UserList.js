@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react'
-import { Row, Col, Card, Modal, Icon } from 'antd'
+import React, { useState } from 'react'
+import { Col, Card, Modal, Icon } from 'antd'
 import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
 import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation'
 import { USER_LOCK_AND_UNLOCK, GET_ALL_USERS, INACTIVE_USER } from './queries'
-// import { UserModal} from './UserModal'
 
 function UserList(props) {
 	const [visible, setVisible] = useState(false)

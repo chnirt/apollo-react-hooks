@@ -1,15 +1,18 @@
 import React from 'react'
-import { Button } from 'antd';
-import { Select, Modal, Form, Input, Checkbox } from 'antd';
-import { HOCQueryMutation } from '../../../../components/shared/hocQueryAndMutation';
-import { CREATE_USER, GET_ALL_USERS, GET_ALL_PERMISSIONS, GET_ALL_SITES } from '../queries'
+import { Select, Modal, Form, Input } from 'antd'
+import { HOCQueryMutation } from '../../../../components/shared/hocQueryAndMutation'
+import {
+	CREATE_USER,
+	GET_ALL_USERS,
+	GET_ALL_PERMISSIONS,
+	GET_ALL_SITES
+} from '../queries'
 
 function UserModel(props) {
-
 	function onCreate() {
 		props.form.validateFields((err, values) => {
 			if (err) {
-				return;
+				return
 			}
 			// console.log('Received values of form: ', values);
 			let sites = []
@@ -20,21 +23,20 @@ function UserModel(props) {
 				if (Array.isArray(value) && value.length > 1) {
 					// console.log("------Array");
 					// console.log(value);
-					const permissions = [];
+					const permissions = []
 					value.map(item => {
 						// console.log(item);
-						return permissions.push({
+						permissions.push({
 							code: item.split(' ')[0],
-								_id: item.split(' ')[1]
-						});
-					});
+							_id: item.split(' ')[1]
+						})
+					})
 					// console.log(permissions);
 					sites.push({
 						siteId: key,
 						permissions
-					});
-				} 
-				else {
+					})
+				} else {
 					// console.log("------String");
 					console.log(value)
 					sites.push({
@@ -45,61 +47,63 @@ function UserModel(props) {
 								_id: value[0].split(' ')[1]
 							}
 						]
-					});
+					})
 				}
 			}
 
 			values.sites = sites
 
-			console.log(values)
+			// console.log(values)
 			props.mutate
-			.createUser({
-				mutation: CREATE_USER,
-				variables: {
-					input: {
-						...values,
-					}
-				},
-				refetchQueries: () => [
-					{
-						query: GET_ALL_USERS
-					}
-				]
-			})
-				.then((result) => {
-					// console.log(result)
-
+				.createUser({
+					mutation: CREATE_USER,
+					variables: {
+						input: {
+							...values
+						}
+					},
+					refetchQueries: () => [
+						{
+							query: GET_ALL_USERS
+						}
+					]
 				})
-				.catch((err) => {
+				.then(result => {
+					// console.log(result)
+				})
+				.catch(err => {
 					// console.log(err.message)
 				})
-				
-			props.form.resetFields();
+
+			props.form.resetFields()
 			props.handleCancel()
-		});
+		})
 	}
 
-	function onChange(checkedValues) {
-	}
+	function onChange(checkedValues) {}
 
-	const { Option } = Select;
+	const { Option } = Select
 	const { getFieldDecorator } = props.form
-	const children = [];
+	const children = []
 	const formItemLayout = {
 		labelCol: {
 			xs: { span: 24 },
-			sm: { span: 8 },
+			sm: { span: 8 }
 		},
 		wrapperCol: {
 			xs: { span: 24 },
-			sm: { span: 16 },
-		},
-	};
-	props.getAllPermissions.permissions && props.getAllPermissions.permissions.map((permission,i) => {
-		return (
-			children.push(<Option key={i} value={permission.code + ' ' + permission._id}>{permission.code}</Option>)
-		)
-	})
+			sm: { span: 8 }
+		}
+	}
+
+	props.getAllPermissions.permissions &&
+		props.getAllPermissions.permissions.map((permission, i) => {
+			return children.push(
+				<Option key={i} value={permission.code + ' ' + permission._id}>
+					{permission.code}
+				</Option>
+			)
+		})
 
 	return (
 		<Modal
@@ -111,55 +115,45 @@ function UserModel(props) {
 			onOk={onCreate}
 		>
 			<Form {...formItemLayout}>
-				<Form.Item label='Tên'>
-					{
-						getFieldDecorator('fullName', {
-
-						})(
-							<Input placeholder='Nhập tên' />)
-					}
+				<Form.Item label="Tên">
+					{getFieldDecorator('fullName', {})(<Input placeholder="Nhập tên" />)}
 				</Form.Item>
-				<Form.Item label='Tên đăng nhập'>
-					{
-						getFieldDecorator('username', {})(
-							<Input placeholder='Nhập username' type='text' />)
-					}
+				<Form.Item label="Tên đăng nhập">
+					{getFieldDecorator('username', {})(
+						<Input placeholder="Nhập username" type="text" />
+					)}
 				</Form.Item>
-				<Form.Item label='Mật khẩu'>
-					{
-						getFieldDecorator('password', {})(
-							<Input placeholder='Nhập password' type='password' />)
-					}
+				<Form.Item label="Mật khẩu">
+					{getFieldDecorator('password', {})(
+						<Input placeholder="Nhập password" type="password" />
+					)}
 				</Form.Item>
-				{
-					props.getAllSites.sites && props.getAllSites.sites.map((site, i) => {
+				{props.getAllSites.sites &&
+					props.getAllSites.sites.map((site, i) => {
 						return (
 							<Form.Item key={i} label={site.name}>
-								{
-									getFieldDecorator(`sites.${site._id}`, {
-										// rules: [
-										// 	{
-										// 		required: true,
-										// 		message: `Please chose permission of ${site.name}`,
-										// 	},
-										// ]
-									})(
-										<Select
-											mode="multiple"
-											placeholder={site.name}
-											onChange={onChange}
-										>
-											{children}
-										</Select>
-									)
-								}
+								{getFieldDecorator(`sites.${site._id}`, {
+									// rules: [
+									// 	{
+									// 		required: true,
+									// 		message: `Please chose permission of ${site.name}`,
+									// 	},
+									// ]
+								})(
+									<Select
+										mode="multiple"
+										placeholder={site.name}
+										onChange={onChange}
+									>
+										{children}
+									</Select>
+								)}
 							</Form.Item>
 						)
-					})
-				}
+					})}
 			</Form>
 		</Modal>
-	);
+	)
 }
 
 export default HOCQueryMutation([

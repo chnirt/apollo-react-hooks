@@ -1,32 +1,35 @@
 import gql from 'graphql-tag'
 
 const GET_ALL_USERS = gql`
-	query users	{
-		users(offset: 0, limit: 100){
+	query users {
+		users(offset: 0, limit: 100) {
 			username
 			fullName
-      isActive
-      isLocked
+			isActive
+			isLocked
 			_id
 		}
 	}
 `
 
-const CREATE_USER = gql`mutation($input: CreateUserInput!){
-  createUser(input: $input){
-    username
-		fullName
-		password
-  }
-}`
+const CREATE_USER = gql`
+	mutation($input: CreateUserInput!) {
+		createUser(input: $input) {
+			username
+			fullName
+			password
+		}
+	}
+`
 
 const INACTIVE_USER = gql`
-mutation deleteUser($_id: String!){
-  deleteUser(_id:$_id)
-}`
+	mutation deleteUser($_id: String!) {
+		deleteUser(_id: $_id)
+	}
+`
 
 const UPDATE_USER = gql`
-	mutation updateUser($_id: String!, $input: UpdateUserInput!){
+	mutation updateUser($_id: String!, $input: UpdateUserInput!) {
 		updateUser(_id: $_id, input: $input)
 	}
 `
@@ -38,18 +41,16 @@ const USER_LOCK_AND_UNLOCK = gql`
 `
 
 const GET_ALL_SITES = gql`
-	query sites{
-		sites
-		{
+	query sites {
+		sites {
 			_id
 			name
 		}
 	}
-
 `
 const GET_ALL_PERMISSIONS = gql`
-	query permissions{
-		permissions{
+	query permissions {
+		permissions {
 			code
 			_id
 		}
@@ -57,11 +58,11 @@ const GET_ALL_PERMISSIONS = gql`
 `
 
 export {
-  GET_ALL_USERS,
-  CREATE_USER,
-  INACTIVE_USER,
-  UPDATE_USER,
-  USER_LOCK_AND_UNLOCK,
-  GET_ALL_SITES,
-  GET_ALL_PERMISSIONS
+	GET_ALL_USERS,
+	CREATE_USER,
+	INACTIVE_USER,
+	UPDATE_USER,
+	USER_LOCK_AND_UNLOCK,
+	GET_ALL_SITES,
+	GET_ALL_PERMISSIONS
 }
