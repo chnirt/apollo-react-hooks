@@ -17,17 +17,12 @@ function MenuList(props) {
 	return (
 		<>
 			<Col
-				className="menu-item"
+				style={{ marginBottom: '20px' }}
 				xs={{ span: 22, offset: 1 }}
 				sm={{ span: 22, offset: 1 }}
 				lg={{ span: 6, offset: 1 }}
 			>
-				<Card
-					actions={[
-						<Icon type="edit" onClick={openModal} />,
-						<Icon type="ellipsis" />
-					]}
-				>
+				<Card actions={[<Icon type="edit" onClick={openModal} />]}>
 					<p style={{ height: '50px', lineHeight: '50px' }}>{props.children}</p>
 				</Card>
 			</Col>

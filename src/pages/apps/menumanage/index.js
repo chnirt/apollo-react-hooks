@@ -71,8 +71,8 @@ class MenuManage extends React.Component {
 			<React.Fragment>
 				<Select
 					showSearch
-					style={{ width: '100%', marginBottom: 20 }}
 					// placeholder="Chọn Site"
+					className='select-site'
 					defaultValue='Chọn Site'
 					optionFilterProp="children"
 					filterOption={(input, option) =>
@@ -84,7 +84,7 @@ class MenuManage extends React.Component {
 					<Option value="nt">Nha Trang</Option>
 				</Select>
 
-				<label style={{ textAlign: 'center', display: 'block', marginBottom: 20 }}>Danh sách Menu</label>
+				<label className='title'>Danh sách Menu</label>
 
 				<div className='wrap-menu'>
 					<Button className='menu'>

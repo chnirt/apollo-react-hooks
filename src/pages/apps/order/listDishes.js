@@ -1,15 +1,15 @@
 import React from 'react'
-import { Select, Button, List } from 'antd'
+import { Button, List } from 'antd'
 import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation'
 import gql from 'graphql-tag'
 
-class Order extends React.Component {
+class ListDishes extends React.Component {
 	state = {
 		menuId: null,
 		dishes: []
 	}
 
-	componentDidMount () {
+  componentDidMount () {
 		this.handleDefaultDishes()
 	}
 
@@ -24,23 +24,8 @@ class Order extends React.Component {
 		if(this.props.data.error) {
 			console.log(this.props.data.error)
 		}
-	}
-
-	async handleChange (selectedItems) {
-		await window.localStorage.setItem('currentsite', selectedItems)
-
-		if (this.props.data.menuPublishBySite.isPublished === true && this.props.data.menuPublishBySite.isActive) {
-			this.setState({
-				menuId: this.props.data.menuPublishBySite._id,
-				dishes: [...this.props.data.menuPublishBySite.dishes].map(dish => ({...dish, orderNumber: 0}))
-			})
-		}
-
-		if(this.props.data.error) {
-			console.log(this.props.data.error)
-		}
-	}
-
+  }
+  
 	async createOrder (item) {
 		await this.props.mutate.orderDish({
 			variables: {
@@ -123,28 +108,12 @@ class Order extends React.Component {
 
 	render() {
 		const { data } = this.props
-		const currentsite = window.localStorage.getItem('currentsite')
-		const options = JSON.parse(window.localStorage.getItem('sites')).map(item =>
-			<Select.Option value={item._id} key={item._id}>
-					{item.name}
-			</Select.Option>
-		)
 		const time = (new Date(Date.now())).getHours()
 		const confirmButton = (time >= 12 && time < 14) 
 		? <Button onClick={() => this.handleConfirmOrder()} style={{ display: 'block', textAlign: 'center' }}>Xác nhận</Button>
 		: null
 		return (
 			<React.Fragment>
-				<Select
-					style={{ width: '100%', marginBottom: 20 }}
-					placeholder='Chọn khu vực'
-					defaultValue={currentsite}
-					onChange={() => this.setState({dishes: []})}
-					onSelect={(e) => this.handleChange(e)}
-				>
-					{options}
-				</Select>
-
 				{
 					data.menuPublishBySite.isActive === true && data.menuPublishBySite.isLocked === false && data.menuPublishBySite.isPublished === true
 					? <>
@@ -186,29 +155,9 @@ class Order extends React.Component {
 	}
 }
 
-const MENU_BY_SELECTED_SITE = gql`
-	query menuPublishBySite($siteId: String!) {
-		menuPublishBySite(siteId: $siteId) {
-			_id
-			name
-			siteId
-			dishes {
-				_id
-				name
-				count
-			}
-			isPublished
-			isActive
-			isLocked
-			createAt
-			updateAt
-		}
-	}
-`
-
 const ORDER_DISH = gql`
 	mutation orderDish($input: CreateOrderInput!) {
-  	orderDish(input: $input)
+		orderDish(input: $input)
 	}
 `
 
@@ -219,14 +168,6 @@ const CONFIRM_ORDER = gql`
 `
 
 export default HOCQueryMutation([
-	{
-    query: MENU_BY_SELECTED_SITE,
-    options: props => ({
-			variables: {
-				siteId: window.localStorage.getItem('currentsite')
-			}
-		})
-  },
   {
     mutation: ORDER_DISH,
     name: 'orderDish',
@@ -237,4 +178,4 @@ export default HOCQueryMutation([
     name: 'confirmOrder',
     options: {}
   }
-])(Order)
+])(ListDishes)

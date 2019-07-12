@@ -9,15 +9,6 @@ import { withApollo } from 'react-apollo'
 const { Option } = Select;
 const CheckboxGroup = Checkbox.Group;
 
-const options = [
-	{ label: 'Order', value: 'Apple' },
-	{ label: 'Create Menu', value: 'Pear' },
-	{ label: 'Unpublish Menu', value: 'Orange' },
-	{ label: 'Lock Menu', value: 'x' },
-	{ label: 'Lock User', value: 'c' },
-	{ label: 'Require to delivery', value: 'v' }
-];
-
 function onChange(checkedValues) {
 	console.log('checked = ', checkedValues);
 }
@@ -25,19 +16,56 @@ function onChange(checkedValues) {
 const UserCreateForm = Form.create({ name: 'user_create' })(
 	// eslint-disable-next-line
 	class extends React.Component {
+		state = {
+			sites: [],
+			permissions: []
+		}
+
+		componentDidMount() {
+			this.props.client.query({
+				query: GET_ALL_SITES
+			})
+				.then(({ data }) => {
+					this.setState({
+						sites: data.sites
+					})
+				})
+				.catch(err => {
+					console.log(err)
+					throw err
+				})
+			this.props.client.query({
+				query: GET_ALL_PERMISSIONS
+			})
+				.then(({ data }) => {
+					this.setState({
+						permissions: data.permissions
+					})
+				})
+				.catch(err => {
+					console.log(err)
+					throw err
+				})
+		}
+
 		render() {
 			const { visible, onCancel, onCreate, form } = this.props;
 			const { getFieldDecorator } = form;
 			const formItemLayout = {
 				labelCol: {
-					xs: { span: 8 },
-					sm: { span: 8 },
+					xs: { span: 6 },
+					sm: { span: 6 },
 				},
 				wrapperCol: {
 					xs: { span: 16 },
 					sm: { span: 16 },
 				},
 			};
+			const options = this.state.permissions.map(permission => {
+				return (
+					{ label: permission.code, value: permission._id }
+				)
+			})
 			return (
 				<Modal
 					visible={visible}
@@ -48,7 +76,7 @@ const UserCreateForm = Form.create({ name: 'user_create' })(
 					onOk={onCreate}
 				>
 					<Form {...formItemLayout}>
-						<Form.Item label="Name">
+						<Form.Item>
 							{
 								getFieldDecorator('fullName', {
 									// rules: [
@@ -61,24 +89,41 @@ const UserCreateForm = Form.create({ name: 'user_create' })(
 									<Input placeholder='Nhập tên' />)
 							}
 						</Form.Item>
-						<Form.Item label="Username">
+						<Form.Item>
 							{
 								getFieldDecorator('username', {})(
 									<Input placeholder='Nhập username' type='text' />)
 							}
 						</Form.Item>
-						<Form.Item label="Password">
+						<Form.Item>
 							{
 								getFieldDecorator('password', {})(
 									<Input placeholder='Nhập password' type='password' />)
 							}
 						</Form.Item>
-						{/* <Form.Item label="Email">
-							{
-								getFieldDecorator('email', {})(
-									<Input placeholder='Nhập email' />)
-							}
-						</Form.Item> */}
+						{
+							this.state.sites && this.state.sites.map(site => {
+								return (
+									<Form.Item>
+										{
+											getFieldDecorator(site.name, {})(
+												<Select
+													placeholder={site.name}
+													dropdownRender={menu => {
+														return (
+															<div>
+																<Checkbox.Group className='cb' options={options} onChange={onChange} />
+															</div>
+														)
+													}}
+												>
+												</Select>
+											)
+										}
+									</Form.Item>
+								)
+							})
+						}
 					</Form>
 				</Modal>
 			);
@@ -89,27 +134,40 @@ const UserCreateForm = Form.create({ name: 'user_create' })(
 const UserEditForm = Form.create({ name: 'user_edit' })(
 	class extends React.Component {
 		render() {
-			const { visible, onCancel, onCreate, form } = this.props;
+			const { visible, onCancel, onEdit, onDelete, form } = this.props;
 			const { getFieldDecorator } = form;
 			return (
 				<Modal
 					visible={visible}
 					title="Cập nhật user"
-					okText="Cập nhật"
-					cancelText="Hủy"
 					onCancel={onCancel}
-					onOk={onCreate}
+					onOk={onEdit}
+					footer={
+						<div style={{ display: 'flex', justifyContent: 'space-between' }}>
+							<Button onClick={onCancel}>
+								Cancel
+            	</Button>
+							<div>
+								<Button onClick={() => onDelete(this.props.userId)}>
+									Delete
+									</Button>
+								<Button onClick={() => onEdit(this.props.userId)}>
+									Update
+									</Button>
+							</div>
+						</div>
+					}
 				>
 					<Form>
 						<Form.Item>
 							{
-								getFieldDecorator('name', {
+								getFieldDecorator('fullName', {
 
 								})(
 									<Input placeholder='New name' />)
 							}
 						</Form.Item>
-						<Form.Item>
+						{/* <Form.Item>
 							{
 								getFieldDecorator('password', {})(
 									<Input placeholder='New password' type='password' />)
@@ -126,7 +184,6 @@ const UserEditForm = Form.create({ name: 'user_edit' })(
 								getFieldDecorator('siteHh', {})(
 									<Select
 										placeholder='Khu vực Hoa Hồng'
-										dropdownClassName='b'
 										dropdownRender={menu => {
 											return (
 												<div>
@@ -138,7 +195,7 @@ const UserEditForm = Form.create({ name: 'user_edit' })(
 									</Select>
 								)
 							}
-						</Form.Item>
+						</Form.Item> */}
 					</Form>
 				</Modal>
 			);
@@ -151,10 +208,12 @@ class UserManage extends React.Component {
 		visible: false,
 		isPublish: false,
 		visibleEditUser: false,
-		users: []
+		users: [],
+		userId: "",
+		userName: ""
 	};
 
-	componentDidMount() {
+	initData = () => {
 		this.props.client.query({
 			query: GET_ALL_USERS,
 		})
@@ -169,7 +228,12 @@ class UserManage extends React.Component {
 			})
 	}
 
-	showModalEditUser = () => {
+	componentDidMount() {
+		this.initData()
+	}
+
+	showModalEditUser = (userId, userName) => {
+		this.setState({ userId, userName })
 		this.setState({ visibleEditUser: true });
 	};
 
@@ -177,14 +241,39 @@ class UserManage extends React.Component {
 		this.setState({ visibleEditUser: false });
 	};
 
-	handleEditUser = () => {
-		const { form } = this.formRef.props;
+	handleEditUser = (userId) => {
+		console.log(userId)
+		const { form } = this.formRefEdit.props;
 		form.validateFields((err, values) => {
 			if (err) {
 				return;
 			}
 
 			console.log('Received values of form: ', values);
+			this.setState({ visibleEditUser: false });
+			this.props.client.mutate({
+				mutation: UPDATE_USER,
+				variables: {
+					_id: userId,
+					input: { ...values }
+				},
+				fetchPolicy: 'no-cache',
+				refetchQueries: () => [
+					{
+						query: GET_ALL_USERS,
+						variables:
+						{
+							offset: 0, limit: 100
+						}
+					}
+				]
+			})
+				.then((result) => {
+					console.log(result)
+				})
+				.catch((err) => {
+					console.log(err.message)
+				})
 			form.resetFields();
 			this.setState({ visibleEditUser: false });
 		});
@@ -204,70 +293,98 @@ class UserManage extends React.Component {
 			if (err) {
 				return;
 			}
-			console.log(values)
 			this.props.client.mutate({
-        mutation: CREATE_USER,
-        variables: {
-          input: {
-            ...values,
-          }
+				mutation: CREATE_USER,
+				variables: {
+					input: {
+						...values,
+					}
 				},
 				fetchPolicy: 'no-cache',
-				refetchQueries: () => [{query: GET_ALL_USERS }]
-      })
-        .then((result) => {
+				refetchQueries: () => [
+					{
+						query: GET_ALL_USERS
+					}
+				]
+			})
+				.then((result) => {
 					console.log(result)
-        })
-        .catch((err) => {
-          console.log(err.message)
-        })
+
+				})
+				.catch((err) => {
+					console.log(err.message)
+				})
+				
+			console.log(this.state.users)
 			form.resetFields();
 			this.setState({ visible: false });
 		});
 	};
 
+	deleteUser = (userId) => {
+		console.log(userId)
+		this.setState({ visibleEditUser: false });
+		this.props.client.mutate({
+			mutation: INACTIVE_USER,
+			variables: {
+				_id: userId
+			},
+			fetchPolicy: 'no-cache',
+			refetchQueries: () => [
+				{
+					query: GET_ALL_USERS,
+					variables:
+					{
+						offset: 0, limit: 100
+					}
+				}
+			]
+		})
+			.then((result) => {
+				console.log(result)
+			})
+			.catch((err) => {
+				console.log(err.message)
+			})
+	}
+
 	saveFormRef = formRef => {
 		this.formRef = formRef;
 	};
 
-	saveFormRefEditUser = formRef => {
-		this.formRef = formRef;
+	saveFormRefEditUser = formRefEdit => {
+		this.formRefEdit = formRefEdit;
 	};
 
 	render() {
-		console.log(this)
+		console.log(this.state.users)
 		return (
 			<React.Fragment>
-				<label className='title'>Quản lí User</label>
-
+				{/* <label className='title'>Quản lí User</label> */}
 				{
-					this.state.users && this.state.users.map(user => {
+					this.state.users && this.state.users.filter(user => user.isActive).map((user, i) => {
 						return (
-							<Button className='user-name' onClick={this.showModalEditUser} key={user.fullName+user.username}>
+							<Button className='user-name' onClick={() => this.showModalEditUser(user._id, user.fullName)} key={i}>
 								{user.fullName}
 							</Button>
 						)
 					})
 				}
-				{/* <Button className='user-name' onClick={this.showModalEditUser}>
-					Toàn
-				</Button> */}
-
 				<UserEditForm
-					wrappedComponentRef={this.saveFormRefEditUser}
+					userId={this.state.userId}
+					userName={this.state.userName}
+					wrappedComponentRef={(r) => this.saveFormRefEditUser(r)}
 					visible={this.state.visibleEditUser}
 					onCancel={this.handleCancelEditUser}
-					onCreate={this.handleEditUser}
+					onEdit={this.handleEditUser}
+					onDelete={this.deleteUser}
 				/>
-
-				{/* <Button className='user-name'>Nam</Button>
-				<Button className='user-name'>Bảo</Button>
-				<Button className='user-name'>Chung</Button> */}
 
 				<Button className='add-user' onClick={this.showModal}>
 					Thêm user
 				</Button>
 				<UserCreateForm
+					client={this.props.client}
 					wrappedComponentRef={this.saveFormRef}
 					visible={this.state.visible}
 					onCancel={this.handleCancel}
@@ -283,6 +400,8 @@ const GET_ALL_USERS = gql`
 		users(offset: 0, limit: 100){
 			username
 			fullName
+			isActive
+			_id
 		}
 	}
 `
@@ -295,9 +414,34 @@ const CREATE_USER = gql`mutation($input: CreateUserInput!){
   }
 }`
 
-const INACTIVE_PATIENT = gql`
-  mutation deletePatient($patientId: ID!) {
-    deletePatient(patientId: $patientId) 
-  }`
+const INACTIVE_USER = gql`
+mutation deleteUser($_id: String!){
+  deleteUser(_id:$_id)
+}`
+
+const GET_ALL_SITES = gql`
+	query sites{
+		sites
+		{
+			_id
+			name
+		}
+	}
+
+`
+const GET_ALL_PERMISSIONS = gql`
+	query permissions{
+		permissions{
+			code
+			_id
+		}
+	}
+`
+
+const UPDATE_USER = gql`
+	mutation updateUser($_id: String!, $input: UpdateUserInput!){
+		updateUser(_id: $_id, input: $input)
+	}
+`
 
 export default withApollo(UserManage)
