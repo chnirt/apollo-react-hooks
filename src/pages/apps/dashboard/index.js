@@ -118,7 +118,7 @@ function Dashboard(props) {
 						}}
 					>
 						Hello, {me && me.username}
-						<Button type="primary" block onClick={onLogout}>
+						<Button type="primary" block onClick={onLogout} icon="logout">
 							Log out
 						</Button>
 					</Col>

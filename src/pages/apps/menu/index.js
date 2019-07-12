@@ -1,13 +1,20 @@
 import React from 'react'
-import { Row } from 'antd'
+import { Row, Divider, Button } from 'antd'
 import MenuList from './MenuList'
 import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation'
 import gql from 'graphql-tag'
 
 function Menu(props) {
 	const menus = props.data.menus
+
+	function onClick() {
+		props.history.push('/🥢')
+	}
+
 	return (
 		<div className="menu">
+			<Button shape="circle" icon="left" onClick={onClick} />
+			<Divider />
 			<Row className="menu-list">
 				{menus.map((menu, index) => (
 					<MenuList key={index} menuData={menu}>

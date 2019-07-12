@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Row, Card, Button } from 'antd'
+import { Row, Card, Button, Divider } from 'antd'
 
 import UserList from './UserList'
 import { GET_ALL_USERS } from './queries'
@@ -25,6 +25,12 @@ function UserB(props) {
 					height: 'calc(100vh - 60px)'
 				}}
 			>
+				<Button
+					shape="circle"
+					icon="left"
+					onClick={() => props.history.push('/🥢')}
+				/>
+				<Divider />
 				<Card
 					title="Quản lí user"
 					bordered={false}
