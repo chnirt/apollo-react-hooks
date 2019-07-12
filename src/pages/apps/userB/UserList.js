@@ -38,8 +38,6 @@ function UserList(props) {
 
   }
 
-  console.log(props)
-
   function onEdit(_id) {
     console.log('Edit', _id)
   }

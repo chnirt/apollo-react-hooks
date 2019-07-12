@@ -7,6 +7,7 @@ import { withApollo } from 'react-apollo';
 import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon';
 
 import jsPDF from 'jspdf';
+import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation';
 
 const { Option } = Select;
 
@@ -17,31 +18,21 @@ class MenuDetail extends React.Component {
 		menuIdBySite: '',
 	};
 
-	componentDidMount() {
-		this.props.client.query({
-			query: GET_MENU_BY_SITE,
-			variables: {
-				siteId: localStorage.getItem('currentsite')
-			}
-		})
-			.then(({ data }) => {
-				console.log(data)
-				this.setState({
-					menusBySite: data.menusBySite
-				})
-			})
-			.catch(err => {
-				console.log(err)
-				throw err
-			})
-	}
-
 	isActive = (menuId) => {
 		this.props.client.mutate({
 			mutation: CLOSE_MENU,
 			variables: {
 				id: menuId
-			}
+			},
+			refetchQueries: [
+				{
+					query: GET_MENU_BY_SITE,
+					variables: {
+						siteId: localStorage.getItem('currentsite')
+					}
+				}
+			]
+
 		})
 			.then(({ data }) => {
 				openNotificationWithIcon('success', 'login', 'Close Menu Success')
@@ -57,17 +48,27 @@ class MenuDetail extends React.Component {
 	}
 
 	isLock = (menuId) => {
-		this.props.client.mutate({
+		console.log(menuId)
+		this.props.mutate
+		.lockAndUnLockMenu({
 			mutation: LOCK_AND_UNLOCK_MENU,
 			variables: {
 				id: menuId
 			},
+			refetchQueries: [
+				{
+					query: GET_MENU_BY_SITE,
+					variables: {
+						siteId: localStorage.getItem('currentsite')
+					}
+				}
+			]
 		})
 			.then( data  => {
-				console.log(data)
+				// console.log(data)
 			})
 			.catch(err => {
-				console.log(err)
+				// console.log(err)
 				throw err
 			})
 
@@ -76,6 +77,7 @@ class MenuDetail extends React.Component {
 	onSelect = (currentsite) => {
 		console.log(currentsite)
 		localStorage.setItem('currentsite', currentsite)
+		this.props.getMenuBySite.variables.siteId = localStorage.getItem('currentsite')
 	}
 
 	onRequest(menu) {
@@ -100,7 +102,6 @@ class MenuDetail extends React.Component {
 
 	render() {
 		console.log(this.props)
-		console.log(typeof localStorage.getItem('currentsite'))
 		const options = JSON.parse(localStorage.getItem('sites'))
 			.map((site, i) => {
 				return (
@@ -123,7 +124,7 @@ class MenuDetail extends React.Component {
 				</Select>
 
 				{
-					this.state.menusBySite && this.state.menusBySite.map((menuBySite, i) => {
+					this.props.getMenuBySite.menusBySite && this.props.getMenuBySite.menusBySite.map((menuBySite, i) => {
 						return (
 							<div key={i}>
 								<h1 style={{ textAlign: 'center', display: 'block', marginBottom: 20 }}>
@@ -209,4 +210,26 @@ const CLOSE_MENU = gql`
 	}
 `
 
-export default withApollo(MenuDetail)
+export default HOCQueryMutation([
+	{
+		query: GET_MENU_BY_SITE,
+		name: 'getMenuBySite',
+		options: props => ({
+			variables: {
+				siteId: localStorage.getItem('currentsite')
+			}
+		})
+
+	},
+
+	{
+		mutation: LOCK_AND_UNLOCK_MENU,
+		name: 'lockAndUnLockMenu',
+		option: {}
+	},
+	{
+		mutation: CLOSE_MENU,
+		name: 'closeMenu',
+		option: {}
+	}
+])(MenuDetail)

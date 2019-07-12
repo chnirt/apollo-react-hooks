@@ -33,7 +33,7 @@ const GET_ALL_MENU = gql`
 			}
 			isPublished
 			isLocked
-			isActived
+			isActive
 		}
 	}
 `

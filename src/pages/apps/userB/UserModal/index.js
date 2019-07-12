@@ -7,15 +7,38 @@ import { CREATE_USER, GET_ALL_USERS, GET_ALL_PERMISSIONS, GET_ALL_SITES } from '
 function UserModel(props) {
 
 	function onCreate() {
-    props.form.validateFields((err, values) => {
-      if (err) {
-        return;
-      }
+		props.form.validateFields((err, values) => {
+			if (err) {
+				return;
+			}
+			console.log('Received values of form: ', values);
+			console.log()
 
-      console.log('Received values of form: ', values);
-      props.form.resetFields();
+			// props.mutate
+			// .createUser({
+			// 	mutation: CREATE_USER,
+			// 	variables: {
+			// 		input: {
+			// 			...values,
+			// 		}
+			// 	},
+			// 	refetchQueries: () => [
+			// 		{
+			// 			query: GET_ALL_USERS
+			// 		}
+			// 	]
+			// })
+			// 	.then((result) => {
+			// 		// console.log(result)
+
+			// 	})
+			// 	.catch((err) => {
+			// 		// console.log(err.message)
+			// 	})
+				
+			props.form.resetFields();
 			props.handleCancel()
-    });
+		});
 	}
 
 	function onChange(checkedValues) {
@@ -36,7 +59,7 @@ function UserModel(props) {
 	};
 	props.getAllPermissions.permissions && props.getAllPermissions.permissions.map((permission,i) => {
 		return (
-			children.push(<Option key={permission} value={permission.code}>{permission.code}</Option>)
+			children.push(<Option key={i} value={permission.code + ' ' + permission._id}>{permission.code}</Option>)
 		)
 	})
 
@@ -47,6 +70,7 @@ function UserModel(props) {
 	// })
 
 	// console.log(a)
+	console.log(props)
 
 	return (
 		<Modal
