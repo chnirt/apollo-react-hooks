@@ -34,6 +34,11 @@ export const routes = [
 			},
 			{
 				label: 'Manage User',
+				path: '/🥢/userB',
+				component: 'userB'
+			},
+			{
+				label: 'Manage Usersad',
 				path: '/🥢/user',
 				component: 'user'
 			},

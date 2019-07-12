@@ -1,47 +1,24 @@
 import React, { useEffect, useState } from 'react'
-import { Row, Col, Card, Button } from 'antd'
-import { withRouter } from 'react-router-dom'
-import { withApollo } from 'react-apollo'
-import gql from 'graphql-tag'
+import { Row, Col, Card, Button, Icon } from 'antd'
 
-const gridStyle = {
-	width: '100%',
-	height: '10vh',
-	marginBottom: '10%',
-	display: 'flex',
-	alignItems: 'center'
-}
+import UserList from './UserList'
+import { GET_ALL_USERS, USER_LOCK_AND_UNLOCK } from './queries'
+import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
+import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation';
+import UserModal from './UserModal/index';
 
 function UserB(props) {
-	const [users, setUsers] = useState([])
+	const [visible, setVisible] = useState(false)
 
-	useEffect(() => {
-		// code to run on component mount
-		props.client
-			.query({
-				query: USERS,
-				variables: {
-					offset: 1,
-					limit: 100
-				}
-			})
-			.then(res => {
-				// console.log(res.data.users)
-				setUsers(res.data.users)
-			})
-			.catch(err => {
-				// console.log(err)
-			})
-	})
-
-	function onClick(_id) {
-		console.log(_id)
+	function openModal() {
+		setVisible(true)
 	}
 
-	function onCreate() {
-		console.log('Create')
+	function closeModal() {
+		setVisible(false)
 	}
 
+	const users = props.data.users
 	return (
 		<>
 			<Row
@@ -53,60 +30,32 @@ function UserB(props) {
 					title="Manage user"
 					bordered={false}
 					extra={
-						<Button type="primary" block onClick={onCreate}>
+						<Button type="primary" block onClick={openModal}>
 							Create a new user
 						</Button>
 					}
 					headStyle={{
-						border: 0,
-						margin: 0
+						border: 0
 					}}
 				>
 					{users &&
-						users.map((item, i) => (
-							<Col
-								key={i}
-								xs={{
-									span: 22,
-									offset: 1
-								}}
-								sm={{
-									span: 10,
-									offset: 1
-								}}
-								md={{
-									span: 10,
-									offset: 1
-								}}
-								lg={{
-									span: 4,
-									offset: 1
-								}}
-								onClick={() => onClick(item._id)}
-							>
-								<Card.Grid style={gridStyle}>{item.fullName}</Card.Grid>
-							</Col>
+						users.map((user, i) => (
+							<UserList userData={user} key={i} />
 						))}
 				</Card>
+				<UserModal
+					visible={visible}
+					handleCancel={closeModal}
+				/>
 			</Row>
 		</>
 	)
 }
 
-const USERS = gql`
-	query($offset: Int!, $limit: Int!) {
-		users(offset: $offset, limit: $limit) {
-			_id
-			username
-			password
-			fullName
-			isLocked
-			reason
-			isActive
-			createdAt
-			updatedAt
-		}
+export default HOCQueryMutation([
+	{
+		query: GET_ALL_USERS
 	}
-`
+])(UserB)
 
-export default withApollo(withRouter(UserB))
+

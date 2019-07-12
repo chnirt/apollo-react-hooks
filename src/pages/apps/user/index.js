@@ -162,7 +162,7 @@ const UserEditForm = Form.create({ name: 'user_edit' })(
 					<Form>
 						<Form.Item>
 							{
-								getFieldDecorator('fullName',  {
+								getFieldDecorator('fullName', {
 
 								})(
 									<Input placeholder='New name' />)
@@ -214,12 +214,7 @@ class UserManage extends React.Component {
 		userName: ""
 	};
 
-	componentWillReceiveProps(nextProps) {
-		console.log('ok')
-		console.log(nextProps)
-	}
-
-	componentDidMount() {
+	initData = () => {
 		this.props.client.query({
 			query: GET_ALL_USERS,
 		})
@@ -232,6 +227,10 @@ class UserManage extends React.Component {
 				console.log(err)
 				throw err
 			})
+	}
+
+	componentDidMount() {
+		this.initData()
 	}
 
 	showModalEditUser = (userId, userName) => {
@@ -295,7 +294,6 @@ class UserManage extends React.Component {
 			if (err) {
 				return;
 			}
-			console.log(this.props.client.cache)
 			this.props.client.mutate({
 				mutation: CREATE_USER,
 				variables: {
@@ -309,16 +307,17 @@ class UserManage extends React.Component {
 						query: GET_ALL_USERS
 					}
 				]
-			
 			})
 				.then((result) => {
 					console.log(result)
+
 				})
 				.catch((err) => {
 					console.log(err.message)
 				})
+				
+			console.log(this.state.users)
 			form.resetFields();
-			this.props.client.cache.reset()
 			this.setState({ visible: false });
 		});
 	};
@@ -359,6 +358,7 @@ class UserManage extends React.Component {
 	};
 
 	render() {
+		console.log(this.state.users)
 		return (
 			<React.Fragment>
 				{/* <label className='title'>Quản lí User</label> */}
