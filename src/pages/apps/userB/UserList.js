@@ -3,26 +3,17 @@ import { Row, Col, Card, Modal, Icon } from 'antd'
 import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
 import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation';
 import { USER_LOCK_AND_UNLOCK, GET_ALL_USERS, INACTIVE_USER } from './queries'
-import { UserModal} from './UserModal'
+import { UserModal } from './UserModal'
 
 
 function UserList(props) {
-  const [visible, setVisible] = useState(false)
-
-	function openModal() {
-		setVisible(true)
-	}
-
-	function closeModal() {
-		setVisible(false)
-	}
 
   function onDelete(_id) {
     Modal.confirm({
       title: 'Bạn có muốn xóa không ?',
       okText: 'Xóa',
       cancelText: 'Hủy',
-      iconType: 'question-circle',
+      icon: 'question-circle',
       onOk: () => props.mutate
         .deleteUser({
           variables: {
@@ -36,7 +27,7 @@ function UserList(props) {
         })
         .then(res => {
           // console.log(res)
-          openNotificationWithIcon('success', 'success', 'Success', _id)
+          openNotificationWithIcon('success', 'success', 'Xóa user thành công', null)
         })
         .catch(err => {
           // console.log(err)
@@ -45,10 +36,6 @@ function UserList(props) {
         })
     });
 
-  }
-
-  function onEdit(_id) {
-    console.log('Edit', _id)
   }
 
   function onLockAndUnlock(_id) {
@@ -66,7 +53,7 @@ function UserList(props) {
       })
       .then(res => {
         // console.log(res)
-        openNotificationWithIcon('success', 'success', 'Success', _id)
+        openNotificationWithIcon('success', 'success', 'Locl user thành công', null)
       })
       .catch(err => {
         // console.log(err)
@@ -74,6 +61,12 @@ function UserList(props) {
         openNotificationWithIcon('error', 'failed', 'Failed', errors[0])
       })
 
+  }
+
+  function onEdit(user, id) {
+    props.setId(id)
+    props.setUser(user)
+    props.openModal()
   }
 
   return (
@@ -101,7 +94,7 @@ function UserList(props) {
     >
       <Card
         actions={[
-          <Icon type="edit" onClick={() => onEdit(props.userData._id)} />,
+          <Icon type="edit" onClick={() => onEdit(props.userData, props.userData._id)} />,
           <Icon
             type={props.userData.isLocked ? "lock" : 'unlock'}
             onClick={() => onLockAndUnlock(props.userData._id)}
@@ -110,10 +103,6 @@ function UserList(props) {
         ]}
       >
         {props.userData.fullName}
-        {/* <UserModal
-					visible={visible}
-					handleCancel={closeModal}
-				/> */}
       </Card>
     </Col>
   )

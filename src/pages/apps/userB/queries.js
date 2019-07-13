@@ -5,6 +5,7 @@ const GET_ALL_USERS = gql`
 		users(offset: 0, limit: 100){
 			username
 			fullName
+			password
       isActive
       isLocked
 			_id

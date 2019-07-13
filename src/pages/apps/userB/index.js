@@ -1,17 +1,30 @@
-import React, { useEffect, useState } from 'react'
-import { Row, Col, Card, Button, Icon } from 'antd'
+import React, { useState } from 'react'
+import { Row, Card, Button } from 'antd'
 
 import UserList from './UserList'
-import { GET_ALL_USERS, USER_LOCK_AND_UNLOCK } from './queries'
-import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
+import { GET_ALL_USERS } from './queries'
 import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation';
 import UserModal from './UserModal/index';
 
 function UserB(props) {
 	const [visible, setVisible] = useState(false)
+	const [user, setUser] = useState(null)
+	const [userId, setUserId] = useState(null)
 
 	function openModal() {
 		setVisible(true)
+	}
+
+	function set(user) {
+		setUser(user)
+	}
+
+	function setNull(userId) {
+		setNullId(null)
+	}
+
+	function setId(userId) {
+		setUserId(userId)
 	}
 
 	function closeModal() {
@@ -19,6 +32,8 @@ function UserB(props) {
 	}
 
 	const users = props.data.users
+	console.log(users)
+
 	return (
 		<>
 			<Row
@@ -27,7 +42,7 @@ function UserB(props) {
 				}}
 			>
 				<Card
-					title="Quản lí user"
+					title="Quản lí User"
 					bordered={false}
 					extra={
 						<Button type="primary" block onClick={openModal}>
@@ -39,11 +54,21 @@ function UserB(props) {
 					}}
 				>
 					{users &&
-						users.filter(user=> user.isActive).map((user, i) => (
-							<UserList userData={user} key={i} />
+						users.filter(user => user.isActive).map((user, i) => (
+							<UserList userData={user} key={i} visible={visible}
+								handleCancel={closeModal}
+								 openModal={openModal}
+									userId={userId} 
+									setId={setId} 
+									user={user} 
+									setUser={set}
+									/>
 						))}
 				</Card>
 				<UserModal
+					userId={userId}
+					setNull={setNull}
+					user={user}
 					visible={visible}
 					handleCancel={closeModal}
 				/>
