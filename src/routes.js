@@ -34,8 +34,8 @@ export const routes = [
 			},
 			{
 				label: 'Manage User',
-				path: '/🥢/userB',
-				component: 'userB'
+				path: '/🥢/user',
+				component: 'usera'
 			},
 			{
 				label: 'Report',
@@ -59,7 +59,7 @@ export const menuRoutes = [
 	},
 	{
 		label: 'Manage User',
-		path: '/🥢/userB',
+		path: '/🥢/user',
 		icon: 'user'
 	},
 	{
