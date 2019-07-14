@@ -5,6 +5,7 @@ import { CREATE_USER, GET_ALL_USERS, GET_ALL_PERMISSIONS, GET_ALL_SITES, UPDATE_
 import openNotificationWithIcon from '../../../../components/shared/openNotificationWithIcon';
 
 function UserModel(props) {
+	
 	function onCreate() {
 		props.form.validateFields((err, values) => {
 			if (err) {
@@ -124,7 +125,6 @@ function UserModel(props) {
 			}
 
 			values.sites = sites
-
 			props.mutate
 				.updateUser({
 					mutation: UPDATE_USER,
@@ -139,6 +139,7 @@ function UserModel(props) {
 							query: GET_ALL_USERS
 						}
 					]
+					
 				})
 				.then((result) => {
 					// console.log(result)
@@ -154,7 +155,6 @@ function UserModel(props) {
 			props.handleCancel()
 		});
 	}
-	console.log(props)
 
 	function onChange(checkedValues) {
 	}

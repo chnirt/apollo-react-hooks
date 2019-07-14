@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Row, Card, Button } from 'antd'
+import { Row, Card, Button, Divider } from 'antd'
 
 import UserList from './UserList'
 import { GET_ALL_USERS } from './queries'
@@ -19,10 +19,6 @@ function UserA(props) {
 		setUser(user)
 	}
 
-	function setNull(userId) {
-		setNullId(null)
-	}
-
 	function setId(userId) {
 		setUserId(userId)
 	}
@@ -35,6 +31,12 @@ function UserA(props) {
 
 	return (
 		<>
+			<Button
+				shape="circle"
+				icon="left"
+				onClick={() => props.history.push('/🥢')}
+			/>
+			<Divider />
 			<Row
 				style={{
 					height: 'calc(100vh - 60px)'
@@ -54,19 +56,21 @@ function UserA(props) {
 				>
 					{users &&
 						users.filter(user => user.isActive).map((user, i) => (
-							<UserList userData={user} key={i} visible={visible}
+							<UserList
+								userData={user}
+								key={i}
+								visible={visible}
 								handleCancel={closeModal}
-								 openModal={openModal}
-									userId={userId} 
-									setId={setId} 
-									user={user} 
-									setUser={set}
-									/>
+								openModal={openModal}
+								userId={userId}
+								setId={setId}
+								user={user}
+								setUser={set}
+							/>
 						))}
 				</Card>
 				<UserModal
 					userId={userId}
-					setNull={setNull}
 					user={user}
 					visible={visible}
 					handleCancel={closeModal}

@@ -3,9 +3,19 @@ import { Row, Col, Card, Modal, Icon } from 'antd'
 import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
 import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation';
 import { USER_LOCK_AND_UNLOCK, GET_ALL_USERS, INACTIVE_USER } from './queries'
-
+import UserModal from './usermodal'
 
 function UserList(props) {
+  const [visible, setVisible] = useState(false)
+
+  function openModal() {
+    setVisible(true)
+  }
+
+  function closeModal() {
+    setVisible(false)
+  }
+
 
   function onDelete(_id) {
     Modal.confirm({
@@ -38,7 +48,7 @@ function UserList(props) {
   }
 
   function onLockAndUnlock(_id) {
-    console.log('LockAndUnlock', _id)
+    // console.log('LockAndUnlock', _id)
     props.mutate
       .lockAndUnlockUser({
         variables: {
@@ -69,41 +79,48 @@ function UserList(props) {
   }
 
   return (
-    <Col
-      // key={i}
-      xs={{
-        span: 22,
-        offset: 1
-      }}
-      sm={{
-        span: 10,
-        offset: 1
-      }}
-      md={{
-        span: 10,
-        offset: 1
-      }}
-      lg={{
-        span: 4,
-        offset: 1
-      }}
-      style={{
-        marginBottom: 20
-      }}
-    >
-      <Card
-        actions={[
-          <Icon type="edit" onClick={() => onEdit(props.userData, props.userData._id)} />,
-          <Icon
-            type={props.userData.isLocked ? "lock" : 'unlock'}
-            onClick={() => onLockAndUnlock(props.userData._id)}
-          />,
-          <Icon type="delete" onClick={() => onDelete(props.userData._id)} />
-        ]}
+    <>
+      <Col
+        // key={i}
+        xs={{
+          span: 22,
+          offset: 1
+        }}
+        sm={{
+          span: 10,
+          offset: 1
+        }}
+        md={{
+          span: 10,
+          offset: 1
+        }}
+        lg={{
+          span: 4,
+          offset: 1
+        }}
+        style={{
+          marginBottom: 20
+        }}
       >
-        {props.userData.fullName}
-      </Card>
-    </Col>
+        <Card
+          actions={[
+            <Icon type="edit" onClick={() => onEdit(props.userData, props.userData._id)} />,
+            <Icon
+              type={props.userData.isLocked ? "lock" : 'unlock'}
+              onClick={() => onLockAndUnlock(props.userData._id)}
+            />,
+            <Icon type="delete" onClick={() => onDelete(props.userData._id)} />
+          ]}
+        >
+          {props.userData.fullName}
+        </Card>
+      </Col>
+      <UserModal
+        userId={props.userData._id}
+        visible={visible}
+        handleCancel={closeModal}
+      />
+    </>
   )
 }
 
