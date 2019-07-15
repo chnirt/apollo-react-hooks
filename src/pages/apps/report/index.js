@@ -240,11 +240,14 @@ export default HOCQueryMutation([
 	{
 		query: GET_MENU_BY_SITE,
 		name: 'getMenuBySite',
-		options: props => ({
-			variables: {
-				siteId: localStorage.getItem('currentsite')
-			}
-		})
+		options: props => {
+			console.log(props)
+			return  ({
+				variables: {
+					siteId: localStorage.getItem('currentsite')
+				}
+			})
+		}
 	},
 
 	{

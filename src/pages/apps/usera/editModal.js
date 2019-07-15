@@ -1,85 +1,10 @@
 import React from 'react'
 import { Select, Modal, Form, Input } from 'antd';
-import { HOCQueryMutation } from '../../../../components/shared/hocQueryAndMutation';
-import { CREATE_USER, GET_ALL_USERS, GET_ALL_PERMISSIONS, GET_ALL_SITES, UPDATE_USER } from '../queries'
-import openNotificationWithIcon from '../../../../components/shared/openNotificationWithIcon';
+import { HOCQueryMutation } from './../../../components/shared/hocQueryAndMutation';
+import { CREATE_USER, GET_ALL_USERS, GET_ALL_PERMISSIONS, GET_ALL_SITES, UPDATE_USER } from './queries'
+import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon';
 
-function UserModal(props) {
-	
-	function onCreate() {
-		props.form.validateFields((err, values) => {
-			if (err) {
-				return;
-			}
-			// console.log('Received values of form: ', values);
-			let sites = []
-
-			for (let [key, value] of Object.entries(values.sites)) {
-				// console.log(Array.isArray(value));
-				// console.log(key, value)
-				if (Array.isArray(value) && value.length > 1) {
-					// console.log("------Array");
-					// console.log(value);
-					const permissions = [];
-					value.map(item => {
-						// console.log(item);
-						return permissions.push({
-							code: item.split(' ')[0],
-							_id: item.split(' ')[1]
-						});
-					});
-					// console.log(permissions);
-					sites.push({
-						siteId: key,
-						permissions
-					});
-				}
-				else {
-					// console.log("------String");
-					// console.log(value)
-					sites.push({
-						siteId: key,
-						permissions: [
-							{
-								code: value[0].split(' ')[0],
-								_id: value[0].split(' ')[1]
-							}
-						]
-					});
-				}
-			}
-
-			values.sites = sites
-
-			props.mutate
-				.createUser({
-					mutation: CREATE_USER,
-					variables: {
-						input: {
-							...values,
-						}
-					},
-					refetchQueries: () => [
-						{
-							query: GET_ALL_USERS
-						}
-					]
-				})
-				.then((result) => {
-					// console.log(result)
-					openNotificationWithIcon('success', 'success', `Thêm ${values.fullName} thành công`, null)
-				})
-				.catch((err) => {
-					// console.log(err.message)
-					const errors = err.graphQLErrors.map(error => error.message)
-					openNotificationWithIcon('error', 'failed', 'Failed', errors[0])
-				})
-
-			props.form.resetFields();
-			props.handleCancel()
-		});
-	}
-
+function EditModal(props) {
 
 	function onEdit(_id) {
 		props.form.validateFields((err, values) => {
@@ -129,17 +54,16 @@ function UserModal(props) {
 				.updateUser({
 					mutation: UPDATE_USER,
 					variables: {
-						_id: props.userId,
+						_id: props.userData._id,
 						input: {
 							...values,
 						}
 					},
-					refetchQueries: () => [
-						{
-							query: GET_ALL_USERS
-						}
-					]
-					
+					// refetchQueries: () => [
+					// 	{
+					// 		query: GET_ALL_USERS
+					// 	}
+					// ]
 				})
 				.then((result) => {
 					// console.log(result)
@@ -181,34 +105,21 @@ function UserModal(props) {
 	return (
 		<Modal
 			visible={props.visible}
-			title={props.user ? 'Sửa user' : "Thêm user"}
-			okText={props.user ? 'Sửa' : "Lưu"}
+			title='Sửa user'
+			okText='Sửa'
 			cancelText="Hủy"
 			onCancel={props.handleCancel}
-			onOk={props.user ? onEdit : onCreate}
+			onOk={onEdit}
 		>
 			<Form {...formItemLayout}>
 				<Form.Item label='Tên'>
 					{
 						getFieldDecorator('fullName', {
-							initialValue: props.user && props.user.fullName
+							initialValue: props.userData && props.userData.fullName
 						})(
 							<Input placeholder='Nhập tên' />)
 					}
 				</Form.Item>
-				{
-					props.userId ? null :
-						(
-							<Form.Item label='Tên đăng nhập'>
-								{
-									getFieldDecorator('username', {
-										initialValue: props.user && props.user.username
-									})(
-										<Input placeholder='Nhập username' type='text' disabled={props.user && props.user.username ? true : false} />)
-								}
-							</Form.Item>
-						)
-				}
 				<Form.Item label='Mật khẩu'>
 					{
 						getFieldDecorator('password', {
@@ -253,7 +164,6 @@ export default HOCQueryMutation([
 		query: GET_ALL_USERS,
 		name: 'getAllUsers'
 	},
-
 	{
 		query: GET_ALL_PERMISSIONS,
 		name: 'getAllPermissions'
@@ -263,13 +173,8 @@ export default HOCQueryMutation([
 		name: 'getAllSites'
 	},
 	{
-		mutation: CREATE_USER,
-		name: 'createUser',
-		option: {}
-	},
-	{
 		mutation: UPDATE_USER,
 		name: 'updateUser',
 		options: {}
 	}
-])(Form.create({})(UserModal))
+])(Form.create({})(EditModal))

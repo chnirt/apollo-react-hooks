@@ -1,30 +1,40 @@
-import React, { useState } from 'react'
+import React, { useState, userEffect, useEffect } from 'react'
 import { Row, Card, Button, Divider } from 'antd'
 
 import UserList from './UserList'
 import { GET_ALL_USERS } from './queries'
 import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation';
 import UserModal from './usermodal';
+import EditModal from './editModal'
 
 function UserA(props) {
 	const [visible, setVisible] = useState(false)
-	const [user, setUser] = useState(null)
-	const [userId, setUserId] = useState(null)
+	const [visibleEdit, setVisibleEdit] = useState(false)
+	// const [user, setUser] = useState(null)
+	const [user, setUser] = useState('')
 
 	function openModal() {
 		setVisible(true)
 	}
 
-	function set(user) {
-		setUser(user)
-	}
-
-	function setId(userId) {
-		setUserId(userId)
-	}
-
 	function closeModal() {
 		setVisible(false)
+	}
+
+	function openModalEdit() {
+		setVisibleEdit(true)
+	}
+
+	function closeModalEdit() {
+		setVisibleEdit(false)
+	}
+
+	// function set(user) {
+	// 	setUser(user)
+	// }
+
+	function set(user) {
+		setUser(user)
 	}
 
 	const users = props.data.users
@@ -56,25 +66,31 @@ function UserA(props) {
 				>
 					{users &&
 						users.filter(user => user.isActive).map((user, i) => (
-							<UserList
-								userData={user}
-								key={i}
-								visible={visible}
-								handleCancel={closeModal}
-								openModal={openModal}
-								userId={userId}
-								setId={setId}
-								user={user}
-								setUser={set}
-							/>
+							<div key={i}>
+								<UserList
+									userData={user}
+									key={i}
+									visible={visibleEdit}
+									openModal={openModalEdit}
+									setUser={set}
+								/>
+
+							</div>
 						))}
 				</Card>
+				<EditModal
+					userData={user}
+					// user={user}
+					visible={visibleEdit}
+					handleCancel={closeModalEdit}
+				/>
 				<UserModal
-					userId={userId}
-					user={user}
+					// userId={userId}
+					// user={user}
 					visible={visible}
 					handleCancel={closeModal}
 				/>
+
 			</Row>
 		</>
 	)
