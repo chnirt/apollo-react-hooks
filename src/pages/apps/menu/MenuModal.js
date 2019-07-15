@@ -68,13 +68,29 @@ function MenuModal(props) {
 		setDishName(e.target.value)
 	}
 
-	function changeCount(value) {
-		setCount(value)
+	function validateCount(rule, value, callback) {
+		const regex = /[0-9]$/
+		if (value && !regex.test(value)) {
+			callback('Số lượng chỉ nhập số')
+		} else if (value < 0) {
+			callback('Số lượng phải lớn hơn hoặc bằng 0')
+		} else {
+			setCount(value)
+			callback()
+		}
 	}
 
 	async function publishAndUnpublish() {
 		await props.mutate.publishAndUnpublish({
-			variables: { id: data.menu._id }
+			variables: { id: data.menu._id },
+			refetchQueries: [
+				{
+					query: GET_MENU,
+					variables: {
+						id: props.menuId
+					}
+				}
+			]
 		})
 	}
 
@@ -108,6 +124,7 @@ function MenuModal(props) {
 			cancelText="Đóng"
 			okText={data.menu.isPublished ? 'Unpublish' : 'Publish'}
 			onOk={publishAndUnpublish}
+			centered
 		>
 			<Row style={{ marginBottom: '20px' }}>
 				<Col span={16}>
@@ -137,8 +154,13 @@ function MenuModal(props) {
 					<Col span={8}>
 						<Form.Item>
 							{getFieldDecorator('count', {
+								rules: [
+									{
+										validator: validateCount
+									}
+								],
 								initialValue: 0
-							})(<InputNumber min={0} onChange={changeCount} width="50px" />)}
+							})(<InputNumber min={0} width="50px" />)}
 						</Form.Item>
 					</Col>
 					<Col span={16}>
@@ -167,7 +189,7 @@ const GET_MENU = gql`
 			}
 			isPublished
 			isLocked
-			isActived
+			isActive
 		}
 	}
 `

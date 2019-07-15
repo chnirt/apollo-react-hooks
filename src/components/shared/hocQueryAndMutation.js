@@ -16,11 +16,10 @@ const HOCQueryMutation = data => Component => {
 				if (QueryOrMutate.query) {
 					// if (!!QueryOrMutate.variables) {
 					// 	return graphql(QueryOrMutate.query, {
-					// 		// variables: QueryOrMutate.variables,
-					// 		// fetchPolicy: 'network-only'
 					// 		options: QueryOrMutate.options
 					// 	})
 					// } else
+
 					if (!!QueryOrMutate.options) {
 						return graphql(QueryOrMutate.query, {
 							options: QueryOrMutate.options,
@@ -54,8 +53,11 @@ const HOCQueryMutation = data => Component => {
 							...wrapProps.mutate,
 							[QueryOrMutate.name]: props[QueryOrMutate.name]
 						}
+					
 						delete wrapProps[QueryOrMutate.name]
+						
 					}
+					
 				}
 				return <Component {...wrapProps} />
 			}

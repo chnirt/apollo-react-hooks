@@ -1,36 +1,47 @@
 import React from 'react'
-import { Button, List } from 'antd'
+import { Button, List, Row } from 'antd'
 import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation'
 import gql from 'graphql-tag'
 
 class ListDishes extends React.Component {
 	state = {
-		menuId: null,
+		menuId: this.props.data.menuPublishBySite._id,
 		dishes: []
 	}
 
   componentDidMount () {
-		this.handleDefaultDishes()
+		// this.handleDefaultDishes()
+		// this.handleLoadData()
+		// localStorage.setItem('menuId', this.props.data.menuPublishBySite._id)
 	}
-	async handleDefaultDishes () {
-		const orderNumbers = {
-			"0": 1,
-			"1": 2,
-			"2": 3,
-			"3": 4,
-			"4": 5
-		}
-		if (this.props.data.menuPublishBySite.isPublished === true && this.props.data.menuPublishBySite.isActive === true) {
-			this.setState({
-				menuId: this.props.data.menuPublishBySite._id,
-				dishes: [...this.props.data.menuPublishBySite.dishes].map((dish, index) => ({...dish, orderNumber: orderNumbers[index]}))
-			})
-		}
 
-		if(this.props.data.error) {
-			console.log(this.props.data.error)
-		}
-  }
+	// async handleDefaultDishes () {
+	// 	console.log(this.props)
+	// 	const orderNumbers = this.props.ordersByMenu.ordersByMenu.map(order => order.count)
+	// 	// console.log(orderNumbers)
+	// 	if (this.props.data.menuPublishBySite.isPublished === true && this.props.data.menuPublishBySite.isActive === true) {
+	// 		this.setState({
+	// 			menuId: this.props.data.menuPublishBySite._id,
+	// 			dishes: [...this.props.data.menuPublishBySite.dishes].map((dish, index) => ({...dish, orderNumber: orderNumbers[index]}))
+	// 		})
+	// 	}
+
+	// 	if(this.props.data.error) {
+	// 		console.log(this.props.data.error)
+	// 	}
+	// }
+	
+	// async handleLoadData () {
+	// 	console.log(this.props)
+	// 	const orderNumbers = this.props.ordersByMenu.ordersByMenu.map(order => order.count)
+	// 	localStorage.setItem('menuId', this.props.data.menuPublishBySite._id)
+	// 	if (this.props.data.menuPublishBySite.isPublished === true && this.props.data.menuPublishBySite.isActive === true) {
+	// 		this.setState({
+	// 			// menuId: this.props.data.menuPublishBySite._id,
+	// 			dishes: [...this.props.data.menuPublishBySite.dishes].map((dish, index) => ({...dish, orderNumber: orderNumbers[index]}))
+	// 		})
+	// 	}
+	// }
   
 	async createOrder (item) {
 		await this.props.mutate.orderDish({
@@ -129,15 +140,20 @@ class ListDishes extends React.Component {
 									<List.Item key={item._id} actions={[<Button className='minus' disabled={data.menuPublishBySite.isLocked} onClick={() => this.handleMinus(item)}>-</Button>, <Button className='plus' disabled={data.menuPublishBySite.isLocked} onClick={() => this.handlePlus(item)}>+</Button>]}>
 										<List.Item.Meta
 											title={item.name}
-											description={`${this.totalOrder(item)}/${item.count}`}
+											// description={`${this.totalOrder(item)}/${item.count}`}
+											description={`${item.orderNumber}/${item.count}`}
 										/>
 										<div>{item.orderNumber}</div>
 									</List.Item>
 								)}
 							/>
-							{confirmButton}
+							<Row type='flex' justify='center' align='bottom'>
+								{confirmButton}
+							</Row>
 						</>
-					:	<div>Hệ thống đã khóa</div>
+					:	<Row type='flex' justify='center' align='middle'>
+							<div>Hệ thống đã khóa</div>
+						</Row>
 				}
 			</React.Fragment>
 		)
@@ -176,6 +192,22 @@ const MENU_BY_SELECTED_SITE = gql`
 	}
 `
 
+const ORDERS_BY_MENU = gql`
+	query ordersByMenu($menuId: String!) {
+		ordersByMenu(menuId: $menuId) {
+			_id
+			userId
+			menuId
+			dishId
+			note
+			count
+			isConfirmed
+			createdAt
+			updatedAt
+		}
+	}
+`
+
 export default HOCQueryMutation([
 	{
 		query: MENU_BY_SELECTED_SITE,
@@ -185,6 +217,17 @@ export default HOCQueryMutation([
 			},
 			fetchPolicy: 'network-only'
 		})
+	},
+	{
+		query: ORDERS_BY_MENU,
+		options: (props) => ({
+			variables: {
+				// menuId: props.menuId
+				menuId: localStorage.getItem('menuId')
+			},
+			fetchPolicy: 'network-only'
+		}),
+		name: 'ordersByMenu'
 	},
   {
     mutation: ORDER_DISH,

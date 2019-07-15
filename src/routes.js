@@ -35,7 +35,7 @@ export const routes = [
 			{
 				label: 'Manage User',
 				path: '/🥢/user',
-				component: 'userB'
+				component: 'usera'
 			},
 			{
 				label: 'Report',

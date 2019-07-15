@@ -1,5 +1,5 @@
 import React from 'react'
-import { Select, Row, Col } from 'antd'
+import { Select, Button, Divider, Row, Col } from 'antd'
 import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation'
 import gql from 'graphql-tag'
 import ListDishes from './listDishes'
@@ -11,27 +11,38 @@ class Order extends React.Component {
 		siteId: window.localStorage.getItem('currentsite')
 	}
 
-	componentDidMount () {
+	componentDidMount() {
 		this.handleDefaultDishes()
 	}
 
-	async handleDefaultDishes () {
-		if (this.props.data.menuPublishBySite.isPublished === true && this.props.data.menuPublishBySite.isActive === true) {
+	async handleDefaultDishes() {
+		const orderNumbers = this.props.ordersByMenu.ordersByMenu.map(order => order.count)
+		if (
+			this.props.data.menuPublishBySite.isPublished === true &&
+			this.props.data.menuPublishBySite.isActive === true
+		) {
 			this.setState({
 				menuId: this.props.data.menuPublishBySite._id,
-				dishes: [...this.props.data.menuPublishBySite.dishes].map(dish => ({...dish, orderNumber: 0}))
+				dishes: [...this.props.data.menuPublishBySite.dishes].map((dish, index) => ({
+					...dish,
+					orderNumber: orderNumbers[index]
+				}))
 			})
 		}
-
-		if(this.props.data.error) {
-			console.log(this.props.data.error)
-		}
+		// if (this.props.data.error) {
+		// 	console.log(this.props.data.error)
+		// }
 	}
 
-	async handleChange (selectedItems) {
-		await window.localStorage.setItem('currentsite', selectedItems)
+	async handleChange(selectedItems) {
+		console.log(selectedItems)
+		await localStorage.setItem('currentsite', selectedItems)
+		await localStorage.setItem('menuId', this.props.data.menuPublishBySite._id)
 
-		if (this.props.data.menuPublishBySite.isPublished === true && this.props.data.menuPublishBySite.isActive) {
+		if (
+			this.props.data.menuPublishBySite.isPublished === true &&
+			this.props.data.menuPublishBySite.isActive
+		) {
 			this.setState({
 				menuId: this.props.data.menuPublishBySite._id,
 				dishes: [...this.props.data.menuPublishBySite.dishes].map(dish => ({...dish, orderNumber: 0})),
@@ -39,20 +50,32 @@ class Order extends React.Component {
 			})
 		}
 
-		if(this.props.data.error) {
+		if (this.props.data.error) {
 			console.log(this.props.data.error)
 		}
+		this.props.ordersByMenu.refetch({
+			menuId: this.state.menuId
+		})
 	}
 
 	render() {
+		console.log(this.props.data.menuPublishBySite._id)
 		const currentsite = window.localStorage.getItem('currentsite')
-		const options = JSON.parse(window.localStorage.getItem('sites')).map(item =>
-			<Select.Option value={item._id} key={item._id}>
+		const options = JSON.parse(window.localStorage.getItem('sites')).map(
+			item => (
+				<Select.Option value={item._id} key={item._id}>
 					{item.name}
-			</Select.Option>
+				</Select.Option>
+			)
 		)
 		return (
 			<React.Fragment>
+				<Button
+					shape='circle'
+					icon='left'
+					onClick={() => this.props.history.push('/🥢')}
+				/>
+				<Divider />
 				<Row style={{ marginTop: 20 }}>
 					<Col span={22} offset={1}>
 						<Select
@@ -96,13 +119,40 @@ const MENU_BY_SELECTED_SITE = gql`
 	}
 `
 
+const ORDERS_BY_MENU = gql`
+	query ordersByMenu($menuId: String!) {
+		ordersByMenu(menuId: $menuId) {
+			_id
+			userId
+			menuId
+			dishId
+			note
+			count
+			isConfirmed
+			createdAt
+			updatedAt
+		}
+	}
+`
+
 export default HOCQueryMutation([
 	{
-    query: MENU_BY_SELECTED_SITE,
-    options: props => ({
+		query: MENU_BY_SELECTED_SITE,
+		options: props => ({
 			variables: {
-				siteId: window.localStorage.getItem('currentsite')
+				siteId: localStorage.getItem('currentsite')
 			}
 		})
-  }
+	},
+	{
+		query: ORDERS_BY_MENU,
+		options: (props) => ({
+			variables: {
+				// menuId: props.data.menuPublishBySite._id
+				menuId: localStorage.getItem('menuId')
+			},
+			fetchPolicy: 'network-only'
+		}),
+		name: 'ordersByMenu'
+	}
 ])(Order)
