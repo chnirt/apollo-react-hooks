@@ -6,7 +6,8 @@ import openNotificationWithIcon from '../../../components/shared/openNotificatio
 
 function EditModal(props) {
 
-	function onEdit() {
+	function onEdit(_id) {
+		console.log(_id)
 		props.form.validateFields((err, values) => {
 			if (err) {
 				return;
@@ -55,12 +56,12 @@ function EditModal(props) {
 				.updateUser({
 					mutation: UPDATE_USER,
 					variables: {
-						_id: props.userData._id,
+						_id,
 						input: {
 							...values,
 						}
 					},
-					refetchQueries: () => [
+					refetchQueries: [
 						{
 							query: GET_ALL_USERS
 						}
@@ -80,6 +81,8 @@ function EditModal(props) {
 			props.handleCancel()
 		});
 	}
+
+	console.log(props)
 
 	function onChange(checkedValues) {
 	}
@@ -110,7 +113,7 @@ function EditModal(props) {
 			okText='Sửa'
 			cancelText="Hủy"
 			onCancel={props.handleCancel}
-			onOk={onEdit}
+			onOk={() => onEdit(props.userData._id)}
 		>
 			<Form {...formItemLayout}>
 				<Form.Item label='Tên'>
@@ -178,4 +181,4 @@ export default HOCQueryMutation([
 		name: 'updateUser',
 		options: {}
 	}
-])(Form.create({})(EditModal))
+])(Form.create()(EditModal))

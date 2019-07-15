@@ -61,7 +61,7 @@ function UserList(props) {
       })
       .then(res => {
         // console.log(res)
-        openNotificationWithIcon('success', 'success', 'Lock user thành công', null)
+        openNotificationWithIcon('success', 'success', 'Thành công', null)
       })
       .catch(err => {
         // console.log(err)
@@ -73,7 +73,7 @@ function UserList(props) {
 
   function onEdit(user) {
     props.setUser(user)
-    props.openModal()
+    props.openModal(user)
   }
   const { Meta } = Card;
 

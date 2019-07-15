@@ -35,8 +35,6 @@ function UserA(props) {
 
 	const users = props.data.users
 
-	console.log(props.data.users.filter(user => user.isActive))
-
 	return (
 		<>
 			<Button
