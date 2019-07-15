@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { Row, Col, Card, Modal, Icon } from 'antd'
+import React, { useState } from 'react'
+import { Col, Card, Modal, Icon, Avatar } from 'antd'
 import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
 import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation';
 import { USER_LOCK_AND_UNLOCK, GET_ALL_USERS, INACTIVE_USER } from './queries'
@@ -76,6 +76,7 @@ function UserList(props) {
     props.setUser(user)
     props.openModal()
   }
+  const { Meta } = Card;
 
   return (
     <>
@@ -111,10 +112,15 @@ function UserList(props) {
             <Icon type="delete" onClick={() => onDelete(props.userData._id)} />
           ]}
         >
-          {props.userData.fullName}
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            {props.userData.fullName}
+            <Meta
+              avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
+            />
+          </div>
         </Card>
       </Col>
-      
+
     </>
   )
 }

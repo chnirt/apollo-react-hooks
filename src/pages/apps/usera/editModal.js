@@ -59,11 +59,11 @@ function EditModal(props) {
 							...values,
 						}
 					},
-					// refetchQueries: () => [
-					// 	{
-					// 		query: GET_ALL_USERS
-					// 	}
-					// ]
+					refetchQueries: () => [
+						{
+							query: GET_ALL_USERS
+						}
+					]
 				})
 				.then((result) => {
 					// console.log(result)

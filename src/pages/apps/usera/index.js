@@ -1,4 +1,4 @@
-import React, { useState, userEffect, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Row, Card, Button, Divider } from 'antd'
 
 import UserList from './UserList'
@@ -49,15 +49,16 @@ function UserA(props) {
 			<Divider />
 			<Row
 				style={{
-					height: 'calc(100vh - 60px)'
+					height: 'calc(100vh - 100px)'
 				}}
 			>
 				<Card
 					title="Quản lí User"
+					bodyStyle={{ height: window.innerHeight - 220, overflowY: 'auto' }}
 					bordered={false}
 					extra={
 						<Button type="primary" block onClick={openModal}>
-							Tạo user
+							Thêm user
 						</Button>
 					}
 					headStyle={{

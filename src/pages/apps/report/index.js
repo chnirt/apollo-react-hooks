@@ -1,9 +1,8 @@
 import React from 'react'
 import { Button } from 'antd'
 import './index.css'
-import { Select, Modal, Form, Input, Divider } from 'antd'
+import { Select, Divider } from 'antd'
 import gql from 'graphql-tag'
-import { withApollo } from 'react-apollo'
 import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
 
 import jsPDF from 'jspdf'
@@ -14,7 +13,6 @@ const { Option } = Select
 class MenuDetail extends React.Component {
 	state = {
 		isActive: false,
-		menusBySite: []
 	}
 
 	isActive = menuId => {
@@ -64,6 +62,7 @@ class MenuDetail extends React.Component {
 			})
 			.then(data => {
 				// console.log(data)
+				openNotificationWithIcon('success', 'success', 'Success')
 			})
 			.catch(err => {
 				// console.log(err)
@@ -72,15 +71,15 @@ class MenuDetail extends React.Component {
 	}
 
 	onSelect = currentsite => {
-		console.log(currentsite)
 		localStorage.setItem('currentsite', currentsite)
 		this.props.getMenuBySite.variables.siteId = localStorage.getItem(
 			'currentsite'
 		)
 		this.props.getMenuBySite.refetch({
-			siteId: localStorage.getItem('currentsite')
+			siteId: localStorage.getItem(
+				'currentsite'
+			)
 		})
-		console.log(this.props.getMenuBySite)
 	}
 
 	onRequest(menu) {
@@ -96,6 +95,10 @@ class MenuDetail extends React.Component {
 				doc.text(dish.count.toString(), 7, i + 1)
 			)
 		})
+		// doc.addFont("OpenSans.ttf", "Open Sans", "normal");
+		// console.log(doc.getFontList())
+
+		// doc.setFont("OpenSans.ttf", "normal")
 
 		doc.text(menu.name.toUpperCase(), 3, 0.5)
 
@@ -103,7 +106,6 @@ class MenuDetail extends React.Component {
 	}
 
 	render() {
-		console.log(this.props)
 		const options = JSON.parse(localStorage.getItem('sites')).map((site, i) => {
 			return (
 				<Option value={site._id} key={i}>
@@ -241,7 +243,6 @@ export default HOCQueryMutation([
 		query: GET_MENU_BY_SITE,
 		name: 'getMenuBySite',
 		options: props => {
-			console.log(props)
 			return  ({
 				variables: {
 					siteId: localStorage.getItem('currentsite')
