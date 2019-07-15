@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button } from 'antd'
 import './index.css'
-import { Select, Divider } from 'antd'
+import { Select, Divider, Icon } from 'antd'
 import gql from 'graphql-tag'
 import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
 
@@ -121,90 +121,91 @@ class MenuDetail extends React.Component {
 					onClick={() => this.props.history.push('/🥢')}
 				/>
 				<Divider />
-				<Select
-					showSearch
-					onSelect={this.onSelect}
-					style={{ width: '100%', marginBottom: 20 }}
-					defaultValue={localStorage.getItem('currentsite')}
-					optionFilterProp="children"
-					filterOption={(input, option) =>
-						option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-					}
-				>
-					{options}
-				</Select>
+				<div className='report'>
+					<Select
+						showSearch
+						onSelect={this.onSelect}
+						style={{ width: '100%', marginBottom: 20 }}
+						defaultValue={localStorage.getItem('currentsite')}
+						optionFilterProp="children"
+						filterOption={(input, option) =>
+							option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+						}
+					>
+						{options}
+					</Select>
 
-				{this.props.getMenuBySite.menusBySite &&
-					this.props.getMenuBySite.menusBySite.map((menuBySite, i) => {
-						return (
-							<div key={i}>
-								<h1
-									style={{
-										textAlign: 'center',
-										display: 'block',
-										marginBottom: 20
-									}}
-								>
-									{menuBySite.name}
-								</h1>
+					{this.props.getMenuBySite.menusBySite &&
+						this.props.getMenuBySite.menusBySite.map((menuBySite, i) => {
+							return (
+								<div key={i}>
+									<h1
+										style={{
+											textAlign: 'center',
+											display: 'block',
+											marginBottom: 20
+										}}
+									>
+										{menuBySite.name}
+									</h1>
 
-								{menuBySite.dishes &&
-									menuBySite.dishes.map((dish, i) => {
-										return (
-											<Select
-												disabled={menuBySite.isLocked ? true : false}
-												key={i}
-												style={{ marginBottom: 10, display: 'block' }}
-												defaultValue={dish.name + ' x' + dish.count}
-												dropdownRender={menu => {
-													return (
-														<div className="dish-detail">
-															<Button className="user-name" disabled>
-																Nam
+									{menuBySite.dishes &&
+										menuBySite.dishes.map((dish, i) => {
+											return (
+												<Select
+													disabled={menuBySite.isLocked ? true : false}
+													key={i}
+													style={{ marginBottom: 20, display: 'block' }}
+													defaultValue={dish.name + ' x' + dish.count}
+													dropdownRender={menu => {
+														return (
+															<div className="dish-detail">
+																<Button className="user-name" disabled>
+																	Nam
 															</Button>
-															<Button className="minus">-</Button>
-															<Button className="plus">+</Button>
-														</div>
-													)
-												}}
-											/>
-										)
-									})}
+																<Button className="minus">-</Button>
+																<Button className="plus">+</Button>
+															</div>
+														)
+													}}
+												/>
+											)
+										})}
 
-								<div
-									style={{
-										display: 'flex',
-										justifyContent: 'space-between'
-									}}
-								>
-									<Button
-										className="publish"
-										onClick={() => this.isLock(menuBySite._id)}
+									<div
+										style={{
+											display: 'flex',
+											justifyContent: 'space-between'
+										}}
 									>
-										{menuBySite.isLocked ? 'Un Lock' : 'Lock'}
+										<Button
+											className="publish"
+											onClick={() => this.isLock(menuBySite._id)}
+										>
+											<Icon
+											type={menuBySite.isLocked ? "lock" : 'unlock'}
+										/>
+										</Button>
+										
+										<Button
+											onClick={() => this.onRequest(menuBySite)}
+											variant="raised"
+											color="secondary"
+										>
+											Request 1st delivery
 									</Button>
 
-									{/* <Button className='request-delivery' onClick={() => this.request(menuBySite._id)} >
-										Request 1st delivery
-									</Button> */}
-									<Button
-										onClick={() => this.onRequest(menuBySite)}
-										variant="raised"
-										color="secondary"
-									>
-										Request 1st delivery
+										<Button
+											className="publish"
+											onClick={() => this.isActive(menuBySite._id)}
+										>
+											Complete
 									</Button>
-
-									<Button
-										className="publish"
-										onClick={() => this.isActive(menuBySite._id)}
-									>
-										Complete
-									</Button>
+									</div>
 								</div>
-							</div>
-						)
-					})}
+							)
+						})}
+				</div>
 			</React.Fragment>
 		)
 	}
@@ -243,7 +244,7 @@ export default HOCQueryMutation([
 		query: GET_MENU_BY_SITE,
 		name: 'getMenuBySite',
 		options: props => {
-			return  ({
+			return ({
 				variables: {
 					siteId: localStorage.getItem('currentsite')
 				}
