@@ -4,6 +4,7 @@ import './index.css'
 import { Select, Divider, Icon } from 'antd'
 import gql from 'graphql-tag'
 import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
+import logo from '../../../logoClinic.svg'
 
 import jsPDF from 'jspdf'
 import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation'
@@ -89,20 +90,33 @@ class MenuDetail extends React.Component {
 			format: 'a4'
 		})
 
+		var img = new Image()
+		img.src = '../../../logo.png'
+		console.log(img)
+
+
 		menu.dishes.map((dish, i) => {
 			return (
-				doc.text(dish.name, 0.5, i + 1),
-				doc.text(dish.count.toString(), 7, i + 1)
+				doc.text(dish.name, 1, i + 2),
+				doc.text(dish.count.toString(), 6.5, i + 2)
 			)
 		})
 		// doc.addFont("OpenSans.ttf", "Open Sans", "normal");
 		// console.log(doc.getFontList())
 
 		// doc.setFont("OpenSans.ttf", "normal")
+		doc.setTextColor(16, 88, 101);
+		doc.text(menu.name.toUpperCase(), 2.5, 1)
 
-		doc.text(menu.name.toUpperCase(), 3, 0.5)
+		doc.viewerPreferences({
+			'HideWindowUI': true,
+			'PrintArea': 'CropBox',
+			'NumCopies': 10,
+			'CenterWindow': true
+		})
 
 		doc.save(menu.name)
+
 	}
 
 	render() {
@@ -183,10 +197,10 @@ class MenuDetail extends React.Component {
 											onClick={() => this.isLock(menuBySite._id)}
 										>
 											<Icon
-											type={menuBySite.isLocked ? "lock" : 'unlock'}
-										/>
+												type={menuBySite.isLocked ? "lock" : 'unlock'}
+											/>
 										</Button>
-										
+
 										<Button
 											onClick={() => this.onRequest(menuBySite)}
 											variant="raised"
