@@ -44,13 +44,26 @@ class Login extends Component {
 					this.props.history.push('/🥢')
 				})
 				.catch(err => {
-					// console.log(err)
-					const errors = err.graphQLErrors.map(error => error.message)
+					const errors = err.graphQLErrors.map(error => error.extensions.code)
+					let mess = ''
+					if (errors[0] === '401') {
+						mess = 'Username or Password is not correct'
+					}
+
+					if (errors[0] === '423') {
+						mess = 'Your account is locked by Admin'
+					}
+
+					if (errors[0] === '404') {
+						mess = 'Your account is not exist'
+					}
+
 					this.setState({
 						loading: false,
 						spin: false
 					})
-					openNotificationWithIcon('error', 'login', 'Login Failed.', errors[0])
+
+					openNotificationWithIcon('error', 'login', 'Login Failed.', mess)
 				})
 		})
 	}
@@ -98,6 +111,16 @@ class Login extends Component {
 											{
 												required: true,
 												message: 'Please input your Password!'
+											},
+											{
+												min: 1,
+												message:
+													'Your password must be between 1 and 8 characters'
+											},
+											{
+												max: 8,
+												message:
+													'Your password must be between 1 and 8 characters'
 											}
 										]
 									})(
