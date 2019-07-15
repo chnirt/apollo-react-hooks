@@ -10,7 +10,6 @@ import EditModal from './editModal'
 function UserA(props) {
 	const [visible, setVisible] = useState(false)
 	const [visibleEdit, setVisibleEdit] = useState(false)
-	// const [user, setUser] = useState(null)
 	const [user, setUser] = useState('')
 
 	function openModal() {
@@ -29,15 +28,14 @@ function UserA(props) {
 		setVisibleEdit(false)
 	}
 
-	// function set(user) {
-	// 	setUser(user)
-	// }
 
 	function set(user) {
 		setUser(user)
 	}
 
 	const users = props.data.users
+
+	console.log(props.data.users.filter(user => user.isActive))
 
 	return (
 		<>
@@ -81,13 +79,10 @@ function UserA(props) {
 				</Card>
 				<EditModal
 					userData={user}
-					// user={user}
 					visible={visibleEdit}
 					handleCancel={closeModalEdit}
 				/>
 				<UserModal
-					// userId={userId}
-					// user={user}
 					visible={visible}
 					handleCancel={closeModal}
 				/>

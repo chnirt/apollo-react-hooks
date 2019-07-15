@@ -61,7 +61,7 @@ function UserList(props) {
       })
       .then(res => {
         // console.log(res)
-        openNotificationWithIcon('success', 'success', 'Locl user thành công', null)
+        openNotificationWithIcon('success', 'success', 'Lock user thành công', null)
       })
       .catch(err => {
         // console.log(err)
@@ -71,12 +71,12 @@ function UserList(props) {
 
   }
 
-  function onEdit(user, id) {
-    // props.setId(id)
+  function onEdit(user) {
     props.setUser(user)
     props.openModal()
   }
   const { Meta } = Card;
+
 
   return (
     <>
@@ -104,7 +104,7 @@ function UserList(props) {
       >
         <Card
           actions={[
-            <Icon type="edit" onClick={() => onEdit(props.userData, props.userData._id)} />,
+            <Icon type="edit" onClick={() => onEdit(props.userData)} />,
             <Icon
               type={props.userData.isLocked ? "lock" : 'unlock'}
               onClick={() => onLockAndUnlock(props.userData._id)}

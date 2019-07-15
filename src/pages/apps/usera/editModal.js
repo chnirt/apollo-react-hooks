@@ -1,12 +1,12 @@
 import React from 'react'
 import { Select, Modal, Form, Input } from 'antd';
 import { HOCQueryMutation } from './../../../components/shared/hocQueryAndMutation';
-import { CREATE_USER, GET_ALL_USERS, GET_ALL_PERMISSIONS, GET_ALL_SITES, UPDATE_USER } from './queries'
+import { GET_ALL_USERS, GET_ALL_PERMISSIONS, GET_ALL_SITES, UPDATE_USER } from './queries'
 import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon';
 
 function EditModal(props) {
 
-	function onEdit(_id) {
+	function onEdit() {
 		props.form.validateFields((err, values) => {
 			if (err) {
 				return;
@@ -50,6 +50,7 @@ function EditModal(props) {
 			}
 
 			values.sites = sites
+
 			props.mutate
 				.updateUser({
 					mutation: UPDATE_USER,
