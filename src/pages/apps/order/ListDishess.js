@@ -31,6 +31,7 @@ const ListDishess = (props) => {
 			}	
 		})
 		.then(res => {
+      // console.log([...res.data.menuPublishBySite.dishes])
       setIsPublish(res.data.menuPublishBySite.isPublished)
 			if (res.data.menuPublishBySite.isPublished === true && res.data.menuPublishBySite.isActive === true) {
         setDishes([...res.data.menuPublishBySite.dishes])
@@ -44,7 +45,6 @@ const ListDishess = (props) => {
 			console.log(error)
     })
   }
-  
 	async function createOrder(item) {
 		await props.client.mutate({
 			mutation: ORDER_DISH,

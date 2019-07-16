@@ -3,13 +3,18 @@ import { Select, Row, Col, Button, Divider } from 'antd'
 import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation'
 import gql from 'graphql-tag'
 import ListDishes from './listDishes'
+// import ListDishess from './listDishess'
 
 const Order = (props) => {
   const [siteId, setSiteId] = useState(localStorage.getItem('currentsite'))
   const [menuId, setMenuId] = useState()
 
   useEffect(() => {
-    setMenuId(props.data.menuPublishBySite._id)
+    if (props.data.menuPublishBySite.isPublished === true && props.data.menuPublishBySite.isActive === true) {
+      setMenuId(props.data.menuPublishBySite._id)
+    } else {
+      console.log('menu is not publish')
+    }
   }, [])
 
   async function handleChange(selectedItems) {

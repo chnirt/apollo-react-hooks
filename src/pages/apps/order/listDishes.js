@@ -25,13 +25,6 @@ const ListDishes = (props) => {
     ? props.ordersByMenu.ordersByMenu.map(order => order.count)
     : {'0': 1,'1': 2,'2': 3,'3': 4,'4': 5}
     console.log(orderNumbers)
-    // const orderNumbers = {
-    //   '0': 1,
-    //   '1': 2,
-    //   '2': 3,
-    //   '3': 4,
-    //   '4': 5
-    // }
 
 		if (props.data.menuPublishBySite.isPublished === true && props.data.menuPublishBySite.isActive === true) {
       setMenuId(props.data.menuPublishBySite._id)   
