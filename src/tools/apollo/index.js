@@ -8,10 +8,10 @@ import { setContext } from 'apollo-link-context'
 // import { getMainDefinition } from 'apollo-utilities'
 import store from '../mobx'
 
-// const httpLink = new HttpLink({ uri: 'http://localhost:4000/graphql' })
-const httpLink = new HttpLink({
-	uri: 'http://devcloud3.digihcs.com:11029/graphql'
-})
+const httpLink = new HttpLink({ uri: 'http://localhost:4000/graphql' })
+// const httpLink = new HttpLink({
+// 	uri: 'http://devcloud3.digihcs.com:11029/graphql'
+// })
 
 // const httpLink = new HttpLink({
 // 	uri: 'https://chnirt-apollo-server.herokuapp.com/graphql'

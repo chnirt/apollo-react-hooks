@@ -2,19 +2,27 @@ import React, { useState } from 'react'
 import { Select, Row, Col, Button, Divider } from 'antd'
 import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation'
 import gql from 'graphql-tag'
+import ListDishes from './listDishes'
 
-function Order(props) {
-  // const [siteId, ] = useState()
+const Order = (props) => {
+  const [dishes, setDishes] = useState([])
+  // const [menuId, setMenuId] = useState()
+
   async function handleChange(selectedItems) {
     await localStorage.setItem('currentsite', selectedItems)
+    setDishes([...dishes, ...props.data.menuPublishBySite.dishes])
     if (props.data.menuPublishBySite.isPublished === true && props.data.menuPublishBySite.isActive) {
-      localStorage.setItem('currentsite', selectedItems)
+      await localStorage.setItem('currentsite', selectedItems)
+      await localStorage.setItem('menuId', props.data.menuPublishBySite._id)
+      // setMenuId(props.data.menuPublishBySite._id)
     }
     if(props.data.error) {
-      console.log(this.props.data.error)
+      console.log(props.data.error)
     }
   }
-
+  function handleClick() {
+    return setDishes([])
+  }
   const currentsite = window.localStorage.getItem('currentsite')
   const options = JSON.parse(window.localStorage.getItem('sites')).map(item =>
     <Select.Option value={item._id} key={item._id}>
@@ -26,7 +34,7 @@ function Order(props) {
       <Button
         shape='circle'
         icon='left'
-        onClick={() => this.props.history.push('/🥢')}
+        onClick={() => props.history.push('/🥢')}
       />
       <Divider />
       <Row style={{ marginTop: 20 }}>
@@ -35,13 +43,18 @@ function Order(props) {
             style={{ width: '100%', marginBottom: 20 }}
             placeholder='Chọn khu vực'
             defaultValue={currentsite}
-            // onChange={() => this.setState({dishes: []})}
+            onChange={handleClick}
             onSelect={e => handleChange(e)}
           >
             {options}
           </Select>
         </Col>
       </Row>	
+      <Row>
+					<Col span={22} offset={1}>
+						<ListDishes siteId={window.localStorage.getItem('currentsite')} menuId={window.localStorage.getItem('menuId')} />
+					</Col>
+				</Row>	
     </React.Fragment>
   )
 }
