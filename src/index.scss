@@ -2,6 +2,12 @@
 @import './assets/fonts/DancingScript-Regular.ttf';
 @import './assets/fonts/Allura-Regular.ttf';
 @import './assets/fonts/Lobster-Regular.ttf';
+@import './assets/fonts/Vietnamese.ttf';
+
+@font-face {
+	font-family: ABC;
+  src: url('./assets/fonts/Lobster-Regular.ttf');
+}
 
 $odd-row-background-color: #ffccc7;
 
@@ -17,9 +23,7 @@ $ag-icons-path: '../node_modules/ag-grid-community/src/styles/ag-theme-balham/ic
 body {
 	margin: 0;
 	padding: 0;
-	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-		'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-		sans-serif;
+	font-family: ABC;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 }

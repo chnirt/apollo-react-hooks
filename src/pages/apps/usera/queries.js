@@ -53,6 +53,19 @@ const GET_ALL_PERMISSIONS = gql`
 		permissions{
 			code
 			_id
+			description
+		}
+	}
+`
+
+const GET_ALL_PERMISSIONS_BY_USERID = gql`
+	query($_id: String!) {
+		findAllByUserId(_id: $_id) {
+			siteId
+			permissions {
+				_id
+				code
+			}
 		}
 	}
 `
@@ -64,5 +77,6 @@ export {
   UPDATE_USER,
   USER_LOCK_AND_UNLOCK,
   GET_ALL_SITES,
-  GET_ALL_PERMISSIONS
+	GET_ALL_PERMISSIONS,
+	GET_ALL_PERMISSIONS_BY_USERID
 }

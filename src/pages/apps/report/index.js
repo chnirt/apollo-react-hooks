@@ -1,20 +1,36 @@
 import React from 'react'
-import { Button } from 'antd'
+import { Button, List } from 'antd'
 import './index.css'
-import { Select, Divider, Icon } from 'antd'
+import { Select, Divider, Icon, Collapse } from 'antd'
 import gql from 'graphql-tag'
 import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
 import logo from '../../../logoClinic.svg'
 import font from '../../../assets/fonts/Vietnamese.ttf'
+// import './Lobster-Regular-normal'
+import ListMenu from './listMenu'
 
 import jsPDF from 'jspdf'
 import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation'
 
 const { Option } = Select
+const { Panel } = Collapse
+const text = `
+  A dog is a type of domesticated animal.
+  Known for its loyalty and faithfulness,
+  it can be found as a welcome guest in many households across the world.
+`;
 
 class Report extends React.Component {
 	state = {
 		isActive: false,
+		menuId: '',
+		userId: '',
+		usersId: []
+	}
+
+	componentDidMount() {
+		console.log(this.props)
+		// this.props.
 	}
 
 	isActive = menuId => {
@@ -91,8 +107,12 @@ class Report extends React.Component {
 			format: 'a4'
 		})
 
-		doc.addFont('../../../assets/fonts/Vietnamese.ttf', 'Vietnamese', 'bold')
-		doc.setFont('Vietnamese', 'normal')
+		// doc.addFont('./Lobster-Regular-normal', 'Lobster', 'bold')
+		// doc.setFont('Lobster', 'bold')
+
+		// doc.addFileToVFS("Lobster-Regular.ttf", Lobster);
+		// doc.addFont('Lobster-Regular.ttf', 'Lobster', 'normal');
+		// doc.setFont('Lobster'); 
 
 		console.log(doc.getFontList())
 
@@ -120,10 +140,12 @@ class Report extends React.Component {
 
 		doc.save(menu.name)
 
-
 	}
 
 	render() {
+		// console.log(this.state.menuId, '----menuId')
+		// console.log(this.state.userId, '----userId')
+
 		const options = JSON.parse(localStorage.getItem('sites')).map((site, i) => {
 			return (
 				<Option value={site._id} key={i}>
@@ -156,43 +178,94 @@ class Report extends React.Component {
 					{this.props.getMenuBySite.menusBySite &&
 						this.props.getMenuBySite.menusBySite.map((menuBySite, i) => {
 							return (
-								<div key={i}>
-									<h1
+								<div key={i} style={{ marginBottom: 10 }}>
+									{/* <h1
 										style={{
 											textAlign: 'center',
 											display: 'block',
 											marginBottom: 20
 										}}
 									>
-										{menuBySite.name}
-									</h1>
+										{menuBySite.name + '------' + menuBySite._id}
+									</h1> */}
+									<ListMenu menuId={menuBySite._id} menu={menuBySite} />
 
-									{menuBySite.dishes &&
+									{/* <Collapse onChange={() => this.setState({ menuId: menuBySite._id })}>
+										<Panel header={menuBySite.name} key={i + 1} >
+											<Collapse defaultActiveKey="1">
+												{menuBySite.dishes &&
+													menuBySite.dishes.map((dish, i) => {
+														return (
+															<Panel header={dish.name + '   ' + dish.count} key={i + 1}>
+																<p>{text}</p>
+															</Panel>
+														)
+													})}
+											</Collapse>
+										</Panel>
+									</Collapse> */}
+
+									{/* {menuBySite.dishes &&
 										menuBySite.dishes.map((dish, i) => {
 											return (
 												<Select
 													disabled={menuBySite.isLocked ? true : false}
 													key={i}
+													onClick={() => console.log('ok')}
 													style={{ marginBottom: 20, display: 'block' }}
 													defaultValue={dish.name + ' x' + dish.count}
 													dropdownRender={menu => {
 														return (
 															<div className="dish-detail">
-																<Button className="user-name" disabled>
-																	Nam
-															</Button>
-																<Button className="minus">-</Button>
-																<Button className="plus">+</Button>
+																<List
+																	itemLayout="horizontal"
+																	dataSource={[
+																		{
+																			title: 'Ant Design Title 1',
+																		},
+																		{
+																			title: 'Ant Design Title 2',
+																		},
+																	]}
+																	renderItem={item => (
+																		<List.Item>
+																			<List.Item.Meta
+																				title={item.title}
+																			/>
+																		</List.Item>
+																	)}
+																/>
 															</div>
 														)
 													}}
 												/>
-											)
-										})}
+												<List
+													key={i}
+													itemLayout="horizontal"
+													dataSource={[
+														{
+															title: dish.name + 'x' + dish.count,
+														}
 
-									<div
+													]}
+													renderItem={(item, i) => (
+														<List.Item>
+															<List.Item.Meta
+																title={
+																	item.title
+																}
+																description='Ant Design, a design language '
+															/>
+														</List.Item>
+													)}
+												/>
+											)
+										})} */}
+
+									{/* <div
 										style={{
 											display: 'flex',
+											marginTop: 10,
 											justifyContent: 'space-between'
 										}}
 									>
@@ -219,7 +292,7 @@ class Report extends React.Component {
 										>
 											Complete
 									</Button>
-									</div>
+									</div> */}
 								</div>
 							)
 						})}
@@ -257,6 +330,25 @@ const CLOSE_MENU = gql`
 	}
 `
 
+const ORDER_BY_MENU = gql`
+	query ordersByMenu($menuId: String!){
+		ordersByMenu(menuId: $menuId){
+			userId
+			dishId
+			count
+		}
+	}
+`
+
+const GET_USER_NAME = gql`
+	query user($_id: String!){
+		user(_id: $_id){
+			username
+			fullName
+		}
+	}
+`
+
 export default HOCQueryMutation([
 	{
 		query: GET_MENU_BY_SITE,
@@ -269,7 +361,28 @@ export default HOCQueryMutation([
 			})
 		}
 	},
-
+	// {
+	// 	query: ORDER_BY_MENU,
+	// 	name: 'getOrderByMenu',
+	// 	// options: props => {
+	// 	// 	return ({
+	// 	// 		variables: {
+	// 	// 			menuId: "3f423520-a214-11e9-83ee-5f5fb731ebb3"
+	// 	// 		}
+	// 	// 	})
+	// 	// }
+	// },
+	// {
+	// 	query: GET_USER_NAME,
+	// 	name: 'getUserName',
+	// 	options: props => {
+	// 		return ({
+	// 			variables: {
+	// 				_id: "40eb5c20-9e41-11e9-8ded-f5462f3a1447"
+	// 			}
+	// 		})
+	// 	}
+	// },
 	{
 		mutation: LOCK_AND_UNLOCK_MENU,
 		name: 'lockAndUnLockMenu',

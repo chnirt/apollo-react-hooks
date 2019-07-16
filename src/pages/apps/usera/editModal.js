@@ -79,7 +79,7 @@ function EditModal(props) {
 					openNotificationWithIcon('error', 'failed', 'Failed', errors[0])
 				})
 
-			// props.form.resetFields();
+			props.form.resetFields();
 			props.handleCancel()
 		});
 	}
@@ -104,7 +104,7 @@ function EditModal(props) {
 	};
 	props.getAllPermissions.permissions && props.getAllPermissions.permissions.map((permission, i) => {
 		return (
-			children.push(<Option key={i} value={permission.code + ' ' + permission._id}>{permission.code}</Option>)
+			children.push(<Option key={i} value={permission.code + ' ' + permission._id}>{permission.description}</Option>)
 		)
 	})
 
@@ -115,7 +115,7 @@ function EditModal(props) {
 			okText='Sửa'
 			cancelText="Hủy"
 			confirmLoading={confirmLoading}
-			onCancel={props.handleCancel}
+			onCancel={() => { props.handleCancel(), props.form.resetFields() }}
 			onOk={() => onEdit(props.userData._id)}
 		>
 			<Form {...formItemLayout}>

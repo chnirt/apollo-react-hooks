@@ -98,7 +98,7 @@ function UserModal(props) {
 	};
 	props.getAllPermissions.permissions && props.getAllPermissions.permissions.map((permission, i) => {
 		return (
-			children.push(<Option key={i} value={permission.code + ' ' + permission._id}>{permission.code}</Option>)
+			children.push(<Option key={i} value={permission.code + ' ' + permission._id}>{permission.description}</Option>)
 		)
 	})
 
