@@ -1,62 +1,63 @@
 import React, { useState, useEffect } from 'react'
 import { Button, List, Row } from 'antd'
-import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation'
+import { withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
 
-const ListDishes = (props) => {
-  const { data } = props
+const ListDishess = (props) => {
   const [dishes, setDishes] = useState([])
   const [menuId, setMenuId] = useState()
   const [orderNumber, setOrderNumber] = useState()
   const [isPublish, setIsPublish] = useState()
 
-
   useEffect(() => {
-    if (props.data.menuPublishBySite.isPublished === true && props.data.menuPublishBySite.isActive === true) {
+    // if (props.data.menuPublishBySite.isPublished === true && props.data.menuPublishBySite.isActive === true) {
       handleDefaultDishes()
-    }
+    // }
   }, [])
   
   async function handleDefaultDishes() {
-    setIsPublish(props.data.menuPublishBySite.isPublished)
-    setDishes([...props.data.menuPublishBySite.dishes])
-    console.log(props.ordersByMenu)
-    const orderNumbers =  (props.ordersByMenu.ordersByMenu)
-    ? props.ordersByMenu.ordersByMenu.map(order => order.count)
-    : {'0': 1,'1': 2,'2': 3,'3': 4,'4': 5}
-    console.log(orderNumbers)
-    // const orderNumbers = {
-    //   '0': 1,
-    //   '1': 2,
-    //   '2': 3,
-    //   '3': 4,
-    //   '4': 5
-    // }
-
-		if (props.data.menuPublishBySite.isPublished === true && props.data.menuPublishBySite.isActive === true) {
-      setMenuId(props.data.menuPublishBySite._id)   
-      setOrderNumber([...props.data.menuPublishBySite.dishes].map((dish, index) => (
-        dish.orderNumber = orderNumbers[index]
-      )))
-      setDishes([...props.data.menuPublishBySite.dishes])
-    }
-		if(props.data.error) {
-			console.log(props.data.error)
-    }
+    // const orderNumbers = await props.ordersByMenu.ordersByMenu.map(order => order.count)
+    const orderNumbers = {
+        '0': 1,
+        '1': 2,
+        '2': 3,
+        '3': 4,
+        '4': 5
+      }
+    props.client.query({
+      query: MENU_BY_SELECTED_SITE,
+      variables: {
+				siteId: props.siteId
+			}	
+		})
+		.then(res => {
+      setIsPublish(res.data.menuPublishBySite.isPublished)
+			if (res.data.menuPublishBySite.isPublished === true && res.data.menuPublishBySite.isActive === true) {
+        setDishes([...res.data.menuPublishBySite.dishes])
+        setMenuId(res.data.menuPublishBySite._id)   
+        setOrderNumber([...res.data.menuPublishBySite.dishes].map((dish, index) => (
+          dish.orderNumber = orderNumbers[index]
+        )))
+      }
+		})
+		.catch((error) => {
+			console.log(error)
+    })
   }
   
 	async function createOrder(item) {
-		await props.mutate.orderDish({
+		await props.client.mutate({
+			mutation: ORDER_DISH,
 			variables: {
 				input: {
-					menuId: props.data.menuPublishBySite._id,
+					menuId: menuId,
 					dishId: item._id,
 					count: item.orderNumber
 				}
 			}
 		})
 		.then((res) => {
-			(res)
+			(res.data.orderDish)
 			? console.log('success')
 			: console.log('something went wrong')
 		})
@@ -99,39 +100,39 @@ const ListDishes = (props) => {
   }
 
   async function handleConfirmOrder(item) {
-    dishes.map(dish =>
-      (dish.count !== 0)
-      ? props.mutate.confirmOrder({
-          variables: {
-            menuId: menuId,
-            dishId: dish._id
-          }
-        })
-        .then(res => {
-          (res)
-          ? alert('Xác nhận thành công')
-          : console.log('something went wrong')
-        })
-        .catch((error) => {
-          console.dir(error)
-        })
-      :	null	
-    )
-  }
+    props.client.mutate({
+			mutation: CONFIRM_ORDER,
+			variables: {
+        menuId: menuId,
+        dishId: item._id
+			}
+		})
+		.then(res => {
+      (res)
+      ? alert('Xác nhận thành công')
+      : console.log('something went wrong')
+    })
+    .catch((error) => {
+      console.dir(error)
+    })
 
+  }
+  console.log(dishes)
   const time = (new Date(Date.now())).getHours()
   const confirmButton = (time >= 12 && time < 14) 
     ? <Button onClick={handleConfirmOrder} style={{ display: 'block', textAlign: 'center' }}>Xác nhận</Button>
     : null
   return (
     <React.Fragment>
+      <div>Hello</div>
       {
         isPublish === true
         ? <>
             <List
-              dataSource={data.menuPublishBySite.dishes}
+              dataSource={dishes}
               renderItem={item => (
-                <List.Item key={item._id} actions={[<Button className='minus' disabled={data.menuPublishBySite.isLocked} onClick={() => handleMinus(item)}>-</Button>, <Button className='plus' disabled={data.menuPublishBySite.isLocked} onClick={() => handlePlus(item)}>+</Button>]}>
+                // disabled={props.data.menuPublishBySite.isLocked}
+              <List.Item key={item._id} actions={[<Button className='minus' onClick={() => handleMinus(item)}>-</Button>, <Button className='plus' onClick={() => handlePlus(item)}>+</Button>]}>
                   <List.Item.Meta
                     title={item.name}
                     description={(`${item.orderNumber}` === 'undefined') ? `${0}/${item.count}` : `${item.orderNumber}/${item.count}`}
@@ -200,38 +201,40 @@ const ORDERS_BY_MENU 	= gql`
   }
 `
 
-export default HOCQueryMutation([
-  {
-    query: ORDERS_BY_MENU,
-    options: (props) => {
-      console.log(props.menuId)
-      return {
-        variables: {
-          menuId: '3f423520-a214-11e9-83ee-5f5fb731ebb3'
-        },
-        skip: !props.menuId,
-        fetchPolicy: 'network-only'
-      }
-    },
-    name: 'ordersByMenu'
-  },
-  {
-    query: MENU_BY_SELECTED_SITE,
-    options: (props) => ({
-      variables: {
-        siteId: props.siteId
-      },
-      fetchPolicy: 'network-only'
-    })
-  },
-  {
-    mutation: ORDER_DISH,
-    name: 'orderDish',
-    options: {}
-	},
-	{
-    mutation: CONFIRM_ORDER,
-    name: 'confirmOrder',
-    options: {}
-  }
-])(ListDishes)
+export default withApollo(ListDishess)
+
+// export default HOCQueryMutation([
+//   {
+//     query: ORDERS_BY_MENU,
+//     options: (props) => {
+//       console.log(props.menuId)
+//       return {
+//         variables: {
+//           menuId: '3f423520-a214-11e9-83ee-5f5fb731ebb3'
+//         },
+//         skip: !props.menuId,
+//         fetchPolicy: 'network-only'
+//       }
+//     },
+//     name: 'ordersByMenu'
+//   },
+//   {
+//     query: MENU_BY_SELECTED_SITE,
+//     options: (props) => ({
+//       variables: {
+//         siteId: props.siteId
+//       },
+//       fetchPolicy: 'network-only'
+//     })
+//   },
+//   {
+//     mutation: ORDER_DISH,
+//     name: 'orderDish',
+//     options: {}
+// 	},
+// 	{
+//     mutation: CONFIRM_ORDER,
+//     name: 'confirmOrder',
+//     options: {}
+//   }
+// ])(ListDishes)
