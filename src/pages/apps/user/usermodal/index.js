@@ -122,7 +122,6 @@ function UserModal(props) {
 								'Success',
 								'User is updated'
 							)
-							props.data.refetch()
 							setConfirmLoading(false)
 							props.form.resetFields()
 							props.hideModal()
@@ -191,7 +190,7 @@ function UserModal(props) {
 
 	return (
 		<Modal
-			title={props.userId ? 'Update ' : 'Create'}
+			title={props.userId ? 'Update' : 'Create'}
 			visible={props.visible}
 			onOk={handleOk}
 			confirmLoading={confirmLoading}
@@ -259,13 +258,13 @@ function UserModal(props) {
 				{props.getAllSites.sites &&
 					props.getAllSites.sites.map((item, i) => {
 						// console.log('Chin', props.getAllPermissionsByUserId.findAllByUserId)
-						let array
+						let array = []
 						let newArray = []
 						if (props.userId) {
-							array = props.userId && props.getAllPermissionsByUserId.findAllByUserId.filter(
+							array = props.getAllPermissionsByUserId.findAllByUserId && props.getAllPermissionsByUserId.findAllByUserId.filter(
 								item1 => item1.siteId === item._id
 							)
-							array[0] && array[0].permissions.map(item => {
+							props.getAllPermissionsByUserId.findAllByUserId && array[0].permissions.map(item => {
 								newArray.push(item._id + "," + item.code)
 							})
 						}
