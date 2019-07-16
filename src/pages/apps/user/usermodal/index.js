@@ -37,7 +37,7 @@ function UserModal(props) {
 		props.form.validateFieldsAndScroll((err, values) => {
 			if (!err) {
 				setConfirmLoading(true)
-				// console.log('Received values of form: ', values)
+				console.log('Received values of form: ', values)
 
 				delete values['confirm']
 
@@ -104,6 +104,12 @@ function UserModal(props) {
 									variables: {
 										offset: 0,
 										limit: 100
+									}
+								},
+								{
+									query: GET_ALL_PERMISSIONS_BY_USERID,
+									variables: {
+										_id: props.userId
 									}
 								}
 							],
@@ -193,11 +199,11 @@ function UserModal(props) {
 				props.form.resetFields()
 				props.hideModal()
 			}}
-			okText="Submit"
+			okText='Submit'
 		>
 			<Form {...formItemLayout}>
 				{!props.userId && (
-					<Form.Item label="Username">
+					<Form.Item label='Username'>
 						{getFieldDecorator('username', {
 							rules: [
 								{
@@ -208,7 +214,7 @@ function UserModal(props) {
 						})(<Input style={{ fontSize: 16 }} />)}
 					</Form.Item>
 				)}
-				<Form.Item label="Password">
+				<Form.Item label='Password'>
 					{getFieldDecorator('password', {
 						rules: [
 							{
@@ -219,9 +225,9 @@ function UserModal(props) {
 								validator: validateToNextPassword
 							}
 						]
-					})(<Input.Password visibilityToggle={false} autoComplete="off" />)}
+					})(<Input.Password visibilityToggle={false} autoComplete='off' />)}
 				</Form.Item>
-				<Form.Item label="Confirm Password">
+				<Form.Item label='Confirm Password'>
 					{getFieldDecorator('confirm', {
 						rules: [
 							{
@@ -235,12 +241,12 @@ function UserModal(props) {
 					})(
 						<Input.Password
 							visibilityToggle={false}
-							autoComplete="off"
+							autoComplete='off'
 							onBlur={handleConfirmBlur}
 						/>
 					)}
 				</Form.Item>
-				<Form.Item label="Fullname">
+				<Form.Item label='Fullname'>
 					{getFieldDecorator('fullName', {
 						rules: [
 							{
@@ -252,25 +258,27 @@ function UserModal(props) {
 				</Form.Item>
 				{props.getAllSites.sites &&
 					props.getAllSites.sites.map((item, i) => {
-						{
-							/* if (props.userId) {
-							const array = props.getAllPermissionsByUserId.findAllByUserId.filter(
+						// console.log('Chin', props.getAllPermissionsByUserId.findAllByUserId)
+						let array
+						let newArray = []
+						if (props.userId) {
+							array = props.userId && props.getAllPermissionsByUserId.findAllByUserId.filter(
 								item1 => item1.siteId === item._id
 							)
-							if (Array.isArray(array)) {
-								console.log('asdsada', array[0])
-							}
-						} */
+							array[0] && array[0].permissions.map(item => {
+								newArray.push(item._id + "," + item.code)
+							})
 						}
 
 						return (
 							<Form.Item key={i} label={item.name}>
 								{getFieldDecorator(`sites.${item._id}`, {
-									//valuePropName: defaultValue
+									initialValue: newArray
+									// initialValue: ['daeb5c10-9f92-11e9-990b-9dc89f86db87,USER_CREATE']
 								})(
 									<Select
-										mode="multiple"
-										placeholder="Please select permissions"
+										mode='multiple'
+										placeholder='Please select permissions'
 									>
 										{props.getAllPermissions.permissions &&
 											props.getAllPermissions.permissions.map((item, i) => {
@@ -371,7 +379,7 @@ export default HOCQueryMutation([
 		options: props => ({
 			variables: {
 				_id: props.userId
-			}
+			},
 		})
 	},
 	{
