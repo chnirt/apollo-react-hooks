@@ -9,7 +9,8 @@ import { setContext } from 'apollo-link-context'
 import store from '../mobx'
 
 const httpLink = new HttpLink({
-	uri: 'http://devcloud3.digihcs.com:11048/graphql'
+	uri: 'http://localhost:4000/graphql'
+	// uri: 'http://devcloud3.digihcs.com:11048/graphql'
 })
 
 // const httpLink = new HttpLink({
