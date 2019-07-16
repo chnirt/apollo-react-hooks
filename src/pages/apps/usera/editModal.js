@@ -1,16 +1,18 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Select, Modal, Form, Input } from 'antd';
 import { HOCQueryMutation } from './../../../components/shared/hocQueryAndMutation';
 import { GET_ALL_USERS, GET_ALL_PERMISSIONS, GET_ALL_SITES, UPDATE_USER } from './queries'
 import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon';
 
 function EditModal(props) {
+	const [confirmLoading, setConfirmLoading] = useState(false)
 
 	function onEdit(_id) {
 		props.form.validateFields((err, values) => {
 			if (err) {
 				return;
 			}
+			setConfirmLoading(true)
 			// console.log('Received values of form: ', values);
 			let sites = []
 
@@ -68,6 +70,7 @@ function EditModal(props) {
 				})
 				.then((result) => {
 					// console.log(result)
+					setConfirmLoading(false)
 					openNotificationWithIcon('success', 'success', `Sửa ${values.fullName} thành công`, null)
 				})
 				.catch((err) => {
@@ -111,6 +114,7 @@ function EditModal(props) {
 			title='Sửa user'
 			okText='Sửa'
 			cancelText="Hủy"
+			confirmLoading={confirmLoading}
 			onCancel={props.handleCancel}
 			onOk={() => onEdit(props.userData._id)}
 		>

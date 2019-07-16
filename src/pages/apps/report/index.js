@@ -5,7 +5,7 @@ import { Select, Divider, Icon } from 'antd'
 import gql from 'graphql-tag'
 import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
 import logo from '../../../logoClinic.svg'
-import font from '../../../assets/fonts/Lobster-Regular.ttf'
+import font from '../../../assets/fonts/Vietnamese.ttf'
 
 import jsPDF from 'jspdf'
 import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation'
@@ -91,8 +91,8 @@ class Report extends React.Component {
 			format: 'a4'
 		})
 
-		// doc.addFont(font, 'Lobster', 'bold')
-		doc.setFont('times', 'bold')
+		doc.addFont('../../../assets/fonts/Vietnamese.ttf', 'Vietnamese', 'bold')
+		doc.setFont('Vietnamese', 'normal')
 
 		console.log(doc.getFontList())
 
