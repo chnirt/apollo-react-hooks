@@ -1,44 +1,51 @@
-import React from 'react'
-import { Row } from 'antd'
+import React, { useState } from 'react'
+import { Row, Col, Select } from 'antd'
 import MenuList from './MenuList'
-import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation'
-import gql from 'graphql-tag'
+import MenuModal from './MenuModal'
 
 function Menu(props) {
-	const menus = props.data.menus
+	const [menuId, setMenuId] = useState('')
+	const [visible, setVisible] = useState(false)
+	const [siteId, setSiteId] = useState(
+		window.localStorage.getItem('currentsite')
+	)
+
+	async function openModal(id) {
+		await setMenuId(id)
+		await setVisible(true)
+	}
+
+	async function changeSite(value) {
+		window.localStorage.setItem('currentsite', value)
+		setSiteId(value)
+	}
 	return (
-		<div className="menu">
-			<Row className="menu-list">
-				{menus.map((menu, index) => (
-					<MenuList key={index} menuData={menu}>
-						{menu.name}
-					</MenuList>
-				))}
+		<div className='menu'>
+			<Row className='menu-list'>
+				<Col span={22} offset={1}>
+					<Select
+						defaultValue={siteId}
+						onChange={changeSite}
+						placeholder='Chọn site'
+						style={{ width: '100%', margin: '25px 0' }}
+					>
+						{JSON.parse(window.localStorage.sites).map((site, index) => (
+							<Select.Option key={index} value={site._id}>
+								{site.name}
+							</Select.Option>
+						))}
+					</Select>
+				</Col>
+				<MenuList siteId={siteId} openModal={openModal} />
+				<MenuModal
+					siteId={siteId}
+					menuId={menuId}
+					visible={visible}
+					handleCancel={() => setVisible(false)}
+				/>
 			</Row>
 		</div>
 	)
 }
 
-const GET_ALL_MENU = gql`
-	query {
-		menus {
-			_id
-			name
-			siteId
-			dishes {
-				_id
-				name
-				count
-			}
-			isPublished
-			isLocked
-			isActive
-		}
-	}
-`
-
-export default HOCQueryMutation([
-	{
-		query: GET_ALL_MENU
-	}
-])(Menu)
+export default Menu
