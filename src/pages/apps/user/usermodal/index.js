@@ -189,7 +189,10 @@ function UserModal(props) {
 			visible={props.visible}
 			onOk={handleOk}
 			confirmLoading={confirmLoading}
-			onCancel={props.hideModal}
+			onCancel={() => {
+				props.form.resetFields()
+				props.hideModal()
+			}}
 			okText="Submit"
 		>
 			<Form {...formItemLayout}>
