@@ -1,63 +1,56 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Select, Row, Col, Button, Divider } from 'antd'
 import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation'
 import gql from 'graphql-tag'
 import ListDishes from './listDishes'
 
-class Order extends React.Component {
-	state = {
-		siteId: window.localStorage.getItem('currentsite')
-	}
+const Order = (props) => {
+  const [siteId, setSiteId] = useState(localStorage.getItem('currentsite'))
+  const [menuId, setMenuId] = useState()
 
-	async handleChange (selectedItems) {
-		await window.localStorage.setItem('currentsite', selectedItems)
-		if (this.props.data.menuPublishBySite.isPublished === true && this.props.data.menuPublishBySite.isActive) {
-			this.setState({
-				siteId: selectedItems
-			})
-		}
+  useEffect(() => {
+    setMenuId(props.data.menuPublishBySite._id)
+  }, [])
 
-		if(this.props.data.error) {
-			console.log(this.props.data.error)
-		}
-	}
+  async function handleChange(selectedItems) {
+    localStorage.setItem('currentsite', selectedItems)
+    setSiteId(selectedItems)
+  }
+  
+  const currentsite = window.localStorage.getItem('currentsite')
+  const options = JSON.parse(window.localStorage.getItem('sites')).map(item =>
+    <Select.Option value={item._id} key={item._id}>
+        {item.name}
+    </Select.Option>
+  )
 
-	render() {
-		const currentsite = window.localStorage.getItem('currentsite')
-		const options = JSON.parse(window.localStorage.getItem('sites')).map(item =>
-			<Select.Option value={item._id} key={item._id}>
-					{item.name}
-			</Select.Option>
-		)
-		return (
-			<React.Fragment>
-				<Button
-					shape='circle'
-					icon='left'
-					onClick={() => this.props.history.push('/🥢')}
-				/>
-				<Divider />
-				<Row style={{ marginTop: 20 }}>
+  return (
+    <React.Fragment>
+      <Button
+        shape='circle'
+        icon='left'
+        onClick={() => props.history.push('/🥢')}
+      />
+      <Divider />
+      <Row style={{ marginTop: 20 }}>
+        <Col span={22} offset={1}>
+          <Select
+            style={{ width: '100%', marginBottom: 20 }}
+            placeholder='Chọn khu vực'
+            defaultValue={currentsite}
+            onChange={e => handleChange(e)}
+          >
+            {options}
+          </Select>
+        </Col>
+      </Row>	
+      <Row>
 					<Col span={22} offset={1}>
-						<Select
-							style={{ width: '100%', marginBottom: 20 }}
-							placeholder='Chọn khu vực'
-							defaultValue={currentsite}
-							onChange={() => this.setState({dishes: []})}
-							onSelect={(e) => this.handleChange(e)}
-						>
-							{options}
-						</Select>
+						<ListDishes siteId={siteId} menuId={menuId} />
 					</Col>
-				</Row>
-				<Row>
-					<Col span={22} offset={1}>
-						<ListDishes siteId={this.state.siteId} />
-					</Col>
-				</Row>		
-			</React.Fragment>
-		)
-	}
+				</Row>	
+    </React.Fragment>
+  )
 }
 
 const MENU_BY_SELECTED_SITE = gql`
@@ -85,8 +78,9 @@ export default HOCQueryMutation([
     query: MENU_BY_SELECTED_SITE,
     options: props => ({
 			variables: {
-				siteId: window.localStorage.getItem('currentsite')
-			}
+				siteId: localStorage.getItem('currentsite')
+			},
+    fetchPolicy: 'network-only'
 		})
   }
 ])(Order)

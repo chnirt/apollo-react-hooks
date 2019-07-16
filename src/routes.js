@@ -33,12 +33,6 @@ export const routes = [
 				component: 'order'
 			},
 			{
-				label: 'Manage Order B',
-				path: '/🥢/orderB',
-				icon: 'bug',
-				component: 'orderB'
-			},
-			{
 				label: 'Manage User',
 				path: '/🥢/user',
 				component: 'usera'
