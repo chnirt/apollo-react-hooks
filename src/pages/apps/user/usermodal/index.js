@@ -8,6 +8,7 @@ const { Option } = Select
 
 function UserModal(props) {
 	const [confirmDirty, setConfirmDirty] = useState(false)
+	const [confirmLoading, setConfirmLoading] = useState(false)
 
 	function handleConfirmBlur(e) {
 		const { value } = e.target
@@ -35,6 +36,7 @@ function UserModal(props) {
 		// console.log('OK')
 		props.form.validateFieldsAndScroll((err, values) => {
 			if (!err) {
+				setConfirmLoading(true)
 				// console.log('Received values of form: ', values)
 
 				delete values['confirm']
@@ -86,112 +88,82 @@ function UserModal(props) {
 
 				// console.log(values)
 
-				props.mutate
-					.updateUser({
-						mutation: UPDATE_USER,
-						variables: {
-							_id: props.userId,
-							input: {
-								...values
-							}
-						},
-						refetchQueries: () => [
-							{
-								query: GET_ALL_USERS,
-								variables: {
-									offset: 0,
-									limit: 100
+				props.userId
+					? props.mutate
+						.updateUser({
+							mutation: UPDATE_USER,
+							variables: {
+								_id: props.userId,
+								input: {
+									...values
 								}
-							}
-						]
-					})
-					.then(res => {
-						// console.log(res)
-						openNotificationWithIcon(
-							'success',
-							'success',
-							'Success',
-							'User is updated'
-						)
-						props.form.resetFields()
-						props.hideModal()
-					})
-					.catch(err => {
-						// console.log(err)
-						const errors = err.graphQLErrors.map(error => error.message)
-						openNotificationWithIcon('error', 'failed', 'Failed', errors[0])
-					})
+							},
+							refetchQueries: () => [
+								{
+									query: GET_ALL_USERS,
+									variables: {
+										offset: 0,
+										limit: 100
+									}
+								}
+							],
+						})
+						.then(res => {
+							// console.log(res)
+							openNotificationWithIcon(
+								'success',
+								'success',
+								'Success',
+								'User is updated'
+							)
+							props.data.refetch()
+							setConfirmLoading(false)
+							props.form.resetFields()
+							props.hideModal()
+						})
+						.catch(err => {
+							// console.log(err)
+							const errors = err.graphQLErrors.map(error => error.message)
+							openNotificationWithIcon('error', 'failed', 'Failed', errors[0])
+							setConfirmLoading(false)
+						})
+					: props.mutate
+						.createUser({
+							mutation: CREATE_USER,
+							variables: {
+								input: {
+									...values
+								}
+							},
+							refetchQueries: () => [
+								{
+									query: GET_ALL_USERS,
+									variables: {
+										offset: 0,
+										limit: 100
+									}
+								}
+							]
+						})
+						.then(res => {
+							// console.log(res)
+							openNotificationWithIcon(
+								'success',
+								'success',
+								'Success',
+								'User is created'
+							)
+							setConfirmLoading(false)
+							props.form.resetFields()
+							props.hideModal()
 
-				// props.userId
-				// 	? props.mutate
-				// 			.updateUser({
-				// 				mutation: UPDATE_USER,
-				// 				variables: {
-				// 					_id: props.userId,
-				// 					input: {
-				// 						...values
-				// 					}
-				// 				},
-				// 				refetchQueries: () => [
-				// 					{
-				// 						query: GET_ALL_USERS,
-				// 						variables: {
-				// 							offset: 0,
-				// 							limit: 100
-				// 						}
-				// 					}
-				// 				]
-				// 			})
-				// 			.then(res => {
-				// 				// console.log(res)
-				// 				openNotificationWithIcon(
-				// 					'success',
-				// 					'success',
-				// 					'Success',
-				// 					'User is updated'
-				// 				)
-				// 				props.form.resetFields()
-				// 				props.hideModal()
-				// 			})
-				// 			.catch(err => {
-				// 				// console.log(err)
-				// 				const errors = err.graphQLErrors.map(error => error.message)
-				// 				openNotificationWithIcon('error', 'failed', 'Failed', errors[0])
-				// 			})
-				// 	: props.mutate
-				// 			.createUser({
-				// 				mutation: CREATE_USER,
-				// 				variables: {
-				// 					input: {
-				// 						...values
-				// 					}
-				// 				},
-				// 				refetchQueries: () => [
-				// 					{
-				// 						query: GET_ALL_USERS,
-				// 						variables: {
-				// 							offset: 0,
-				// 							limit: 100
-				// 						}
-				// 					}
-				// 				]
-				// 			})
-				// 			.then(res => {
-				// 				// console.log(res)
-				// 				openNotificationWithIcon(
-				// 					'success',
-				// 					'success',
-				// 					'Success',
-				// 					'User is created'
-				// 				)
-				// 				props.form.resetFields()
-				// 				props.hideModal()
-				// 			})
-				// 			.catch(err => {
-				// 				// console.log(err)
-				// 				const errors = err.graphQLErrors.map(error => error.message)
-				// 				openNotificationWithIcon('error', 'failed', 'Failed', errors[0])
-				// 			})
+						})
+						.catch(err => {
+							// console.log(err)
+							const errors = err.graphQLErrors.map(error => error.message)
+							openNotificationWithIcon('error', 'failed', 'Failed', errors[0])
+							setConfirmLoading(false)
+						})
 			}
 		})
 	}
@@ -209,14 +181,14 @@ function UserModal(props) {
 		}
 	}
 
-	// console.log(props.getAllPermissionsByUserId)
+	console.log(props)
 
 	return (
 		<Modal
-			title={props.userId ? 'Update ' + props.userId : 'Create'}
+			title={props.userId ? 'Update ' : 'Create'}
 			visible={props.visible}
 			onOk={handleOk}
-			// confirmLoading={confirmLoading}
+			confirmLoading={confirmLoading}
 			onCancel={props.hideModal}
 			okText="Submit"
 		>
@@ -384,7 +356,6 @@ export default HOCQueryMutation([
 	{
 		query: GET_ALL_USERS,
 		options: {
-			fetchPolicy: 'only-network',
 			variables: {
 				offset: 0,
 				limit: 100

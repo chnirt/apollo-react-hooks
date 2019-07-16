@@ -7,7 +7,6 @@ import openNotificationWithIcon from '../../../components/shared/openNotificatio
 function EditModal(props) {
 
 	function onEdit(_id) {
-		console.log(_id)
 		props.form.validateFields((err, values) => {
 			if (err) {
 				return;
