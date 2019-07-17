@@ -46,7 +46,7 @@ const errorLink = new onError(({ graphQLErrors, networkError, operation }) => {
 		graphQLErrors.forEach(({ message, locations, path, extensions }) => {
 			console.log(
 				`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}, Code: ${
-				extensions.code
+					extensions.code
 				}`
 			)
 			if (extensions.code === '498') {

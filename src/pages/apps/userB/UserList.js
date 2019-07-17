@@ -1,20 +1,12 @@
-import React, { useState } from 'react'
-import { Col, Card, Modal, Icon, Avatar } from 'antd'
+import React, { useEffect, useState } from 'react'
+import { Row, Col, Card, Modal, Icon } from 'antd'
 import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
 import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation';
 import { USER_LOCK_AND_UNLOCK, GET_ALL_USERS, INACTIVE_USER } from './queries'
+import { UserModal } from './UserModal'
+
 
 function UserList(props) {
-  const [visible, setVisible] = useState(false)
-
-  function openModal() {
-    setVisible(true)
-  }
-
-  function closeModal() {
-    setVisible(false)
-  }
-
 
   function onDelete(_id) {
     Modal.confirm({
@@ -47,7 +39,7 @@ function UserList(props) {
   }
 
   function onLockAndUnlock(_id) {
-    // console.log('LockAndUnlock', _id)
+    console.log('LockAndUnlock', _id)
     props.mutate
       .lockAndUnlockUser({
         variables: {
@@ -61,7 +53,7 @@ function UserList(props) {
       })
       .then(res => {
         // console.log(res)
-        openNotificationWithIcon('success', 'success', 'Thành công', null)
+        openNotificationWithIcon('success', 'success', 'Locl user thành công', null)
       })
       .catch(err => {
         // console.log(err)
@@ -71,57 +63,48 @@ function UserList(props) {
 
   }
 
-  function onEdit(user) {
+  function onEdit(user, id) {
+    props.setId(id)
     props.setUser(user)
-    props.openModal(user)
+    props.openModal()
   }
-  const { Meta } = Card;
-
 
   return (
-    <>
-      <Col
-        // key={i}
-        xs={{
-          span: 22,
-          offset: 1
-        }}
-        sm={{
-          span: 10,
-          offset: 1
-        }}
-        md={{
-          span: 10,
-          offset: 1
-        }}
-        lg={{
-          span: 4,
-          offset: 1
-        }}
-        style={{
-          marginBottom: 20
-        }}
+    <Col
+      // key={i}
+      xs={{
+        span: 22,
+        offset: 1
+      }}
+      sm={{
+        span: 10,
+        offset: 1
+      }}
+      md={{
+        span: 10,
+        offset: 1
+      }}
+      lg={{
+        span: 4,
+        offset: 1
+      }}
+      style={{
+        marginBottom: 20
+      }}
+    >
+      <Card
+        actions={[
+          <Icon type="edit" onClick={() => onEdit(props.userData, props.userData._id)} />,
+          <Icon
+            type={props.userData.isLocked ? "lock" : 'unlock'}
+            onClick={() => onLockAndUnlock(props.userData._id)}
+          />,
+          <Icon type="delete" onClick={() => onDelete(props.userData._id)} />
+        ]}
       >
-        <Card
-          actions={[
-            <Icon type="edit" onClick={() => onEdit(props.userData)} />,
-            <Icon
-              type={props.userData.isLocked ? "lock" : 'unlock'}
-              onClick={() => onLockAndUnlock(props.userData._id)}
-            />,
-            <Icon type="delete" onClick={() => onDelete(props.userData._id)} />
-          ]}
-        >
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            {props.userData.fullName}
-            <Meta
-              avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
-            />
-          </div>
-        </Card>
-      </Col>
-
-    </>
+        {props.userData.fullName}
+      </Card>
+    </Col>
   )
 }
 

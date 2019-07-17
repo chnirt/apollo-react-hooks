@@ -1,16 +1,18 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Select, Modal, Form, Input } from 'antd';
-import { HOCQueryMutation } from '../../../../components/shared/hocQueryAndMutation';
-import { CREATE_USER, GET_ALL_USERS, GET_ALL_PERMISSIONS, GET_ALL_SITES, UPDATE_USER } from '../queries'
-import openNotificationWithIcon from '../../../../components/shared/openNotificationWithIcon';
+import { HOCQueryMutation } from './../../../components/shared/hocQueryAndMutation';
+import { GET_ALL_USERS, GET_ALL_PERMISSIONS, GET_ALL_SITES, UPDATE_USER } from './queries'
+import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon';
 
-function UserModal(props) {
+function EditModal(props) {
+	const [confirmLoading, setConfirmLoading] = useState(false)
 
-	function onCreate() {
+	function onEdit(_id) {
 		props.form.validateFields((err, values) => {
 			if (err) {
 				return;
 			}
+			setConfirmLoading(true)
 			// console.log('Received values of form: ', values);
 			let sites = []
 
@@ -52,14 +54,15 @@ function UserModal(props) {
 			values.sites = sites
 
 			props.mutate
-				.createUser({
-					mutation: CREATE_USER,
+				.updateUser({
+					mutation: UPDATE_USER,
 					variables: {
+						_id,
 						input: {
 							...values,
 						}
 					},
-					refetchQueries: () => [
+					refetchQueries: [
 						{
 							query: GET_ALL_USERS
 						}
@@ -67,7 +70,8 @@ function UserModal(props) {
 				})
 				.then((result) => {
 					// console.log(result)
-					openNotificationWithIcon('success', 'success', `Thêm ${values.fullName} thành công`, null)
+					setConfirmLoading(false)
+					openNotificationWithIcon('success', 'success', `Sửa ${values.fullName} thành công`, null)
 				})
 				.catch((err) => {
 					// console.log(err.message)
@@ -79,6 +83,8 @@ function UserModal(props) {
 			props.handleCancel()
 		});
 	}
+
+	console.log(props)
 
 	function onChange(checkedValues) {
 	}
@@ -105,30 +111,26 @@ function UserModal(props) {
 	return (
 		<Modal
 			visible={props.visible}
-			title="Thêm user"
-			okText="Lưu"
+			title='Sửa user'
+			okText='Sửa'
 			cancelText="Hủy"
-			onCancel={props.handleCancel}
-			onOk={onCreate}
+			confirmLoading={confirmLoading}
+			onCancel={() => { props.handleCancel(), props.form.resetFields() }}
+			onOk={() => onEdit(props.userData._id)}
 		>
 			<Form {...formItemLayout}>
 				<Form.Item label='Tên'>
 					{
 						getFieldDecorator('fullName', {
+							initialValue: props.userData && props.userData.fullName
 						})(
 							<Input placeholder='Nhập tên' />)
-					}
-				</Form.Item>
-				<Form.Item label='Tên đăng nhập'>
-					{
-						getFieldDecorator('username', {
-						})(
-							<Input placeholder='Nhập username' type='text' />)
 					}
 				</Form.Item>
 				<Form.Item label='Mật khẩu'>
 					{
 						getFieldDecorator('password', {
+							initialValue: props.user && props.user.password
 						})(
 							<Input placeholder='Nhập password' type='password' />)
 					}
@@ -169,7 +171,6 @@ export default HOCQueryMutation([
 		query: GET_ALL_USERS,
 		name: 'getAllUsers'
 	},
-
 	{
 		query: GET_ALL_PERMISSIONS,
 		name: 'getAllPermissions'
@@ -179,13 +180,8 @@ export default HOCQueryMutation([
 		name: 'getAllSites'
 	},
 	{
-		mutation: CREATE_USER,
-		name: 'createUser',
-		option: {}
-	},
-	{
 		mutation: UPDATE_USER,
 		name: 'updateUser',
 		options: {}
 	}
-])(Form.create({})(UserModal))
+])(Form.create()(EditModal))
