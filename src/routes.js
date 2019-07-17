@@ -48,21 +48,25 @@ export const routes = [
 
 export const menuRoutes = [
 	{
+		id: 'manage-menu',
 		label: 'Manage Menu',
 		path: '/🥢/menu',
 		icon: 'bars'
 	},
 	{
+		id: 'manage-order',
 		label: 'Manage Order',
 		path: '/🥢/order',
 		icon: 'shopping-cart'
 	},
 	{
+		id: 'manage-user',
 		label: 'Manage User',
 		path: '/🥢/user',
 		icon: 'user'
 	},
 	{
+		id: 'report',
 		label: 'Report',
 		path: '/🥢/report',
 		icon: 'file-done'
