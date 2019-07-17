@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Row, Col, Select } from 'antd'
-import MenuList from './MenuList'
-import MenuModal from './MenuModal'
+import MenuList from './menuList'
+import MenuModal from './menuModal'
 
 function Menu(props) {
 	const [menuId, setMenuId] = useState('')

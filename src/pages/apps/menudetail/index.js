@@ -33,7 +33,7 @@ const DishCreateForm = Form.create({ name: 'dish_create' })(
 					onOk={onCreate}
 				>
 					<Form>
-						<Form.Item label=" ">
+						<Form.Item>
 							{
 								getFieldDecorator('dish', {})(
 									<Input placeholder='Nhập tên món' />)
@@ -88,7 +88,7 @@ class MenuDetail extends React.Component {
 		return (
 			<React.Fragment>
 
-				<label style={{ textAlign: 'center', display: 'block', marginBottom: 20 }}>
+				<label className='title'>
 					Danh sách món
 				</label>
 
@@ -110,7 +110,7 @@ class MenuDetail extends React.Component {
 					<Button className='plus'>+</Button>
 				</div>
 
-				<div style={{ display: 'flex', justifyContent: 'space-between' }}>
+				<div style={{ display: 'flex', justifyContent: 'space-between' }} className='wrap-btn'>
 					<Button className='add-dish' onClick={this.showModal}>
 						Thêm món
 					</Button>
