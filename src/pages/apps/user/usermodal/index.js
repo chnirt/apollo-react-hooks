@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import gql from 'graphql-tag'
 import { HOCQueryMutation } from '../../../../components/shared/hocQueryAndMutation'
 import openNotificationWithIcon from '../../../../components/shared/openNotificationWithIcon'
@@ -7,6 +7,9 @@ import { Modal, Form, Input, Select } from 'antd'
 const { Option } = Select
 
 function UserModal(props) {
+	useEffect(() => {
+		props.getAllPermissionsByUserId.refetch()
+	})
 	const [confirmDirty, setConfirmDirty] = useState(false)
 	const [confirmLoading, setConfirmLoading] = useState(false)
 
@@ -90,85 +93,84 @@ function UserModal(props) {
 
 				props.userId
 					? props.mutate
-						.updateUser({
-							mutation: UPDATE_USER,
-							variables: {
-								_id: props.userId,
-								input: {
-									...values
-								}
-							},
-							refetchQueries: () => [
-								{
-									query: GET_ALL_USERS,
-									variables: {
-										offset: 0,
-										limit: 100
+							.updateUser({
+								mutation: UPDATE_USER,
+								variables: {
+									_id: props.userId,
+									input: {
+										...values
 									}
 								},
-								{
-									query: GET_ALL_PERMISSIONS_BY_USERID,
-									variables: {
-										_id: props.userId
+								refetchQueries: () => [
+									{
+										query: GET_ALL_USERS,
+										variables: {
+											offset: 0,
+											limit: 100
+										}
+									},
+									{
+										query: GET_ALL_PERMISSIONS_BY_USERID,
+										variables: {
+											_id: props.userId
+										}
 									}
-								}
-							],
-						})
-						.then(res => {
-							// console.log(res)
-							openNotificationWithIcon(
-								'success',
-								'success',
-								'Success',
-								'User is updated'
-							)
-							setConfirmLoading(false)
-							props.form.resetFields()
-							props.hideModal()
-						})
-						.catch(err => {
-							// console.log(err)
-							const errors = err.graphQLErrors.map(error => error.message)
-							openNotificationWithIcon('error', 'failed', 'Failed', errors[0])
-							setConfirmLoading(false)
-						})
+								]
+							})
+							.then(res => {
+								// console.log(res)
+								openNotificationWithIcon(
+									'success',
+									'success',
+									'Success',
+									'User is updated'
+								)
+								setConfirmLoading(false)
+								props.form.resetFields()
+								props.hideModal()
+							})
+							.catch(err => {
+								// console.log(err)
+								const errors = err.graphQLErrors.map(error => error.message)
+								openNotificationWithIcon('error', 'failed', 'Failed', errors[0])
+								setConfirmLoading(false)
+							})
 					: props.mutate
-						.createUser({
-							mutation: CREATE_USER,
-							variables: {
-								input: {
-									...values
-								}
-							},
-							refetchQueries: () => [
-								{
-									query: GET_ALL_USERS,
-									variables: {
-										offset: 0,
-										limit: 100
+							.createUser({
+								mutation: CREATE_USER,
+								variables: {
+									input: {
+										...values
 									}
-								}
-							]
-						})
-						.then(res => {
-							// console.log(res)
-							openNotificationWithIcon(
-								'success',
-								'success',
-								'Success',
-								'User is created'
-							)
-							setConfirmLoading(false)
-							props.form.resetFields()
-							props.hideModal()
-
-						})
-						.catch(err => {
-							// console.log(err)
-							const errors = err.graphQLErrors.map(error => error.message)
-							openNotificationWithIcon('error', 'failed', 'Failed', errors[0])
-							setConfirmLoading(false)
-						})
+								},
+								refetchQueries: () => [
+									{
+										query: GET_ALL_USERS,
+										variables: {
+											offset: 0,
+											limit: 100
+										}
+									}
+								]
+							})
+							.then(res => {
+								// console.log(res)
+								openNotificationWithIcon(
+									'success',
+									'success',
+									'Success',
+									'User is created'
+								)
+								setConfirmLoading(false)
+								props.form.resetFields()
+								props.hideModal()
+							})
+							.catch(err => {
+								// console.log(err)
+								const errors = err.graphQLErrors.map(error => error.message)
+								openNotificationWithIcon('error', 'failed', 'Failed', errors[0])
+								setConfirmLoading(false)
+							})
 			}
 		})
 	}
@@ -198,11 +200,11 @@ function UserModal(props) {
 				props.form.resetFields()
 				props.hideModal()
 			}}
-			okText='Submit'
+			okText="Submit"
 		>
 			<Form {...formItemLayout}>
 				{!props.userId && (
-					<Form.Item label='Username'>
+					<Form.Item label="Username">
 						{getFieldDecorator('username', {
 							rules: [
 								{
@@ -213,7 +215,7 @@ function UserModal(props) {
 						})(<Input style={{ fontSize: 16 }} />)}
 					</Form.Item>
 				)}
-				<Form.Item label='Password'>
+				<Form.Item label="Password">
 					{getFieldDecorator('password', {
 						rules: [
 							{
@@ -224,9 +226,9 @@ function UserModal(props) {
 								validator: validateToNextPassword
 							}
 						]
-					})(<Input.Password visibilityToggle={false} autoComplete='off' />)}
+					})(<Input.Password visibilityToggle={false} autoComplete="off" />)}
 				</Form.Item>
-				<Form.Item label='Confirm Password'>
+				<Form.Item label="Confirm Password">
 					{getFieldDecorator('confirm', {
 						rules: [
 							{
@@ -240,12 +242,12 @@ function UserModal(props) {
 					})(
 						<Input.Password
 							visibilityToggle={false}
-							autoComplete='off'
+							autoComplete="off"
 							onBlur={handleConfirmBlur}
 						/>
 					)}
 				</Form.Item>
-				<Form.Item label='Fullname'>
+				<Form.Item label="Fullname">
 					{getFieldDecorator('fullName', {
 						rules: [
 							{
@@ -261,12 +263,16 @@ function UserModal(props) {
 						let array = []
 						let newArray = []
 						if (props.userId) {
-							array = props.getAllPermissionsByUserId.findAllByUserId && props.getAllPermissionsByUserId.findAllByUserId.filter(
-								item1 => item1.siteId === item._id
-							)
-							props.getAllPermissionsByUserId.findAllByUserId && array[0] && array[0].permissions.map(item => {
-								newArray.push(item._id + "," + item.code)
-							})
+							array =
+								props.getAllPermissionsByUserId.findAllByUserId &&
+								props.getAllPermissionsByUserId.findAllByUserId.filter(
+									item1 => item1.siteId === item._id
+								)
+							props.getAllPermissionsByUserId.findAllByUserId &&
+								array[0] &&
+								array[0].permissions.map(item => {
+									newArray.push(item._id + ',' + item.code)
+								})
 						}
 
 						return (
@@ -276,8 +282,8 @@ function UserModal(props) {
 									// initialValue: ['daeb5c10-9f92-11e9-990b-9dc89f86db87,USER_CREATE']
 								})(
 									<Select
-										mode='multiple'
-										placeholder='Please select permissions'
+										mode="multiple"
+										placeholder="Please select permissions"
 									>
 										{props.getAllPermissions.permissions &&
 											props.getAllPermissions.permissions.map((item, i) => {
@@ -379,6 +385,7 @@ export default HOCQueryMutation([
 			variables: {
 				_id: props.userId
 			},
+			fetchPolicy: 'no-cache'
 		})
 	},
 	{
