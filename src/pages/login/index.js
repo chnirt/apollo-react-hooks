@@ -44,6 +44,7 @@ class Login extends Component {
 					this.props.history.push('/🥢')
 				})
 				.catch(err => {
+					// console.log(err)
 					const errors = err.graphQLErrors.map(error => error.extensions.code)
 					let mess = ''
 					if (errors[0] === '401') {

@@ -19,8 +19,7 @@ const ListDishes = (props) => {
   
   async function handleDefaultDishes() {
     setIsPublish(props.data.menuPublishBySite.isPublished)
-    setDishes([...props.data.menuPublishBySite.dishes])
-    console.log(props.ordersByMenu)
+    // setDishes([...props.data.menuPublishBySite.dishes])
     const orderNumbers =  (props.ordersByMenu.ordersByMenu)
     ? props.ordersByMenu.ordersByMenu.map(order => order.count)
     : {'0': 1,'1': 2,'2': 3,'3': 4,'4': 5}
@@ -200,7 +199,8 @@ export default HOCQueryMutation([
       console.log(props.menuId)
       return {
         variables: {
-          menuId: '3f423520-a214-11e9-83ee-5f5fb731ebb3'
+          // menuId: '3f423520-a214-11e9-83ee-5f5fb731ebb3'
+          menuId: props.menuId
         },
         skip: !props.menuId,
         fetchPolicy: 'network-only'

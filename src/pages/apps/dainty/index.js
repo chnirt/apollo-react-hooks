@@ -107,24 +107,24 @@ function Dainty(props) {
 		type === 'update'
 			? console.log('update')
 			: props.client
-					.mutate({
-						mutation: DELETE_DAINTY,
-						variables: {
-							_id: record._id
-						}
-					})
-					.then(res => {
-						// console.log(res)
-						if (res.data.deleteDainty === true) {
-							setLoading(false)
-							setDataSource([
-								...dataSource.filter(item => item._id !== record._id)
-							])
-						}
-					})
-					.catch(err => {
-						console.log(err)
-					})
+				.mutate({
+					mutation: DELETE_DAINTY,
+					variables: {
+						_id: record._id
+					}
+				})
+				.then(res => {
+					// console.log(res)
+					if (res.data.deleteDainty === true) {
+						setLoading(false)
+						setDataSource([
+							...dataSource.filter(item => item._id !== record._id)
+						])
+					}
+				})
+				.catch(err => {
+					console.log(err)
+				})
 	}
 	const { getFieldDecorator } = props.form
 	return (

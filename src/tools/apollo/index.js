@@ -46,7 +46,7 @@ const errorLink = new onError(({ graphQLErrors, networkError, operation }) => {
 		graphQLErrors.forEach(({ message, locations, path, extensions }) => {
 			console.log(
 				`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}, Code: ${
-					extensions.code
+				extensions.code
 				}`
 			)
 			if (extensions.code === '498') {
@@ -76,23 +76,23 @@ const authLink = setContext((_, { headers }) => {
 	}
 })
 
-// const defaultOptions = {
-// 	watchQuery: {
-// 		fetchPolicy: 'cache-and-network',
-// 		errorPolicy: 'ignore'
-// 	},
-// 	query: {
-// 		fetchPolicy: 'network-only',
-// 		errorPolicy: 'all'
-// 	},
-// 	mutate: {
-// 		errorPolicy: 'all'
-// 	}
-// }
+const defaultOptions = {
+	// watchQuery: {
+	// 	fetchPolicy: 'cache-and-network',
+	// 	errorPolicy: 'ignore'
+	// },
+	// query: {
+	// 	fetchPolicy: 'network-only',
+	// 	errorPolicy: 'all'
+	// },
+	// mutate: {
+	// 	errorPolicy: 'all'
+	// }
+}
 
 const client = new ApolloClient({
 	// cache: new InMemoryCache(),
-	// defaultOptions,
+	defaultOptions,
 	cache: new InMemoryCache().restore(window.__APOLLO_STATE__),
 	link: ApolloLink.from([errorLink, authLink, httpLink]),
 	ssrForceFetchDelay: 100
