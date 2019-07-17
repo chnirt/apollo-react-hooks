@@ -187,8 +187,8 @@ const Order = (props) => {
   }
   
   const time = (new Date(Date.now())).getHours()
-  const confirmButton = (time >= 12 && time < 16) 
-    ? <Button onClick={handleConfirmOrder} style={{ display: 'block', textAlign: 'center' }}>Xác nhận</Button>
+  const confirmButton = (time >= 12 && time < 14) 
+    ? <Button onClick={handleConfirmOrder} id='confirm-order' style={{ display: 'block', textAlign: 'center' }}>Xác nhận</Button>
     : null
   return (
     <React.Fragment>
