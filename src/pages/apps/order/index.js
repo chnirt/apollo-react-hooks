@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Select, Row, Col, Button, Divider, List } from 'antd'
+import { Row, Col, Button, Divider, List } from 'antd'
 import { withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
 
@@ -41,26 +41,6 @@ const Order = (props) => {
     getOrdersByMenu()
     handleDefaultDishes()
   }, [])
-
-  async function handleChange(selectedItems) {
-    localStorage.setItem('currentsite', selectedItems)
-    await props.client.query({
-      query: MENU_BY_SELECTED_SITE,
-      variables: {
-				siteId: selectedItems
-			}	
-		})
-		.then(res => {
-			if (res.data.menuPublishBySite.isPublished === true && res.data.menuPublishBySite.isActive === true) {
-        setMenuId(res.data.menuPublishBySite._id)
-      }
-		})
-		.catch((error) => {
-			console.log(error)
-    })
-    
-    await handleDefaultDishes()
-  }
 
   async function getOrdersByMenu() {
     await props.client.query({
@@ -206,12 +186,6 @@ const Order = (props) => {
     })
   }
   
-  const currentsite = window.localStorage.getItem('currentsite')
-  const options = JSON.parse(window.localStorage.getItem('sites')).map(item =>
-    <Select.Option value={item._id} key={item._id}>
-        {item.name}
-    </Select.Option>
-  )
   const time = (new Date(Date.now())).getHours()
   const confirmButton = (time >= 12 && time < 16) 
     ? <Button onClick={handleConfirmOrder} style={{ display: 'block', textAlign: 'center' }}>Xác nhận</Button>
@@ -224,18 +198,6 @@ const Order = (props) => {
         onClick={() => props.history.push('/🥢')}
       />
       <Divider />
-      <Row style={{ marginTop: 20 }}>
-        <Col span={22} offset={1}>
-          <Select
-            style={{ width: '100%', marginBottom: 20 }}
-            placeholder='Chọn khu vực'
-            defaultValue={currentsite}
-            onChange={e => handleChange(e)}
-          >
-            {options}
-          </Select>
-        </Col>
-      </Row>	
       <Row>
 					<Col span={22} offset={1}>
             {
