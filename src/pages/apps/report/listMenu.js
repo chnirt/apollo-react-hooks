@@ -35,18 +35,21 @@ class listMenu extends React.Component {
         </Option>
       )
     })
+    console.log(this.props)
+
     return (
-      <Collapse >
+      <Collapse>
         <Panel header={this.props.menu.name} key='1' >
-          <Collapse defaultActiveKey="1">
+          <Collapse defaultActiveKey="">
             {this.props.menu.dishes &&
               this.props.menu.dishes.map((dish, i) => {
+                // console.log(dish)
                 return (
-                  <Panel header={dish.name + ' x' + dish.count} key={i + 1}>
+                  <Panel header={dish.name} key={i + 1} extra={'x' + dish.count}>
                     {
                       this.props.getOrderByMenu.ordersByMenu && this.props.getOrderByMenu.ordersByMenu.map((orderByMenu, i) => {
                         return (
-                          <ListUser orderByMenu={orderByMenu} key={i} userId={orderByMenu.userId} count={orderByMenu.count} dishId={orderByMenu.dishId}/>
+                          <ListUser orderByMenu={orderByMenu} key={i} userId={orderByMenu.userId} count={orderByMenu.count} dishId={dish._id}/>
                         )
                       })
                     }
@@ -123,7 +126,6 @@ export default HOCQueryMutation([
     query: ORDER_BY_MENU,
     name: 'getOrderByMenu',
     options: props => {
-      console.log(props)
     	return ({
     		variables: {
     			menuId: props.menuId

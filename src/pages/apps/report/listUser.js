@@ -1,37 +1,27 @@
 import React from 'react'
-import { Button, List } from 'antd'
 import './index.css'
 import { Select, Divider, Icon, Collapse } from 'antd'
 import gql from 'graphql-tag'
-import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
-import logo from '../../../logoClinic.svg'
-import font from '../../../assets/fonts/Vietnamese.ttf'
-// import './Lobster-Regular-normal'
 
-import jsPDF from 'jspdf'
 import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation'
-
-const { Option } = Select
-const { Panel } = Collapse
-const text = `
-  A dog is a type of domesticated animal.
-  Known for its loyalty and faithfulness,
-  it can be found as a welcome guest in many households across the world.
-`;
 
 class listUser extends React.Component {
   state = {
 
   }
-
   render() {
-    console.log(this)
     return (
-      <p>
+      <div>
         {
-          this.props.getUserName.user.fullName + ' x' + this.props.orderByMenu.count
+          this.props.orderByMenu.dishId === this.props.dishId ?
+          (
+            <div>
+              {this.props.getUserName.user.fullName + ' x' + this.props.orderByMenu.count}
+            </div>
+          )
+          : null
         }
-      </p>
+      </div>
     )
   }
 }
@@ -95,17 +85,17 @@ export default HOCQueryMutation([
       })
     }
   },
-  {
-    query: ORDER_BY_MENU,
-    name: 'getOrderByMenu',
-    options: props => {
-      return ({
-        variables: {
-          menuId: props.menuId
-        }
-      })
-    }
-  },
+  // {
+  //   query: ORDER_BY_MENU,
+  //   name: 'getOrderByMenu',
+  //   options: props => {
+  //     return ({
+  //       variables: {
+  //         menuId: props.menuId
+  //       }
+  //     })
+  //   }
+  // },
   {
     query: GET_USER_NAME,
     name: 'getUserName',
