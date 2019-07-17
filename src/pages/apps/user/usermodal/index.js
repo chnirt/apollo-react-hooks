@@ -264,7 +264,7 @@ function UserModal(props) {
 							array = props.getAllPermissionsByUserId.findAllByUserId && props.getAllPermissionsByUserId.findAllByUserId.filter(
 								item1 => item1.siteId === item._id
 							)
-							props.getAllPermissionsByUserId.findAllByUserId && array[0].permissions.map(item => {
+							props.getAllPermissionsByUserId.findAllByUserId && array[0] && array[0].permissions.map(item => {
 								newArray.push(item._id + "," + item.code)
 							})
 						}

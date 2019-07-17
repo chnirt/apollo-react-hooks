@@ -10,7 +10,7 @@ import store from '../mobx'
 
 // const httpLink = new HttpLink({ uri: 'http://localhost:4000/graphql' })
 const httpLink = new HttpLink({
-	uri: 'http://devcloud3.digihcs.com:11068/graphql'
+	uri: 'http://devcloud3.digihcs.com:11048/graphql'
 })
 
 // const httpLink = new HttpLink({
@@ -46,7 +46,7 @@ const errorLink = new onError(({ graphQLErrors, networkError, operation }) => {
 		graphQLErrors.forEach(({ message, locations, path, extensions }) => {
 			console.log(
 				`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}, Code: ${
-				extensions.code
+					extensions.code
 				}`
 			)
 			if (extensions.code === '498') {

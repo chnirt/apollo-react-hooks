@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { inject, observer } from 'mobx-react'
-import { Icon, Button, Col, Row, Tabs, Card } from 'antd'
+import { Icon, Button, Col, Row, Tabs, Card, Select } from 'antd'
 // import logo from '../../../assets/images/logo.svg'
 import { withRouter } from 'react-router-dom'
 import { withApollo } from 'react-apollo'
@@ -8,6 +8,7 @@ import gql from 'graphql-tag'
 import { menuRoutes } from '../../../routes'
 
 const { TabPane } = Tabs
+const { Option } = Select
 
 const gridStyle = {
 	width: '100%',
@@ -39,8 +40,31 @@ function Dashboard(props) {
 		props.history.push('/login')
 	}
 
+	function handleChange(value) {
+		// console.log(`selected ${value}`)
+		window.localStorage.setItem('currentsite', value)
+	}
+
+	const operations = (
+		<>
+			<Select
+				defaultValue={window.localStorage.getItem('currentsite')}
+				style={{ width: 180, marginRight: '5vw' }}
+				onChange={handleChange}
+			>
+				{JSON.parse(window.localStorage.getItem('userPermissions')).map(
+					(item, i) => (
+						<Option key={i} value={item.siteId}>
+							{item.siteName}
+						</Option>
+					)
+				)}
+			</Select>
+		</>
+	)
+
 	return (
-		<Tabs defaultActiveKey="1">
+		<Tabs defaultActiveKey="1" tabBarExtraContent={operations}>
 			<TabPane tab="Home" key="1">
 				<Row
 					style={{
@@ -76,10 +100,9 @@ function Dashboard(props) {
 								}}
 								onClick={() => {
 									props.history.push(item.path)
-									// showDrawer(item.path)
 								}}
 							>
-								<Card.Grid style={gridStyle}>
+								<Card.Grid id={item.id} style={gridStyle}>
 									{item.label}
 									<Icon
 										style={{
