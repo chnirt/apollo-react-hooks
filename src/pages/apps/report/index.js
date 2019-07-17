@@ -77,6 +77,33 @@ class Report extends React.Component {
 	}
 
 	onRequest(menu) {
+		// var doc = new jsPDF();
+		// var utf_8_string_to_render = 'trời thêm nay đổ mưa sáng chói vật vã ắ b';
+
+		// Promise.all(
+		// 	[
+		// 		new Promise(function (resolve) {
+		// 			var temp = document.createElement("div");
+		// 			temp.id = "temp";
+		// 			temp.style = "color: black;margin:0px;font-size:20px;";
+		// 			temp.innerHTML = utf_8_string_to_render;
+		// 			//need to render element, otherwise it won't be displayed
+		// 			document.body.appendChild(temp);
+
+		// 			// html2canvas($("#temp"), {
+		// 			// 	onrendered: function (canvas) {
+
+		// 			// 		$("#temp").remove();
+		// 			// 		resolve(canvas.toDataURL('image/png'));
+		// 			// 	},
+		// 			// });
+		// 			doc.text(0, 10, 'Non-utf-8-string');
+		// 		doc.text(1,5, utf_8_string_to_render)
+
+		// 		doc.save('filename.pdf');
+		// 		})
+		// 	])
+
 		var doc = new jsPDF({
 			// orientation: 'landscape',
 			unit: 'in',
