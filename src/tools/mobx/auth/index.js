@@ -8,7 +8,7 @@ class AuthStore {
 		window.localStorage.setItem('access-token', token)
 		window.localStorage.setItem('currentsite', userPermissions[0].siteId)
 		window.localStorage.setItem(
-			'userPermissions',
+			'user-permissions',
 			JSON.stringify(userPermissions)
 		)
 		this.isAuth = true
