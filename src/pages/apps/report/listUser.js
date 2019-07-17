@@ -69,8 +69,6 @@ class listUser extends React.Component {
   }
 
   render() {
-    console.log(this.props)
-
     return (
       <>
         {
@@ -79,10 +77,10 @@ class listUser extends React.Component {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 {this.props.getUserName.user.fullName + ' ' + this.state.count + '/' + this.props.dishCount}
                 <div>
-                  <Button style={{marginRight: 10}} onClick={() => this.handleMinus(this.state.count)}>
+                  <Button disabled={this.state.count === 0 ? true : false} style={{marginRight: 10}} onClick={() => this.handleMinus(this.state.count)}>
                     <Icon type="minus" />
                   </Button>
-                  <Button onClick={() => this.handlePlus(this.state.count)}>
+                  <Button disabled={this.state.count === this.props.dishCount ? true : false} onClick={() => this.handlePlus(this.state.count)}>
                     <Icon type="plus" />
                   </Button>
                 </div>

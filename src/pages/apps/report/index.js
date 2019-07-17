@@ -4,7 +4,7 @@ import './index.css'
 import { Select, Divider, Icon, Collapse } from 'antd'
 import gql from 'graphql-tag'
 import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
-import logo from '../../../logoClinic.svg'
+// import logo from '../../../assets/images/logoClinic.svg'
 import font from '../../../assets/fonts/Vietnamese.ttf'
 // import './Lobster-Regular-normal'
 import ListMenu from './listMenu'
@@ -25,7 +25,7 @@ class Report extends React.Component {
 		isActive: false,
 		menuId: '',
 		userId: '',
-		usersId: []
+		usersId: [],
 	}
 
 	componentDidMount() {
@@ -142,9 +142,6 @@ class Report extends React.Component {
 	}
 
 	render() {
-		// console.log(this.state.menuId, '----menuId')
-		// console.log(this.state.userId, '----userId')
-
 		const options = JSON.parse(localStorage.getItem('sites')).map((site, i) => {
 			return (
 				<Option value={site._id} key={i}>
@@ -178,16 +175,38 @@ class Report extends React.Component {
 						this.props.getMenuBySite.menusBySite.map((menuBySite, i) => {
 							return (
 								<div key={i} style={{ marginBottom: 10 }}>
-									{/* <h1
+									<ListMenu menuId={menuBySite._id} menu={menuBySite} />
+									<div
 										style={{
-											textAlign: 'center',
-											display: 'block',
-											marginBottom: 20
+											display: 'flex',
+											marginTop: 10,
+											justifyContent: 'space-between'
 										}}
 									>
-										{menuBySite.name + '------' + menuBySite._id}
-									</h1> */}
-									<ListMenu menuId={menuBySite._id} menu={menuBySite} />
+										<Button
+											className="publish"
+											onClick={() => this.isLock(menuBySite._id)}
+										>
+											<Icon
+												type={menuBySite.isLocked ? "lock" : 'unlock'}
+											/>
+										</Button>
+
+										<Button
+											onClick={() => this.onRequest(menuBySite)}
+											variant="raised"
+											color="secondary"
+										>
+											Request 1st delivery
+									</Button>
+
+										<Button
+											className="publish"
+											onClick={() => this.isActive(menuBySite._id)}
+										>
+											Complete
+									</Button>
+									</div>
 
 									{/* <Collapse onChange={() => this.setState({ menuId: menuBySite._id })}>
 										<Panel header={menuBySite.name} key={i + 1} >
