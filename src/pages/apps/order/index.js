@@ -177,22 +177,35 @@ const Order = (props) => {
   }
 
   async function handleConfirmOrder(item) {
-    props.client.mutate({
-			mutation: CONFIRM_ORDER,
-			variables: {
-        menuId: menuId,
-        dishId: item._id
-			}
-		})
-		.then(res => {
-      (res)
-      ? alert('Xác nhận thành công')
-      : console.log('something went wrong')
+    await props.client.query({
+      query: ORDERS_BY_MENU,
+      variables: {
+        menuId: menuId
+      }	
     })
-    .catch((error) => {
-      console.dir(error)
+    .then(result => {
+      if (result.data.ordersByMenu.length > 0) {
+        result.data.ordersByMenu.map(dish =>
+          (dish.count !== 0)
+          ? props.client.mutate({
+              mutation: CONFIRM_ORDER,
+              variables: {
+                menuId: menuId,
+                dishId: dish.dishId
+              }
+            })
+            .then(res => {
+              (res)
+              ? alert('Xác nhận thành công')
+              : console.log('something went wrong')
+            })
+            .catch((error) => {
+              console.dir(error)
+            })
+          :	null	
+        )
+      }
     })
-
   }
   
   const currentsite = window.localStorage.getItem('currentsite')
