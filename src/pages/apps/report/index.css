@@ -12,3 +12,7 @@
 .report{
   padding: 15px;
 }
+
+.add-user-button > .ant-collapse-header > .ant-collapse-extra > .ant-btn{
+  height: inherit;
+}

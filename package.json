@@ -17,6 +17,7 @@
 		"@babel/register": "^7.4.4",
 		"@progress/kendo-drawing": "^1.5.12",
 		"@progress/kendo-react-pdf": "^3.2.2",
+		"@react-pdf/renderer": "^1.6.3",
 		"ag-grid-community": "^20.2.0",
 		"ag-grid-enterprise": "^20.2.0",
 		"ag-grid-react": "^20.2.0",
@@ -53,6 +54,7 @@
 		"react-loadable": "^5.5.0",
 		"react-router-dom": "^5.0.0",
 		"react-scripts": "3.0.1",
+		"react-to-pdf": "0.0.8",
 		"subscriptions-transport-ws": "^0.9.16",
 		"svg-inline-loader": "^0.8.0",
 		"webpack-bundle-analyzer": "^3.3.2"

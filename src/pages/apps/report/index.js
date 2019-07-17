@@ -8,18 +8,38 @@ import openNotificationWithIcon from '../../../components/shared/openNotificatio
 import font from '../../../assets/fonts/Vietnamese.ttf'
 // import './Lobster-Regular-normal'
 import ListMenu from './listMenu'
-
+import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
+import Pdf from "react-to-pdf";
 import jsPDF from 'jspdf'
 import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation'
 
+const ref = React.createRef();
 const { Option } = Select
-const { Panel } = Collapse
-const text = `
-  A dog is a type of domesticated animal.
-  Known for its loyalty and faithfulness,
-  it can be found as a welcome guest in many households across the world.
-`;
+const styles = StyleSheet.create({
+  page: {
+    flexDirection: 'row',
+    backgroundColor: '#E4E4E4'
+  },
+  section: {
+    margin: 10,
+    padding: 10,
+    flexGrow: 1
+  }
+});
 
+// Create Document Component
+const MyDocument = () => (
+  <Document>
+    <Page size="A4" style={styles.page}>
+      <View style={styles.section}>
+        <Text>Section #1</Text>
+      </View>
+      <View style={styles.section}>
+        <Text>Section #2</Text>
+      </View>
+    </Page>
+  </Document>
+);
 class Report extends React.Component {
 	state = {
 		isActive: false,
@@ -33,8 +53,8 @@ class Report extends React.Component {
 	}
 
 	isActive = menuId => {
-		this.props.client
-			.mutate({
+		this.props.mutate
+			.closeMenu({
 				mutation: CLOSE_MENU,
 				variables: {
 					id: menuId
@@ -55,9 +75,9 @@ class Report extends React.Component {
 				console.log(err)
 				throw err
 			})
-		this.setState({
-			isActive: !this.state.isActive
-		})
+		// this.setState({
+		// 	isActive: !this.state.isActive
+		// })
 		// console.log(this.props.history.push('/'))
 	}
 
@@ -107,7 +127,7 @@ class Report extends React.Component {
 		})
 
 		// doc.addFont('./Lobster-Regular-normal', 'Lobster', 'bold')
-		// doc.setFont('Lobster', 'bold')
+		doc.setFont('courier', 'bold')
 
 		// doc.addFileToVFS("Lobster-Regular.ttf", Lobster);
 		// doc.addFont('Lobster-Regular.ttf', 'Lobster', 'normal');
@@ -149,6 +169,7 @@ class Report extends React.Component {
 				</Option>
 			)
 		})
+		console.log(this.props)
 		return (
 			<React.Fragment>
 				<Button
@@ -157,7 +178,10 @@ class Report extends React.Component {
 					onClick={() => this.props.history.push('/🥢')}
 				/>
 				<Divider />
-				<div className='report'>
+				<div className='report' ref={ref} >
+					<Pdf targetRef={ref} filename="code-example.pdf">
+						{({ toPdf }) => <button onClick={toPdf}>Generate Pdf</button>}
+					</Pdf>
 					<Select
 						showSearch
 						onSelect={this.onSelect}
@@ -207,110 +231,6 @@ class Report extends React.Component {
 											Complete
 									</Button>
 									</div>
-
-									{/* <Collapse onChange={() => this.setState({ menuId: menuBySite._id })}>
-										<Panel header={menuBySite.name} key={i + 1} >
-											<Collapse defaultActiveKey="1">
-												{menuBySite.dishes &&
-													menuBySite.dishes.map((dish, i) => {
-														return (
-															<Panel header={dish.name + '   ' + dish.count} key={i + 1}>
-																<p>{text}</p>
-															</Panel>
-														)
-													})}
-											</Collapse>
-										</Panel>
-									</Collapse> */}
-
-									{/* {menuBySite.dishes &&
-										menuBySite.dishes.map((dish, i) => {
-											return (
-												<Select
-													disabled={menuBySite.isLocked ? true : false}
-													key={i}
-													onClick={() => console.log('ok')}
-													style={{ marginBottom: 20, display: 'block' }}
-													defaultValue={dish.name + ' x' + dish.count}
-													dropdownRender={menu => {
-														return (
-															<div className="dish-detail">
-																<List
-																	itemLayout="horizontal"
-																	dataSource={[
-																		{
-																			title: 'Ant Design Title 1',
-																		},
-																		{
-																			title: 'Ant Design Title 2',
-																		},
-																	]}
-																	renderItem={item => (
-																		<List.Item>
-																			<List.Item.Meta
-																				title={item.title}
-																			/>
-																		</List.Item>
-																	)}
-																/>
-															</div>
-														)
-													}}
-												/>
-												<List
-													key={i}
-													itemLayout="horizontal"
-													dataSource={[
-														{
-															title: dish.name + 'x' + dish.count,
-														}
-
-													]}
-													renderItem={(item, i) => (
-														<List.Item>
-															<List.Item.Meta
-																title={
-																	item.title
-																}
-																description='Ant Design, a design language '
-															/>
-														</List.Item>
-													)}
-												/>
-											)
-										})} */}
-
-									{/* <div
-										style={{
-											display: 'flex',
-											marginTop: 10,
-											justifyContent: 'space-between'
-										}}
-									>
-										<Button
-											className="publish"
-											onClick={() => this.isLock(menuBySite._id)}
-										>
-											<Icon
-												type={menuBySite.isLocked ? "lock" : 'unlock'}
-											/>
-										</Button>
-
-										<Button
-											onClick={() => this.onRequest(menuBySite)}
-											variant="raised"
-											color="secondary"
-										>
-											Request 1st delivery
-									</Button>
-
-										<Button
-											className="publish"
-											onClick={() => this.isActive(menuBySite._id)}
-										>
-											Complete
-									</Button>
-									</div> */}
 								</div>
 							)
 						})}
