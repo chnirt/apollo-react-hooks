@@ -1,53 +1,78 @@
 import React from 'react'
-import { Button, List } from 'antd'
 import './index.css'
-import { Select, Divider, Icon, Collapse } from 'antd'
+import { Select, Divider, Icon, Collapse, Button, Tooltip } from 'antd'
 import gql from 'graphql-tag'
-import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
-import logo from '../../../logoClinic.svg'
-import font from '../../../assets/fonts/Vietnamese.ttf'
 // import './Lobster-Regular-normal'
 import ListUser from './listUser'
+import AddUserModal from './AddUserModal'
 
-import jsPDF from 'jspdf'
 import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation'
 
-const { Option } = Select
 const { Panel } = Collapse
-const text = `
-  A dog is a type of domesticated animal.
-  Known for its loyalty and faithfulness,
-  it can be found as a welcome guest in many households across the world.
-`;
 
 class listMenu extends React.Component {
   state = {
-    isActive: false,
     userId: '',
+    visible: false
   }
+
+  showModal = (e) => {
+    e.stopPropagation()
+    this.setState({ visible: true });
+  };
+
+  handleCancel = () => {
+    this.setState({ visible: false });
+  };
+
+  handleCreate = () => {
+    const { form } = this.formRef.props;
+    form.validateFields((err, values) => {
+      if (err) {
+        return;
+      }
+
+      console.log('Received values of form: ', values);
+      form.resetFields();
+      this.setState({ visible: false });
+    });
+  };
+
+  saveFormRef = formRef => {
+    this.formRef = formRef;
+  };
 
   render() {
 
-    const options = JSON.parse(localStorage.getItem('sites')).map((site, i) => {
-      return (
-        <Option value={site._id} key={i}>
-          {site.name}
-        </Option>
-      )
-    })
     return (
       <Collapse>
-        <Panel header={this.props.menu.name} key='1' >
+        <Panel header={this.props.menu.name} key='1' disabled={this.props.menu.isLocked ? true : false} >
           <Collapse defaultActiveKey="1">
             {this.props.menu.dishes &&
               this.props.menu.dishes.map((dish, i) => {
                 // console.log(dish)
                 return (
-                  <Panel header={dish.name} key={i + 1} extra={'x' + dish.count}>
+                  <Panel header={dish.name + ' x' + dish.count} key={i + 1} extra={(
+                    <>
+                      <Button
+                        icon="plus"
+                        onClick={e => this.showModal(e)} >
+                        Thêm user
+                        </Button>
+                      <AddUserModal
+                        wrappedComponentRef={this.saveFormRef}
+                        visible={this.state.visible}
+                        onCancel={this.handleCancel}
+                        onCreate={this.handleCreate}
+                      />
+                    </>
+                  )}
+                    className='add-user-button'
+                  >
                     {
                       this.props.getOrderByMenu.ordersByMenu && this.props.getOrderByMenu.ordersByMenu.map((orderByMenu, i) => {
                         return (
-                          <ListUser dishCount={dish.count} menuId={this.props.menuId} orderByMenu={orderByMenu} key={i} userId={orderByMenu.userId} count={orderByMenu.count} dishId={dish._id}/>
+                          <ListUser dishCount={dish.count} menuId={this.props.menuId} orderByMenu={orderByMenu} key={i} userId={orderByMenu.userId} count={orderByMenu.count} dishId={dish._id} />
                         )
                       })
                     }
@@ -57,7 +82,7 @@ class listMenu extends React.Component {
           </Collapse>
         </Panel>
       </Collapse>
-		)
+    )
   }
 }
 
@@ -124,11 +149,11 @@ export default HOCQueryMutation([
     query: ORDER_BY_MENU,
     name: 'getOrderByMenu',
     options: props => {
-    	return ({
-    		variables: {
-    			menuId: props.menuId
-    		}
-    	})
+      return ({
+        variables: {
+          menuId: props.menuId
+        }
+      })
     }
   },
   {
