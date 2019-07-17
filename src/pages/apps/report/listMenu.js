@@ -35,12 +35,10 @@ class listMenu extends React.Component {
         </Option>
       )
     })
-    console.log(this.props)
-
     return (
       <Collapse>
         <Panel header={this.props.menu.name} key='1' >
-          <Collapse defaultActiveKey="">
+          <Collapse defaultActiveKey="1">
             {this.props.menu.dishes &&
               this.props.menu.dishes.map((dish, i) => {
                 // console.log(dish)
@@ -49,7 +47,7 @@ class listMenu extends React.Component {
                     {
                       this.props.getOrderByMenu.ordersByMenu && this.props.getOrderByMenu.ordersByMenu.map((orderByMenu, i) => {
                         return (
-                          <ListUser orderByMenu={orderByMenu} key={i} userId={orderByMenu.userId} count={orderByMenu.count} dishId={dish._id}/>
+                          <ListUser dishCount={dish.count} menuId={this.props.menuId} orderByMenu={orderByMenu} key={i} userId={orderByMenu.userId} count={orderByMenu.count} dishId={dish._id}/>
                         )
                       })
                     }
