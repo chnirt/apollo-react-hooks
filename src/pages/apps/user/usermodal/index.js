@@ -186,7 +186,7 @@ function UserModal(props) {
 		}
 	}
 
-	// console.log(props.getAllPermissionsByUserId)
+	console.log(props)
 
 	return (
 		<Modal
