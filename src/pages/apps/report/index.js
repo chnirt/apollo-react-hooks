@@ -4,28 +4,20 @@ import './index.css'
 import { Select, Divider, Icon, Collapse } from 'antd'
 import gql from 'graphql-tag'
 import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
-import logo from '../../../logoClinic.svg'
+// import logo from '../../../assets/images/logoClinic.svg'
 import font from '../../../assets/fonts/Vietnamese.ttf'
 // import './Lobster-Regular-normal'
 import ListMenu from './listMenu'
-
+import html2canvas from 'html2canvas'
 import jsPDF from 'jspdf'
 import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation'
-
-const { Option } = Select
-const { Panel } = Collapse
-const text = `
-  A dog is a type of domesticated animal.
-  Known for its loyalty and faithfulness,
-  it can be found as a welcome guest in many households across the world.
-`;
 
 class Report extends React.Component {
 	state = {
 		isActive: false,
 		menuId: '',
 		userId: '',
-		usersId: []
+		usersId: [],
 	}
 
 	componentDidMount() {
@@ -33,8 +25,8 @@ class Report extends React.Component {
 	}
 
 	isActive = menuId => {
-		this.props.client
-			.mutate({
+		this.props.mutate
+			.closeMenu({
 				mutation: CLOSE_MENU,
 				variables: {
 					id: menuId
@@ -55,10 +47,7 @@ class Report extends React.Component {
 				console.log(err)
 				throw err
 			})
-		this.setState({
-			isActive: !this.state.isActive
-		})
-		// console.log(this.props.history.push('/'))
+
 	}
 
 	isLock = menuId => {
@@ -87,19 +76,34 @@ class Report extends React.Component {
 			})
 	}
 
-	onSelect = currentsite => {
-		localStorage.setItem('currentsite', currentsite)
-		this.props.getMenuBySite.variables.siteId = localStorage.getItem(
-			'currentsite'
-		)
-		this.props.getMenuBySite.refetch({
-			siteId: localStorage.getItem(
-				'currentsite'
-			)
-		})
-	}
-
 	onRequest(menu) {
+		// var doc = new jsPDF();
+		// var utf_8_string_to_render = 'trời thêm nay đổ mưa sáng chói vật vã ắ b';
+
+		// Promise.all(
+		// 	[
+		// 		new Promise(function (resolve) {
+		// 			var temp = document.createElement("div");
+		// 			temp.id = "temp";
+		// 			temp.style = "color: black;margin:0px;font-size:20px;";
+		// 			temp.innerHTML = utf_8_string_to_render;
+		// 			//need to render element, otherwise it won't be displayed
+		// 			document.body.appendChild(temp);
+
+		// 			// html2canvas($("#temp"), {
+		// 			// 	onrendered: function (canvas) {
+
+		// 			// 		$("#temp").remove();
+		// 			// 		resolve(canvas.toDataURL('image/png'));
+		// 			// 	},
+		// 			// });
+		// 			doc.text(0, 10, 'Non-utf-8-string');
+		// 		doc.text(1,5, utf_8_string_to_render)
+
+		// 		doc.save('filename.pdf');
+		// 		})
+		// 	])
+
 		var doc = new jsPDF({
 			// orientation: 'landscape',
 			unit: 'in',
@@ -107,7 +111,7 @@ class Report extends React.Component {
 		})
 
 		// doc.addFont('./Lobster-Regular-normal', 'Lobster', 'bold')
-		// doc.setFont('Lobster', 'bold')
+		doc.setFont('courier', 'bold')
 
 		// doc.addFileToVFS("Lobster-Regular.ttf", Lobster);
 		// doc.addFont('Lobster-Regular.ttf', 'Lobster', 'normal');
@@ -142,16 +146,6 @@ class Report extends React.Component {
 	}
 
 	render() {
-		// console.log(this.state.menuId, '----menuId')
-		// console.log(this.state.userId, '----userId')
-
-		const options = JSON.parse(localStorage.getItem('sites')).map((site, i) => {
-			return (
-				<Option value={site._id} key={i}>
-					{site.name}
-				</Option>
-			)
-		})
 		return (
 			<React.Fragment>
 				<Button
@@ -160,108 +154,13 @@ class Report extends React.Component {
 					onClick={() => this.props.history.push('/🥢')}
 				/>
 				<Divider />
-				<div className='report'>
-					<Select
-						showSearch
-						onSelect={this.onSelect}
-						style={{ width: '100%', marginBottom: 20 }}
-						defaultValue={localStorage.getItem('currentsite')}
-						optionFilterProp="children"
-						filterOption={(input, option) =>
-							option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-						}
-					>
-						{options}
-					</Select>
-
+				<div className='report' >
 					{this.props.getMenuBySite.menusBySite &&
 						this.props.getMenuBySite.menusBySite.map((menuBySite, i) => {
 							return (
 								<div key={i} style={{ marginBottom: 10 }}>
-									{/* <h1
-										style={{
-											textAlign: 'center',
-											display: 'block',
-											marginBottom: 20
-										}}
-									>
-										{menuBySite.name + '------' + menuBySite._id}
-									</h1> */}
 									<ListMenu menuId={menuBySite._id} menu={menuBySite} />
-
-									{/* <Collapse onChange={() => this.setState({ menuId: menuBySite._id })}>
-										<Panel header={menuBySite.name} key={i + 1} >
-											<Collapse defaultActiveKey="1">
-												{menuBySite.dishes &&
-													menuBySite.dishes.map((dish, i) => {
-														return (
-															<Panel header={dish.name + '   ' + dish.count} key={i + 1}>
-																<p>{text}</p>
-															</Panel>
-														)
-													})}
-											</Collapse>
-										</Panel>
-									</Collapse> */}
-
-									{/* {menuBySite.dishes &&
-										menuBySite.dishes.map((dish, i) => {
-											return (
-												<Select
-													disabled={menuBySite.isLocked ? true : false}
-													key={i}
-													onClick={() => console.log('ok')}
-													style={{ marginBottom: 20, display: 'block' }}
-													defaultValue={dish.name + ' x' + dish.count}
-													dropdownRender={menu => {
-														return (
-															<div className="dish-detail">
-																<List
-																	itemLayout="horizontal"
-																	dataSource={[
-																		{
-																			title: 'Ant Design Title 1',
-																		},
-																		{
-																			title: 'Ant Design Title 2',
-																		},
-																	]}
-																	renderItem={item => (
-																		<List.Item>
-																			<List.Item.Meta
-																				title={item.title}
-																			/>
-																		</List.Item>
-																	)}
-																/>
-															</div>
-														)
-													}}
-												/>
-												<List
-													key={i}
-													itemLayout="horizontal"
-													dataSource={[
-														{
-															title: dish.name + 'x' + dish.count,
-														}
-
-													]}
-													renderItem={(item, i) => (
-														<List.Item>
-															<List.Item.Meta
-																title={
-																	item.title
-																}
-																description='Ant Design, a design language '
-															/>
-														</List.Item>
-													)}
-												/>
-											)
-										})} */}
-
-									{/* <div
+									<div
 										style={{
 											display: 'flex',
 											marginTop: 10,
@@ -291,7 +190,7 @@ class Report extends React.Component {
 										>
 											Complete
 									</Button>
-									</div> */}
+									</div>
 								</div>
 							)
 						})}
