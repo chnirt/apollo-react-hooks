@@ -20,20 +20,21 @@ const Order = (props) => {
     })
     .then(res => {
       // setIsPublish(res.data.menuPublishBySite.isPublished)
-      // if (res.data.menuPublishBySite.isPublished === true && res.data.menuPublishBySite.isActive === true) {
-      localStorage.setItem('menuId', res.data.menuPublishBySite._id)
-      props.client.query({
-        query: ORDERS_BY_MENU,
-        variables: {
-          menuId: res.data.menuPublishBySite._id
-        }	
-      })
-      .then(res => {
-        if (res.data.ordersByMenu) {
-          // setOrderNumbers(res.data.ordersByMenu.map(order => order.count))
-          localStorage.setItem('orderNumbers',[...res.data.ordersByMenu.map(order => order.count)])
-        }
-      })
+      if (res.data.menuPublishBySite.isPublished === true && res.data.menuPublishBySite.isActive === true) {
+        localStorage.setItem('menuId', res.data.menuPublishBySite._id)
+        props.client.query({
+          query: ORDERS_BY_MENU,
+          variables: {
+            menuId: res.data.menuPublishBySite._id
+          }	
+        })
+        .then(res => {
+          if (res.data.ordersByMenu) {
+            // setOrderNumbers(res.data.ordersByMenu.map(order => order.count))
+            localStorage.setItem('orderNumbers',[...res.data.ordersByMenu.map(order => order.count)])
+          }
+        })
+      }
     })
     .catch((error) => {
       console.log(error)
@@ -43,7 +44,6 @@ const Order = (props) => {
   }, [])
 
   async function handleChange(selectedItems) {
-    console.log(orderNumbers)
     localStorage.setItem('currentsite', selectedItems)
     await props.client.query({
       query: MENU_BY_SELECTED_SITE,
@@ -72,22 +72,23 @@ const Order = (props) => {
 		})
 		.then(async res => {
       setMenuId(res.data.menuPublishBySite._id)
-			// if (res.data.menuPublishBySite.isPublished === true && res.data.menuPublishBySite.isActive === true) {
-      await props.client.query({
-        query: ORDERS_BY_MENU,
-        variables: {
-          menuId: res.data.menuPublishBySite._id
-        }	
-      })
-      .then(result => {
-        const emptyArray = [].concat(Array(res.data.menuPublishBySite.dishes.length).fill(0))
-        if (result.data.ordersByMenu.length > 0) {
-          setOrderNumbers(result.data.ordersByMenu.map(order => order.count))
-          localStorage.setItem('orderNumbers',[...result.data.ordersByMenu.map(order => order.count)])
-        } else {
-          localStorage.setItem('orderNumbers',[...emptyArray])
-        }
-      })
+			if (res.data.menuPublishBySite.isPublished === true && res.data.menuPublishBySite.isActive === true) {
+        await props.client.query({
+          query: ORDERS_BY_MENU,
+          variables: {
+            menuId: res.data.menuPublishBySite._id
+          }	
+        })
+        .then(result => {
+          const emptyArray = [].concat(Array(res.data.menuPublishBySite.dishes.length).fill(0))
+          if (result.data.ordersByMenu.length > 0) {
+            setOrderNumbers(result.data.ordersByMenu.map(order => order.count))
+            localStorage.setItem('orderNumbers',[...result.data.ordersByMenu.map(order => order.count)])
+          } else {
+            localStorage.setItem('orderNumbers',[...emptyArray])
+          }
+        })
+      }  
 		})
 		.catch((error) => {
 			console.log(error)
@@ -99,13 +100,6 @@ const Order = (props) => {
     await getOrdersByMenu()
     // const orderNumbers = await props.ordersByMenu.ordersByMenu.map(order => order.count)
     const orderNumbers = localStorage.getItem('orderNumbers').split(',')
-    // const orderNumbers = {
-    //     '0': 1,
-    //     '1': 2,
-    //     '2': 3,
-    //     '3': 4,
-    //     '4': 5
-    //   }
     await props.client.query({
       query: MENU_BY_SELECTED_SITE,
       variables: {
@@ -244,7 +238,8 @@ const Order = (props) => {
                           title={item.name}
                           description={(`${item.orderNumber}` === 'undefined') ? `${0}/${item.count}` : `${item.orderNumber}/${item.count}`}
                         />
-                        <div>{(`${item.orderNumber}` === 'undefined') ? `${0}` : `${item.orderNumber}`}</div>
+                        {/* <div>{(`${item.orderNumber}` === 'undefined') ? `${0}` : `${item.orderNumber}`}</div> */}
+                        <div>{item.orderNumber}</div>
                       </List.Item>
                     )}
                   />
