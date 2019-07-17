@@ -206,7 +206,7 @@ const Order = (props) => {
                   <List
                     dataSource={dishes}
                     renderItem={item => (
-                    <List.Item key={item._id} actions={[<Button className='minus' disabled={isLocked} onClick={() => handleMinus(item)}>-</Button>, <Button className='plus' disabled={isLocked} onClick={() => handlePlus(item)}>+</Button>]}>
+                    <List.Item key={item._id} actions={[<Button id={`minus-order-${item._id}`} className='minus-order' disabled={isLocked} onClick={() => handleMinus(item)}>-</Button>, <Button id={`plus-order-${item._id}`} className='plus-order' disabled={isLocked} onClick={() => handlePlus(item)}>+</Button>]}>
                         <List.Item.Meta
                           title={item.name}
                           description={(`${item.orderNumber}` === 'undefined') ? `${0}/${item.count}` : `${item.orderNumber}/${item.count}`}
