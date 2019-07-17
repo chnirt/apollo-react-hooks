@@ -8,38 +8,10 @@ import openNotificationWithIcon from '../../../components/shared/openNotificatio
 import font from '../../../assets/fonts/Vietnamese.ttf'
 // import './Lobster-Regular-normal'
 import ListMenu from './listMenu'
-import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
-import Pdf from "react-to-pdf";
+import html2canvas from 'html2canvas'
 import jsPDF from 'jspdf'
 import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation'
 
-const ref = React.createRef();
-const { Option } = Select
-const styles = StyleSheet.create({
-  page: {
-    flexDirection: 'row',
-    backgroundColor: '#E4E4E4'
-  },
-  section: {
-    margin: 10,
-    padding: 10,
-    flexGrow: 1
-  }
-});
-
-// Create Document Component
-const MyDocument = () => (
-  <Document>
-    <Page size="A4" style={styles.page}>
-      <View style={styles.section}>
-        <Text>Section #1</Text>
-      </View>
-      <View style={styles.section}>
-        <Text>Section #2</Text>
-      </View>
-    </Page>
-  </Document>
-);
 class Report extends React.Component {
 	state = {
 		isActive: false,
@@ -75,10 +47,7 @@ class Report extends React.Component {
 				console.log(err)
 				throw err
 			})
-		// this.setState({
-		// 	isActive: !this.state.isActive
-		// })
-		// console.log(this.props.history.push('/'))
+
 	}
 
 	isLock = menuId => {
@@ -105,18 +74,6 @@ class Report extends React.Component {
 				// console.log(err)
 				throw err
 			})
-	}
-
-	onSelect = currentsite => {
-		localStorage.setItem('currentsite', currentsite)
-		this.props.getMenuBySite.variables.siteId = localStorage.getItem(
-			'currentsite'
-		)
-		this.props.getMenuBySite.refetch({
-			siteId: localStorage.getItem(
-				'currentsite'
-			)
-		})
 	}
 
 	onRequest(menu) {
@@ -162,14 +119,6 @@ class Report extends React.Component {
 	}
 
 	render() {
-		const options = JSON.parse(localStorage.getItem('sites')).map((site, i) => {
-			return (
-				<Option value={site._id} key={i}>
-					{site.name}
-				</Option>
-			)
-		})
-		console.log(this.props)
 		return (
 			<React.Fragment>
 				<Button
@@ -178,23 +127,7 @@ class Report extends React.Component {
 					onClick={() => this.props.history.push('/🥢')}
 				/>
 				<Divider />
-				<div className='report' ref={ref} >
-					<Pdf targetRef={ref} filename="code-example.pdf">
-						{({ toPdf }) => <button onClick={toPdf}>Generate Pdf</button>}
-					</Pdf>
-					<Select
-						showSearch
-						onSelect={this.onSelect}
-						style={{ width: '100%', marginBottom: 20 }}
-						defaultValue={localStorage.getItem('currentsite')}
-						optionFilterProp="children"
-						filterOption={(input, option) =>
-							option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-						}
-					>
-						{options}
-					</Select>
-
+				<div className='report' >
 					{this.props.getMenuBySite.menusBySite &&
 						this.props.getMenuBySite.menusBySite.map((menuBySite, i) => {
 							return (
