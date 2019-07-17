@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Select, Row, Col, Button, Divider, List } from 'antd'
+import { Row, Col, Button, Divider, List } from 'antd'
 import { withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
 
@@ -19,9 +19,8 @@ const Order = (props) => {
       }	
     })
     .then(res => {
-      // setIsPublish(res.data.menuPublishBySite.isPublished)
+      setIsPublish(res.data.menuPublishBySite.isPublished)
       if (res.data.menuPublishBySite.isPublished === true && res.data.menuPublishBySite.isActive === true) {
-        localStorage.setItem('menuId', res.data.menuPublishBySite._id)
         props.client.query({
           query: ORDERS_BY_MENU,
           variables: {
@@ -42,26 +41,6 @@ const Order = (props) => {
     getOrdersByMenu()
     handleDefaultDishes()
   }, [])
-
-  async function handleChange(selectedItems) {
-    localStorage.setItem('currentsite', selectedItems)
-    await props.client.query({
-      query: MENU_BY_SELECTED_SITE,
-      variables: {
-				siteId: selectedItems
-			}	
-		})
-		.then(res => {
-			if (res.data.menuPublishBySite.isPublished === true && res.data.menuPublishBySite.isActive === true) {
-        setMenuId(res.data.menuPublishBySite._id)
-      }
-		})
-		.catch((error) => {
-			console.log(error)
-    })
-    
-    await handleDefaultDishes()
-  }
 
   async function getOrdersByMenu() {
     await props.client.query({
@@ -134,7 +113,8 @@ const Order = (props) => {
 			}
 		})
 		.then((res) => {
-			(res.data.orderDish)
+      (res.data.orderDish)
+      // ? alert('Đặt thành công')
 			? console.log('success')
 			: console.log('something went wrong')
 		})
@@ -178,45 +158,37 @@ const Order = (props) => {
 
   async function handleConfirmOrder(item) {
     await props.client.query({
-      query: ORDERS_BY_MENU,
+      query: ORDERS_BY_USER,
       variables: {
         menuId: menuId
       }	
     })
-    .then(result => {
-      if (result.data.ordersByMenu.length > 0) {
-        result.data.ordersByMenu.map(dish =>
-          (dish.count !== 0)
-          ? props.client.mutate({
-              mutation: CONFIRM_ORDER,
-              variables: {
-                menuId: menuId,
-                dishId: dish.dishId
-              }
-            })
-            .then(res => {
-              (res)
-              ? alert('Xác nhận thành công')
-              : console.log('something went wrong')
-            })
-            .catch((error) => {
-              console.dir(error)
-            })
-          :	null	
-        )
-      }
+    .then(async result => {
+      await result.data.ordersByUser.map(dish =>
+        (dish.count !== 0)
+        ? props.client.mutate({
+            mutation: CONFIRM_ORDER,
+            variables: {
+              menuId: menuId,
+              dishId: dish.dishId
+            }
+          })
+          .then(res => {
+            (res)
+            ? alert('Xác nhận thành công')
+            : console.log('something went wrong')
+          })
+          .catch((error) => {
+            console.dir(error)
+          })
+        :	null	
+      )
     })
   }
   
-  const currentsite = window.localStorage.getItem('currentsite')
-  const options = JSON.parse(window.localStorage.getItem('sites')).map(item =>
-    <Select.Option value={item._id} key={item._id}>
-        {item.name}
-    </Select.Option>
-  )
   const time = (new Date(Date.now())).getHours()
   const confirmButton = (time >= 12 && time < 14) 
-    ? <Button onClick={handleConfirmOrder} style={{ display: 'block', textAlign: 'center' }}>Xác nhận</Button>
+    ? <Button onClick={handleConfirmOrder} id='confirm-order' style={{ display: 'block', textAlign: 'center' }}>Xác nhận</Button>
     : null
   return (
     <React.Fragment>
@@ -226,18 +198,6 @@ const Order = (props) => {
         onClick={() => props.history.push('/🥢')}
       />
       <Divider />
-      <Row style={{ marginTop: 20 }}>
-        <Col span={22} offset={1}>
-          <Select
-            style={{ width: '100%', marginBottom: 20 }}
-            placeholder='Chọn khu vực'
-            defaultValue={currentsite}
-            onChange={e => handleChange(e)}
-          >
-            {options}
-          </Select>
-        </Col>
-      </Row>	
       <Row>
 					<Col span={22} offset={1}>
             {
@@ -246,7 +206,7 @@ const Order = (props) => {
                   <List
                     dataSource={dishes}
                     renderItem={item => (
-                    <List.Item key={item._id} actions={[<Button className='minus' disabled={isLocked} onClick={() => handleMinus(item)}>-</Button>, <Button className='plus' disabled={isLocked} onClick={() => handlePlus(item)}>+</Button>]}>
+                    <List.Item key={item._id} actions={[<Button id={`minus-order-${item._id}`} className='minus-order' disabled={isLocked} onClick={() => handleMinus(item)}>-</Button>, <Button id={`plus-order-${item._id}`} className='plus-order' disabled={isLocked} onClick={() => handlePlus(item)}>+</Button>]}>
                         <List.Item.Meta
                           title={item.name}
                           description={(`${item.orderNumber}` === 'undefined') ? `${0}/${item.count}` : `${item.orderNumber}/${item.count}`}
@@ -305,6 +265,22 @@ const CONFIRM_ORDER = gql`
 const ORDERS_BY_MENU 	= gql`
 	query ordersByMenu($menuId: String!) {
     ordersByMenu(menuId: $menuId) {
+      _id
+      userId
+      menuId
+      dishId
+      note
+      count
+      isConfirmed
+      createdAt
+      updatedAt
+    }
+  }
+`
+
+const ORDERS_BY_USER = gql`
+  query ordersByUser($menuId: String!) {
+    ordersByUser(menuId: $menuId) {
       _id
       userId
       menuId
