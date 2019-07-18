@@ -21,16 +21,16 @@ class listMenu extends React.Component {
 	export(menu) {
 		const dishes = []
 		const { getOrderByMenu } = this.props
-		// menu.dishes.forEach(item => dishes.push([item.name, '', '', item.count]))
-		menu.dishes.forEach(item => {
-			const a = [item.name, '', '']
-			return dishes.push(a)
-		})
+
+		menu.dishes.forEach(item => dishes.push([item.name, '', '']))
+
 		getOrderByMenu.ordersByMenu.forEach((order, i) =>
 			dishes[i].push(order.count)
 		)
 		dishes.unshift(['Tên món ăn', '', '', 'Số lượng'])
+
 		// console.log(dishes)
+
 		const wb = XLSX.utils.book_new()
 		const ws = XLSX.utils.aoa_to_sheet(dishes)
 

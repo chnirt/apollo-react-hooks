@@ -77,7 +77,6 @@ class listUser extends React.Component {
 			dishCount,
 			countProps
 		} = this.props
-		console.log(this)
 		return (
 			<>
 				{orderByMenu.dishId === dishId ? (
@@ -153,7 +152,6 @@ export default HOCQueryMutation([
 		query: ORDER_BY_MENU,
 		name: 'getOrderByMenu',
 		options: props => {
-			console.log(props)
 			return {
 				variables: {
 					menuId: props.menuId
