@@ -1,4 +1,4 @@
-$bg-img: url('../../assets/images/bg-login.jpg');
+$bg-login: url('../../assets/images/bg-login.jpg');
 
 #components-form-demo-normal-login {
 	text-align: center;
@@ -22,7 +22,7 @@ $bg-img: url('../../assets/images/bg-login.jpg');
 }
 
 #layout-login {
-	background: $bg-img;
+	background: $bg-login;
 	background-repeat: no-repeat;
 	background-position: center center;
 	background-attachment: fixed;

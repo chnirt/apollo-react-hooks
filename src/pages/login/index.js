@@ -3,7 +3,7 @@ import { withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
 import { inject, observer } from 'mobx-react'
 import { Row, Col, Form, Typography, Icon, Input, Button } from 'antd'
-import './login.scss'
+import './index.scss'
 
 import openNotificationWithIcon from '../../components/shared/openNotificationWithIcon'
 
