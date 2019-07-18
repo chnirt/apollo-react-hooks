@@ -58,7 +58,7 @@ function Dashboard(props) {
 			>
 				{JSON.parse(window.localStorage.getItem('user-permissions')).map(
 					item => (
-						<Option key={item.siteid} value={item.siteId}>
+						<Option key={item.siteId} value={item.siteId}>
 							{item.siteName}
 						</Option>
 					)
