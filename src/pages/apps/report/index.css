@@ -1,0 +1,18 @@
+.dish-detail {
+	grid-template-columns: repeat(3, 1fr);
+	display: grid;
+	grid-gap: 10px;
+	padding: 5px;
+}
+
+.dish-name {
+	width: 200px;
+}
+
+.report {
+	padding: 15px;
+}
+
+.style-btn {
+	height: inherit;
+}
