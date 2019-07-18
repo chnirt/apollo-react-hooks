@@ -1,7 +1,7 @@
 import React from 'react'
 import { Collapse, Button } from 'antd'
 import gql from 'graphql-tag'
-import XLSX from 'xlsx'
+// import XLSX from 'xlsx'
 import ListUser from './listUser'
 import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation'
 
@@ -18,25 +18,32 @@ class listMenu extends React.Component {
 		this.setState(prevState => ({ isActive: !prevState.isActive }))
 	}
 
-	export(menu) {
-		const dishes = []
-		const { getOrderByMenu } = this.props
+	// export(menu) {
+	// 	const dishes = []
+	// 	// const { getOrderByMenu } = this.props
+	// 	// console.log(this.props)
+	// 	// console.log(getOrderByMenu)
 
-		menu.dishes.forEach(item => dishes.push([item.name, '', '']))
+	// 	menu.dishes.forEach(item => dishes.push([item.name, '', '']))
 
-		getOrderByMenu.ordersByMenu.forEach((order, i) =>
-			dishes[i].push(order.count)
-		)
-		dishes.unshift(['Tên món ăn', '', '', 'Số lượng'])
+	// 	// getOrderByMenu &&
+	// 	// 	getOrderByMenu.ordersByMenu.filter(order => console.log(order.dishId))
 
-		// console.log(dishes)
+	// 	// getOrderByMenu && getOrderByMenu.ordersByMenu.forEach((order, i) =>
+	// 	// 	// dishes[i].push(order.count)
+	// 	// 	// console.log(order)
+	// 	// )
 
-		const wb = XLSX.utils.book_new()
-		const ws = XLSX.utils.aoa_to_sheet(dishes)
+	// 	dishes.unshift(['Tên món ăn', '', '', 'Số lượng'])
 
-		XLSX.utils.book_append_sheet(wb, ws, 'Sheet1')
-		XLSX.writeFile(wb, `${menu.name}.xlsx`, { bookType: 'xlsx' })
-	}
+	// 	// console.log(dishes)
+
+	// 	const wb = XLSX.utils.book_new()
+	// 	const ws = XLSX.utils.aoa_to_sheet(dishes)
+
+	// 	XLSX.utils.book_append_sheet(wb, ws, 'Sheet1')
+	// 	// XLSX.writeFile(wb, `${menu.name}.xlsx`, { bookType: 'xlsx' })
+	// }
 
 	render() {
 		const { menu, isLock, isActiveProps, getOrderByMenu, menuId } = this.props
@@ -63,7 +70,7 @@ class listMenu extends React.Component {
 
 							<Button
 								className="style-btn"
-								onClick={() => this.export(menu)}
+								// onClick={() => this.export(menu)}
 								variant="raised"
 								color="secondary"
 								disabled={!isActive}
@@ -81,7 +88,10 @@ class listMenu extends React.Component {
 							menu.dishes.map(dish => {
 								// console.log(dish)
 								return (
-									<Panel header={`${dish.name} x${dish.count}`} key={dish._id}>
+									<Panel
+										header={`${dish.name} x${dish.count} ------ ${dish._id}`}
+										key={dish._id}
+									>
 										{getOrderByMenu.ordersByMenu &&
 											getOrderByMenu.ordersByMenu.map(orderByMenu => {
 												return (
@@ -145,15 +155,6 @@ const ORDER_BY_MENU = gql`
 	}
 `
 
-const GET_USER_NAME = gql`
-	query user($_id: String!) {
-		user(_id: $_id) {
-			username
-			fullName
-		}
-	}
-`
-
 export default HOCQueryMutation([
 	{
 		query: GET_MENU_BY_SITE,
@@ -173,17 +174,6 @@ export default HOCQueryMutation([
 			return {
 				variables: {
 					menuId: props.menuId
-				}
-			}
-		}
-	},
-	{
-		query: GET_USER_NAME,
-		name: 'getUserName',
-		options: () => {
-			return {
-				variables: {
-					_id: '40eb5c20-9e41-11e9-8ded-f5462f3a1447'
 				}
 			}
 		}

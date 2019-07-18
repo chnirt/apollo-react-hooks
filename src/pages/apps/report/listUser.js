@@ -7,7 +7,10 @@ import './index.css'
 class listUser extends React.Component {
 	handlePlus = () => {
 		const { mutate, menuId, dishId, dishCount, countProps } = this.props
-
+		console.log(countProps, '-----order')
+		console.log(menuId, '-----menuId')
+		console.log(dishId, '-----dishId')
+		console.log(dishCount, '-----dishCount')
 		if (countProps < dishCount) {
 			mutate
 				.orderDish({
@@ -77,6 +80,7 @@ class listUser extends React.Component {
 			dishCount,
 			countProps
 		} = this.props
+		// console.log(this.props)
 		return (
 			<>
 				{orderByMenu.dishId === dishId ? (
@@ -84,10 +88,12 @@ class listUser extends React.Component {
 						style={{
 							display: 'flex',
 							justifyContent: 'space-between',
-							alignItems: 'center'
+							alignItems: 'center',
+							marginBottom: 10
 						}}
 					>
-						{`${getUserName.user.fullName} ${countProps}/${dishCount}`}
+						{getUserName.user &&
+							`${getUserName.user.fullName} ${countProps}/${dishCount}`}
 						<div>
 							<Button
 								disabled={countProps === 0}
