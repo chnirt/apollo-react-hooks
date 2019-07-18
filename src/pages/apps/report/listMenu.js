@@ -1,7 +1,7 @@
 import React from 'react'
 import { Collapse, Button } from 'antd'
 import gql from 'graphql-tag'
-// import XLSX from 'xlsx'
+import XLSX from 'xlsx'
 import ListUser from './listUser'
 import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation'
 
@@ -18,32 +18,49 @@ class listMenu extends React.Component {
 		this.setState(prevState => ({ isActive: !prevState.isActive }))
 	}
 
-	// export(menu) {
-	// 	const dishes = []
-	// 	// const { getOrderByMenu } = this.props
-	// 	// console.log(this.props)
-	// 	// console.log(getOrderByMenu)
+	export(menu) {
+		const dishes = []
+		const { getOrderByMenu } = this.props
+		// console.log(this.props)
 
-	// 	menu.dishes.forEach(item => dishes.push([item.name, '', '']))
+		const orders = getOrderByMenu.ordersByMenu
 
-	// 	// getOrderByMenu &&
-	// 	// 	getOrderByMenu.ordersByMenu.filter(order => console.log(order.dishId))
+		const counts = {}
 
-	// 	// getOrderByMenu && getOrderByMenu.ordersByMenu.forEach((order, i) =>
-	// 	// 	// dishes[i].push(order.count)
-	// 	// 	// console.log(order)
-	// 	// )
+		orders.map(order => {
+			if (Object.prototype.hasOwnProperty.call(counts, order.dishId)) {
+				return counts[order.dishId] + order.count
+			}
+			return counts[order.dishId] === order.count
+		})
 
-	// 	dishes.unshift(['Tên món ăn', '', '', 'Số lượng'])
+		console.log(counts)
 
-	// 	// console.log(dishes)
+		// console.log(orders)
 
-	// 	const wb = XLSX.utils.book_new()
-	// 	const ws = XLSX.utils.aoa_to_sheet(dishes)
+		menu.dishes.forEach(item =>
+			dishes.push([item.name, '', '', counts[item._id]])
+		)
 
-	// 	XLSX.utils.book_append_sheet(wb, ws, 'Sheet1')
-	// 	// XLSX.writeFile(wb, `${menu.name}.xlsx`, { bookType: 'xlsx' })
-	// }
+		// getOrderByMenu &&
+		// 	getOrderByMenu.ordersByMenu.filter(order => console.log(order.dishId))
+
+		// getOrderByMenu && getOrderByMenu.ordersByMenu.map((order, i) =>
+		// 	// dishes[i].push(order.count)
+
+		// 	console.log(order)
+		// )
+
+		dishes.unshift(['Tên món ăn', '', '', 'Số lượng'])
+
+		console.log(dishes)
+
+		const wb = XLSX.utils.book_new()
+		const ws = XLSX.utils.aoa_to_sheet(dishes)
+
+		XLSX.utils.book_append_sheet(wb, ws, 'Sheet1')
+		XLSX.writeFile(wb, `${menu.name}.xlsx`, { bookType: 'xlsx' })
+	}
 
 	render() {
 		const { menu, isLock, isActiveProps, getOrderByMenu, menuId } = this.props
@@ -70,7 +87,7 @@ class listMenu extends React.Component {
 
 							<Button
 								className="style-btn"
-								// onClick={() => this.export(menu)}
+								onClick={() => this.export(menu)}
 								variant="raised"
 								color="secondary"
 								disabled={!isActive}
@@ -96,6 +113,7 @@ class listMenu extends React.Component {
 											getOrderByMenu.ordersByMenu.map(orderByMenu => {
 												return (
 													<ListUser
+														orderId={orderByMenu._id}
 														dishCount={dish.count}
 														menuId={menuId}
 														orderByMenu={orderByMenu}

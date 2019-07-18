@@ -6,16 +6,17 @@ import './index.css'
 
 class listUser extends React.Component {
 	handlePlus = () => {
-		const { mutate, menuId, dishId, dishCount, countProps } = this.props
-		console.log(countProps, '-----order')
-		console.log(menuId, '-----menuId')
-		console.log(dishId, '-----dishId')
-		console.log(dishCount, '-----dishCount')
+		const { mutate, menuId, dishId, dishCount, countProps, orderId } = this.props
+		// console.log(countProps, '-----order')
+		// console.log(menuId, '-----menuId')
+		// console.log(dishId, '-----dishId')
+		// console.log(dishCount, '-----dishCount')
 		if (countProps < dishCount) {
 			mutate
-				.orderDish({
-					mutation: ORDER_DISH,
+				.updateOrder({
+					mutation: UPDATE_ORDER,
 					variables: {
+						id: orderId,
 						input: {
 							menuId,
 							dishId,
@@ -41,13 +42,14 @@ class listUser extends React.Component {
 	}
 
 	handleMinus = () => {
-		const { mutate, menuId, dishId, countProps } = this.props
+		const { mutate, menuId, dishId, countProps, orderId } = this.props
 
 		if (countProps > 0) {
 			mutate
-				.orderDish({
-					mutation: ORDER_DISH,
+				.updateOrder({
+					mutation: UPDATE_ORDER,
 					variables: {
+						id: orderId,
 						input: {
 							menuId,
 							dishId,
@@ -78,12 +80,14 @@ class listUser extends React.Component {
 			dishId,
 			getUserName,
 			dishCount,
-			countProps
+			countProps,
+			userId
 		} = this.props
-		// console.log(this.props)
 		return (
 			<>
-				{orderByMenu.dishId === dishId ? (
+				{orderByMenu.dishId === dishId &&
+				getUserName.user &&
+				countProps !== 0 ? (
 					<div
 						style={{
 							display: 'flex',
@@ -92,8 +96,7 @@ class listUser extends React.Component {
 							marginBottom: 10
 						}}
 					>
-						{getUserName.user &&
-							`${getUserName.user.fullName} ${countProps}/${dishCount}`}
+						{`${getUserName.user.fullName} ${countProps}/${dishCount}`}
 						<div>
 							<Button
 								disabled={countProps === 0}
@@ -103,7 +106,10 @@ class listUser extends React.Component {
 								<Icon type="minus" />
 							</Button>
 							<Button
-								disabled={countProps === dishCount}
+								disabled={
+									countProps === dishCount ||
+									userId !== '40eb5c20-9e41-11e9-8ded-f5462f3a1447'
+								}
 								onClick={() => this.handlePlus(countProps)}
 							>
 								<Icon type="plus" />
@@ -142,6 +148,12 @@ const ORDER_BY_MENU = gql`
 	}
 `
 
+const UPDATE_ORDER = gql`
+	mutation updateOrder($id: String!, $input: UpdateOrderInput!) {
+		updateOrder(id: $id, input: $input)
+	}
+`
+
 export default HOCQueryMutation([
 	{
 		query: GET_USER_NAME,
@@ -168,6 +180,11 @@ export default HOCQueryMutation([
 	{
 		mutation: ORDER_DISH,
 		name: 'orderDish',
+		option: {}
+	},
+	{
+		mutation: UPDATE_ORDER,
+		name: 'updateOrder',
 		option: {}
 	}
 ])(listUser)
