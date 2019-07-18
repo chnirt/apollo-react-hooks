@@ -1,8 +1,9 @@
+/* eslint-disable */
 import React, { useState } from 'react'
 import gql from 'graphql-tag'
+import { Modal, Form, Input, Select } from 'antd'
 import { HOCQueryMutation } from '../../../../components/shared/hocQueryAndMutation'
 import openNotificationWithIcon from '../../../../components/shared/openNotificationWithIcon'
-import { Modal, Form, Input, Select } from 'antd'
 
 const { Option } = Select
 
@@ -37,13 +38,13 @@ function UserModal(props) {
 		props.form.validateFieldsAndScroll((err, values) => {
 			if (!err) {
 				setConfirmLoading(true)
-				console.log('Received values of form: ', values)
+				// console.log('Received values of form: ', values)
 
-				delete values['confirm']
+				delete values.confirm
 
-				let sites = []
+				const sites = []
 
-				for (let [key, value] of Object.entries(values.sites)) {
+				for (const [key, value] of Object.entries(values.sites)) {
 					// console.log(Array.isArray(value));
 					if (Array.isArray(value) && value.length > 1) {
 						// console.log('------Array');
@@ -90,90 +91,87 @@ function UserModal(props) {
 
 				props.userId
 					? props.mutate
-						.updateUser({
-							mutation: UPDATE_USER,
-							variables: {
-								_id: props.userId,
-								input: {
-									...values
-								}
-							},
-							refetchQueries: () => [
-								{
-									query: GET_ALL_USERS,
-									variables: {
-										offset: 0,
-										limit: 100
+							.updateUser({
+								mutation: UPDATE_USER,
+								variables: {
+									_id: props.userId,
+									input: {
+										...values
 									}
 								},
-								{
-									query: GET_ALL_PERMISSIONS_BY_USERID,
-									variables: {
-										_id: props.userId
+								refetchQueries: () => [
+									{
+										query: GET_ALL_USERS,
+										variables: {
+											offset: 0,
+											limit: 100
+										}
+									},
+									{
+										query: GET_ALL_PERMISSIONS_BY_USERID,
+										variables: {
+											_id: props.userId
+										}
 									}
-								}
-							],
-						})
-						.then(res => {
-							// console.log(res)
-							openNotificationWithIcon(
-								'success',
-								'success',
-								'Success',
-								'User is updated'
-							)
-							setConfirmLoading(false)
-							props.form.resetFields()
-							props.hideModal()
-						})
-						.catch(err => {
-							// console.log(err)
-							const errors = err.graphQLErrors.map(error => error.message)
-							openNotificationWithIcon('error', 'failed', 'Failed', errors[0])
-							setConfirmLoading(false)
-						})
+								]
+							})
+							.then(res => {
+								// console.log(res)
+								openNotificationWithIcon(
+									'success',
+									'success',
+									'Success',
+									'User is updated'
+								)
+								setConfirmLoading(false)
+								props.form.resetFields()
+								props.hideModal()
+							})
+							.catch(err => {
+								// console.log(err)
+								const errors = err.graphQLErrors.map(error => error.message)
+								openNotificationWithIcon('error', 'failed', 'Failed', errors[0])
+								setConfirmLoading(false)
+							})
 					: props.mutate
-						.createUser({
-							mutation: CREATE_USER,
-							variables: {
-								input: {
-									...values
-								}
-							},
-							refetchQueries: () => [
-								{
-									query: GET_ALL_USERS,
-									variables: {
-										offset: 0,
-										limit: 100
+							.createUser({
+								mutation: CREATE_USER,
+								variables: {
+									input: {
+										...values
 									}
-								}
-							]
-						})
-						.then(res => {
-							// console.log(res)
-							openNotificationWithIcon(
-								'success',
-								'success',
-								'Success',
-								'User is created'
-							)
-							setConfirmLoading(false)
-							props.form.resetFields()
-							props.hideModal()
-
-						})
-						.catch(err => {
-							// console.log(err)
-							const errors = err.graphQLErrors.map(error => error.message)
-							openNotificationWithIcon('error', 'failed', 'Failed', errors[0])
-							setConfirmLoading(false)
-						})
+								},
+								refetchQueries: () => [
+									{
+										query: GET_ALL_USERS,
+										variables: {
+											offset: 0,
+											limit: 100
+										}
+									}
+								]
+							})
+							.then(res => {
+								// console.log(res)
+								openNotificationWithIcon(
+									'success',
+									'success',
+									'Success',
+									'User is created'
+								)
+								setConfirmLoading(false)
+								props.form.resetFields()
+								props.hideModal()
+							})
+							.catch(err => {
+								// console.log(err)
+								const errors = err.graphQLErrors.map(error => error.message)
+								openNotificationWithIcon('error', 'failed', 'Failed', errors[0])
+								setConfirmLoading(false)
+							})
 			}
 		})
 	}
-
-	const { getFieldDecorator } = props.form
 
 	const formItemLayout = {
 		labelCol: {
@@ -186,23 +184,26 @@ function UserModal(props) {
 		}
 	}
 
-	console.log(props)
+	// console.log(props)
+
+	const { form, userId, visible, getAllSites, getAllPermissionsByUserId } = props
+	const { getFieldDecorator } = form
 
 	return (
 		<Modal
-			title={props.userId ? 'Update' : 'Create'}
-			visible={props.visible}
+			title={userId ? 'Update' : 'Create'}
+			visible={visible}
 			onOk={handleOk}
 			confirmLoading={confirmLoading}
 			onCancel={() => {
 				props.form.resetFields()
 				props.hideModal()
 			}}
-			okText='Submit'
+			okText="Submit"
 		>
 			<Form {...formItemLayout}>
-				{!props.userId && (
-					<Form.Item label='Username'>
+				{!userId && (
+					<Form.Item label="Username">
 						{getFieldDecorator('username', {
 							rules: [
 								{
@@ -213,7 +214,7 @@ function UserModal(props) {
 						})(<Input style={{ fontSize: 16 }} />)}
 					</Form.Item>
 				)}
-				<Form.Item label='Password'>
+				<Form.Item label="Password">
 					{getFieldDecorator('password', {
 						rules: [
 							{
@@ -224,9 +225,9 @@ function UserModal(props) {
 								validator: validateToNextPassword
 							}
 						]
-					})(<Input.Password visibilityToggle={false} autoComplete='off' />)}
+					})(<Input.Password visibilityToggle={false} autoComplete="off" />)}
 				</Form.Item>
-				<Form.Item label='Confirm Password'>
+				<Form.Item label="Confirm Password">
 					{getFieldDecorator('confirm', {
 						rules: [
 							{
@@ -240,12 +241,12 @@ function UserModal(props) {
 					})(
 						<Input.Password
 							visibilityToggle={false}
-							autoComplete='off'
+							autoComplete="off"
 							onBlur={handleConfirmBlur}
 						/>
 					)}
 				</Form.Item>
-				<Form.Item label='Fullname'>
+				<Form.Item label="Fullname">
 					{getFieldDecorator('fullName', {
 						rules: [
 							{
@@ -255,35 +256,42 @@ function UserModal(props) {
 						]
 					})(<Input style={{ fontSize: 16 }} />)}
 				</Form.Item>
-				{props.getAllSites.sites &&
-					props.getAllSites.sites.map((item, i) => {
+				{getAllSites.sites &&
+					getAllSites.sites.map(item => {
 						// console.log('Chin', props.getAllPermissionsByUserId.findAllByUserId)
 						let array = []
-						let newArray = []
-						if (props.userId) {
-							array = props.getAllPermissionsByUserId.findAllByUserId && props.getAllPermissionsByUserId.findAllByUserId.filter(
-								item1 => item1.siteId === item._id
-							)
-							props.getAllPermissionsByUserId.findAllByUserId && array[0] && array[0].permissions.map(item => {
-								newArray.push(item._id + "," + item.code)
-							})
+						const newArray = []
+						if (userId) {
+							array =
+								getAllPermissionsByUserId.findAllByUserId &&
+								getAllPermissionsByUserId.findAllByUserId.filter(
+									item1 => item1.siteId === item._id
+								)
+							getAllPermissionsByUserId.findAllByUserId &&
+								array[0] &&
+								array[0].permissions.map(item => {
+									newArray.push(`${item._id},${item.code}`)
+								})
 						}
 
 						return (
-							<Form.Item key={i} label={item.name}>
+							<Form.Item key={item._id} label={item.name}>
 								{getFieldDecorator(`sites.${item._id}`, {
 									initialValue: newArray
 									// initialValue: ['daeb5c10-9f92-11e9-990b-9dc89f86db87,USER_CREATE']
 								})(
 									<Select
-										mode='multiple'
-										placeholder='Please select permissions'
+										mode="multiple"
+										placeholder="Please select permissions"
 									>
 										{props.getAllPermissions.permissions &&
-											props.getAllPermissions.permissions.map((item, i) => {
+											props.getAllPermissions.permissions.map(item1 => {
 												return (
-													<Option key={i} value={`${item._id},${item.code}`}>
-														{item.description}
+													<Option
+														key={item1._id}
+														value={`${item1._id},${item1.code}`}
+													>
+														{item1.description}
 													</Option>
 												)
 											})}
@@ -377,8 +385,8 @@ export default HOCQueryMutation([
 		name: 'getAllPermissionsByUserId',
 		options: props => ({
 			variables: {
-				_id: props.userId
-			},
+				_id: props.userId || ''
+			}
 		})
 	},
 	{
@@ -409,3 +417,4 @@ export default HOCQueryMutation([
 		option: {}
 	}
 ])(Form.create({ name: 'createUserForm' })(UserModal))
+/* eslint-enable */

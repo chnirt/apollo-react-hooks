@@ -1,21 +1,24 @@
 import React from 'react'
 import Loadable from 'react-loadable'
-import { Spin } from 'antd'
+import { Button, Spin } from 'antd'
 
 function Loading(props) {
-	if (props.error) {
+	const { error, retry, timedOut, pastDelay } = props
+	if (error) {
 		return (
 			<div>
-				Error! <button onClick={props.retry}>Retry</button>
+				Error! <Button onClick={retry}>Retry</Button>
 			</div>
 		)
-	} else if (props.timedOut) {
+	}
+	if (timedOut) {
 		return (
 			<div>
-				Taking a long time... <button onClick={props.retry}>Retry</button>
+				Taking a long time... <Button onClick={retry}>Retry</Button>
 			</div>
 		)
-	} else if (props.pastDelay) {
+	}
+	if (pastDelay) {
 		return (
 			<div
 				style={{
@@ -29,9 +32,8 @@ function Loading(props) {
 				<Spin size="large" />
 			</div>
 		)
-	} else {
-		return null
 	}
+	return null
 }
 
 const MyComponent = importComponent =>
