@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import gql from 'graphql-tag'
+import { Row, Button, Divider, Card, Modal } from 'antd'
 import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation'
 import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
-import { Row, Button, Divider, Card, Modal } from 'antd'
 
 import UserList from './userlist'
 import UserModal from './usermodal'
@@ -41,11 +41,12 @@ function User(props) {
 				]
 			})
 			.then(res => {
-				// console.log(res)
-				openNotificationWithIcon('success', 'success', 'Success', _id)
+				//  console.log('hello', res)
+				if (res.data.lockAndUnlockUser === true)
+					openNotificationWithIcon('success', 'success', 'Success', _id)
 			})
 			.catch(err => {
-				// console.log(err)
+				console.log(err)
 				const errors = err.graphQLErrors.map(error => error.message)
 				openNotificationWithIcon('error', 'failed', 'Failed', errors[0])
 			})
@@ -75,7 +76,8 @@ function User(props) {
 					})
 					.then(res => {
 						// console.log(res)
-						openNotificationWithIcon('success', 'success', 'Success', _id)
+						if (res.data.lockAndUnlockUser === true)
+							openNotificationWithIcon('success', 'success', 'Success', _id)
 					})
 					.catch(err => {
 						// console.log(err)
@@ -89,7 +91,9 @@ function User(props) {
 		})
 	}
 
-	const { users } = props.data
+	const { data } = props
+	const { users } = data
+
 	return (
 		<>
 			<Row
@@ -118,9 +122,9 @@ function User(props) {
 					{users &&
 						users
 							.filter(item => item.isActive)
-							.map((item, i) => (
+							.map(item => (
 								<UserList
-									key={i}
+									key={item._id}
 									{...item}
 									showModal={showModal}
 									onLockAndUnlock={onLockAndUnlock}

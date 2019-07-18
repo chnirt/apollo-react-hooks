@@ -5,11 +5,6 @@ export const routes = [
 		component: 'login'
 	},
 	{
-		label: 'Register',
-		path: '/register',
-		component: 'register'
-	},
-	{
 		label: 'App',
 		path: '/',
 		private: true,

@@ -1,8 +1,8 @@
 import { ApolloClient } from 'apollo-client'
 import { InMemoryCache } from 'apollo-cache-inmemory'
-import { ApolloLink, split } from 'apollo-link'
+import { ApolloLink } from 'apollo-link'
 import { HttpLink } from 'apollo-link-http'
-import { onError } from 'apollo-link-error'
+import { onError as OnError } from 'apollo-link-error'
 import { setContext } from 'apollo-link-context'
 // import { WebSocketLink } from 'apollo-link-ws'
 // import { getMainDefinition } from 'apollo-utilities'
@@ -10,7 +10,7 @@ import store from '../mobx'
 
 // const httpLink = new HttpLink({ uri: 'http://localhost:4000/graphql' })
 const httpLink = new HttpLink({
-	uri: 'http://devcloud3.digihcs.com:11029/graphql'
+	uri: 'http://devcloud3.digihcs.com:11048/graphql'
 })
 
 // const httpLink = new HttpLink({
@@ -41,13 +41,11 @@ const httpLink = new HttpLink({
 // 	httpLink
 // )
 
-const errorLink = new onError(({ graphQLErrors, networkError, operation }) => {
+const errorLink = new OnError(({ graphQLErrors, networkError, operation }) => {
 	if (graphQLErrors) {
 		graphQLErrors.forEach(({ message, locations, path, extensions }) => {
 			console.log(
-				`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}, Code: ${
-					extensions.code
-				}`
+				`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}, Code: ${extensions.code}`
 			)
 			if (extensions.code === '498') {
 				store.authStore.logout()
@@ -70,8 +68,8 @@ const authLink = setContext((_, { headers }) => {
 	return {
 		headers: {
 			...headers,
-			token: token ? token : '',
-			currentsite: currentsite ? currentsite : ''
+			token: token || '',
+			currentsite: currentsite || ''
 		}
 	}
 })

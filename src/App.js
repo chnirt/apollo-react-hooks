@@ -1,11 +1,11 @@
 import React from 'react'
-import './App.scss'
-import Root from './pages/'
 import { ApolloProvider } from 'react-apollo'
 import { I18nextProvider } from 'react-i18next'
+import { Provider } from 'mobx-react'
+import './App.scss'
+import Root from './pages'
 import client from './tools/apollo'
 import i18n from './tools/i18n'
-import { Provider } from 'mobx-react'
 import store from './tools/mobx'
 
 function App() {

@@ -33,7 +33,7 @@ function Dashboard(props) {
 				setMe(res.data.me)
 			})
 			.catch(err => {
-				// console.log(err)
+				console.log(err)
 			})
 	})
 
@@ -57,8 +57,8 @@ function Dashboard(props) {
 				onChange={handleChange}
 			>
 				{JSON.parse(window.localStorage.getItem('user-permissions')).map(
-					(item, i) => (
-						<Option key={i} value={item.siteId}>
+					item => (
+						<Option key={item.siteid} value={item.siteId}>
 							{item.siteName}
 						</Option>
 					)
@@ -66,15 +66,6 @@ function Dashboard(props) {
 			</Select>
 		</>
 	)
-
-	// let a = JSON.parse(window.localStorage.getItem('user-permissions'))
-	// 	.filter(
-	// 		item => item.siteId === window.localStorage.getItem('currentsite')
-	// 	)[0]
-	// 	.permissions.map(item => item.code.split('_')[0])
-	// 	.filter(item => item === 'ORDER').length
-
-	// a && console.log(a)
 
 	return (
 		<Tabs defaultActiveKey="1" tabBarExtraContent={operations}>
@@ -93,13 +84,13 @@ function Dashboard(props) {
 						}}
 					>
 						{menuRoutes.map(
-							(item, i) =>
+							item =>
 								JSON.parse(window.localStorage.getItem('user-permissions'))
-									.filter(item => item.siteId === currentsite)[0]
-									.permissions.map(item => item.code.split('_')[0])
-									.filter(item1 => item1 === item.code).length > 0 && (
+									.filter(item1 => item1.siteId === currentsite)[0]
+									.permissions.map(item2 => item2.code.split('_')[0])
+									.filter(item3 => item3 === item.code).length > 0 && (
 									<Col
-										key={i}
+										key={item.label}
 										xs={{
 											span: 10,
 											offset: 1

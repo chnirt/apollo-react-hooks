@@ -1,15 +1,13 @@
-import React, { useState, useEffect } from 'react'
+/* eslint-disable */
+import React, { useState } from 'react'
 import gql from 'graphql-tag'
+import { Modal, Form, Input, Select } from 'antd'
 import { HOCQueryMutation } from '../../../../components/shared/hocQueryAndMutation'
 import openNotificationWithIcon from '../../../../components/shared/openNotificationWithIcon'
-import { Modal, Form, Input, Select } from 'antd'
 
 const { Option } = Select
 
 function UserModal(props) {
-	useEffect(() => {
-		props.getAllPermissionsByUserId.refetch()
-	})
 	const [confirmDirty, setConfirmDirty] = useState(false)
 	const [confirmLoading, setConfirmLoading] = useState(false)
 
@@ -40,13 +38,13 @@ function UserModal(props) {
 		props.form.validateFieldsAndScroll((err, values) => {
 			if (!err) {
 				setConfirmLoading(true)
-				console.log('Received values of form: ', values)
+				// console.log('Received values of form: ', values)
 
-				delete values['confirm']
+				delete values.confirm
 
-				let sites = []
+				const sites = []
 
-				for (let [key, value] of Object.entries(values.sites)) {
+				for (const [key, value] of Object.entries(values.sites)) {
 					// console.log(Array.isArray(value));
 					if (Array.isArray(value) && value.length > 1) {
 						// console.log('------Array');
@@ -175,8 +173,6 @@ function UserModal(props) {
 		})
 	}
 
-	const { getFieldDecorator } = props.form
-
 	const formItemLayout = {
 		labelCol: {
 			xs: { span: 24 },
@@ -188,12 +184,15 @@ function UserModal(props) {
 		}
 	}
 
-	console.log(props)
+	// console.log(props)
+
+	const { form, userId, visible, getAllSites, getAllPermissionsByUserId } = props
+	const { getFieldDecorator } = form
 
 	return (
 		<Modal
-			title={props.userId ? 'Update' : 'Create'}
-			visible={props.visible}
+			title={userId ? 'Update' : 'Create'}
+			visible={visible}
 			onOk={handleOk}
 			confirmLoading={confirmLoading}
 			onCancel={() => {
@@ -203,7 +202,7 @@ function UserModal(props) {
 			okText="Submit"
 		>
 			<Form {...formItemLayout}>
-				{!props.userId && (
+				{!userId && (
 					<Form.Item label="Username">
 						{getFieldDecorator('username', {
 							rules: [
@@ -257,26 +256,26 @@ function UserModal(props) {
 						]
 					})(<Input style={{ fontSize: 16 }} />)}
 				</Form.Item>
-				{props.getAllSites.sites &&
-					props.getAllSites.sites.map((item, i) => {
+				{getAllSites.sites &&
+					getAllSites.sites.map(item => {
 						// console.log('Chin', props.getAllPermissionsByUserId.findAllByUserId)
 						let array = []
-						let newArray = []
-						if (props.userId) {
+						const newArray = []
+						if (userId) {
 							array =
-								props.getAllPermissionsByUserId.findAllByUserId &&
-								props.getAllPermissionsByUserId.findAllByUserId.filter(
+								getAllPermissionsByUserId.findAllByUserId &&
+								getAllPermissionsByUserId.findAllByUserId.filter(
 									item1 => item1.siteId === item._id
 								)
-							props.getAllPermissionsByUserId.findAllByUserId &&
+							getAllPermissionsByUserId.findAllByUserId &&
 								array[0] &&
 								array[0].permissions.map(item => {
-									newArray.push(item._id + ',' + item.code)
+									newArray.push(`${item._id},${item.code}`)
 								})
 						}
 
 						return (
-							<Form.Item key={i} label={item.name}>
+							<Form.Item key={item._id} label={item.name}>
 								{getFieldDecorator(`sites.${item._id}`, {
 									initialValue: newArray
 									// initialValue: ['daeb5c10-9f92-11e9-990b-9dc89f86db87,USER_CREATE']
@@ -286,10 +285,13 @@ function UserModal(props) {
 										placeholder="Please select permissions"
 									>
 										{props.getAllPermissions.permissions &&
-											props.getAllPermissions.permissions.map((item, i) => {
+											props.getAllPermissions.permissions.map(item1 => {
 												return (
-													<Option key={i} value={`${item._id},${item.code}`}>
-														{item.description}
+													<Option
+														key={item1._id}
+														value={`${item1._id},${item1.code}`}
+													>
+														{item1.description}
 													</Option>
 												)
 											})}
@@ -383,9 +385,8 @@ export default HOCQueryMutation([
 		name: 'getAllPermissionsByUserId',
 		options: props => ({
 			variables: {
-				_id: props.userId
-			},
-			fetchPolicy: 'no-cache'
+				_id: props.userId || ''
+			}
 		})
 	},
 	{
@@ -416,3 +417,4 @@ export default HOCQueryMutation([
 		option: {}
 	}
 ])(Form.create({ name: 'createUserForm' })(UserModal))
+/* eslint-enable */

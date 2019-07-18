@@ -3,16 +3,17 @@ import { Switch, Route, Redirect } from 'react-router-dom'
 import withLoadable from '../../tools/loadable'
 
 export default function Root(props) {
+	const { routes } = props
 	return (
 		<Switch>
-			{props.routes &&
-				props.routes.map((route, i) => (
+			{routes &&
+				routes.map(route => (
 					<Route
-						key={i}
+						key={route.label}
 						{...route}
-						component={props => {
+						component={props1 => {
 							const MyComponent = withLoadable(import(`./${route.component}`))
-							return <MyComponent {...props} {...route} routes={route.routes} />
+							return <MyComponent {...props1} {...route} routes={route.routes} />
 						}}
 					/>
 				))}
