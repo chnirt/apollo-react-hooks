@@ -34,26 +34,15 @@ class listMenu extends React.Component {
 			return counts[order.dishId] === order.count
 		})
 
-		console.log(counts)
-
-		// console.log(orders)
+		// console.log(counts)
 
 		menu.dishes.forEach(item =>
 			dishes.push([item.name, '', '', counts[item._id]])
 		)
 
-		// getOrderByMenu &&
-		// 	getOrderByMenu.ordersByMenu.filter(order => console.log(order.dishId))
-
-		// getOrderByMenu && getOrderByMenu.ordersByMenu.map((order, i) =>
-		// 	// dishes[i].push(order.count)
-
-		// 	console.log(order)
-		// )
-
 		dishes.unshift(['Tên món ăn', '', '', 'Số lượng'])
 
-		console.log(dishes)
+		// console.log(dishes)
 
 		const wb = XLSX.utils.book_new()
 		const ws = XLSX.utils.aoa_to_sheet(dishes)
