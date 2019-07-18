@@ -19,7 +19,7 @@ const addPlugins = () => config => {
 		new ProgressBarPlugin({
 			format:
 				chalk.hex('#6c5ce7')('build ') +
-				chalk.hex('#0984e3')('▯:bar▯ ') +
+				chalk.hex('#0984e3')('﹝:bar﹞ ') +
 				// chalk.red('▯ :bar ▯ ') +
 				chalk.hex('#00b894')('(:percent) ') +
 				// chalk.green(':percent ') +
@@ -50,10 +50,10 @@ module.exports = override(
 		true
 	),
 	fixBabelImports('@digihcs/innos-ui3', {
-    libraryName: '@digihcs/innos-ui3',
-    libraryDirectory: 'es',
-    style: true
-  }),
+		libraryName: '@digihcs/innos-ui3',
+		libraryDirectory: 'es',
+		style: true
+	}),
 	fixBabelImports('import', {
 		libraryName: 'antd',
 		libraryDirectory: 'es',
@@ -95,4 +95,3 @@ module.exports = override(
 	}),
 	addPlugins()
 )
-

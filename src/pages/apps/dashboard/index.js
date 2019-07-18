@@ -1,21 +1,24 @@
 import React, { useState, useEffect } from 'react'
 import { inject, observer } from 'mobx-react'
-import { Icon, Button, Col, Row, Tabs, Card, Select } from 'antd'
+import { Icon, Button, Col, Row, Tabs, Card, Select, Typography } from 'antd'
 // import logo from '../../../assets/images/logo.svg'
 import { withRouter } from 'react-router-dom'
 import { withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
 import { menuRoutes } from '../../../routes'
+import './index.scss'
 
 const { TabPane } = Tabs
 const { Option } = Select
+const { Title } = Typography
 
 const gridStyle = {
 	width: '100%',
 	height: '20vh',
 	marginBottom: '10%',
 	display: 'flex',
-	alignItems: 'center'
+	alignItems: 'center',
+	backgroundColor: '#ffffff'
 }
 
 function Dashboard(props) {
@@ -68,7 +71,11 @@ function Dashboard(props) {
 	)
 
 	return (
-		<Tabs defaultActiveKey="1" tabBarExtraContent={operations}>
+		<Tabs
+			tabBarStyle={{ margin: 0, color: '#ffffff' }}
+			defaultActiveKey="1"
+			tabBarExtraContent={operations}
+		>
 			<TabPane tab="Home" key="1">
 				<Row
 					style={{
@@ -76,12 +83,18 @@ function Dashboard(props) {
 					}}
 				>
 					<Card
-						title="Quick actions"
+						title={
+							<Title style={{ color: '#ffffff' }} level={3}>
+								Quick actions
+							</Title>
+						}
 						bordered={false}
 						headStyle={{
 							border: 0,
 							margin: 0
 						}}
+						bodyStyle={{}}
+						style={{ backgroundColor: 'transparent' }}
 					>
 						{menuRoutes.map(
 							item =>
@@ -150,7 +163,9 @@ function Dashboard(props) {
 							offset: 1
 						}}
 					>
-						Hello, {me && me.username}
+						<Title style={{ color: '#ffffff', marginTop: 15 }} level={4}>
+							Hello, {me && me.username}
+						</Title>
 						<Button type="primary" block onClick={onLogout} icon="logout">
 							Log out
 						</Button>

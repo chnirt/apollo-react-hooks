@@ -10,7 +10,7 @@ const Order = props => {
 	// const [orderNumbers, setOrderNumbers] = useState()
 	const [isPublish, setIsPublish] = useState()
 	const [isLocked, setIsLocked] = useState()
-	// const [alert, setAlert] = useState(false)
+	const [alert, setAlert] = useState(false)
 	const [ordersCountByUser, setOrdersCountByUser] = useState({})
 
 	useEffect(() => {
