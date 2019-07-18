@@ -1,42 +1,33 @@
 import React, { useState } from 'react'
-import { Row, Col, Select } from 'antd'
+import { Row, Button, Divider } from 'antd'
 import MenuList from './menuList'
 import MenuModal from './menuModal'
 
 function Menu(props) {
 	const [menuId, setMenuId] = useState('')
 	const [visible, setVisible] = useState(false)
-	const [siteId, setSiteId] = useState(
+	
+	const [siteId] = useState(
 		window.localStorage.getItem('currentsite')
 	)
 
-	async function openModal(id) {
-		await setMenuId(id)
-		await setVisible(true)
+	function openModal(id) {
+		setMenuId(id)
+		setVisible(true)
 	}
 
-	async function changeSite(value) {
-		window.localStorage.setItem('currentsite', value)
-		setSiteId(value)
-	}
+	console.log(props)
+
 	return (
 		<div className='menu'>
+			<Button
+				shape='circle'
+				icon='left'
+				onClick={() => props.history.push('/🥢')}
+			/>
+			<Divider />
 			<Row className='menu-list'>
-				<Col span={22} offset={1}>
-					<Select
-						defaultValue={siteId}
-						onChange={changeSite}
-						placeholder='Chọn site'
-						style={{ width: '100%', margin: '25px 0' }}
-					>
-						{JSON.parse(window.localStorage.sites).map((site, index) => (
-							<Select.Option key={index} value={site._id}>
-								{site.name}
-							</Select.Option>
-						))}
-					</Select>
-				</Col>
-				<MenuList siteId={siteId} openModal={openModal} />
+				<MenuList {...props} siteId={siteId} openModal={openModal} />
 				<MenuModal
 					siteId={siteId}
 					menuId={menuId}

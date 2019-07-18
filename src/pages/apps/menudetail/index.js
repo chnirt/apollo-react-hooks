@@ -1,133 +1,72 @@
 import React from 'react'
-import { Button } from 'antd';
-import './index.css'
-import { Select, Modal, Form, Input } from 'antd';
-
-const { Option } = Select;
-
-function onChange(value) {
-}
-
-function onBlur() {
-}
-
-function onFocus() {
-}
-
-function onSearch(val) {
-}
-
-const DishCreateForm = Form.create({ name: 'dish_create' })(
-	// eslint-disable-next-line
-	class extends React.Component {
-		render() {
-			const { visible, onCancel, onCreate, form } = this.props;
-			const { getFieldDecorator } = form;
-			return (
-				<Modal
-					visible={visible}
-					title="Thêm món"
-					okText="Lưu"
-					cancelText="Hủy"
-					onCancel={onCancel}
-					onOk={onCreate}
-				>
-					<Form>
-						<Form.Item>
-							{
-								getFieldDecorator('dish', {})(
-									<Input placeholder='Nhập tên món' />)
-							}
-						</Form.Item>
-					</Form>
-				</Modal>
-			);
-		}
-	},
-);
+import { Button, Divider } from 'antd'
+import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation'
+import gql from 'graphql-tag'
 
 
-class MenuDetail extends React.Component {
-	state = {
-		visible: false,
-		isPublish: false
-	};
-
-	showModal = () => {
-		this.setState({ visible: true });
-	};
-
-	handleCancel = () => {
-		this.setState({ visible: false });
-	};
-
-	handleCreate = () => {
-		const { form } = this.formRef.props;
-		form.validateFields((err, values) => {
-			if (err) {
-				return;
-			}
-
-			console.log('Received values of form: ', values);
-			form.resetFields();
-			this.setState({ visible: false });
-		});
-	};
-
-	saveFormRef = formRef => {
-		this.formRef = formRef;
-	};
-
-	isPublish = () => {
-		this.setState({
-			isPublish: !this.state.isPublish
-		})
-	}
-
-	render() {
-		return (
-			<React.Fragment>
-
-				<label className='title'>
-					Danh sách món
-				</label>
-
-				<div className='dish-detail'>
-					<Button className='dish-name' disabled>Canh chua cá lóc x0</Button>
-					<Button className='minus'>-</Button>
-					<Button className='plus'>+</Button>
-				</div>
-
-				<div className='dish-detail'>
-					<Button className='dish-name' disabled>Tôm hoàng kim x5</Button>
-					<Button className='minus'>-</Button>
-					<Button className='plus'>+</Button>
-				</div>
-
-				<div className='dish-detail'>
-					<Button className='dish-name' disabled>Bánh canh cua x2</Button>
-					<Button className='minus'>-</Button>
-					<Button className='plus'>+</Button>
-				</div>
-
-				<div style={{ display: 'flex', justifyContent: 'space-between' }} className='wrap-btn'>
-					<Button className='add-dish' onClick={this.showModal}>
-						Thêm món
-					</Button>
-					<Button className='publish' onClick={this.isPublish}>
-						{this.state.isPublish ? 'Công khai' : 'Hủy công khai'}
-					</Button>
-				</div>
-
-				<DishCreateForm
-					wrappedComponentRef={this.saveFormRef}
-					visible={this.state.visible}
-					onCancel={this.handleCancel}
-					onCreate={this.handleCreate}
+function MenuDetail (props) {
+	console.log(props)
+	return (
+		<div className='menu'>
+				<Button
+					shape='circle'
+					icon='left'
+					onClick={() => props.history.push('/🥢/menu')}
 				/>
-			</React.Fragment>
-		)
-	}
+				<Divider />
+		</div>
+	)
 }
 
-export default MenuDetail
+const GET_MENU = gql`
+	query menu($id: String!) {
+		menu(id: $id) {
+			_id
+			name
+			siteId
+			shopId
+		}
+	}
+`
+
+const PUBLISH_UNPUBLISH = gql`
+	mutation publishAndUnpublish($id: String!) {
+		publishAndUnpublish(id: $id)
+	}
+`
+
+const GET_SHOPS_BY_SITE = gql`
+	query ($siteId: String!) {
+  siteShopsBySiteId(siteId: $siteId){
+    siteId
+    shopId
+    name
+  }
+}
+`
+
+const UPDATE_MENU = gql`
+	mutation updateMenu ($id: String!, $menuInfo: MenuInfo!) {
+		updateMenu (id: $id, menuInfo: $menuInfo)
+	}
+`
+
+export default HOCQueryMutation([
+	{
+		query: GET_SHOPS_BY_SITE,
+		options: props => ({
+			variables: {
+				siteId: props.match.params.siteId
+			}
+		})
+	},
+	{
+		query: GET_MENU,
+		options: props => ({
+			variables: {
+				id: props.match.params.menuId
+			}
+		}),
+		name: 'menuById'
+	}
+])(MenuDetail)

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { inject, observer } from 'mobx-react'
-import { Icon, Button, Col, Row, Tabs, Card } from 'antd'
+import { Icon, Button, Col, Row, Tabs, Card, Select } from 'antd'
 // import logo from '../../../assets/images/logo.svg'
 import { withRouter } from 'react-router-dom'
 import { withApollo } from 'react-apollo'
@@ -8,6 +8,7 @@ import gql from 'graphql-tag'
 import { menuRoutes } from '../../../routes'
 
 const { TabPane } = Tabs
+const { Option } = Select
 
 const gridStyle = {
 	width: '100%',
@@ -19,6 +20,9 @@ const gridStyle = {
 
 function Dashboard(props) {
 	const [me, setMe] = useState('')
+	const [currentsite, setCurrentsite] = useState(
+		window.localStorage.getItem('currentsite')
+	)
 
 	useEffect(() => {
 		// code to run on component mount
@@ -39,8 +43,41 @@ function Dashboard(props) {
 		props.history.push('/login')
 	}
 
+	function handleChange(value) {
+		// console.log(`selected ${value}`)
+		setCurrentsite(value)
+		window.localStorage.setItem('currentsite', value)
+	}
+
+	const operations = (
+		<>
+			<Select
+				defaultValue={currentsite}
+				style={{ width: 180, marginRight: '5vw' }}
+				onChange={handleChange}
+			>
+				{JSON.parse(window.localStorage.getItem('user-permissions')).map(
+					(item, i) => (
+						<Option key={i} value={item.siteId}>
+							{item.siteName}
+						</Option>
+					)
+				)}
+			</Select>
+		</>
+	)
+
+	// let a = JSON.parse(window.localStorage.getItem('user-permissions'))
+	// 	.filter(
+	// 		item => item.siteId === window.localStorage.getItem('currentsite')
+	// 	)[0]
+	// 	.permissions.map(item => item.code.split('_')[0])
+	// 	.filter(item => item === 'ORDER').length
+
+	// a && console.log(a)
+
 	return (
-		<Tabs defaultActiveKey="1">
+		<Tabs defaultActiveKey="1" tabBarExtraContent={operations}>
 			<TabPane tab="Home" key="1">
 				<Row
 					style={{
@@ -55,41 +92,46 @@ function Dashboard(props) {
 							margin: 0
 						}}
 					>
-						{menuRoutes.map((item, i) => (
-							<Col
-								key={i}
-								xs={{
-									span: 10,
-									offset: 1
-								}}
-								sm={{
-									span: 10,
-									offset: 1
-								}}
-								md={{
-									span: 10,
-									offset: 1
-								}}
-								lg={{
-									span: 4,
-									offset: 1
-								}}
-								onClick={() => {
-									props.history.push(item.path)
-									// showDrawer(item.path)
-								}}
-							>
-								<Card.Grid style={gridStyle}>
-									{item.label}
-									<Icon
-										style={{
-											paddingLeft: '10px'
+						{menuRoutes.map(
+							(item, i) =>
+								JSON.parse(window.localStorage.getItem('user-permissions'))
+									.filter(item => item.siteId === currentsite)[0]
+									.permissions.map(item => item.code.split('_')[0])
+									.filter(item1 => item1 === item.code).length > 0 && (
+									<Col
+										key={i}
+										xs={{
+											span: 10,
+											offset: 1
 										}}
-										type={item.icon}
-									/>
-								</Card.Grid>
-							</Col>
-						))}
+										sm={{
+											span: 10,
+											offset: 1
+										}}
+										md={{
+											span: 10,
+											offset: 1
+										}}
+										lg={{
+											span: 4,
+											offset: 1
+										}}
+										onClick={() => {
+											props.history.push(item.path)
+										}}
+									>
+										<Card.Grid id={item.id} style={gridStyle}>
+											{item.label}
+											<Icon
+												style={{
+													paddingLeft: '10px'
+												}}
+												type={item.icon}
+											/>
+										</Card.Grid>
+									</Col>
+								)
+						)}
 					</Card>
 				</Row>
 			</TabPane>

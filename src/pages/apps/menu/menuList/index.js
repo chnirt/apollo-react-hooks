@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { Card, Icon, Col, Row, Button, Modal, Form, Input } from 'antd'
-import gql from 'graphql-tag';
-import { HOCQueryMutation } from '../../../../components/shared/hocQueryAndMutation';
-import openNotificationWithIcon from '../../../../components/shared/openNotificationWithIcon';
+import gql from 'graphql-tag'
+import { HOCQueryMutation } from '../../../../components/shared/hocQueryAndMutation'
+import openNotificationWithIcon from '../../../../components/shared/openNotificationWithIcon'
 
 function MenuList(props) {
 	const { data, form, mutate } = props

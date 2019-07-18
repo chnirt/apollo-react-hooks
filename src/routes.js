@@ -24,7 +24,13 @@ export const routes = [
 			{
 				label: 'Manage Menu',
 				path: '/🥢/menu',
+				exact: true,
 				component: 'menu'
+			},
+			{
+				label: 'Manage Menu',
+				path: '/🥢/menu/detail/:siteId/:menuId',
+				component: 'menudetail'
 			},
 			{
 				label: 'Manage Order',
@@ -48,23 +54,31 @@ export const routes = [
 
 export const menuRoutes = [
 	{
+		id: 'manage-menu',
 		label: 'Manage Menu',
 		path: '/🥢/menu',
-		icon: 'bars'
+		icon: 'bars',
+		code: 'MENU'
 	},
 	{
+		id: 'manage-order',
 		label: 'Manage Order',
 		path: '/🥢/order',
-		icon: 'shopping-cart'
+		icon: 'shopping-cart',
+		code: 'ORDER'
 	},
 	{
+		id: 'manage-user',
 		label: 'Manage User',
 		path: '/🥢/user',
-		icon: 'user'
+		icon: 'user',
+		code: 'USER'
 	},
 	{
+		id: 'report',
 		label: 'Report',
 		path: '/🥢/report',
-		icon: 'file-done'
+		icon: 'file-done',
+		code: 'REPORT'
 	}
 ]

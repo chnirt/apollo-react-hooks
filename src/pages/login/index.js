@@ -34,16 +34,17 @@ class Login extends Component {
 					}
 				})
 				.then(res => {
-					// console.log(res.data.login)
-					const { token, sites } = res.data.login
+					console.log(res.data.login)
+					const { token, userPermissions } = res.data.login
 					this.setState({
 						loading: false,
 						spin: false
 					})
-					this.props.store.authStore.authenticate(token, sites)
+					this.props.store.authStore.authenticate(token, userPermissions)
 					this.props.history.push('/🥢')
 				})
 				.catch(err => {
+					// console.log(err)
 					const errors = err.graphQLErrors.map(error => error.extensions.code)
 					let mess = ''
 					if (errors[0] === '401') {
@@ -158,9 +159,13 @@ const USER_LOGIN = gql`
 	mutation($input: LoginUserInput!) {
 		login(input: $input) {
 			token
-			sites {
-				_id
-				name
+			userPermissions {
+				siteId
+				siteName
+				permissions {
+					_id
+					code
+				}
 			}
 		}
 	}

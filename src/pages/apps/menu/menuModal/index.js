@@ -1,14 +1,16 @@
 import React, { useState } from 'react'
-import { Modal, Form, Button, Col, Row, Select } from 'antd'
+import { Modal, Form, Button, Col, Row, Select, Drawer } from 'antd'
 import { HOCQueryMutation } from '../../../../components/shared/hocQueryAndMutation'
 import gql from 'graphql-tag'
 import ListDish from './ListDish'
+import openNotificationWithIcon from '../../../../components/shared/openNotificationWithIcon';
 
 function MenuModal(props) {
 	const { form, data, menuById } = props
 
 	const [dishes, setDishes] = useState([])
 	const [shopId, setShopId] = useState('')
+	const [hasChange, setHasChange] = useState(false)
 
 	function changeShop(value) {
 		setShopId(value)
@@ -25,15 +27,24 @@ function MenuModal(props) {
 					}
 				}
 			]
-		})
+		}).then(res => openNotificationWithIcon(
+				'success',
+				'publish',
+				(menuById.menu && menuById.menu.isPublished 
+					? 'Hủy công khai menu thành công'
+					: 'Công khai menu thành công'
+				),
+				''
+			))
 	}
 
 	async function updateDishes (data) {
 		await setDishes(data)
+		await setHasChange(true)
 	}
 
 	async function updateMenu () {
-		dishes.length !== 0 && (
+		hasChange ? (
 			await props.mutate.updateMenu({
 				variables: {
 					id: props.menuId,
@@ -50,14 +61,14 @@ function MenuModal(props) {
 						}
 					}
 				]
-			})
-		)
+			}).then(res => openNotificationWithIcon('success', 'save', 'Lưu menu thành công', ''))
+		) : openNotificationWithIcon('info', 'nochange', 'Menu không có thay đổi', '')
 	}
 
 	const { getFieldDecorator } = form
 	return (
 		<Modal
-			width='80%'
+			width='100%'
 			title='Danh sách món'
 			visible={props.visible}
 			onCancel={props.handleCancel}
@@ -68,14 +79,10 @@ function MenuModal(props) {
 			}}
 			footer={[
 				<Button onClick={updateMenu} key='save'>Lưu</Button>,
-				<Button key='publish' loading={menuById.menu ? false : true}>{menuById.menu && menuById.menu.isPublished ? 'Hủy công khai' : 'Công khai'}</Button>
+				<Button onClick={publishAndUnpublish} key='publish' loading={menuById.menu ? false : true}>{menuById.menu && menuById.menu.isPublished ? 'Hủy công khai' : 'Công khai'}</Button>
 			]}
-			centered
 		>
 			<Row style={{ marginBottom: '20px' }}>
-				<Col span={22} offset={1}>
-					<label><b>Site đã chọn:</b> {JSON.parse(window.localStorage.getItem('sites')).map(site => site._id === props.siteId ? site.name : '')}</label>
-				</Col>
 				<Col span={22} offset={1}>
 					{getFieldDecorator('shop')(
 						<Select
@@ -109,14 +116,8 @@ const GET_MENU = gql`
 			_id
 			name
 			siteId
-			dishes {
-				_id
-				name
-				count
-			}
+			shopId
 			isPublished
-			isLocked
-			isActive
 		}
 	}
 `
