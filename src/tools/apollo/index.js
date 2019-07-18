@@ -12,12 +12,8 @@ const domain = 'devcloud3.digihcs.com'
 const port = '11048'
 
 const httpLink = new HttpLink({
-<<<<<<< HEAD
 	// uri: 'http://localhost:4000/graphql'
 	uri: 'http://devcloud3.digihcs.com:11098/graphql'
-=======
-	uri: `http://${domain}:${port}/graphql`
->>>>>>> c41f92bc890f581151765f1c55855c1ccadca8da
 })
 
 const wsLink = new WebSocketLink({
