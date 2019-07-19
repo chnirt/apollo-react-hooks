@@ -48,7 +48,7 @@ class listMenu extends React.Component {
 		dishes.push([new Date()])
 		dishes.push(['', '', `Người gửi : ${me.me.fullName}`])
 
-		console.log(dishes)
+		// console.log(dishes)
 
 		const wb = XLSX.utils.book_new()
 		const ws = XLSX.utils.aoa_to_sheet(dishes, {
@@ -97,7 +97,7 @@ class listMenu extends React.Component {
 
 		ws['!merges'] = merge
 		ws['!formatRows'] = true
-		ws.D7 = { t: 'n', f: `SUM(D3:D${dishes.length - 3})` }
+		ws.D7 = { t: 'n', f: `SUM(D3:D${dishes.length - 3})` || 0 }
 
 		XLSX.utils.book_append_sheet(wb, ws, 'Sheet1')
 		XLSX.writeFile(wb, `${menu.name}.xlsx`, {
