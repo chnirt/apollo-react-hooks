@@ -1,4 +1,3 @@
-/* eslint-disable */
 import React, { useState } from 'react'
 import gql from 'graphql-tag'
 import { Modal, Form, Input, Select } from 'antd'
@@ -39,15 +38,17 @@ function UserModal(props) {
 			if (!err) {
 				setConfirmLoading(true)
 				// console.log('Received values of form: ', values)
-
-				delete values.confirm
+				const copyValues = Object.assign(values)
+				delete copyValues.confirm
 
 				const sites = []
 
-				for (const [key, value] of Object.entries(values.sites)) {
+				/* eslint-disable */
+
+				for (const [key, value] of Object.entries(copyValues.sites)) {
 					// console.log(Array.isArray(value));
 					if (Array.isArray(value) && value.length > 1) {
-						console.log('------Array')
+						// console.log('------Array')
 						// console.log(value);
 						const permissions = []
 						value.map(item => {
@@ -65,8 +66,8 @@ function UserModal(props) {
 					} else {
 						// console.log('String', value)
 						if (value) {
-							console.log('------String')
-							console.log(value)
+							// console.log('------String')
+							// console.log(value)
 							if (value.length > 0) {
 								sites.push({
 									siteId: key,
@@ -77,20 +78,25 @@ function UserModal(props) {
 										}
 									]
 								})
+							} else {
+								sites.push({
+									siteId: key,
+									permissions: []
+								})
 							}
 						} else {
-							console.log('------Undefine')
+							// console.log('------Undefine')
 							// sites.push({
-							//   siteId: key,
-							//   permissions: []
+							// 	siteId: key,
+							// 	permissions: []
 							// })
 						}
 					}
 				}
 
-				values.sites = sites
+				copyValues.sites = sites
 
-				console.log(values)
+				// console.log(copyValues)
 
 				props.userId
 					? props.mutate
@@ -99,7 +105,7 @@ function UserModal(props) {
 								variables: {
 									_id: props.userId,
 									input: {
-										...values
+										...copyValues
 									}
 								},
 								refetchQueries: () => [
@@ -141,7 +147,7 @@ function UserModal(props) {
 								mutation: CREATE_USER,
 								variables: {
 									input: {
-										...values
+										...copyValues
 									}
 								},
 								refetchQueries: () => [
@@ -187,9 +193,16 @@ function UserModal(props) {
 		}
 	}
 
-	// console.log(props)
+	console.log(props)
 
-	const { form, userId, visible, getAllSites, getAllPermissionsByUserId } = props
+	const {
+		form,
+		userId,
+		visible,
+		getAllSites,
+		getAllPermissionsByUserId,
+		getUser
+	} = props
 	const { getFieldDecorator } = form
 
 	return (
@@ -251,6 +264,7 @@ function UserModal(props) {
 				</Form.Item>
 				<Form.Item label="Fullname">
 					{getFieldDecorator('fullName', {
+						initialValue: userId && getUser.user && getUser.user.fullName,
 						rules: [
 							{
 								required: true,
@@ -419,4 +433,3 @@ export default HOCQueryMutation([
 		option: {}
 	}
 ])(Form.create({ name: 'createUserForm' })(UserModal))
-/* eslint-enable */

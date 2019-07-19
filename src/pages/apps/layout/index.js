@@ -14,7 +14,8 @@ function Layout(props) {
 				backgroundPosition: 'center center',
 				backgroundAttachment: 'fixed',
 				backgroundSize: 'cover',
-				overflow: 'hidden'
+				overflowY: 'scroll',
+				WebkitOverflowScrolling: 'touch'
 			}}
 		>
 			{children.props.location.pathname === '/🥢' ? (
