@@ -1,5 +1,5 @@
 import React from 'react'
-import { Collapse, Button } from 'antd'
+import { Collapse, Button, Icon, Tooltip } from 'antd'
 import gql from 'graphql-tag'
 import XLSX from 'xlsx'
 import ListUser from './listUser'
@@ -20,8 +20,7 @@ class listMenu extends React.Component {
 
 	export(menu) {
 		const dishes = []
-		const { getOrderByMenu } = this.props
-		// console.log(this.props)
+		const { getOrderByMenu, me } = this.props
 
 		const orders = getOrderByMenu.ordersByMenu
 
@@ -29,60 +28,119 @@ class listMenu extends React.Component {
 
 		orders.map(order => {
 			if (Object.prototype.hasOwnProperty.call(counts, order.dishId)) {
-				return counts[order.dishId] + order.count
+				counts[order.dishId] += order.count
+			} else {
+				counts[order.dishId] = order.count
 			}
-			return counts[order.dishId] === order.count
+			return counts[order.dishId]
+			// console.log(order.dishId)
 		})
 
 		// console.log(counts)
 
 		menu.dishes.forEach(item =>
-			dishes.push([item.name, '', '', counts[item._id]])
+			dishes.push([item.name, '', '', counts[item._id] || 0])
 		)
 
 		dishes.unshift(['Tên món ăn', '', '', 'Số lượng'])
+		dishes.unshift([menu.name])
+		dishes.push(['Tổng'])
+		dishes.push([new Date()])
+		dishes.push(['', '', `Người gửi : ${me.me.fullName}`])
 
-		// console.log(dishes)
+		console.log(dishes)
 
 		const wb = XLSX.utils.book_new()
-		const ws = XLSX.utils.aoa_to_sheet(dishes)
+		const ws = XLSX.utils.aoa_to_sheet(dishes, {
+			dateNF: 'HH:mm:ss DD-MM-YYYY'
+		})
+
+		if (!ws['!cols']) ws['!cols'] = []
+		ws['!cols'][5] = { wch: 17 }
+
+		const merge = [
+			{
+				s: { r: 0, c: 0 },
+				e: { r: 0, c: 3 }
+			},
+			{
+				s: {
+					r: dishes.length - 1,
+					c: 2
+				},
+				e: {
+					r: dishes.length - 1,
+					c: 3
+				}
+			},
+			{
+				s: {
+					r: dishes.length - 2,
+					c: 0
+				},
+				e: {
+					r: dishes.length - 2,
+					c: 3
+				}
+			},
+			{
+				s: {
+					r: dishes.length - 3,
+					c: 0
+				},
+				e: {
+					r: dishes.length - 3,
+					c: 2
+				}
+			}
+		]
+
+		ws['!merges'] = merge
+		ws['!formatRows'] = true
+		ws.D7 = { t: 'n', f: `SUM(D3:D${dishes.length - 3})` }
 
 		XLSX.utils.book_append_sheet(wb, ws, 'Sheet1')
-		XLSX.writeFile(wb, `${menu.name}.xlsx`, { bookType: 'xlsx' })
+		XLSX.writeFile(wb, `${menu.name}.xlsx`, {
+			bookType: 'xlsx',
+			cellStyles: true
+		})
 	}
 
 	render() {
 		const { menu, isLock, isActiveProps, getOrderByMenu, menuId } = this.props
 		const { isActive } = this.state
-
 		return (
 			<Collapse onChange={this.changeActive}>
 				<Panel
 					extra={
 						<>
-							<Button
-								className="publish style-btn"
-								onClick={e => isLock(e, menu._id)}
-							>
-								{menu.isLocked ? 'Unlock' : 'Lock'}
-							</Button>
+							<Tooltip title={menu.isLocked ? 'Unlock menu' : 'Lock menu'}>
+								<Button
+									className="publish style-btn"
+									onClick={e => isLock(e, menu._id)}
+								>
+									<Icon type={menu.isLocked ? 'lock' : 'unlock'} />
+								</Button>
+							</Tooltip>
 
-							<Button
-								className="publish style-btn"
-								onClick={e => isActiveProps(e, menu._id)}
-							>
-								Complete
-							</Button>
+							<Tooltip title="Complete menu">
+								<Button
+									className="publish style-btn"
+									onClick={e => isActiveProps(e, menu._id)}
+								>
+									<Icon type="check" />
+								</Button>
+							</Tooltip>
 
-							<Button
-								className="style-btn"
-								onClick={() => this.export(menu)}
-								variant="raised"
-								color="secondary"
-								disabled={!isActive}
-							>
-								Request
-							</Button>
+							<Tooltip title="Complete menu">
+								<Button
+									className="publish style-btn"
+									onClick={() => this.export(menu)}
+									disabled={!isActive}
+								>
+									<Icon type="file-excel" />
+								</Button>
+							</Tooltip>
 						</>
 					}
 					header={menu.name}
@@ -159,6 +217,15 @@ const ORDER_BY_MENU = gql`
 	}
 `
 
+const ME = gql`
+	query {
+		me {
+			username
+			fullName
+		}
+	}
+`
+
 export default HOCQueryMutation([
 	{
 		query: GET_MENU_BY_SITE,
@@ -181,6 +248,10 @@ export default HOCQueryMutation([
 				}
 			}
 		}
+	},
+	{
+		query: ME,
+		name: 'me'
 	},
 	{
 		mutation: LOCK_AND_UNLOCK_MENU,

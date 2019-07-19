@@ -13,6 +13,7 @@
 	padding: 15px;
 }
 
-.style-btn {
+.style-btn,
+span.style-btn > button {
 	height: inherit;
 }
