@@ -4,6 +4,7 @@ import BgDashboard from '../../../assets/images/bg-dashboard.jpg'
 
 function Layout(props) {
 	const { children } = props
+	console.log(children)
 	return (
 		<div
 			style={{
@@ -13,23 +14,24 @@ function Layout(props) {
 				backgroundPosition: 'center center',
 				backgroundAttachment: 'fixed',
 				backgroundSize: 'cover',
-				overflowY: 'auto'
+				overflowY: 'scroll',
+				WebkitOverflowScrolling: 'touch'
 			}}
 		>
 			{children.props.location.pathname === '/🥢' ? (
 				children
 			) : (
-				<>
+				<div>
 					<Button
 						type="link"
 						icon="left"
 						size="large"
 						style={{ color: '#ffffff' }}
-						onClick={() => children.props.history.push('/🥢')}
+						onClick={() => children.props.history.goBack()}
 					/>
-					<Divider style={{ margin: '0 0' }} />
+					<Divider style={{ margin: '4px 0 0' }} />
 					{children}
-				</>
+				</div>
 			)}
 		</div>
 	)
