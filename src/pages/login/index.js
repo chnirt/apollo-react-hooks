@@ -33,7 +33,10 @@ function Login(props) {
 						const mess = "Your account doesn't have any permissions"
 						const { token, userPermissions } = res.data.login
 						setLoading(false)
-						if (userPermissions.length > 0) {
+						if (
+							userPermissions.length > 0 &&
+							userPermissions[0].permissions.length > 0
+						) {
 							props.store.authStore.authenticate(token, userPermissions)
 							props.history.push('/🥢')
 						} else {
