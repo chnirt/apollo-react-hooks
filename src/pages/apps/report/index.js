@@ -1,6 +1,5 @@
 import React from 'react'
 import gql from 'graphql-tag'
-import { Button, Divider } from 'antd'
 import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
 import ListMenu from './listMenu'
 import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation'
@@ -64,11 +63,9 @@ class Report extends React.Component {
 	}
 
 	render() {
-		const { getMenuBySite, history } = this.props
+		const { getMenuBySite } = this.props
 		return (
 			<React.Fragment>
-				<Button shape="circle" icon="left" onClick={() => history.push('/🥢')} />
-				<Divider />
 				<div className="report">
 					{getMenuBySite.menusBySite &&
 						getMenuBySite.menusBySite.map(menuBySite => {

@@ -4,7 +4,8 @@ import BgDashboard from '../../../assets/images/bg-dashboard.jpg'
 
 function Layout(props) {
 	const { children } = props
-	console.log(children.props.location.pathname)
+	console.log(children)
+	// console.log(children.props.location.pathname)
 	return (
 		<div
 			style={{

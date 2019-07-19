@@ -94,10 +94,7 @@ class listMenu extends React.Component {
 							menu.dishes.map(dish => {
 								// console.log(dish)
 								return (
-									<Panel
-										header={`${dish.name} x${dish.count} ------ ${dish._id}`}
-										key={dish._id}
-									>
+									<Panel header={`${dish.name} x${dish.count}`} key={dish._id}>
 										{getOrderByMenu.ordersByMenu &&
 											getOrderByMenu.ordersByMenu.map(orderByMenu => {
 												return (
