@@ -110,7 +110,7 @@ function MenuDetail(props) {
 							{data.loading
 								? null
 								: data.siteShopsBySiteId.map(shop => (
-										<Select.Option key={shop._id} value={shop.shopId}>
+										<Select.Option key={shop} value={shop.shopId}>
 											{shop.name}
 										</Select.Option>
 								  ))}
