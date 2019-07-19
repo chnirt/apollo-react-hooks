@@ -12,10 +12,10 @@ import store from '../mobx'
 // const domain = 'devcloud3.digihcs.com'
 // const port = '11048'
 
-const httpLink = new HttpLink({ uri: 'http://localhost:4000/graphql' })
-// const httpLink = new HttpLink({
-// 	uri: 'http://devcloud3.digihcs.com:11029/graphql'
-// })
+// const httpLink = new HttpLink({ uri: 'http://localhost:4000/graphql' })
+const httpLink = new HttpLink({
+	uri: 'http://devcloud3.digihcs.com:11029/graphql'
+})
 
 // const wsLink = new WebSocketLink({
 // 	uri: `ws://${domain}:${port}/graphql`,
