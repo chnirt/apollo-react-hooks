@@ -1,19 +1,20 @@
-import React, { useState, useEffect } from 'react'
-import { Row, Col, Button, Divider, List } from 'antd'
+import React, { useState, useLayoutEffect } from 'react'
+import { Row, Col, Button, Divider, List, Alert } from 'antd'
 import { withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
 
 const Order = props => {
-	const [dishes, setDishes] = useState([])
+	const [dishes, setDishes] = useState()
 	const [menuId, setMenuId] = useState()
 	const [setOrderNumber] = useState()
 	// const [orderNumbers, setOrderNumbers] = useState()
+	const [setOrdersByMenu] = useState()
 	const [isPublish, setIsPublish] = useState()
 	const [isLocked, setIsLocked] = useState()
 	const [alert, setAlert] = useState(false)
 	const [ordersCountByUser, setOrdersCountByUser] = useState({})
 
-	useEffect(() => {
+	useLayoutEffect(() => {
 		props.client
 			.query({
 				query: MENU_BY_SELECTED_SITE,
@@ -21,39 +22,51 @@ const Order = props => {
 					siteId: localStorage.getItem('currentsite')
 				}
 			})
-			.then(res => {
-				setIsPublish(res.data.menuPublishBySite.isPublished)
-				setMenuId(res.data.menuPublishBySite._id)
-				if (
-					res.data.menuPublishBySite.isPublished === true &&
-					res.data.menuPublishBySite.isActive === true
-				) {
-					props.client
-						.query({
-							query: ORDERS_BY_MENU,
-							variables: {
-								menuId: res.data.menuPublishBySite._id
-							}
-						})
-						.then(res => {
-							if (res.data.ordersByMenu) {
-								// setOrderNumbers(res.data.ordersByMenu.map(order => order.count))
-								localStorage.setItem('orderNumbers', [
-									...res.data.ordersByMenu.map(order => order.count)
-								])
-							}
-						})
-				}
+			.then(async res => {
+				await props.client
+					.query({
+						query: ORDERS_COUNT_BY_USER,
+						variables: {
+							menuId: res.data.menuPublishBySite._id
+						}
+					})
+					.then(async result => {
+						if (result.data.ordersByMenu) {
+							await setOrdersCountByUser(
+								result.data.ordersCountByUser.map(order => ({
+									[order.dishId]: order.count
+								}))
+							)
+							localStorage.setItem('orderNumbers', [
+								...result.data.ordersCountByUser.map(order => order.count)
+							])
+						}
+					})
+					.catch(error => {
+						console.log(error)
+					})
 			})
 			.catch(error => {
 				console.log(error)
 			})
-		// getOrdersByMenu()
-		handleDefaultDishes()
+		// eslint-disable-next-line no-use-before-define
 		handleOrdersCountByUser()
+		// eslint-disable-next-line no-use-before-define
+		handleDefaultDishes()
+		// eslint-disable-next-line no-use-before-define
+		handleOrdersByMenu()
 	}, [])
 
-	async function getOrdersByMenu() {
+	async function handleDefaultDishes() {
+		console.log(ordersCountByUser)
+		// console.log(orderNumbers)
+		// await getOrdersByMenu()
+		// const orderNumbers = await props.ordersByMenu.ordersByMenu.map(order => order.count)
+		const orderNumbers = localStorage.getItem('orderNumbers')
+			? localStorage.getItem('orderNumbers').split(',')
+			: null
+		// const newOrderNumbers = (orderNumbers) ? orderNumbers : null
+		// await setOrderNumbers(ordersCountByUser)
 		await props.client
 			.query({
 				query: MENU_BY_SELECTED_SITE,
@@ -62,68 +75,20 @@ const Order = props => {
 				}
 			})
 			.then(async res => {
-				setMenuId(res.data.menuPublishBySite._id)
+				await setIsPublish(res.data.menuPublishBySite.isPublished)
+				await setIsLocked(res.data.menuPublishBySite.isLocked)
 				if (
 					res.data.menuPublishBySite.isPublished === true &&
 					res.data.menuPublishBySite.isActive === true
 				) {
-					await props.client
-						.query({
-							query: ORDERS_BY_MENU,
-							variables: {
-								menuId: res.data.menuPublishBySite._id
-							}
-						})
-						.then(result => {
-							const emptyArray = [].concat(
-								Array(res.data.menuPublishBySite.dishes.length).fill(0)
-							)
-							if (result.data.ordersByMenu.length > 0) {
-								// setOrderNumbers(result.data.ordersByMenu.map(order => order.count))
-								localStorage.setItem('orderNumbers', [
-									...result.data.ordersByMenu.map(order => order.count)
-								])
-							} else {
-								localStorage.setItem('orderNumbers', [...emptyArray])
-								// setOrderNumbers([...emptyArray])
-							}
-						})
-				}
-			})
-			.catch(error => {
-				console.log(error)
-			})
-	}
-
-	async function handleDefaultDishes() {
-		// console.log(orderNumbers)
-		await getOrdersByMenu()
-		// const orderNumbers = await props.ordersByMenu.ordersByMenu.map(order => order.count)
-		const orderNumbers = localStorage.getItem('orderNumbers')
-			? localStorage.getItem('orderNumbers').split(',')
-			: null
-		// const newOrderNumbers = (orderNumbers) ? orderNumbers : null
-		await props.client
-			.query({
-				query: MENU_BY_SELECTED_SITE,
-				variables: {
-					siteId: localStorage.getItem('currentsite')
-				}
-			})
-			.then(res => {
-				setIsPublish(res.data.menuPublishBySite.isPublished)
-				setIsLocked(res.data.menuPublishBySite.isLocked)
-				if (
-					res.data.menuPublishBySite.isPublished === true &&
-					res.data.menuPublishBySite.isActive === true
-				) {
-					setMenuId(res.data.menuPublishBySite._id)
-					setOrderNumber(
+					await setMenuId(res.data.menuPublishBySite._id)
+					await setOrderNumber(
 						[...res.data.menuPublishBySite.dishes].map(
+							// eslint-disable-next-line no-return-assign
 							(dish, index) => (dish.orderNumber = orderNumbers[index])
 						)
 					)
-					setDishes([...res.data.menuPublishBySite.dishes])
+					await setDishes([...res.data.menuPublishBySite.dishes])
 				}
 			})
 			.catch(error => {
@@ -132,6 +97,7 @@ const Order = props => {
 	}
 
 	async function createOrder(item) {
+		console.log(item)
 		await props.client
 			.mutate({
 				mutation: ORDER_DISH,
@@ -144,9 +110,9 @@ const Order = props => {
 				}
 			})
 			.then(res => {
+				// eslint-disable-next-line no-unused-expressions
 				res.data.orderDish
-					? // ? alert('Đặt thành công')
-					  console.log('success')
+					? console.log('Đặt thành công')
 					: console.log('something went wrong')
 			})
 			.catch(error => {
@@ -156,56 +122,60 @@ const Order = props => {
 
 	async function selectDishHandler(index, item) {
 		const theDish = [...dishes]
+		// eslint-disable-next-line no-return-assign
 		await dishes.map(dish =>
 			dish._id === item._id && dish.orderNumber < item.count
 				? (theDish[index] = {
 						...theDish[index],
-						orderNumber: item.orderNumber++
+						orderNumber: item.orderNumber + 1
 				  })
 				: (theDish[index] = { ...theDish[index], orderNumber: item.orderNumber })
 		)
-		setDishes(theDish)
+		await setDishes(theDish)
+		console.log(dishes)
 		await createOrder(item)
 	}
 
 	async function unselectDishHandler(index, item) {
 		const theDish = [...dishes]
+		// eslint-disable-next-line no-return-assign
 		await dishes.map(dish =>
-			dish._id === item._id && dish.orderNumber > 0
+			dish._id === item._id && dish.orderNumber > item.count
 				? (theDish[index] = {
 						...theDish[index],
-						orderNumber: item.orderNumber--
+						orderNumber: item.orderNumber - 1
 				  })
 				: (theDish[index] = { ...theDish[index], orderNumber: item.orderNumber })
 		)
-
-		setDishes(theDish)
+		await setDishes(theDish)
+		console.log(dishes)
 		await createOrder(item)
 	}
 
 	async function handleMinus(item) {
-		const index = dishes.map(dish => '-').indexOf(item._id)
+		const index = dishes.map(dish => dish._id).indexOf(item._id)
 		await unselectDishHandler(index, item)
+		console.log(dishes)
 	}
 
 	async function handlePlus(item) {
-		const index = dishes.map(dish => '+').indexOf(item._id)
+		const index = dishes.map(dish => dish._id).indexOf(item._id)
 		await selectDishHandler(index, item)
+		console.log(dishes)
 	}
 
-	async function handleConfirmOrder(item) {
+	async function handleConfirmOrder() {
 		await props.client
 			.query({
 				query: ORDERS_BY_USER,
 				variables: {
-					menuId: props.menuId
+					menuId
 				}
 			})
 			.then(async result => {
-				console.log(result)
 				const thisOrderIds = []
 				await result.data.ordersByUser.map(order => thisOrderIds.push(order._id))
-				props.client
+				await props.client
 					.mutate({
 						mutation: CONFIRM_ORDER,
 						variables: {
@@ -213,14 +183,46 @@ const Order = props => {
 						}
 					})
 					.then(res => {
-						res
-							? // ? alert('Xác nhận thành công')
-							  setAlert(true)
-							: console.log('something went wrong')
+						// eslint-disable-next-line no-unused-expressions
+						res ? setAlert(true) : console.log('something went wrong')
 					})
 					.catch(error => {
 						console.dir(error)
 					})
+			})
+	}
+
+	async function handleOrdersByMenu() {
+		props.client
+			.query({
+				query: MENU_BY_SELECTED_SITE,
+				variables: {
+					siteId: localStorage.getItem('currentsite')
+				}
+			})
+			.then(async res => {
+				await props.client
+					.query({
+						query: ORDERS_BY_MENU,
+						variables: {
+							menuId: res.data.menuPublishBySite._id
+						}
+					})
+					.then(async result => {
+						const obj = {}
+						await result.data.ordersByMenu.map(
+							// eslint-disable-next-line no-return-assign
+							order => (obj[order.dishId] = order.count)
+						)
+						console.log(obj)
+						await setOrdersByMenu(obj)
+					})
+					.catch(error => {
+						console.log(error)
+					})
+			})
+			.catch(error => {
+				console.log(error)
 			})
 	}
 
@@ -233,7 +235,6 @@ const Order = props => {
 				}
 			})
 			.then(async res => {
-				console.log(res)
 				await props.client
 					.query({
 						query: ORDERS_COUNT_BY_USER,
@@ -243,8 +244,8 @@ const Order = props => {
 					})
 					.then(async result => {
 						const obj = {}
-						console.log('aaaa', result.data.ordersCountByUser)
 						await result.data.ordersCountByUser.map(
+							// eslint-disable-next-line no-return-assign
 							order => (obj[order.dishId] = order.count)
 						)
 						console.log(obj)
@@ -258,10 +259,10 @@ const Order = props => {
 				console.log(error)
 			})
 	}
-	console.log(ordersCountByUser)
+
 	const time = new Date(Date.now()).getHours()
 	const confirmButton =
-		time >= 12 && time < 19 ? (
+		time >= 12 && time < 14 ? (
 			<Button
 				onClick={handleConfirmOrder}
 				id="confirm-order"
@@ -270,6 +271,7 @@ const Order = props => {
 				Xác nhận
 			</Button>
 		) : null
+
 	return (
 		<React.Fragment>
 			<Button
@@ -282,6 +284,14 @@ const Order = props => {
 				<Col span={22} offset={1}>
 					{isPublish === true ? (
 						<>
+							{alert === true ? (
+								<Alert
+									message="Xác nhận thành công"
+									type="success"
+									showIcon
+									closable
+								/>
+							) : null}
 							<List
 								dataSource={dishes}
 								renderItem={item => (
@@ -305,18 +315,23 @@ const Order = props => {
 												+
 											</Button>
 										]}
+										// extra={
+										// 	<Button>
+										// 		Note
+										// 	</Button>
+										// }
 									>
 										<List.Item.Meta
 											title={item.name}
-											description={
-												`${item.orderNumber}` === 'undefined'
-													? `${0}/${item.count}`
-													: `${item.orderNumber}/${item.count}`
-											}
+											// description={
+											// 	`${item.orderNumber}` === 'undefined'
+											// 		? `${0}/${item.count}`
+											// 		: `${item.orderNumber}/${item.count}`
+											// }
+											description={`${0}/${item.count}`}
 										/>
-										{/* <div>{(`${item.orderNumber}` === 'undefined') ? `${0}` : `${item.orderNumber}`}</div> */}
-										{/* <div>{item.orderNumber}</div> */}
-										<div>{ordersCountByUser[item._id]}</div>
+										<div>{item.orderNumber}</div>
+										{/* <div>{ordersCountByUser[item._id]}</div> */}
 									</List.Item>
 								)}
 							/>
