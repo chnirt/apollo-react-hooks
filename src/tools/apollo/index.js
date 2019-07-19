@@ -12,6 +12,7 @@ const domain = 'devcloud3.digihcs.com'
 const port = '11068'
 
 const httpLink = new HttpLink({
+	// uri: 'http://localhost:4000/graphql'
 	uri: `http://${domain}:${port}/graphql`
 })
 
