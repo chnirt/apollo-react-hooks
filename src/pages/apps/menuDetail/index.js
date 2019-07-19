@@ -69,18 +69,10 @@ function MenuDetail (props) {
 			}).then(res => openNotificationWithIcon('success', 'save', 'Lưu menu thành công', ''))
 		) : openNotificationWithIcon('info', 'nochange', 'Menu không có thay đổi', '')
 	}
-
 	const { getFieldDecorator } = form
 	return (
 		<div className='menu'>
-			<Button
-				type='link'
-				icon='left'
-				size='large'
-				style={{ color: '#ffffff' }}
-				onClick={() => props.history.push('/🥢/menu')}
-			/>
-			<Divider style={{ marginTop: 0 }} />
+			<h2 style={{ margin: '16px 24px', color: '#fff'}}>{menuById.menu && menuById.menu.name}</h2>
 			<Row style={{ marginBottom: '1em' }}>
 				<Col span={22} offset={1}>
 					{getFieldDecorator('shop')(

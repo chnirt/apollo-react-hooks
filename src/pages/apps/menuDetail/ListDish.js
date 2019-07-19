@@ -115,7 +115,7 @@ function ListDish(props) {
 				}
 			{ props.shopId === '' 
 			? (
-				<div style={{overflow: 'auto', height: '40vh'}}>
+				<div style={{overflow: 'auto', height: '60vh'}}>
 					{
 						props.dishes && props.dishes.map((dish, index) => (
 							<Row key={index}>

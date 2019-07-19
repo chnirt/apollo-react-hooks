@@ -11,14 +11,7 @@ function Menu(props) {
 
 	return (
 		<div className='menu'>
-			<Button
-				type='link'
-				icon='left'
-				size='large'
-				style={{ color: '#ffffff' }}
-				onClick={() => props.history.push('/🥢')}
-			/>
-			<Divider style={{ marginTop: 0 }} />
+			<h1 style={{ margin: '16px 24px', color: '#fff'}}>Quản lý menu</h1>
 			<Row className='menu-list'>
 				<MenuList {...props} siteId={siteId} />
 			</Row>
