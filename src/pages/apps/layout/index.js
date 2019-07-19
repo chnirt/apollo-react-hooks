@@ -13,13 +13,13 @@ function Layout(props) {
 				backgroundPosition: 'center center',
 				backgroundAttachment: 'fixed',
 				backgroundSize: 'cover',
-				overflowY: 'auto'
+				overflow: 'hidden'
 			}}
 		>
 			{children.props.location.pathname === '/🥢' ? (
 				children
 			) : (
-				<>
+				<div>
 					<Button
 						type="link"
 						icon="left"
@@ -29,7 +29,7 @@ function Layout(props) {
 					/>
 					<Divider style={{ margin: '4px 0 0' }} />
 					{children}
-				</>
+				</div>
 			)}
 		</div>
 	)
