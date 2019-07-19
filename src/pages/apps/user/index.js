@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import gql from 'graphql-tag'
-import { Row, Button, Divider, Card, Modal } from 'antd'
+import { Row, Button, Card, Modal, Typography } from 'antd'
 import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation'
 import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
 
@@ -8,6 +8,7 @@ import UserList from './userlist'
 import UserModal from './usermodal'
 
 const { confirm } = Modal
+const { Title } = Typography
 
 function User(props) {
 	const [visible, setVisible] = useState(false)
@@ -96,28 +97,23 @@ function User(props) {
 
 	return (
 		<>
-			<Row
-				style={{
-					height: 'calc(100vh - 60px)'
-				}}
-			>
-				<Button
-					shape="circle"
-					icon="left"
-					onClick={() => props.history.push('/🥢')}
-				/>
-				<Divider />
+			<Row>
 				<Card
-					title="Quản lí user"
+					title={
+						<Title style={{ color: '#ffffff' }} level={3}>
+							Manage user
+						</Title>
+					}
 					bordered={false}
 					extra={
 						<Button type="primary" block onClick={() => showModal()}>
-							Tạo user
+							Create user
 						</Button>
 					}
 					headStyle={{
 						border: 0
 					}}
+					style={{ backgroundColor: 'transparent' }}
 				>
 					{users &&
 						users
@@ -129,6 +125,8 @@ function User(props) {
 									showModal={showModal}
 									onLockAndUnlock={onLockAndUnlock}
 									onDelete={onDelete}
+									visible={visible}
+									hideModal={hideModal}
 								/>
 							))}
 				</Card>

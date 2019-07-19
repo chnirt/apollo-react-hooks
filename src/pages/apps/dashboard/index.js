@@ -6,7 +6,6 @@ import { withRouter } from 'react-router-dom'
 import { withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
 import { menuRoutes } from '../../../routes'
-import './index.scss'
 
 const { TabPane } = Tabs
 const { Option } = Select
