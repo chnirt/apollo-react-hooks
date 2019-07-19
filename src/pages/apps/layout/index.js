@@ -27,7 +27,7 @@ function Layout(props) {
 						style={{ color: '#ffffff' }}
 						onClick={() => children.props.history.push('/🥢')}
 					/>
-					<Divider style={{ margin: '0 0' }} />
+					<Divider style={{ margin: '4px 0 0' }} />
 					{children}
 				</>
 			)}
