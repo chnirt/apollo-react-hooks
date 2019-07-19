@@ -67,7 +67,7 @@ function MenuList(props) {
 						lg={{ span: 6, offset: 1 }}
 					>
 						<Card actions={[
-								<Icon type='edit' onClick={ () => openModal(menu._id)} />, 
+								<Icon type='edit' onClick={ () => props.history.push('/🥢/menu/detail/'+props.siteId+'/'+menu._id)} />, 
 								<Icon type='delete' onClick={() => deleteMenu(menu._id)} />
 							]}
 						>

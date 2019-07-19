@@ -25,7 +25,7 @@ export const routes = [
 			{
 				label: 'Manage Menu',
 				path: '/🥢/menu/detail/:siteId/:menuId',
-				component: 'menudetail'
+				component: 'menuDetail'
 			},
 			{
 				label: 'Manage Order',

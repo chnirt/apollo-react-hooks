@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { Form, Button, Input, Row, Col, InputNumber, Icon, Modal } from 'antd'
 import gql from 'graphql-tag'
-import { HOCQueryMutation } from '../../../../components/shared/hocQueryAndMutation'
-import openNotificationWithIcon from '../../../../components/shared/openNotificationWithIcon'
+import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation'
+import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
 
 function ListDish(props) {
 	
-	const { form, data, menuById, updateMenu, shopId } = props
+	const { form, data, menuById, updateDishes, shopId } = props
 
 	const [dishes, setDishes] = useState(props.shopId !== '' && props.shopId !== menuById.menu.shopId 
 		? [] 
@@ -36,7 +36,7 @@ function ListDish(props) {
 			list = [...dishes.slice(0), {_id: id, name: name, count: value}]
 			await setDishes(list)
 		}
-		await updateMenu(list)
+		await updateDishes(list)
 	}
 	
 	async function addDish(e) {
@@ -79,47 +79,54 @@ function ListDish(props) {
 
   return (
     <div>
-      {
-				data.shop && data.shop.dishes.map((dish, index) => {
-					return (
-						<Row key={index}>
-							<Col xs={{ span: 12 }} sm={{ span: 12 }} lg={{ span: 16 }}>
-								<Form.Item>{dish.name}</Form.Item>
-							</Col>
-							<Col xs={{ span: 8 }} sm={{ span: 8 }} lg={{ span: 4 }}>
-								<Form.Item>
-									<InputNumber
-										defaultValue={ dishes.findIndex(item => item._id === dish._id) !== -1 
-											? dishes[dishes.findIndex(item => item._id === dish._id)].count
-											: 0}
-										min={0}
-										max={99}
-										onChange={(value) => changeCount(value, dish._id, dish.name)}
-									/>
-								</Form.Item>
-							</Col>
-							<Col xs={{ span: 4 }} sm={{ span: 4 }} lg={{ span: 4 }}>
-								<Form.Item>
-									<Icon
-										style={{ marginLeft: '25px' }}
-										className='dynamic-delete-button'
-										type='delete'
-										onClick={() => deleteDish(dish._id)}
-									/>
-								</Form.Item>
-							</Col>
-						</Row>
-					)
-				})
-			}
+			
+				{
+					data.shop ? (
+						<div style={{overflow: 'auto', height: '40vh'}}>
+						{
+							data.shop.dishes.map((dish, index) => {
+								return (
+									<Row key={index}>
+										<Col span={12} offset={1}>
+											<Form.Item>{dish.name}</Form.Item>
+										</Col>
+										<Col span={6} offset={1}>
+											<Form.Item>
+												<InputNumber
+													defaultValue={ dishes.findIndex(item => item._id === dish._id) !== -1 
+														? dishes[dishes.findIndex(item => item._id === dish._id)].count
+														: 0}
+													min={0}
+													max={99}
+													onChange={(value) => changeCount(value, dish._id, dish.name)}
+												/>
+											</Form.Item>
+										</Col>
+										<Col xs={{ span: 2 }} sm={{ span: 2 }} lg={{ span: 2 }}>
+											<Form.Item>
+												<Icon
+													style={{ marginLeft: '25px' }}
+													className='dynamic-delete-button'
+													type='delete'
+													onClick={() => deleteDish(dish._id)}
+												/>
+											</Form.Item>
+										</Col>
+									</Row>
+								)
+							})
+						}
+						</div>
+					) : null
+				}
 			{ props.shopId === '' 
 			? (
 				menuById.menu && menuById.menu.dishes.map((dish, index) => (
 						<Row key={index}>
-							<Col xs={{ span: 12 }} sm={{ span: 12 }} lg={{ span: 16 }}>
+							<Col span={12} offset={1}>
 								<Form.Item>{dish.name}</Form.Item>
 							</Col>
-							<Col xs={{ span: 8 }} sm={{ span: 8 }} lg={{ span: 4 }}>
+							<Col span={6} offset={1}>
 								<Form.Item>
 									{dish.count}
 								</Form.Item>
@@ -127,7 +134,7 @@ function ListDish(props) {
 						</Row>
 					))
 				) 
-			: (<Form onSubmit={addDish} wrapperCol={{ xs: {span: 24}, sm: {span: 16 } }}>
+			: (<Form style={{ marginTop: '1em' }} onSubmit={addDish} wrapperCol={{ xs: {span: 12, offset: 1}, lg: {span: 12, offset: 1} }}>
 					<Form.Item>
 						{getFieldDecorator('name', {
 							rules: [{ required: true, message: 'Nhập tên món ăn!' }],

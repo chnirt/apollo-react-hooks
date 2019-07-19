@@ -16,16 +16,15 @@ function Menu(props) {
 		setVisible(true)
 	}
 
-	console.log(props)
-
 	return (
 		<div className='menu'>
 			<Button
-				shape='circle'
+				type='link'
 				icon='left'
+				size='large'
 				onClick={() => props.history.push('/🥢')}
 			/>
-			<Divider />
+			<Divider style={{ marginTop: 0 }} />
 			<Row className='menu-list'>
 				<MenuList {...props} siteId={siteId} openModal={openModal} />
 				<MenuModal
