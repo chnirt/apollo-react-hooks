@@ -20,7 +20,6 @@ const HOCQueryMutation = data => Component => {
 				// 		options: QueryOrMutate.options
 				// 	})
 				// } else
-
 				if (QueryOrMutate.options) {
 					return graphql(QueryOrMutate.query, {
 						options: QueryOrMutate.options,
