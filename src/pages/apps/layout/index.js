@@ -4,7 +4,6 @@ import BgDashboard from '../../../assets/images/bg-dashboard.jpg'
 
 function Layout(props) {
 	const { children } = props
-	console.log(children.props.location.pathname)
 	return (
 		<div
 			style={{
@@ -13,7 +12,8 @@ function Layout(props) {
 				backgroundRepeat: 'no-repeat',
 				backgroundPosition: 'center center',
 				backgroundAttachment: 'fixed',
-				backgroundSize: 'cover'
+				backgroundSize: 'cover',
+				overflowY: 'auto'
 			}}
 		>
 			{children.props.location.pathname === '/🥢' ? (

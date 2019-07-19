@@ -47,7 +47,7 @@ function UserModal(props) {
 				for (const [key, value] of Object.entries(values.sites)) {
 					// console.log(Array.isArray(value));
 					if (Array.isArray(value) && value.length > 1) {
-						// console.log('------Array');
+						console.log('------Array')
 						// console.log(value);
 						const permissions = []
 						value.map(item => {
@@ -63,20 +63,23 @@ function UserModal(props) {
 							permissions
 						})
 					} else {
-						// console.log(value)
+						// console.log('String', value)
 						if (value) {
-							// console.log('------String');
-							sites.push({
-								siteId: key,
-								permissions: [
-									{
-										_id: value[0].split(',')[0],
-										code: value[0].split(',')[1]
-									}
-								]
-							})
+							console.log('------String')
+							console.log(value)
+							if (value.length > 0) {
+								sites.push({
+									siteId: key,
+									permissions: [
+										{
+											_id: value[0].split(',')[0],
+											code: value[0].split(',')[1]
+										}
+									]
+								})
+							}
 						} else {
-							// console.log('------Undefine');
+							console.log('------Undefine')
 							// sites.push({
 							//   siteId: key,
 							//   permissions: []
@@ -87,7 +90,7 @@ function UserModal(props) {
 
 				values.sites = sites
 
-				// console.log(values)
+				console.log(values)
 
 				props.userId
 					? props.mutate
