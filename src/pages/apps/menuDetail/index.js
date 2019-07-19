@@ -9,6 +9,7 @@ import ListDish from './ListDish'
 function MenuDetail (props) {
 
 	const { form, data, menuById } = props
+	const { menuId } = props.match.params
 
 	const [dishes, setDishes] = useState([])
 	const [shopId, setShopId] = useState('')
@@ -16,16 +17,18 @@ function MenuDetail (props) {
 
 	function changeShop(value) {
 		setShopId(value)
+		setDishes([])
+		setHasChange(false)
 	}
 
 	async function publishAndUnpublish() {
 		await props.mutate.publishAndUnpublish({
-			variables: { id: props.menuId },
+			variables: { id: menuId },
 			refetchQueries: [
 				{
 					query: GET_MENU,
 					variables: {
-						id: props.menuId
+						id: menuId
 					}
 				}
 			]
@@ -49,7 +52,7 @@ function MenuDetail (props) {
 		hasChange ? (
 			await props.mutate.updateMenu({
 				variables: {
-					id: props.menuId,
+					id: menuId,
 					menuInfo: {
 						shopId,
 						dishes: dishes.map(dish => ({_id: dish._id, name: dish.name, count: dish.count}))
@@ -59,7 +62,7 @@ function MenuDetail (props) {
 					{
 						query: GET_MENU,
 						variables: {
-							id: props.menuId
+							id: menuId
 						}
 					}
 				]
@@ -74,6 +77,7 @@ function MenuDetail (props) {
 				type='link'
 				icon='left'
 				size='large'
+				style={{ color: '#ffffff' }}
 				onClick={() => props.history.push('/🥢/menu')}
 			/>
 			<Divider style={{ marginTop: 0 }} />
@@ -94,16 +98,21 @@ function MenuDetail (props) {
 					)}
 				</Col>
 				<Col span={12} offset={1}>
-					<b>Món ăn</b>
+					<b style={{color: '#ffd600'}}>Món ăn</b>
 				</Col>
 				<Col span={6} offset={1}>
-					<b>Số lượng</b>
+					<b style={{color: '#ffd600'}}>Số lượng</b>
 				</Col>
 			</Row>
-			<ListDish updateDishes={updateDishes} shopId={shopId} menuId={props.match.params.menuId} />
+			<ListDish 
+				updateDishes={updateDishes}
+				shopId={shopId}
+				menuShop={menuById.menu && menuById.menu.shopId}
+				dishes={menuById.menu && menuById.menu.dishes}
+			/>
 			<Row type='flex' justify='center' align='middle'>
-				<Button onClick={updateMenu} style={{width: '10em', marginRight: '1em'}}>Lưu</Button>
-				<Button onClick={publishAndUnpublish} style={{width: '10em'}}>{menuById.menu && menuById.menu.isPublished ? 'Hủy công khai' : 'Công khai'}</Button>
+				<Button ghost onClick={updateMenu} style={{width: '10em', marginRight: '1em'}}>Lưu</Button>
+				<Button ghost onClick={publishAndUnpublish} style={{width: '10em'}}>{menuById.menu && menuById.menu.isPublished ? 'Hủy công khai' : 'Công khai'}</Button>
 			</Row>
 		</div>
 	)
@@ -116,6 +125,12 @@ const GET_MENU = gql`
 			name
 			siteId
 			shopId
+			isPublished
+			dishes {
+				_id
+				name
+				count
+			}
 		}
 	}
 `

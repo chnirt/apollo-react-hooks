@@ -6,20 +6,12 @@ import openNotificationWithIcon from '../../../components/shared/openNotificatio
 
 function ListDish(props) {
 	
-	const { form, data, menuById, updateDishes, shopId } = props
+	const { form, data, updateDishes, shopId, menuShop } = props
 
-	const [dishes, setDishes] = useState(props.shopId !== '' && props.shopId !== menuById.menu.shopId 
-		? [] 
-		: (menuById.menu ? menuById.menu.dishes : [])
+	const [dishes, setDishes] = useState(shopId !== '' && shopId !== menuShop
+		? []
+		: props.dishes
 	)
-
-	useEffect(() => {
-		return () => {
-			if (menuById.menu) {
-				setDishes(menuById.menu.dishes)
-			}
-		};
-	}, [menuById.menu])
 
 	async function changeCount(value, id, name) {
 		const index = dishes.findIndex(item => item._id === id)
@@ -88,13 +80,15 @@ function ListDish(props) {
 								return (
 									<Row key={index}>
 										<Col span={12} offset={1}>
-											<Form.Item>{dish.name}</Form.Item>
+											<Form.Item style={{color: '#fff'}}>
+												<b>{dish.name}</b>
+											</Form.Item>
 										</Col>
 										<Col span={6} offset={1}>
 											<Form.Item>
 												<InputNumber
-													defaultValue={ dishes.findIndex(item => item._id === dish._id) !== -1 
-														? dishes[dishes.findIndex(item => item._id === dish._id)].count
+													defaultValue={ props.dishes.findIndex(item => item._id === dish._id) !== -1 
+														? props.dishes[props.dishes.findIndex(item => item._id === dish._id)].count
 														: 0}
 													min={0}
 													max={99}
@@ -105,7 +99,7 @@ function ListDish(props) {
 										<Col xs={{ span: 2 }} sm={{ span: 2 }} lg={{ span: 2 }}>
 											<Form.Item>
 												<Icon
-													style={{ marginLeft: '25px' }}
+													style={{ marginLeft: '1em', color: '#fff' }}
 													className='dynamic-delete-button'
 													type='delete'
 													onClick={() => deleteDish(dish._id)}
@@ -121,19 +115,25 @@ function ListDish(props) {
 				}
 			{ props.shopId === '' 
 			? (
-				menuById.menu && menuById.menu.dishes.map((dish, index) => (
-						<Row key={index}>
-							<Col span={12} offset={1}>
-								<Form.Item>{dish.name}</Form.Item>
-							</Col>
-							<Col span={6} offset={1}>
-								<Form.Item>
-									{dish.count}
-								</Form.Item>
-							</Col>
-						</Row>
-					))
-				) 
+				<div style={{overflow: 'auto', height: '40vh'}}>
+					{
+						props.dishes && props.dishes.map((dish, index) => (
+							<Row key={index}>
+								<Col span={12} offset={1}>
+									<Form.Item style={{color: '#fff'}}>
+										<b>{dish.name}</b>
+									</Form.Item>
+								</Col>
+								<Col span={6} offset={1}>
+									<Form.Item style={{color: '#fff'}}>
+										<b>{dish.count}</b>
+									</Form.Item>
+								</Col>
+							</Row>
+						))
+					}
+				</div>
+			) 
 			: (<Form style={{ marginTop: '1em' }} onSubmit={addDish} wrapperCol={{ xs: {span: 12, offset: 1}, lg: {span: 12, offset: 1} }}>
 					<Form.Item>
 						{getFieldDecorator('name', {
@@ -146,7 +146,7 @@ function ListDish(props) {
 						)}
 					</Form.Item>
 					<Form.Item>
-						<Button icon='plus' htmlType='submit' type='dashed'>
+						<Button ghost icon='plus' htmlType='submit' type='dashed'>
 							Thêm món
 						</Button>
 					</Form.Item>
@@ -182,25 +182,6 @@ const DELETE_DISH = gql`
 	}
 `
 
-const GET_MENU = gql`
-	query menu($id: String!) {
-		menu(id: $id) {
-			_id
-			name
-			siteId
-			shopId
-			dishes {
-				_id
-				name
-				count
-			}
-			isPublished
-			isLocked
-			isActive
-		}
-	}
-`
-
 export default HOCQueryMutation([
 	{
 		query: GET_SHOP_BY_ID,
@@ -210,15 +191,6 @@ export default HOCQueryMutation([
 			},
 			fetchPolicy: 'no-cache'
 		})
-	}, 
-	{
-		query: GET_MENU,
-		options: props => ({
-			variables: {
-				id: props.menuId
-			}
-		}),
-		name: 'menuById'
 	},
 	{
 		mutation: ADD_DISH_TO_SHOP,

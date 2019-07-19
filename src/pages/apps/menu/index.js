@@ -4,17 +4,10 @@ import MenuList from './menuList'
 import MenuModal from './menuModal'
 
 function Menu(props) {
-	const [menuId, setMenuId] = useState('')
-	const [visible, setVisible] = useState(false)
 	
 	const [siteId] = useState(
 		window.localStorage.getItem('currentsite')
 	)
-
-	function openModal(id) {
-		setMenuId(id)
-		setVisible(true)
-	}
 
 	return (
 		<div className='menu'>
@@ -22,17 +15,12 @@ function Menu(props) {
 				type='link'
 				icon='left'
 				size='large'
+				style={{ color: '#ffffff' }}
 				onClick={() => props.history.push('/🥢')}
 			/>
 			<Divider style={{ marginTop: 0 }} />
 			<Row className='menu-list'>
-				<MenuList {...props} siteId={siteId} openModal={openModal} />
-				<MenuModal
-					siteId={siteId}
-					menuId={menuId}
-					visible={visible}
-					handleCancel={() => setVisible(false)}
-				/>
+				<MenuList {...props} siteId={siteId} />
 			</Row>
 		</div>
 	)

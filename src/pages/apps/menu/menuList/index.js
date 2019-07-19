@@ -8,10 +8,6 @@ function MenuList(props) {
 	const { data, form, mutate } = props
 	const [visible, setVisible] = useState(false)
 
-	function openModal(id) {
-		props.openModal(id)
-	}
-
 	async function deleteMenu (id) {
 		Modal.confirm({
 			title: 'Xóa menu',
@@ -71,12 +67,12 @@ function MenuList(props) {
 								<Icon type='delete' onClick={() => deleteMenu(menu._id)} />
 							]}
 						>
-							<p style={{ height: '50px', lineHeight: '50px' }}>{menu.name}</p>
+							<p style={{ height: '1em', lineHeight: '1em' }}>{menu.name}</p>
 						</Card>
 					</Col>
 			)}
 				<Col xs={{ span: 8, offset: 8 }} lg={{ span: 8, offset: 8 }}>
-					<Button icon='plus' onClick={() => setVisible(true)} block>
+					<Button ghost icon='plus' onClick={() => setVisible(true)} block>
 						Thêm menu
 					</Button>
 					<Modal
