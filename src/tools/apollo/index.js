@@ -9,10 +9,11 @@ import { getMainDefinition } from 'apollo-utilities'
 import store from '../mobx'
 
 const domain = 'devcloud3.digihcs.com'
-const port = '11048'
+const port = '11098'
 
 const httpLink = new HttpLink({
-	uri: `http://${domain}:${port}/graphql`
+	// uri: 'http://localhost:4000/graphql'
+	uri: 'http://devcloud3.digihcs.com:11098/graphql'
 })
 
 const wsLink = new WebSocketLink({

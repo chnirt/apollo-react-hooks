@@ -26,7 +26,7 @@ function Layout(props) {
 						icon="left"
 						size="large"
 						style={{ color: '#ffffff' }}
-						onClick={() => children.props.history.push('/🥢')}
+						onClick={() => children.props.history.goBack()}
 					/>
 					<Divider style={{ margin: '4px 0 0' }} />
 					{children}

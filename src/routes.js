@@ -19,7 +19,13 @@ export const routes = [
 			{
 				label: 'Manage Menu',
 				path: '/🥢/menu',
+				exact: true,
 				component: 'menu'
+			},
+			{
+				label: 'Manage Menu',
+				path: '/🥢/menu/detail/:siteId/:menuId',
+				component: 'menuDetail'
 			},
 			{
 				label: 'Manage Order',
