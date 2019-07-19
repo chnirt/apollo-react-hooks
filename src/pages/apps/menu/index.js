@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
-import { Row, Button, Divider } from 'antd'
+import { Row } from 'antd'
 import MenuList from './menuList'
-import MenuModal from './menuModal'
 
 function Menu(props) {
 	
