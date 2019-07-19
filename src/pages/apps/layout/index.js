@@ -1,13 +1,12 @@
 import React from 'react'
-import { Layout as Layouts } from 'antd'
+import { Button, Divider } from 'antd'
 import BgDashboard from '../../../assets/images/bg-dashboard.jpg'
 
 function Layout(props) {
 	const { children } = props
+	console.log(children.props.location.pathname)
 	return (
-		<Layouts
-			className="layout"
-			// id="layout-dashboard"
+		<div
 			style={{
 				height: '100vh',
 				backgroundImage: `url(${BgDashboard})`,
@@ -17,8 +16,22 @@ function Layout(props) {
 				backgroundSize: 'cover'
 			}}
 		>
-			{children}
-		</Layouts>
+			{children.props.location.pathname === '/🥢' ? (
+				children
+			) : (
+				<>
+					<Button
+						type="link"
+						icon="left"
+						size="large"
+						style={{ color: '#ffffff' }}
+						onClick={() => children.props.history.push('/🥢')}
+					/>
+					<Divider style={{ margin: '0 0' }} />
+					{children}
+				</>
+			)}
+		</div>
 	)
 }
 

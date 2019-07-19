@@ -278,7 +278,6 @@ function UserModal(props) {
 							<Form.Item key={item._id} label={item.name}>
 								{getFieldDecorator(`sites.${item._id}`, {
 									initialValue: newArray
-									// initialValue: ['daeb5c10-9f92-11e9-990b-9dc89f86db87,USER_CREATE']
 								})(
 									<Select
 										mode="multiple"
