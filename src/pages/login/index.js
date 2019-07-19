@@ -30,10 +30,15 @@ function Login(props) {
 					})
 					.then(res => {
 						// console.log(res.data.login)
+						const mess = "Your account doesn't have any permissions"
 						const { token, userPermissions } = res.data.login
 						setLoading(false)
-						props.store.authStore.authenticate(token, userPermissions)
-						props.history.push('/🥢')
+						if (userPermissions.length > 0) {
+							props.store.authStore.authenticate(token, userPermissions)
+							props.history.push('/🥢')
+						} else {
+							openNotificationWithIcon('error', 'login', 'Login Failed', mess)
+						}
 					})
 					.catch(err1 => {
 						// console.log(err1)
@@ -53,7 +58,7 @@ function Login(props) {
 
 						setLoading(false)
 
-						openNotificationWithIcon('error', 'login', 'Login Failed.', mess)
+						openNotificationWithIcon('error', 'login', 'Login Failed', mess)
 					})
 			}
 		})

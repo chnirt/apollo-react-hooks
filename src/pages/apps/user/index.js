@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import gql from 'graphql-tag'
-import { Row, Button, Divider, Card, Modal, Typography } from 'antd'
+import { Row, Button, Card, Modal, Typography } from 'antd'
 import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation'
 import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
 
@@ -97,17 +97,7 @@ function User(props) {
 
 	return (
 		<>
-			<Row
-				style={{
-					height: 'calc(100vh - 60px)'
-				}}
-			>
-				<Button
-					shape="circle"
-					icon="left"
-					onClick={() => props.history.push('/🥢')}
-				/>
-				<Divider />
+			<Row>
 				<Card
 					title={
 						<Title style={{ color: '#ffffff' }} level={3}>
@@ -135,6 +125,8 @@ function User(props) {
 									showModal={showModal}
 									onLockAndUnlock={onLockAndUnlock}
 									onDelete={onDelete}
+									visible={visible}
+									hideModal={hideModal}
 								/>
 							))}
 				</Card>
