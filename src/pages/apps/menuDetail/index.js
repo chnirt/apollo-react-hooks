@@ -21,30 +21,39 @@ function MenuDetail(props) {
 	}
 
 	async function publishAndUnpublish() {
-		await props.mutate
-			.publishAndUnpublish({
-				variables: { id: menuId },
-				refetchQueries: [
-					{
-						query: GET_MENU,
-						variables: {
-							id: menuId
+		if (menuById.menu.dishes.length !== 0) {
+			await props.mutate
+				.publishAndUnpublish({
+					variables: { id: menuId },
+					refetchQueries: [
+						{
+							query: GET_MENU,
+							variables: {
+								id: menuId
+							}
 						}
-					}
-				]
-			})
-			.then(
-				res =>
-					res &&
-					openNotificationWithIcon(
-						'success',
-						'publish',
-						menuById.menu && menuById.menu.isPublished
-							? 'Hủy công khai menu thành công'
-							: 'Công khai menu thành công',
-						''
-					)
+					]
+				})
+				.then(
+					res =>
+						res &&
+						openNotificationWithIcon(
+							'success',
+							'publish',
+							menuById.menu && menuById.menu.isPublished
+								? 'Hủy công khai menu thành công'
+								: 'Công khai menu thành công',
+							''
+						)
+				)
+		} else {
+			openNotificationWithIcon(
+				'error',
+				'publishfail',
+				'Menu không có món ăn để công khai',
+				''
 			)
+		}
 	}
 
 	// eslint-disable-next-line no-shadow
