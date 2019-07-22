@@ -6,7 +6,7 @@ import gql from 'graphql-tag'
 const Order = props => {
 	const [dishes, setDishes] = useState()
 	const [menuId, setMenuId] = useState()
-	// const [setOrdersByMenu] = useState()
+	const [ordersByMenu, setOrdersByMenu] = useState()
 	const [isPublish, setIsPublish] = useState()
 	const [isLocked, setIsLocked] = useState()
 	const [alert, setAlert] = useState(false)
@@ -19,7 +19,6 @@ const Order = props => {
 				variables: {
 					siteId: localStorage.getItem('currentsite')
 				}
-				// refetchQueries: [{}]
 			})
 			.then(async res => {
 				await props.client
@@ -28,7 +27,6 @@ const Order = props => {
 						variables: {
 							menuId: res.data.menuPublishBySite._id
 						}
-						// refetchQueries: [{}]
 					})
 					.then(async result => {
 						const userOrder = result.data.ordersCountByUser.map(order => ({
@@ -57,12 +55,9 @@ const Order = props => {
 			.catch(error => {
 				console.log(error)
 			})
-		// eslint-disable-next-line no-use-before-define
-		handleOrdersCountByUser()
-		// eslint-disable-next-line no-use-before-define
 		handleDefaultDishes()
-		// eslint-disable-next-line no-use-before-define
 		handleOrdersByMenu()
+		handleOrdersCountByUser()
 	}, [])
 
 	async function handleDefaultDishes() {
@@ -102,7 +97,6 @@ const Order = props => {
 				}
 			})
 			.then(res => {
-				// eslint-disable-next-line no-unused-expressions
 				res.data.orderDish
 					? console.log('Đặt thành công')
 					: console.log('something went wrong')
@@ -112,66 +106,34 @@ const Order = props => {
 			})
 	}
 
-	async function selectDishHandler(item) {
-		console.log(ordersCountByUser[item._id])
-		const quantity = Number(ordersCountByUser[item._id])
-		// await dishes.map(dish => {
-		// 	return dish.dishId === item._id &&
-		// 		ordersCountByUser[item._id] <= item.count
-		// 		? (quantity = Number(ordersCountByUser[item._id]) + 1)
-		// 		: (quantity = Number(ordersCountByUser[item._id]))
-		// })
-		await setOrdersCountByUser(quantity)
-		// console.log(ordersCountByUser)
-		await createOrder(item, quantity)
-		// const theDish = [...dishes]
-		// // eslint-disable-next-line no-return-assign
-		// 		? (theDish[index] = {
-		// 				...theDish[index],
-		// 				orderNumber: item.orderNumber + 1
-		// 		  })
-		// 		: (theDish[index] = { ...theDish[index], orderNumber: item.orderNumber })
-		// await setDishes(theDish)
-		// console.log(ordersCountByUser)
-		// console.log(item)
-	}
-
-	async function unselectDishHandler(item) {
-		console.log(ordersCountByUser[item._id])
-		const quantity = Number(ordersCountByUser[item._id])
-		// await dishes.map(dish => {
-		// 	(dish.dishId === item._id && ordersCountByUser[item._id] >= 0)
-		// 		? (quantity = Number(ordersCountByUser[item._id]) - 1)
-		// 		: (quantity = Number(ordersCountByUser[item._id]))
-		// })
-		await setOrdersCountByUser(quantity)
-		// console.log(ordersCountByUser)
-		await createOrder(item, quantity)
-		// await setDishes(theDish)
-		// const theDish = [...dishes]
-		// // eslint-disable-next-line no-return-assign
-		// await dishes.map(dish =>
-		// 	dish._id === item._id && dish.orderNumber > item.count
-		// 		? (theDish[index] = {
-		// 				...theDish[index],
-		// 				orderNumber: item.orderNumber - 1
-		// 		  })
-		// 		: (theDish[index] = { ...theDish[index], orderNumber: item.orderNumber })
-		// )
-		// console.log(ordersCountByUser)
-		// console.log(item)
-	}
-
 	async function handleMinus(item) {
-		// const index = dishes.map(dish => dish._id).indexOf(item._id)
-		await unselectDishHandler(item)
-		console.log(item)
+		if (ordersCountByUser[item._id] > 0) {
+			if (ordersCountByUser[item._id]) {
+				await setOrdersCountByUser({
+					...ordersCountByUser,
+					[item._id]: ordersCountByUser[item._id] - 1
+				})
+			} else {
+				await setOrdersCountByUser(([item._id] = 1))
+			}
+			await createOrder(item, ordersCountByUser[item._id] - 1)
+			console.log(ordersCountByUser)
+		}
 	}
 
 	async function handlePlus(item) {
-		// const index = dishes.map(dish => dish._id).indexOf(item._id)
-		await selectDishHandler(item)
-		console.log(item)
+		if (ordersCountByUser[item._id] < item.count) {
+			if (ordersCountByUser[item._id]) {
+				await setOrdersCountByUser({
+					...ordersCountByUser,
+					[item._id]: ordersCountByUser[item._id] + 1
+				})
+			} else {
+				await setOrdersCountByUser(([item._id] = 1))
+			}
+			await createOrder(item, ordersCountByUser[item._id] + 1)
+			console.log(ordersCountByUser)
+		}
 	}
 
 	async function handleConfirmOrder() {
@@ -193,7 +155,6 @@ const Order = props => {
 						}
 					})
 					.then(res => {
-						// eslint-disable-next-line no-unused-expressions
 						res ? setAlert(true) : console.log('something went wrong')
 					})
 					.catch(error => {
@@ -203,40 +164,39 @@ const Order = props => {
 	}
 
 	async function handleOrdersByMenu() {
-		// props.client
-		// 	.query({
-		// 		query: MENU_BY_SELECTED_SITE,
-		// 		variables: {
-		// 			siteId: localStorage.getItem('currentsite')
-		// 		}
-		// 	})
-		// 	.then(async res => {
-		// 		await props.client
-		// 			.query({
-		// 				query: ORDERS_BY_MENU,
-		// 				variables: {
-		// 					menuId: res.data.menuPublishBySite._id
-		// 				}
-		// 			})
-		// 			.then(async result => {
-		// 				const obj = {}
-		// 				await result.data.ordersByMenu.map(
-		// 					// eslint-disable-next-line no-return-assign
-		// 					order => (obj[order.dishId] = order.count)
-		// 				)
-		// 				await setOrdersByMenu(obj)
-		// 			})
-		// 			.catch(error => {
-		// 				console.log(error)
-		// 			})
-		// 	})
-		// 	.catch(error => {
-		// 		console.log(error)
-		// 	})
+		await props.client
+			.query({
+				query: MENU_BY_SELECTED_SITE,
+				variables: {
+					siteId: localStorage.getItem('currentsite')
+				}
+			})
+			.then(async res => {
+				await props.client
+					.query({
+						query: ORDERS_BY_MENU,
+						variables: {
+							menuId: res.data.menuPublishBySite._id
+						}
+					})
+					.then(async result => {
+						const obj = {}
+						await result.data.ordersByMenu.map(
+							order => (obj[order.dishId] = order.count)
+						)
+						await setOrdersByMenu(obj)
+					})
+					.catch(error => {
+						console.log(error)
+					})
+			})
+			.catch(error => {
+				console.log(error)
+			})
 	}
 
 	async function handleOrdersCountByUser() {
-		props.client
+		await props.client
 			.query({
 				query: MENU_BY_SELECTED_SITE,
 				variables: {
@@ -254,7 +214,6 @@ const Order = props => {
 					.then(async result => {
 						const obj = {}
 						await result.data.ordersCountByUser.map(
-							// eslint-disable-next-line no-return-assign
 							order => (obj[order.dishId] = order.count)
 						)
 						await setOrdersCountByUser(obj)
@@ -280,7 +239,6 @@ const Order = props => {
 			</Button>
 		) : null
 
-	console.log(ordersCountByUser)
 	return (
 		<React.Fragment>
 			<div style={{ backgroundColor: '#eee' }}>
@@ -333,17 +291,13 @@ const Order = props => {
 										>
 											<List.Item.Meta
 												title={item.name}
-												// description={
-												// 	`${item.orderNumber}` === 'undefined'
-												// 		? `${0}/${item.count}`
-												// 		: `${item.orderNumber}/${item.count}`
-												// }
-												description={`${0}/${item.count}`}
+												description={`${(ordersByMenu &&
+													ordersByMenu[item._id]) ||
+													0}/${item.count}`}
 											/>
-											{/* <div>{item.orderNumber}</div> */}
-											{/* {console.log(ordersCountByUser[item._id])} */}
-											<div>{ordersCountByUser[item._id] || 0}</div>
-											{/* <div>{stateOrder[item._id]}</div> */}
+											<div>
+												{(ordersCountByUser && ordersCountByUser[item._id]) || 0}
+											</div>
 										</List.Item>
 									)}
 								/>
@@ -395,21 +349,21 @@ const CONFIRM_ORDER = gql`
 	}
 `
 
-// const ORDERS_BY_MENU = gql`
-// 	query ordersByMenu($menuId: String!) {
-// 		ordersByMenu(menuId: $menuId) {
-// 			_id
-// 			userId
-// 			menuId
-// 			dishId
-// 			note
-// 			count
-// 			isConfirmed
-// 			createdAt
-// 			updatedAt
-// 		}
-// 	}
-// `
+const ORDERS_BY_MENU = gql`
+	query ordersByMenu($menuId: String!) {
+		ordersByMenu(menuId: $menuId) {
+			_id
+			userId
+			menuId
+			dishId
+			note
+			count
+			isConfirmed
+			createdAt
+			updatedAt
+		}
+	}
+`
 
 const ORDERS_BY_USER = gql`
 	query ordersByUser($menuId: String!) {
