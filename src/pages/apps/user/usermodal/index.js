@@ -6,44 +6,44 @@ import openNotificationWithIcon from '../../../../components/shared/openNotifica
 
 const { Option } = Select
 
-function UserModal(props) {
-	const [confirmDirty, setConfirmDirty] = useState(false)
-	const [confirmLoading, setConfirmLoading] = useState(false)
+function UserModal (props) {
+  const [confirmDirty, setConfirmDirty] = useState(false)
+  const [confirmLoading, setConfirmLoading] = useState(false)
 
-	function handleConfirmBlur(e) {
-		const { value } = e.target
-		setConfirmDirty(confirmDirty || !!value)
-	}
+  function handleConfirmBlur (e) {
+    const { value } = e.target
+    setConfirmDirty(confirmDirty || !!value)
+  }
 
-	function compareToFirstPassword(rule, value, callback) {
-		const { form } = props
-		if (value && value !== form.getFieldValue('password')) {
-			callback('Two passwords that you enter is inconsistent!')
-		} else {
-			callback()
-		}
-	}
+  function compareToFirstPassword (rule, value, callback) {
+    const { form } = props
+    if (value && value !== form.getFieldValue('password')) {
+      callback('Two passwords that you enter is inconsistent!')
+    } else {
+      callback()
+    }
+  }
 
-	function validateToNextPassword(rule, value, callback) {
-		const { form } = props
-		if (value && confirmDirty) {
-			form.validateFields(['confirm'], { force: true })
-		}
-		callback()
-	}
+  function validateToNextPassword (rule, value, callback) {
+    const { form } = props
+    if (value && confirmDirty) {
+      form.validateFields(['confirm'], { force: true })
+    }
+    callback()
+  }
 
-	function handleOk() {
-		// console.log('OK')
-		props.form.validateFieldsAndScroll((err, values) => {
-			if (!err) {
-				setConfirmLoading(true)
-				// console.log('Received values of form: ', values)
-				const copyValues = Object.assign(values)
-				delete copyValues.confirm
+  function handleOk () {
+    // console.log('OK')
+    props.form.validateFieldsAndScroll((err, values) => {
+      if (!err) {
+        setConfirmLoading(true)
+        // console.log('Received values of form: ', values)
+        const copyValues = Object.assign(values)
+        delete copyValues.confirm
 
-				const sites = []
+        const sites = []
 
-				/* eslint-disable */
+        /* eslint-disable */
 
 				for (const [key, value] of Object.entries(copyValues.sites)) {
 					// console.log(Array.isArray(value));
