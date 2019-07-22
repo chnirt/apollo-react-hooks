@@ -84,11 +84,20 @@ const defaultOptions = {
 }
 
 const client = new ApolloClient({
+<<<<<<< HEAD
   // cache: new InMemoryCache(),
   defaultOptions,
   cache: new InMemoryCache().restore(window.__APOLLO_STATE__),
   link: ApolloLink.from([errorLink, authLink, link]),
   ssrForceFetchDelay: 100
+=======
+	// cache: new InMemoryCache(),
+	defaultOptions,
+	// eslint-disable-next-line no-underscore-dangle
+	cache: new InMemoryCache().restore(window.__APOLLO_STATE__),
+	link: ApolloLink.from([errorLink, authLink, link]),
+	ssrForceFetchDelay: 100
+>>>>>>> 8c5fc7fcc9594bd915271b6c9609ccce93817137
 })
 
 export default client
