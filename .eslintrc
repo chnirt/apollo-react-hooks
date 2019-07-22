@@ -13,7 +13,8 @@
 		"import/imports-first": ["error", "absolute-first"],
 		"import/newline-after-import": "error",
 		"no-use-before-define": ["error", { "variables": false }],
-		"no-console": "off"
+		"no-console": "off",
+		"no-undef": "off"
 	},
 	"globals": {
 		"window": true,

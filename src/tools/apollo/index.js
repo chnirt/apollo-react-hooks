@@ -9,7 +9,7 @@ import { getMainDefinition } from 'apollo-utilities'
 import store from '../mobx'
 
 const domain = 'devcloud3.digihcs.com'
-const port = '11098'
+const port = '11048'
 
 const httpLink = new HttpLink({
 	// uri: 'http://localhost:4000/graphql'
@@ -86,6 +86,7 @@ const defaultOptions = {
 const client = new ApolloClient({
 	// cache: new InMemoryCache(),
 	defaultOptions,
+	// eslint-disable-next-line no-underscore-dangle
 	cache: new InMemoryCache().restore(window.__APOLLO_STATE__),
 	link: ApolloLink.from([errorLink, authLink, link]),
 	ssrForceFetchDelay: 100
