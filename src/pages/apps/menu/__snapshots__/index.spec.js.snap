@@ -1,0 +1,63 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`menu correctly 1`] = `
+<div
+  className="menu"
+>
+  <h1
+    style={
+      Object {
+        "color": "#fff",
+        "margin": "16px 24px",
+      }
+    }
+  >
+    Quản lý menu
+  </h1>
+  <div
+    className="ant-row menu-list"
+  >
+    <div
+      className="ant-skeleton ant-skeleton-active"
+    >
+      <div
+        className="ant-skeleton-content"
+      >
+        <h3
+          className="ant-skeleton-title"
+          style={
+            Object {
+              "width": "38%",
+            }
+          }
+        />
+        <ul
+          className="ant-skeleton-paragraph"
+        >
+          <li
+            style={
+              Object {
+                "width": undefined,
+              }
+            }
+          />
+          <li
+            style={
+              Object {
+                "width": undefined,
+              }
+            }
+          />
+          <li
+            style={
+              Object {
+                "width": "61%",
+              }
+            }
+          />
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+`;
