@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Form, Button, Input, Row, Col, InputNumber, Icon, Modal } from 'antd'
 import gql from 'graphql-tag'
 import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation'
@@ -13,6 +13,14 @@ function ListDish(props) {
 			: // eslint-disable-next-line react/destructuring-assignment
 			  props.dishes
 	)
+	const [isScroll, setIsScroll] = useState(true)
+
+	useEffect(() => {
+		setIsScroll(
+			document.querySelector('.scrollPane').scrollHeight >
+				document.querySelector('.scrollPane').clientHeight
+		)
+	})
 
 	async function changeCount(value, id, name) {
 		const index = dishes.findIndex(item => item._id === id)
@@ -87,73 +95,122 @@ function ListDish(props) {
 		})
 	}
 
+	function scrollListDish() {
+		document.querySelector('.scrollPane').scrollBy(0, 200)
+	}
+
 	const { getFieldDecorator } = form
 
 	return (
 		<div>
 			{data.shop ? (
-				<div style={{ overflow: 'auto', height: '40vh' }}>
-					{data.shop.dishes.map(dish => {
-						return (
-							<Row key={dish._id}>
-								<Col span={12} offset={1}>
-									<Form.Item style={{ color: '#fff' }}>
-										<b>{dish.name}</b>
-									</Form.Item>
-								</Col>
-								<Col span={6} offset={1}>
-									<Form.Item>
-										<InputNumber
-											defaultValue={
-												props.dishes.findIndex(item => item._id === dish._id) !==
-												-1
-													? props.dishes[
-															props.dishes.findIndex(
-																item => item._id === dish._id
-															)
-													  ].count
-													: 0
-											}
-											min={0}
-											max={99}
-											onChange={value => changeCount(value, dish._id, dish.name)}
-										/>
-									</Form.Item>
-								</Col>
-								<Col xs={{ span: 2 }} sm={{ span: 2 }} lg={{ span: 2 }}>
-									<Form.Item>
-										<Icon
-											style={{ marginLeft: '1em', color: '#fff' }}
-											className="dynamic-delete-button"
-											type="delete"
-											onClick={() => deleteDish(dish._id)}
-										/>
-									</Form.Item>
-								</Col>
-							</Row>
-						)
-					})}
+				<div>
+					<div
+						className="scrollPane"
+						style={{
+							overflow: 'auto',
+							scrollBehavior: 'smooth',
+							height: '40vh'
+						}}
+					>
+						{data.shop.dishes.map(dish => {
+							return (
+								<Row key={dish._id}>
+									<Col span={12} offset={1}>
+										<Form.Item style={{ color: '#fff' }}>
+											<b>{dish.name}</b>
+										</Form.Item>
+									</Col>
+									<Col span={6} offset={1}>
+										<Form.Item>
+											<InputNumber
+												defaultValue={
+													props.dishes.findIndex(
+														item => item._id === dish._id
+													) !== -1
+														? props.dishes[
+																props.dishes.findIndex(
+																	item => item._id === dish._id
+																)
+														  ].count
+														: 0
+												}
+												min={0}
+												max={99}
+												onChange={value =>
+													changeCount(value, dish._id, dish.name)
+												}
+											/>
+										</Form.Item>
+									</Col>
+									<Col xs={{ span: 2 }} sm={{ span: 2 }} lg={{ span: 2 }}>
+										<Form.Item>
+											<Icon
+												style={{ marginLeft: '1em', color: '#fff' }}
+												className="dynamic-delete-button"
+												type="delete"
+												onClick={() => deleteDish(dish._id)}
+											/>
+										</Form.Item>
+									</Col>
+								</Row>
+							)
+						})}
+					</div>
+					{isScroll && (
+						<Row
+							style={{ marginBottom: '1em' }}
+							type="flex"
+							align="middle"
+							justify="center"
+						>
+							<Icon
+								onClick={scrollListDish}
+								type="caret-down"
+								style={{ fontSize: '1em', color: '#fff' }}
+							/>
+						</Row>
+					)}
 				</div>
 			) : null}
 			{shopId === '' ? (
-				<div style={{ overflow: 'auto', height: '60vh' }}>
-					{// eslint-disable-next-line react/destructuring-assignment
-					props.dishes &&
-						// eslint-disable-next-line react/destructuring-assignment
-						props.dishes.map(dish => (
-							<Row key={dish._id}>
-								<Col span={12} offset={1}>
-									<Form.Item style={{ color: '#fff' }}>
-										<b>{dish.name}</b>
-									</Form.Item>
-								</Col>
-								<Col span={6} offset={1}>
-									<Form.Item style={{ color: '#fff' }}>
-										<b>{dish.count}</b>
-									</Form.Item>
-								</Col>
-							</Row>
-						))}
+				<div>
+					<div
+						className="scrollPane"
+						style={{ overflow: 'auto', height: '50vh' }}
+					>
+						{// eslint-disable-next-line react/destructuring-assignment
+						props.dishes &&
+							// eslint-disable-next-line react/destructuring-assignment
+							props.dishes.map(dish => (
+								<Row key={dish._id}>
+									<Col span={12} offset={1}>
+										<Form.Item style={{ color: '#fff' }}>
+											<b>{dish.name}</b>
+										</Form.Item>
+									</Col>
+									<Col span={6} offset={1}>
+										<Form.Item style={{ color: '#fff' }}>
+											<b>{dish.count}</b>
+										</Form.Item>
+									</Col>
+								</Row>
+							))}
+					</div>
+					{isScroll && (
+						<Row
+							style={{ marginBottom: '1em' }}
+							type="flex"
+							align="middle"
+							justify="center"
+						>
+							<Icon
+								onClick={scrollListDish}
+								type="caret-down"
+								style={{ fontSize: '1em', color: '#fff' }}
+							/>
+						</Row>
+					)}
 				</div>
 			) : (
 				<Form
