@@ -8,88 +8,88 @@ import './index.css'
 
 class Report extends React.Component {
 	isActive = (e, menuId) => {
-		const { mutate } = this.props
-		e.stopPropagation()
-		mutate
-			.closeMenu({
-				mutation: CLOSE_MENU,
-				variables: {
-					id: menuId
-				},
-				refetchQueries: () => [
-					{
-						query: GET_MENU_BY_SITE,
-						variables: {
-							siteId: localStorage.getItem('currentsite')
-						}
-					}
-				]
-			})
-			.then(() => {
-				openNotificationWithIcon('success', 'login', 'Close Menu Success')
-			})
-			.catch(() => {
-				// console.log(err)
-				// throw err
-			})
+	  const { mutate } = this.props
+	  e.stopPropagation()
+	  mutate
+	    .closeMenu({
+	      mutation: CLOSE_MENU,
+	      variables: {
+	        id: menuId
+	      },
+	      refetchQueries: () => [
+	        {
+	          query: GET_MENU_BY_SITE,
+	          variables: {
+	            siteId: localStorage.getItem('currentsite')
+	          }
+	        }
+	      ]
+	    })
+	    .then(() => {
+	      openNotificationWithIcon('success', 'login', 'Close Menu Success')
+	    })
+	    .catch(() => {
+	      // console.log(err)
+	      // throw err
+	    })
 	}
 
 	isLock = (e, menuId) => {
-		e.stopPropagation()
-		const { mutate } = this.props
-		mutate
-			.lockAndUnLockMenu({
-				mutation: LOCK_AND_UNLOCK_MENU,
-				variables: {
-					id: menuId
-				},
-				refetchQueries: () => [
-					{
-						query: GET_MENU_BY_SITE,
-						variables: {
-							siteId: localStorage.getItem('currentsite')
-						}
-					}
-				]
-			})
-			.then(() => {
-				// console.log(data)
-				openNotificationWithIcon('success', 'success', 'Success')
-			})
-			.catch(err => {
-				// console.log(err)
-				throw err
-			})
+	  e.stopPropagation()
+	  const { mutate } = this.props
+	  mutate
+	    .lockAndUnLockMenu({
+	      mutation: LOCK_AND_UNLOCK_MENU,
+	      variables: {
+	        id: menuId
+	      },
+	      refetchQueries: () => [
+	        {
+	          query: GET_MENU_BY_SITE,
+	          variables: {
+	            siteId: localStorage.getItem('currentsite')
+	          }
+	        }
+	      ]
+	    })
+	    .then(() => {
+	      // console.log(data)
+	      openNotificationWithIcon('success', 'success', 'Success')
+	    })
+	    .catch(err => {
+	      // console.log(err)
+	      throw err
+	    })
 	}
 
-	render() {
-		const { getMenuBySite } = this.props
-		return (
-			<React.Fragment>
-				<div className="report">
-					{getMenuBySite.menusBySite &&
-						getMenuBySite.menusBySite.map(menuBySite => {
-							return (
-								<div key={menuBySite._id} style={{ marginBottom: 10 }}>
-									<ListMenu
-										isLock={this.isLock}
-										isActiveProps={this.isActive}
-										menuId={menuBySite._id}
-										menu={menuBySite}
-									/>
-									<div
-										style={{
-											display: 'flex',
-											marginTop: 10,
-											justifyContent: 'space-between'
-										}}
-									/>
-								</div>
-							)
+	render () {
+	  const { getMenuBySite } = this.props
+	  return (
+  <React.Fragment>
+  <div className='report'>
+  {getMenuBySite.menusBySite
+						&& getMenuBySite.menusBySite.map(menuBySite => {
+						  return (
+  <div key={menuBySite._id} style={{ marginBottom: 10 }}>
+  <ListMenu
+  isLock={this.isLock}
+  isActiveProps={this.isActive}
+  menuId={menuBySite._id}
+  menu={menuBySite}
+						      />
+  <div
+  style={{
+						          display: 'flex',
+						          marginTop: 10,
+						          justifyContent: 'space-between'
+						        }}
+						      />
+						    </div>
+						  )
 						})}
-				</div>
-			</React.Fragment>
-		)
+	      </div>
+	    </React.Fragment>
+	  )
 	}
 }
 
@@ -132,36 +132,36 @@ const ORDER_BY_MENU = gql`
 `
 
 export default HOCQueryMutation([
-	{
-		query: GET_MENU_BY_SITE,
-		name: 'getMenuBySite',
-		options: () => {
-			return {
-				variables: {
-					siteId: localStorage.getItem('currentsite')
-				}
-			}
-		}
-	},
-	{
-		query: ORDER_BY_MENU,
-		name: 'getOrderByMenu',
-		options: () => {
-			return {
-				variables: {
-					menuId: '3f423520-a214-11e9-83ee-5f5fb731ebb3'
-				}
-			}
-		}
-	},
-	{
-		mutation: LOCK_AND_UNLOCK_MENU,
-		name: 'lockAndUnLockMenu',
-		option: {}
-	},
-	{
-		mutation: CLOSE_MENU,
-		name: 'closeMenu',
-		option: {}
-	}
+  {
+    query: GET_MENU_BY_SITE,
+    name: 'getMenuBySite',
+    options: () => {
+      return {
+        variables: {
+          siteId: localStorage.getItem('currentsite')
+        }
+      }
+    }
+  },
+  {
+    query: ORDER_BY_MENU,
+    name: 'getOrderByMenu',
+    options: () => {
+      return {
+        variables: {
+          menuId: '3f423520-a214-11e9-83ee-5f5fb731ebb3'
+        }
+      }
+    }
+  },
+  {
+    mutation: LOCK_AND_UNLOCK_MENU,
+    name: 'lockAndUnLockMenu',
+    option: {}
+  },
+  {
+    mutation: CLOSE_MENU,
+    name: 'closeMenu',
+    option: {}
+  }
 ])(Report)

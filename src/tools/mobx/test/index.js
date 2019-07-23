@@ -5,7 +5,7 @@ class TestStore {
 
 	@action
 	onClick = () => {
-		this.test = '9876'
+	  this.test = '9876'
 	}
 }
 

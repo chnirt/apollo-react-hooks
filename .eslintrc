@@ -16,14 +16,75 @@
 		"no-console": "off",
 		"no-undef": "off"
 	},
-	"globals": {
-		"window": true,
-		"document": true,
-		"localStorage": true,
-		"FormData": true,
-		"FileReader": true,
-		"Blob": true,
-		"navigator": true
+	"env": {
+	"browser": true,
+	"jest": true,
+	"es6": true
 	},
-	"parser": "babel-eslint"
+	"root": true,
+	"extends": [
+	"eslint:recommended",
+	"plugin:react/recommended",
+	"airbnb"
+	],
+	"rules": {
+	"indent": [2, 2, { "SwitchCase": 1 }],
+	"linebreak-style": [2, "unix"],
+	"quotes": [2, "single", { "allowTemplateLiterals": true }],
+	"semi": [2, "never"],
+	"comma-dangle": [2, "never"],
+	"no-cond-assign": [2, "always"],
+	"no-console": 0,
+	"react/prop-types": 0,
+	"max-len": [
+	2,
+	{
+	"code": 360,
+	"tabWidth": 2,
+	"ignoreUrls": true
+	}
+	],
+	"function-paren-newline": [2, "consistent"],
+	"standard/no-callback-literal": 0,
+	"jsx-quotes": [2, "prefer-single"],
+	"space-before-function-paren": [
+	2,
+	{ "anonymous": "always", "named": "always", "asyncArrow": "always" }
+	],
+	"react/display-name": [1, { "ignoreTranspilerName": false }],
+	"react/no-unescaped-entities": [1, { "forbid": ["\""] }],
+	"lines-between-class-members": "off",
+	"react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+	"react/no-array-index-key": "off",
+	"eol-last": "off",
+	"react/destructuring-assignment": "off",
+	"no-param-reassign": "off",
+	"jsx-a11y/click-events-have-key-events": "off",
+	"jsx-a11y/no-static-element-interactions": "off",
+	"import/prefer-default-export": "off",
+	"no-return-assign": "off",
+	"import/no-extraneous-dependencies": "off",
+	"react/no-unused-state": "off",
+	"max-classes-per-file": ["error", 2],
+	"no-trailing-spaces": "off",
+	"arrow-parens": "off",
+	"consistent-return": "off",
+	"no-else-return": "off",
+	"no-extra-boolean-cast": "off",
+	"no-lonely-if": "off",
+	"prefer-const": "off",
+	"no-plusplus": "off",
+	"import/no-unresolved": "off",
+	"object-curly-newline": "off",
+	"no-confusing-arrow": "off",
+	"react/jsx-curly-brace-presence": "off",
+	"no-nested-ternary": "off",
+	"no-underscore-dangle": "off",
+	"no-restricted-syntax": "off",
+	"jsx-a11y/tabindex-no-positive": "off",
+	"arrow-body-style": "off",
+	"jsx-a11y/media-has-caption": "off",
+	"no-useless-return": "off",
+	"prefer-promise-reject-errors": "off"
+	}
 }
