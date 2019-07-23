@@ -113,6 +113,9 @@ function User(props) {
 					headStyle={{
 						border: 0
 					}}
+					bodyStyle={{
+						padding: 0
+					}}
 					style={{ backgroundColor: 'transparent' }}
 				>
 					{users &&

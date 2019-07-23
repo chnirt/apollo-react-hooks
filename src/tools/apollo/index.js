@@ -86,7 +86,6 @@ const defaultOptions = {
 const client = new ApolloClient({
 	// cache: new InMemoryCache(),
 	defaultOptions,
-	// eslint-disable-next-line no-underscore-dangle
 	cache: new InMemoryCache().restore(window.__APOLLO_STATE__),
 	link: ApolloLink.from([errorLink, authLink, link]),
 	ssrForceFetchDelay: 100

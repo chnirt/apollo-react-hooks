@@ -92,7 +92,9 @@ function Dashboard(props) {
 							border: 0,
 							margin: 0
 						}}
-						bodyStyle={{}}
+						bodyStyle={{
+							padding: 0
+						}}
 						style={{ backgroundColor: 'transparent' }}
 					>
 						{menuRoutes.map(
