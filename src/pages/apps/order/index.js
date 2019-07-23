@@ -182,6 +182,16 @@ const Order = props => {
 				}
 			})
 			.then(async res => {
+				// await props.client.subscribe({
+				// 	query: SUBSCRIPTION
+				// }).subscribe({
+				// 	next({data}) {
+				// 		console.log(data)
+				// 		// ... call updateQuery to integrate the new comment
+				// 		// into the existing list of comments
+				// 	},
+				// 	error(err) { console.error('err', err); },
+				// })
 				await props.client
 					.query({
 						query: ORDERS_BY_MENU,
