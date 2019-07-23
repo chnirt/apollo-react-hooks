@@ -124,13 +124,13 @@ function Dashboard(props) {
 										}}
 									>
 										<Card.Grid id={item.id} style={gridStyle}>
-											{item.label}
 											<Icon
 												style={{
-													paddingLeft: '10px'
+													paddingRight: '10px'
 												}}
 												type={item.icon}
 											/>
+											{item.label}
 										</Card.Grid>
 									</Col>
 								)
