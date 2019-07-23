@@ -86,22 +86,6 @@ const CONFIRM_ORDER = gql`
 	}
 `
 
-const ORDERS_BY_MENU = gql`
-	query ordersByMenu($menuId: String!) {
-		ordersByMenu(menuId: $menuId) {
-			_id
-			userId
-			menuId
-			dishId
-			note
-			count
-			isConfirmed
-			createdAt
-			updatedAt
-		}
-	}
-`
-
 const ORDERS_BY_USER = gql`
 	query ordersByUser($menuId: String!) {
 		ordersByUser(menuId: $menuId) {
@@ -133,6 +117,7 @@ const SUBSCRIPTION = gql`
 			menuId
 			count
 			_id
+			dishId
 		}
 	}
 `
@@ -140,7 +125,7 @@ const SUBSCRIPTION = gql`
 const Order = props => {
 	const [dishes, setDishes] = useState()
 	const [menuId, setMenuId] = useState()
-	const [ordersByMenu, setOrdersByMenu] = useState()
+	const [orderedNumber, setOrderedNumber] = useState()
 	const [isPublish, setIsPublish] = useState()
 	const [isLocked, setIsLocked] = useState()
 	const [alert, setAlert] = useState(false)
@@ -174,50 +159,25 @@ const Order = props => {
 			})
 	}
 
-	async function handleOrdersByMenu() {
+	async function handleOrderedNumber() {
 		await props.client
-			.query({
-				query: MENU_BY_SELECTED_SITE,
-				variables: {
-					siteId: localStorage.getItem('currentsite')
+			.subscribe({
+				query: SUBSCRIPTION
+			})
+			.subscribe({
+				async next(data) {
+					// console.log(data.data.ordersByMenuCreated)
+					const obj = {}
+					await data.data.ordersByMenuCreated.map(
+						// eslint-disable-next-line no-return-assign
+						order => (obj[order.dishId] = order.count)
+					)
+					console.log(obj)
+					await setOrderedNumber(obj)
+				},
+				error(err) {
+					console.error('err', err)
 				}
-			})
-			.then(async res => {
-				await props.client
-					.subscribe({
-						query: SUBSCRIPTION
-					})
-					.subscribe({
-						next(data) {
-							console.log(data)
-							// ... call updateQuery to integrate the new comment
-							// into the existing list of comments
-						},
-						error(err) {
-							console.error('err', err)
-						}
-					})
-				await props.client
-					.query({
-						query: ORDERS_BY_MENU,
-						variables: {
-							menuId: res.data.menuPublishBySite._id
-						}
-					})
-					.then(async result => {
-						const obj = {}
-						await result.data.ordersByMenu.map(
-							// eslint-disable-next-line no-return-assign
-							order => (obj[order.dishId] = order.count)
-						)
-						await setOrdersByMenu(obj)
-					})
-					.catch(error => {
-						console.log(error)
-					})
-			})
-			.catch(error => {
-				console.log(error)
 			})
 	}
 
@@ -298,7 +258,7 @@ const Order = props => {
 				console.log(error)
 			})
 		handleDefaultDishes()
-		handleOrdersByMenu()
+		handleOrderedNumber()
 		handleOrdersCountByUser()
 	}, [])
 
@@ -392,14 +352,27 @@ const Order = props => {
 			ordersCountByUser[item._id] !== undefined &&
 			ordersCountByUser[item._id] < item.count
 		) {
+			console.log('1 lan ne')
 			await setOrdersCountByUser({
 				...ordersCountByUser,
 				[item._id]: ordersCountByUser[item._id] + 1
 			})
-		} else {
+			// eslint-disable-next-line no-cond-assign
+		} else if (
+			(ordersCountByUser[item._id] =
+				0 || ordersCountByUser[item._id] === undefined)
+		) {
+			console.log('1 lan ne')
 			await setOrdersCountByUser({
 				...ordersCountByUser,
 				[item._id]: 1
+			})
+			// eslint-disable-next-line no-cond-assign
+		} else if ((ordersCountByUser[item._id] = item.count)) {
+			console.log('1 lan ne')
+			await setOrdersCountByUser({
+				...ordersCountByUser,
+				[item._id]: ordersCountByUser[item._id]
 			})
 		}
 		await createOrder(item, ordersCountByUser[item._id] + 1)
@@ -491,7 +464,11 @@ const Order = props => {
 												<Button
 													id={`minus-order-${item._id}`}
 													className="minus-order"
-													disabled={isLocked}
+													disabled={
+														ordersCountByUser[item._id] === 0 ||
+														ordersCountByUser[item._id] === undefined ||
+														isLocked
+													}
 													onClick={() => handleMinus(item)}
 												>
 													-
@@ -499,7 +476,10 @@ const Order = props => {
 												<Button
 													id={`plus-order-${item._id}`}
 													className="plus-order"
-													disabled={isLocked}
+													disabled={
+														ordersCountByUser[item._id] === item.count ||
+														isLocked
+													}
 													onClick={() => handlePlus(item)}
 												>
 													+
@@ -517,8 +497,8 @@ const Order = props => {
 										>
 											<List.Item.Meta
 												title={item.name}
-												description={`${(ordersByMenu &&
-													ordersByMenu[item._id]) ||
+												description={`${(orderedNumber &&
+													orderedNumber[item._id]) ||
 													0}/${item.count}`}
 											/>
 											<div>
