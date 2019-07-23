@@ -2,7 +2,7 @@
 /* eslint-disable no-self-assign */
 /* eslint-disable no-param-reassign */
 import React, { useState, useEffect, useRef } from 'react'
-import { Row, Col, Button, Divider, List, Alert, Modal, Input, Form } from 'antd'
+import { Row, Col, Button, List, Alert, Modal, Input, Form } from 'antd'
 import gql from 'graphql-tag'
 import { withApollo } from 'react-apollo'
 
@@ -26,15 +26,29 @@ class NoteForm extends React.Component {
 		return (
 			<Modal
 				visible={visible}
-				title="Thêm ghi chú"
-				okText="Thêm"
 				onCancel={onCancel}
-				onOk={onCreate}
+				title="Thêm ghi chú"
+				footer={[
+					<Button
+						key="cancel"
+						type="danger"
+						onClick={onCancel}
+						name="cancelNote"
+					>
+						Đóng
+					</Button>,
+					<Button key="save" type="primary" onClick={onCreate} name="addNote">
+						Thêm
+					</Button>
+				]}
 			>
 				<Form colon={false} ref={this.form}>
 					<Form.Item className="collection-create-form_last-form-item">
 						{getFieldDecorator('note', {
-							rules: [{ required: false, message: 'Hãy thêm ghi chú!' }]
+							rules: [
+								{ required: false, message: 'Hãy thêm ghi chú!' }
+								// {initialValue: (this.props.note !== undefined) ? this.props.note : null}]
+							]
 						})(
 							<Input.TextArea
 								placeholder="nhập ghi chú"
@@ -122,6 +136,22 @@ const SUBSCRIPTION = gql`
 	}
 `
 
+const ORDERS_BY_MENU = gql`
+	query ordersByMenu($menuId: String!) {
+		ordersByMenu(menuId: $menuId) {
+			_id
+			userId
+			menuId
+			dishId
+			note
+			count
+			isConfirmed
+			createdAt
+			updatedAt
+		}
+	}
+`
+
 const Order = props => {
 	const [dishes, setDishes] = useState()
 	const [menuId, setMenuId] = useState()
@@ -159,6 +189,39 @@ const Order = props => {
 			})
 	}
 
+	async function handleOrdersByMenu() {
+		await props.client
+			.query({
+				query: MENU_BY_SELECTED_SITE,
+				variables: {
+					siteId: localStorage.getItem('currentsite')
+				}
+			})
+			.then(async res => {
+				await props.client
+					.query({
+						query: ORDERS_BY_MENU,
+						variables: {
+							menuId: res.data.menuPublishBySite._id
+						}
+					})
+					.then(async result => {
+						const obj = {}
+						await result.data.ordersByMenu.map(
+							// eslint-disable-next-line no-return-assign
+							order => (obj[order.dishId] = order.count)
+						)
+						await setOrderedNumber(obj)
+					})
+					.catch(error => {
+						console.log(error)
+					})
+			})
+			.catch(error => {
+				console.log(error)
+			})
+	}
+
 	async function handleOrderedNumber() {
 		await props.client
 			.subscribe({
@@ -166,13 +229,11 @@ const Order = props => {
 			})
 			.subscribe({
 				async next(data) {
-					// console.log(data.data.ordersByMenuCreated)
 					const obj = {}
 					await data.data.ordersByMenuCreated.map(
 						// eslint-disable-next-line no-return-assign
 						order => (obj[order.dishId] = order.count)
 					)
-					console.log(obj)
 					await setOrderedNumber(obj)
 				},
 				error(err) {
@@ -199,6 +260,10 @@ const Order = props => {
 					})
 					.then(async result => {
 						const obj = {}
+						await res.data.menuPublishBySite.dishes.map(
+							// eslint-disable-next-line no-return-assign
+							dish => (obj[dish._id] = 0)
+						)
 						await result.data.ordersCountByUser.map(
 							// eslint-disable-next-line no-return-assign
 							order => (obj[order.dishId] = order.count)
@@ -258,6 +323,7 @@ const Order = props => {
 				console.log(error)
 			})
 		handleDefaultDishes()
+		handleOrdersByMenu()
 		handleOrderedNumber()
 		handleOrdersCountByUser()
 	}, [])
@@ -352,27 +418,17 @@ const Order = props => {
 			ordersCountByUser[item._id] !== undefined &&
 			ordersCountByUser[item._id] < item.count
 		) {
-			console.log('1 lan ne')
+			console.log('khong undefined va < count')
 			await setOrdersCountByUser({
 				...ordersCountByUser,
 				[item._id]: ordersCountByUser[item._id] + 1
 			})
 			// eslint-disable-next-line no-cond-assign
-		} else if (
-			(ordersCountByUser[item._id] =
-				0 || ordersCountByUser[item._id] === undefined)
-		) {
-			console.log('1 lan ne')
+		} else {
+			console.log('con lai')
 			await setOrdersCountByUser({
 				...ordersCountByUser,
 				[item._id]: 1
-			})
-			// eslint-disable-next-line no-cond-assign
-		} else if ((ordersCountByUser[item._id] = item.count)) {
-			console.log('1 lan ne')
-			await setOrdersCountByUser({
-				...ordersCountByUser,
-				[item._id]: ordersCountByUser[item._id]
 			})
 		}
 		await createOrder(item, ordersCountByUser[item._id] + 1)
@@ -435,12 +491,6 @@ const Order = props => {
 					overflow: 'hidden'
 				}}
 			>
-				<Button
-					shape="circle"
-					icon="left"
-					onClick={() => props.history.push('/🥢')}
-				/>
-				<Divider />
 				<Row>
 					<Col span={22} offset={1}>
 						{isPublish === true ? (
