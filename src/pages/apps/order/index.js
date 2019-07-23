@@ -4,6 +4,44 @@ import { Row, Col, Button, Divider, List, Alert, Modal, Input, Form } from 'antd
 import gql from 'graphql-tag'
 import { withApollo } from 'react-apollo'
 
+class NoteForm extends React.Component {
+	constructor(props) {
+		super(props)
+		this.form = React.createRef()
+	}
+	componentDidMount() {
+		if (!!this.props.refForm) {
+			this.props.refForm(this.props.form)
+		}
+	}
+	render() {
+		const { visible, onCancel, onCreate, form } = this.props
+		const { getFieldDecorator } = form
+		return (
+			<Modal
+				visible={visible}
+				title="Thêm ghi chú"
+				okText="Thêm"
+				onCancel={onCancel}
+				onOk={onCreate}
+			>
+				<Form colon={false} ref={this.form}>
+					<Form.Item className="collection-create-form_last-form-item">
+						{getFieldDecorator('note', {
+							rules: [{ required: false, message: 'Hãy thêm ghi chú!' }]
+						})(
+							<Input.TextArea
+								placeholder="nhập ghi chú"
+								autosize={{ minRows: 3, maxRows: 7 }}
+							/>
+						)}
+					</Form.Item>
+				</Form>
+			</Modal>
+		)
+	}
+}
+
 const MENU_BY_SELECTED_SITE = gql`
 	query menuPublishBySite($siteId: String!) {
 		menuPublishBySite(siteId: $siteId) {
@@ -27,6 +65,12 @@ const MENU_BY_SELECTED_SITE = gql`
 const ORDER_DISH = gql`
 	mutation orderDish($input: CreateOrderInput!) {
 		orderDish(input: $input)
+	}
+`
+
+const UPDATE_ORDER = gql`
+	mutation updateOrder($id: String!, $input: UpdateOrderInput!) {
+		updateOrder(id: $id, input: $input)
 	}
 `
 
@@ -77,46 +121,14 @@ const ORDERS_COUNT_BY_USER = gql`
 		}
 	}
 `
-class NoteForm extends React.Component {
-	constructor(props) {
-		super(props)
-		this.form = React.createRef()
-	}
-	componentDidMount() {
-		if (!!this.props.refForm) {
-			this.props.refForm(this.props.form)
+const SUBSCRIPTION = gql`
+	subscription {
+		ordersByMenuCreated {
+			count
+			_id
 		}
 	}
-	render() {
-		console.log(this)
-		const { visible, onCancel, onCreate, form } = this.props
-		const { getFieldDecorator } = form
-		return (
-			<Modal
-				visible={visible}
-				title="Thêm ghi chú"
-				okText="Thêm"
-				onCancel={onCancel}
-				onOk={onCreate}
-			>
-				<Form colon={false} ref={this.form}>
-					<Form.Item className="collection-create-form_last-form-item">
-						{getFieldDecorator('note', {
-							rules: [{ required: false, message: 'Hãy thêm ghi chú!' }]
-						})(
-							<Input.TextArea
-								// getRef={(input) => (this.note = input)}
-								placeholder="nhập ghi chú"
-								autosize={{ minRows: 3, maxRows: 7 }}
-							/>
-						)}
-					</Form.Item>
-				</Form>
-			</Modal>
-		)
-	}
-}
-// )
+`
 
 const Order = props => {
 	const [dishes, setDishes] = useState()
@@ -127,6 +139,8 @@ const Order = props => {
 	const [alert, setAlert] = useState(false)
 	const [ordersCountByUser, setOrdersCountByUser] = useState({})
 	const [modalVisible, setModalVisible] = useState(false)
+	const [selectedItem, setSelectedItem] = useState()
+	const [orderId, setOrderId] = useState()
 	let formRef = useRef()
 
 	async function handleDefaultDishes() {
@@ -265,37 +279,16 @@ const Order = props => {
 		handleOrdersCountByUser()
 	}, [])
 
-	function showModal() {
+	function showModal(item) {
 		setModalVisible(true)
+		setSelectedItem(item)
 	}
 
 	function handleCancel() {
 		setModalVisible(false)
 	}
 
-	function handleCreate() {
-		console.log(formRef)
-		formRef.validateFields((err, values) => {
-			if (err) {
-				return
-			}
-
-			console.log('Received values of form: ', values)
-			formRef.resetFields()
-			setModalVisible(false)
-		})
-	}
-
-	function saveFormRef(formRef) {
-		formRef = formRef
-	}
-
 	async function createOrder(item, quantity) {
-		// const form = formRef.props.form
-		// form.validateFields(async (err, values) => {
-		//   if (err) {
-		//     return null
-		//   }
 		await props.client
 			.mutate({
 				mutation: ORDER_DISH,
@@ -307,7 +300,8 @@ const Order = props => {
 					}
 				}
 			})
-			.then(res => {
+			.then(async res => {
+				await setOrderId(res.data.orderDish)
 				res.data.orderDish
 					? console.log('Đặt thành công')
 					: console.log('something went wrong')
@@ -315,38 +309,73 @@ const Order = props => {
 			.catch(error => {
 				console.dir(error)
 			})
-		// }
-		// form.resetFields()
+	}
+
+	async function handleNote() {
+		await formRef.validateFields(async (err, values) => {
+			if (err) {
+				return
+			}
+			console.log(menuId)
+			console.log(selectedItem._id)
+
+			await props.client
+				.mutate({
+					mutation: UPDATE_ORDER,
+					variables: {
+						id: orderId,
+						input: {
+							menuId,
+							dishId: selectedItem._id,
+							note: values.note,
+							count: 0
+						}
+					}
+				})
+				.then(res => {
+					res.data.updateOrder
+						? console.log('Note thành công')
+						: console.log('something went wrong')
+				})
+				.catch(error => {
+					console.dir(error)
+				})
+			formRef.resetFields()
+			setModalVisible(false)
+		})
 	}
 
 	async function handleMinus(item) {
-		if (ordersCountByUser[item._id] > 0) {
-			if (ordersCountByUser[item._id]) {
-				await setOrdersCountByUser({
-					...ordersCountByUser,
-					[item._id]: ordersCountByUser[item._id] - 1
-				})
-			} else {
-				await setOrdersCountByUser(([item._id] = 1))
-			}
-			await createOrder(item, ordersCountByUser[item._id] - 1)
-			console.log(ordersCountByUser)
+		if (!!ordersCountByUser[item._id] && ordersCountByUser[item._id] > 0) {
+			await setOrdersCountByUser({
+				...ordersCountByUser,
+				[item._id]: ordersCountByUser[item._id] - 1
+			})
+		} else {
+			await setOrdersCountByUser({
+				...ordersCountByUser,
+				[item._id]: (ordersCountByUser[item._id] = 0)
+			})
 		}
+		await createOrder(item, ordersCountByUser[item._id] - 1)
 	}
 
 	async function handlePlus(item) {
-		if (ordersCountByUser[item._id] < item.count) {
-			if (ordersCountByUser[item._id]) {
-				await setOrdersCountByUser({
-					...ordersCountByUser,
-					[item._id]: ordersCountByUser[item._id] + 1
-				})
-			} else {
-				await setOrdersCountByUser(([item._id] = 1))
-			}
-			await createOrder(item, ordersCountByUser[item._id] + 1)
-			console.log(ordersCountByUser)
+		if (
+			ordersCountByUser[item._id] !== undefined &&
+			ordersCountByUser[item._id] < item.count
+		) {
+			await setOrdersCountByUser({
+				...ordersCountByUser,
+				[item._id]: ordersCountByUser[item._id] + 1
+			})
+		} else {
+			await setOrdersCountByUser({
+				...ordersCountByUser,
+				[item._id]: ordersCountByUser[item._id]
+			})
 		}
+		await createOrder(item, ordersCountByUser[item._id] + 1)
 	}
 
 	async function handleConfirmOrder() {
@@ -439,7 +468,11 @@ const Order = props => {
 												</Button>
 											]}
 											extra={
-												<Button type="primary" onClick={showModal}>
+												<Button
+													type="primary"
+													onClick={() => showModal(item)}
+													id={`note-order-${item._id}`}
+												>
 													Note
 												</Button>
 											}
@@ -469,10 +502,9 @@ const Order = props => {
 				</Row>
 				<CollectionCreateForm
 					wrappedComponentRef={saveFormRef}
-					// wrappedComponentRef={(r) => saveFRef(r)}
 					visible={modalVisible}
 					onCancel={handleCancel}
-					onCreate={handleCreate}
+					onCreate={handleNote}
 					refForm={ref => (formRef = ref)}
 				/>
 			</div>
