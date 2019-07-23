@@ -127,14 +127,15 @@ const ORDERS_COUNT_BY_USER = gql`
 		}
 	}
 `
-// const SUBSCRIPTION = gql`
-// 	subscription {
-// 		ordersByMenuCreated {
-// 			count
-// 			_id
-// 		}
-// 	}
-// `
+const SUBSCRIPTION = gql`
+	subscription {
+		ordersByMenuCreated {
+			menuId
+			count
+			_id
+		}
+	}
+`
 
 const Order = props => {
 	const [dishes, setDishes] = useState()
@@ -182,16 +183,20 @@ const Order = props => {
 				}
 			})
 			.then(async res => {
-				// await props.client.subscribe({
-				// 	query: SUBSCRIPTION
-				// }).subscribe({
-				// 	next({data}) {
-				// 		console.log(data)
-				// 		// ... call updateQuery to integrate the new comment
-				// 		// into the existing list of comments
-				// 	},
-				// 	error(err) { console.error('err', err); },
-				// })
+				await props.client
+					.subscribe({
+						query: SUBSCRIPTION
+					})
+					.subscribe({
+						next(data) {
+							console.log(data)
+							// ... call updateQuery to integrate the new comment
+							// into the existing list of comments
+						},
+						error(err) {
+							console.error('err', err)
+						}
+					})
 				await props.client
 					.query({
 						query: ORDERS_BY_MENU,
@@ -394,7 +399,7 @@ const Order = props => {
 		} else {
 			await setOrdersCountByUser({
 				...ordersCountByUser,
-				[item._id]: ordersCountByUser[item._id]
+				[item._id]: 1
 			})
 		}
 		await createOrder(item, ordersCountByUser[item._id] + 1)
