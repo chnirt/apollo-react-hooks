@@ -1,0 +1,304 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Login component matches the snapshot 1`] = `
+<div
+  className="ant-row"
+  id="layout-login"
+>
+  <div
+    className="ant-col ant-col-xs-24 ant-col-xs-offset-0 ant-col-sm-16 ant-col-sm-offset-8 ant-col-md-14 ant-col-md-offset-10 ant-col-lg-12 ant-col-lg-offset-12 ant-col-xl-7 ant-col-xl-offset-17"
+  >
+    <div
+      id="components-form-demo-normal-login"
+    >
+      <form
+        className="ant-form ant-form-horizontal login-form"
+        onSubmit={[Function]}
+      >
+        <div
+          className="login-form-header"
+        >
+          <h1
+            aria-label={null}
+            className="ant-typography"
+            style={
+              Object {
+                "WebkitLineClamp": null,
+              }
+            }
+          >
+            Luncheon
+          </h1>
+        </div>
+        <div
+          className="ant-row ant-form-item"
+        >
+          <div
+            className="ant-col ant-form-item-control-wrapper"
+          >
+            <div
+              className="ant-form-item-control has-success"
+            >
+              <span
+                className="ant-form-item-children"
+              >
+                <span
+                  className="ant-input-affix-wrapper"
+                >
+                  <span
+                    className="ant-input-prefix"
+                  >
+                    <i
+                      aria-label="icon: mail"
+                      className="anticon anticon-mail"
+                      style={
+                        Object {
+                          "color": "rgba(0,0,0,.25)",
+                        }
+                      }
+                    >
+                      <svg
+                        aria-hidden="true"
+                        className=""
+                        data-icon="mail"
+                        fill="currentColor"
+                        focusable="false"
+                        height="1em"
+                        viewBox="64 64 896 896"
+                        width="1em"
+                      >
+                        <path
+                          d="M928 160H96c-17.7 0-32 14.3-32 32v640c0 17.7 14.3 32 32 32h832c17.7 0 32-14.3 32-32V192c0-17.7-14.3-32-32-32zm-40 110.8V792H136V270.8l-27.6-21.5 39.3-50.5 42.8 33.3h643.1l42.8-33.3 39.3 50.5-27.7 21.5zM833.6 232L512 482 190.4 232l-42.8-33.3-39.3 50.5 27.6 21.5 341.6 265.6a55.99 55.99 0 0 0 68.7 0L888 270.8l27.6-21.5-39.3-50.5-42.7 33.2z"
+                        />
+                      </svg>
+                    </i>
+                  </span>
+                  <input
+                    className="ant-input"
+                    data-__field={
+                      Object {
+                        "name": "username",
+                      }
+                    }
+                    data-__meta={
+                      Object {
+                        "initialValue": "admin",
+                        "name": "username",
+                        "originalProps": Object {
+                          "placeholder": "username",
+                          "prefix": <Icon
+                            style={
+                              Object {
+                                "color": "rgba(0,0,0,.25)",
+                              }
+                            }
+                            type="mail"
+                          />,
+                          "type": "text",
+                        },
+                        "ref": null,
+                        "rules": Array [
+                          Object {
+                            "message": "Please input your username!",
+                            "required": true,
+                          },
+                        ],
+                        "trigger": "onChange",
+                        "validate": Array [
+                          Object {
+                            "rules": Array [
+                              Object {
+                                "message": "Please input your username!",
+                                "required": true,
+                              },
+                            ],
+                            "trigger": Array [
+                              "onChange",
+                            ],
+                          },
+                        ],
+                        "valuePropName": "defaultValue",
+                      }
+                    }
+                    id="normal_login_username"
+                    onChange={[Function]}
+                    onKeyDown={[Function]}
+                    placeholder="username"
+                    style={null}
+                    type="text"
+                    value="admin"
+                  />
+                </span>
+              </span>
+            </div>
+          </div>
+        </div>
+        <div
+          className="ant-row ant-form-item"
+        >
+          <div
+            className="ant-col ant-form-item-control-wrapper"
+          >
+            <div
+              className="ant-form-item-control has-success"
+            >
+              <span
+                className="ant-form-item-children"
+              >
+                <span
+                  className="ant-input-affix-wrapper"
+                >
+                  <span
+                    className="ant-input-prefix"
+                  >
+                    <i
+                      aria-label="icon: lock"
+                      className="anticon anticon-lock"
+                      style={
+                        Object {
+                          "color": "rgba(0,0,0,.25)",
+                        }
+                      }
+                    >
+                      <svg
+                        aria-hidden="true"
+                        className=""
+                        data-icon="lock"
+                        fill="currentColor"
+                        focusable="false"
+                        height="1em"
+                        viewBox="64 64 896 896"
+                        width="1em"
+                      >
+                        <path
+                          d="M832 464h-68V240c0-70.7-57.3-128-128-128H388c-70.7 0-128 57.3-128 128v224h-68c-17.7 0-32 14.3-32 32v384c0 17.7 14.3 32 32 32h640c17.7 0 32-14.3 32-32V496c0-17.7-14.3-32-32-32zM332 240c0-30.9 25.1-56 56-56h248c30.9 0 56 25.1 56 56v224H332V240zm460 600H232V536h560v304zM484 701v53c0 4.4 3.6 8 8 8h40c4.4 0 8-3.6 8-8v-53a48.01 48.01 0 1 0-56 0z"
+                        />
+                      </svg>
+                    </i>
+                  </span>
+                  <input
+                    className="ant-input"
+                    data-__field={
+                      Object {
+                        "name": "password",
+                      }
+                    }
+                    data-__meta={
+                      Object {
+                        "initialValue": "12345678",
+                        "name": "password",
+                        "originalProps": Object {
+                          "placeholder": "Password",
+                          "prefix": <Icon
+                            style={
+                              Object {
+                                "color": "rgba(0,0,0,.25)",
+                              }
+                            }
+                            type="lock"
+                          />,
+                          "type": "password",
+                        },
+                        "ref": null,
+                        "rules": Array [
+                          Object {
+                            "message": "Please input your Password!",
+                            "required": true,
+                          },
+                          Object {
+                            "message": "Your password must be between 1 and 8 characters",
+                            "min": 1,
+                          },
+                          Object {
+                            "max": 8,
+                            "message": "Your password must be between 1 and 8 characters",
+                          },
+                        ],
+                        "trigger": "onChange",
+                        "validate": Array [
+                          Object {
+                            "rules": Array [
+                              Object {
+                                "message": "Please input your Password!",
+                                "required": true,
+                              },
+                              Object {
+                                "message": "Your password must be between 1 and 8 characters",
+                                "min": 1,
+                              },
+                              Object {
+                                "max": 8,
+                                "message": "Your password must be between 1 and 8 characters",
+                              },
+                            ],
+                            "trigger": Array [
+                              "onChange",
+                            ],
+                          },
+                        ],
+                        "valuePropName": "defaultValue",
+                      }
+                    }
+                    id="normal_login_password"
+                    onChange={[Function]}
+                    onKeyDown={[Function]}
+                    placeholder="Password"
+                    style={null}
+                    type="password"
+                    value="12345678"
+                  />
+                </span>
+              </span>
+            </div>
+          </div>
+        </div>
+        <div
+          className="ant-row ant-form-item"
+        >
+          <div
+            className="ant-col ant-form-item-control-wrapper"
+          >
+            <div
+              className="ant-form-item-control"
+            >
+              <span
+                className="ant-form-item-children"
+              >
+                <button
+                  className="ant-btn login-form-button ant-btn-primary"
+                  disabled={false}
+                  onClick={[Function]}
+                  type="submit"
+                >
+                  <i
+                    aria-label="icon: login"
+                    className="anticon anticon-login"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      className=""
+                      data-icon="login"
+                      fill="currentColor"
+                      focusable="false"
+                      height="1em"
+                      viewBox="64 64 896 896"
+                      width="1em"
+                    >
+                      <path
+                        d="M521.7 82c-152.5-.4-286.7 78.5-363.4 197.7-3.4 5.3.4 12.3 6.7 12.3h70.3c4.8 0 9.3-2.1 12.3-5.8 7-8.5 14.5-16.7 22.4-24.5 32.6-32.5 70.5-58.1 112.7-75.9 43.6-18.4 90-27.8 137.9-27.8 47.9 0 94.3 9.3 137.9 27.8 42.2 17.8 80.1 43.4 112.7 75.9 32.6 32.5 58.1 70.4 76 112.5C865.7 417.8 875 464.1 875 512c0 47.9-9.4 94.2-27.8 137.8-17.8 42.1-43.4 80-76 112.5s-70.5 58.1-112.7 75.9A352.8 352.8 0 0 1 520.6 866c-47.9 0-94.3-9.4-137.9-27.8A353.84 353.84 0 0 1 270 762.3c-7.9-7.9-15.3-16.1-22.4-24.5-3-3.7-7.6-5.8-12.3-5.8H165c-6.3 0-10.2 7-6.7 12.3C234.9 863.2 368.5 942 520.6 942c236.2 0 428-190.1 430.4-425.6C953.4 277.1 761.3 82.6 521.7 82zM395.02 624v-76h-314c-4.4 0-8-3.6-8-8v-56c0-4.4 3.6-8 8-8h314v-76c0-6.7 7.8-10.5 13-6.3l141.9 112a8 8 0 0 1 0 12.6l-141.9 112c-5.2 4.1-13 .4-13-6.3z"
+                      />
+                    </svg>
+                  </i>
+                  <span>
+                    Log in
+                  </span>
+                </button>
+              </span>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+`;

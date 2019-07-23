@@ -38,9 +38,7 @@
 		"customize-cra": "^0.2.12",
 		"graphql": "^14.3.0",
 		"graphql-tag": "^2.10.1",
-		"html2canvas": "^1.0.0-rc.3",
 		"i18next": "^15.1.3",
-		"jspdf": "^1.5.3",
 		"less": "^3.9.0",
 		"less-loader": "^5.0.0",
 		"mobx": "^5.9.4",
@@ -92,7 +90,7 @@
 		]
 	},
 	"devDependencies": {
-		"eslint": "^6.0.1",
+		"eslint": "^4.19.1",
 		"eslint-config-airbnb": "^17.1.1",
 		"eslint-config-prettier": "^6.0.0",
 		"eslint-plugin-import": "^2.18.0",

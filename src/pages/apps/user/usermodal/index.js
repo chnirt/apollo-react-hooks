@@ -114,7 +114,8 @@ function UserModal(props) {
 										variables: {
 											offset: 0,
 											limit: 100
-										}
+										},
+										fetchPolicy: 'no-cache'
 									},
 									{
 										query: GET_ALL_PERMISSIONS_BY_USERID,
@@ -393,7 +394,8 @@ export default HOCQueryMutation([
 			variables: {
 				offset: 0,
 				limit: 100
-			}
+			},
+			fetchPolicy: 'no-cache'
 		}
 	},
 	{
@@ -402,7 +404,8 @@ export default HOCQueryMutation([
 		options: props => ({
 			variables: {
 				_id: props.userId || ''
-			}
+			},
+			fetchPolicy: 'no-cache'
 		})
 	},
 	{
@@ -419,7 +422,8 @@ export default HOCQueryMutation([
 		options: props => ({
 			variables: {
 				_id: props.userId
-			}
+			},
+			fetchPolicy: 'no-cache'
 		})
 	},
 	{
