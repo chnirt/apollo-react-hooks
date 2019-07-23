@@ -1,4 +1,6 @@
-/* eslint-disable */
+/* eslint-disable no-shadow */
+/* eslint-disable no-self-assign */
+/* eslint-disable no-param-reassign */
 import React, { useState, useEffect, useRef } from 'react'
 import { Row, Col, Button, Divider, List, Alert, Modal, Input, Form } from 'antd'
 import gql from 'graphql-tag'
@@ -9,11 +11,15 @@ class NoteForm extends React.Component {
 		super(props)
 		this.form = React.createRef()
 	}
+
 	componentDidMount() {
-		if (!!this.props.refForm) {
+		// eslint-disable-next-line react/destructuring-assignment
+		if (this.props.refForm) {
+			// eslint-disable-next-line react/destructuring-assignment
 			this.props.refForm(this.props.form)
 		}
 	}
+
 	render() {
 		const { visible, onCancel, onCreate, form } = this.props
 		const { getFieldDecorator } = form
@@ -121,14 +127,14 @@ const ORDERS_COUNT_BY_USER = gql`
 		}
 	}
 `
-const SUBSCRIPTION = gql`
-	subscription {
-		ordersByMenuCreated {
-			count
-			_id
-		}
-	}
-`
+// const SUBSCRIPTION = gql`
+// 	subscription {
+// 		ordersByMenuCreated {
+// 			count
+// 			_id
+// 		}
+// 	}
+// `
 
 const Order = props => {
 	const [dishes, setDishes] = useState()
@@ -186,6 +192,7 @@ const Order = props => {
 					.then(async result => {
 						const obj = {}
 						await result.data.ordersByMenu.map(
+							// eslint-disable-next-line no-return-assign
 							order => (obj[order.dishId] = order.count)
 						)
 						await setOrdersByMenu(obj)
@@ -218,6 +225,7 @@ const Order = props => {
 					.then(async result => {
 						const obj = {}
 						await result.data.ordersCountByUser.map(
+							// eslint-disable-next-line no-return-assign
 							order => (obj[order.dishId] = order.count)
 						)
 						await setOrdersCountByUser(obj)
@@ -302,9 +310,11 @@ const Order = props => {
 			})
 			.then(async res => {
 				await setOrderId(res.data.orderDish)
-				res.data.orderDish
-					? console.log('Đặt thành công')
-					: console.log('something went wrong')
+				if (res.data.orderDish) {
+					console.log('Đặt thành công')
+				} else {
+					console.log('something went wrong')
+				}
 			})
 			.catch(error => {
 				console.dir(error)
@@ -333,9 +343,11 @@ const Order = props => {
 					}
 				})
 				.then(res => {
-					res.data.updateOrder
-						? console.log('Note thành công')
-						: console.log('something went wrong')
+					if (res.data.updateOrder) {
+						console.log('Note thành công')
+					} else {
+						console.log('something went wrong')
+					}
 				})
 				.catch(error => {
 					console.dir(error)
@@ -397,7 +409,11 @@ const Order = props => {
 						}
 					})
 					.then(res => {
-						res ? setAlert(true) : console.log('something went wrong')
+						if (res) {
+							setAlert(true)
+						} else {
+							console.log('something went wrong')
+						}
 					})
 					.catch(error => {
 						console.dir(error)
@@ -405,6 +421,7 @@ const Order = props => {
 			})
 	}
 
+	// eslint-disable-next-line no-unused-vars
 	function saveFormRef(formRef) {
 		formRef = formRef
 	}
@@ -423,7 +440,13 @@ const Order = props => {
 	const CollectionCreateForm = Form.create({ name: 'form_in_modal' })(NoteForm)
 	return (
 		<React.Fragment>
-			<div style={{ backgroundColor: '#eee', paddingBottom: 40 }}>
+			<div
+				style={{
+					backgroundColor: '#eee',
+					paddingBottom: 40,
+					overflow: 'hidden'
+				}}
+			>
 				<Button
 					shape="circle"
 					icon="left"
@@ -505,6 +528,7 @@ const Order = props => {
 					visible={modalVisible}
 					onCancel={handleCancel}
 					onCreate={handleNote}
+					// eslint-disable-next-line no-return-assign
 					refForm={ref => (formRef = ref)}
 				/>
 			</div>
