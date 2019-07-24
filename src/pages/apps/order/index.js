@@ -1,3 +1,4 @@
+/* eslint-disable no-return-assign */
 /* eslint-disable no-shadow */
 /* eslint-disable no-self-assign */
 /* eslint-disable no-param-reassign */
@@ -155,7 +156,7 @@ const ORDERS_BY_MENU = gql`
 const Order = props => {
 	const [dishes, setDishes] = useState()
 	const [menuId, setMenuId] = useState()
-	const [orderedNumber, setOrderedNumber] = useState()
+	const [orderedNumber, setOrderedNumber] = useState({})
 	const [isPublish, setIsPublish] = useState()
 	const [isLocked, setIsLocked] = useState()
 	const [alert, setAlert] = useState(false)
@@ -207,9 +208,11 @@ const Order = props => {
 					})
 					.then(async result => {
 						const obj = {}
-						await result.data.ordersByMenu.map(
-							// eslint-disable-next-line no-return-assign
-							order => (obj[order.dishId] = order.count)
+						await result.data.ordersByMenu.map(order =>
+							obj[order.dishId]
+								? // eslint-disable-next-line operator-assignment
+								  (obj[order.dishId] = obj[order.dishId] + order.count)
+								: (obj[order.dishId] = order.count)
 						)
 						await setOrderedNumber(obj)
 					})
@@ -230,10 +233,13 @@ const Order = props => {
 			.subscribe({
 				async next(data) {
 					const obj = {}
-					await data.data.ordersByMenuCreated.map(
-						// eslint-disable-next-line no-return-assign
-						order => (obj[order.dishId] = order.count)
+					await data.data.ordersByMenuCreated.map(order =>
+						obj[order.dishId]
+							? // eslint-disable-next-line operator-assignment
+							  (obj[order.dishId] = obj[order.dishId] + order.count)
+							: (obj[order.dishId] = order.count)
 					)
+					console.log(obj)
 					await setOrderedNumber(obj)
 				},
 				error(err) {
@@ -322,9 +328,9 @@ const Order = props => {
 			.catch(error => {
 				console.log(error)
 			})
+		handleOrderedNumber()
 		handleDefaultDishes()
 		handleOrdersByMenu()
-		handleOrderedNumber()
 		handleOrdersCountByUser()
 	}, [])
 
@@ -353,6 +359,7 @@ const Order = props => {
 				await setOrderId(res.data.orderDish)
 				if (res.data.orderDish) {
 					console.log('Đặt thành công')
+					await handleOrderedNumber()
 				} else {
 					console.log('something went wrong')
 				}
