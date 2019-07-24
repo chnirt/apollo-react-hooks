@@ -3,13 +3,26 @@
 /* eslint-disable no-self-assign */
 /* eslint-disable no-param-reassign */
 import React, { useState, useEffect, useRef } from 'react'
-import { Row, Col, Button, List, Alert, Modal, Input, Form } from 'antd'
+import {
+	Row,
+	Col,
+	Button,
+	List,
+	Alert,
+	Modal,
+	Input,
+	Form,
+	Checkbox
+} from 'antd'
 import gql from 'graphql-tag'
 import { withApollo } from 'react-apollo'
 
 class NoteForm extends React.Component {
 	constructor(props) {
 		super(props)
+		this.state = {
+			extraRice: ''
+		}
 		this.form = React.createRef()
 	}
 
@@ -18,6 +31,20 @@ class NoteForm extends React.Component {
 		if (this.props.refForm) {
 			// eslint-disable-next-line react/destructuring-assignment
 			this.props.refForm(this.props.form)
+		}
+	}
+
+	onChange = e => {
+		if (e.target.checked) {
+			this.setState({
+				extraRice:
+					// eslint-disable-next-line react/destructuring-assignment
+					(this.props.noted && `Cơm thêm, ${this.props.noted}`) || 'Cơm thêm'
+			})
+		} else if (!e.target.checked) {
+			this.setState({
+				extraRice: ''
+			})
 		}
 	}
 
@@ -44,18 +71,28 @@ class NoteForm extends React.Component {
 				]}
 			>
 				<Form colon={false} ref={this.form}>
-					<Form.Item className="collection-create-form_last-form-item">
+					<Form.Item>
 						{getFieldDecorator('note', {
-							rules: [
-								{ required: false, message: 'Hãy thêm ghi chú!' }
-								// {initialValue: (this.props.note !== undefined) ? this.props.note : null}]
-							]
+							rules: [{ required: false, message: 'Hãy thêm ghi chú!' }],
+							// eslint-disable-next-line react/destructuring-assignment
+							initialValue:
+								// eslint-disable-next-line react/destructuring-assignment
+								this.state.extraRice !== ''
+									? // eslint-disable-next-line react/destructuring-assignment
+									  this.state.extraRice
+									: // eslint-disable-next-line react/destructuring-assignment
+									  this.props.noted
 						})(
 							<Input.TextArea
 								placeholder="nhập ghi chú"
 								autosize={{ minRows: 3, maxRows: 7 }}
 							/>
 						)}
+					</Form.Item>
+					<Form.Item>
+						{getFieldDecorator('extraRiceOption', {
+							rules: [{ required: false }]
+						})(<Checkbox onChange={e => this.onChange(e)}>Cơm thêm</Checkbox>)}
 					</Form.Item>
 				</Form>
 			</Modal>
@@ -153,6 +190,20 @@ const ORDERS_BY_MENU = gql`
 	}
 `
 
+const CURRENT_ORDER = gql`
+	query currentOrder($menuId: String!, $dishId: String!) {
+		currentOrder(menuId: $menuId, dishId: $dishId) {
+			_id
+			userId
+			menuId
+			dishId
+			note
+			count
+			isConfirmed
+		}
+	}
+`
+
 const Order = props => {
 	const [dishes, setDishes] = useState()
 	const [menuId, setMenuId] = useState()
@@ -163,7 +214,7 @@ const Order = props => {
 	const [ordersCountByUser, setOrdersCountByUser] = useState({})
 	const [modalVisible, setModalVisible] = useState(false)
 	const [selectedItem, setSelectedItem] = useState()
-	const [orderId, setOrderId] = useState()
+	const [selectedOrder, setSelectedOrder] = useState()
 	let formRef = useRef()
 
 	async function handleDefaultDishes() {
@@ -282,6 +333,23 @@ const Order = props => {
 			})
 	}
 
+	async function getOrder(item) {
+		await props.client
+			.query({
+				query: CURRENT_ORDER,
+				variables: {
+					menuId,
+					dishId: item._id
+				}
+			})
+			.then(async res => {
+				await setSelectedOrder(res.data.currentOrder)
+			})
+			.catch(error => {
+				console.dir(error)
+			})
+	}
+
 	useEffect(() => {
 		props.client
 			.query({
@@ -332,9 +400,10 @@ const Order = props => {
 		handleOrdersCountByUser()
 	}, [])
 
-	function showModal(item) {
-		setModalVisible(true)
-		setSelectedItem(item)
+	async function showModal(item) {
+		await setSelectedItem(item)
+		await getOrder(item)
+		await setModalVisible(true)
 	}
 
 	function handleCancel() {
@@ -354,7 +423,7 @@ const Order = props => {
 				}
 			})
 			.then(async res => {
-				await setOrderId(res.data.orderDish)
+				await setSelectedOrder(res.data.orderDish)
 				if (res.data.orderDish) {
 					console.log('Đặt thành công')
 					await handleOrderedNumber()
@@ -376,21 +445,27 @@ const Order = props => {
 			if (err) {
 				return
 			}
-			console.log(menuId)
-			console.log(selectedItem._id)
-
 			await props.client
 				.mutate({
 					mutation: UPDATE_ORDER,
 					variables: {
-						id: orderId,
+						id: selectedOrder._id,
 						input: {
 							menuId,
 							dishId: selectedItem._id,
 							note: values.note,
-							count: 0
+							count: ordersCountByUser[selectedItem._id]
 						}
-					}
+					},
+					refetchQueries: [
+						{
+							query: CURRENT_ORDER,
+							variables: {
+								menuId,
+								dishId: selectedItem._id
+							}
+						}
+					]
 				})
 				.then(res => {
 					if (res.data.updateOrder) {
@@ -409,19 +484,10 @@ const Order = props => {
 
 	async function handleMinus(item) {
 		if (!!ordersCountByUser[item._id] && ordersCountByUser[item._id] > 0) {
-			// await setOrdersCountByUser({
-			// 	...ordersCountByUser,
-			// 	[item._id]: ordersCountByUser[item._id] - 1
-			// })
 			await createOrder(item, ordersCountByUser[item._id] - 1)
 		} else {
-			// await setOrdersCountByUser({
-			// 	...ordersCountByUser,
-			// 	[item._id]: (ordersCountByUser[item._id] = 0)
-			// })
 			await createOrder(item, 0)
 		}
-		// await createOrder(item, ordersCountByUser[item._id] - 1)
 	}
 
 	async function handlePlus(item) {
@@ -429,20 +495,9 @@ const Order = props => {
 			ordersCountByUser[item._id] !== undefined &&
 			ordersCountByUser[item._id] < item.count
 		) {
-			console.log('khong undefined va < count')
 			await createOrder(item, ordersCountByUser[item._id] + 1)
-			// await setOrdersCountByUser({
-			// 	...ordersCountByUser,
-			// 	[item._id]: ordersCountByUser[item._id] + 1
-			// })
-			// eslint-disable-next-line no-cond-assign
 		} else {
-			console.log('con lai')
 			await createOrder(item, 1)
-			// await setOrdersCountByUser({
-			// 	...ordersCountByUser,
-			// 	[item._id]: 1
-			// })
 		}
 	}
 
@@ -484,11 +539,11 @@ const Order = props => {
 
 	const time = new Date(Date.now()).getHours()
 	const confirmButton =
-		time >= 12 && time < 14 ? (
+		time > 11 && time < 15 ? (
 			<Button
 				onClick={handleConfirmOrder}
 				id="confirm-order"
-				style={{ display: 'block', textAlign: 'center' }}
+				style={{ display: 'block', textAlign: 'center', marginTop: 20 }}
 			>
 				Xác nhận
 			</Button>
@@ -500,7 +555,9 @@ const Order = props => {
 				style={{
 					backgroundColor: '#eee',
 					paddingBottom: 40,
-					overflow: 'hidden'
+					overflow: 'hidden',
+					marginTop: 20,
+					paddingTop: 40
 				}}
 			>
 				<Row>
@@ -591,6 +648,7 @@ const Order = props => {
 					onCreate={handleNote}
 					// eslint-disable-next-line no-return-assign
 					refForm={ref => (formRef = ref)}
+					noted={(selectedOrder && selectedOrder.note) || null}
 				/>
 			</div>
 		</React.Fragment>
