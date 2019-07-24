@@ -239,7 +239,6 @@ const Order = props => {
 							  (obj[order.dishId] = obj[order.dishId] + order.count)
 							: (obj[order.dishId] = order.count)
 					)
-					console.log(obj)
 					await setOrderedNumber(obj)
 				},
 				error(err) {
@@ -267,11 +266,9 @@ const Order = props => {
 					.then(async result => {
 						const obj = {}
 						await res.data.menuPublishBySite.dishes.map(
-							// eslint-disable-next-line no-return-assign
 							dish => (obj[dish._id] = 0)
 						)
 						await result.data.ordersCountByUser.map(
-							// eslint-disable-next-line no-return-assign
 							order => (obj[order.dishId] = order.count)
 						)
 						await setOrdersCountByUser(obj)
@@ -330,6 +327,7 @@ const Order = props => {
 			})
 		handleOrderedNumber()
 		handleDefaultDishes()
+		// eslint-disable-next-line no-cond-assign
 		handleOrdersByMenu()
 		handleOrdersCountByUser()
 	}, [])
@@ -360,6 +358,10 @@ const Order = props => {
 				if (res.data.orderDish) {
 					console.log('Đặt thành công')
 					await handleOrderedNumber()
+					await setOrdersCountByUser({
+						...ordersCountByUser,
+						[item._id]: quantity
+					})
 				} else {
 					console.log('something went wrong')
 				}
@@ -407,17 +409,19 @@ const Order = props => {
 
 	async function handleMinus(item) {
 		if (!!ordersCountByUser[item._id] && ordersCountByUser[item._id] > 0) {
-			await setOrdersCountByUser({
-				...ordersCountByUser,
-				[item._id]: ordersCountByUser[item._id] - 1
-			})
+			// await setOrdersCountByUser({
+			// 	...ordersCountByUser,
+			// 	[item._id]: ordersCountByUser[item._id] - 1
+			// })
+			await createOrder(item, ordersCountByUser[item._id] - 1)
 		} else {
-			await setOrdersCountByUser({
-				...ordersCountByUser,
-				[item._id]: (ordersCountByUser[item._id] = 0)
-			})
+			// await setOrdersCountByUser({
+			// 	...ordersCountByUser,
+			// 	[item._id]: (ordersCountByUser[item._id] = 0)
+			// })
+			await createOrder(item, 0)
 		}
-		await createOrder(item, ordersCountByUser[item._id] - 1)
+		// await createOrder(item, ordersCountByUser[item._id] - 1)
 	}
 
 	async function handlePlus(item) {
@@ -426,19 +430,20 @@ const Order = props => {
 			ordersCountByUser[item._id] < item.count
 		) {
 			console.log('khong undefined va < count')
-			await setOrdersCountByUser({
-				...ordersCountByUser,
-				[item._id]: ordersCountByUser[item._id] + 1
-			})
+			await createOrder(item, ordersCountByUser[item._id] + 1)
+			// await setOrdersCountByUser({
+			// 	...ordersCountByUser,
+			// 	[item._id]: ordersCountByUser[item._id] + 1
+			// })
 			// eslint-disable-next-line no-cond-assign
 		} else {
 			console.log('con lai')
-			await setOrdersCountByUser({
-				...ordersCountByUser,
-				[item._id]: 1
-			})
+			await createOrder(item, 1)
+			// await setOrdersCountByUser({
+			// 	...ordersCountByUser,
+			// 	[item._id]: 1
+			// })
 		}
-		await createOrder(item, ordersCountByUser[item._id] + 1)
 	}
 
 	async function handleConfirmOrder() {
@@ -535,6 +540,7 @@ const Order = props => {
 													className="plus-order"
 													disabled={
 														ordersCountByUser[item._id] === item.count ||
+														orderedNumber[item._id] >= item.count ||
 														isLocked
 													}
 													onClick={() => handlePlus(item)}
@@ -547,6 +553,9 @@ const Order = props => {
 													type="primary"
 													onClick={() => showModal(item)}
 													id={`note-order-${item._id}`}
+													disabled={
+														ordersCountByUser[item._id] === 0 || isLocked
+													}
 												>
 													Note
 												</Button>
