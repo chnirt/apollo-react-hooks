@@ -20,10 +20,10 @@ deployN4:
       - cicd
   script:
     #- sed -i "s/HTTP/http/g" package.json
-    #- sed -i "s/DOMAIN/translate2.mdlib.vn/g" package.json
-    #- sed -i "s/WS/ws/g" .env.production.local
-    #- sed -i "s/HTTP/http/g" .env.production.local
-    #- sed -i "s/DOMAIN/translate2.mdlib.vn/g" .env.production.local
+    #- sed -i "s/DOMAIN/lunch4.digihcs.com/g" package.json
+    #- sed -i "s/WS/ws/g" .env.production
+    #- sed -i "s/HTTP/http/g" .env.production
+    #- sed -i "s/DOMAIN/lunch4.digihcs.com/g" .env.production
     #- cat package.json | grep homepage
     - CI="" npm run build
     - rsync -a -e "ssh -p 1210" ./build/ deploy@192.168.88.104:/var/www/erp_beta/lunch4 --delete
