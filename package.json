@@ -89,7 +89,6 @@
 		]
 	},
 	"devDependencies": {
-		"eslint": "^5.16.0",
 		"eslint-config-airbnb": "^17.1.1",
 		"eslint-config-prettier": "^6.0.0",
 		"eslint-plugin-import": "^2.18.0",
@@ -97,7 +96,6 @@
 		"eslint-plugin-prettier": "^3.1.0",
 		"eslint-plugin-react": "^7.14.2",
 		"husky": "^3.0.0",
-		"jest": "^24.8.0",
 		"lint-staged": "^9.2.0",
 		"prettier": "^1.18.2",
 		"pretty-quick": "^1.11.1",
