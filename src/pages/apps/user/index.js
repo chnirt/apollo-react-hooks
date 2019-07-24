@@ -21,6 +21,7 @@ function User(props) {
 	}
 
 	function hideModal() {
+		setUserId('')
 		setVisible(false)
 	}
 
