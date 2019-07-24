@@ -26,4 +26,4 @@ deployN4:
     #- sed -i "s/DOMAIN/translate2.mdlib.vn/g" .env.production.local
     #- cat package.json | grep homepage
     - CI="" npm run build
-    - rsync -a -e "ssh -p 1210" ./build/ deploy@192.168.88.104:/var/www/erp/lunch4 --delete
+    - rsync -a -e "ssh -p 1210" ./build/ deploy@192.168.88.104:/var/www/erp_beta/lunch4 --delete
