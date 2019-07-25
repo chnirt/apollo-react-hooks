@@ -10,14 +10,16 @@ import store from '../mobx'
 
 const domain = 'devcloud3.digihcs.com'
 const port = '11029'
+const end_point = 'graphql'
+
+const urn = process.env.REACT_APP_GRAPHQL_URN || `${domain}:${port}/${end_point}`
 
 const httpLink = new HttpLink({
-	// uri: 'http://localhost:4000/graphql'
-	uri: `http://${domain}:${port}/graphql`
+	uri: `http://${urn}`
 })
 
 const wsLink = new WebSocketLink({
-	uri: `ws://${domain}:${port}/graphql`,
+	uri: `ws://${urn}`,
 	options: {
 		reconnect: true
 	}

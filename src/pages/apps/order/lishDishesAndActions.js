@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import React, { useState, useEffect, useRef } from 'react'
 import { Row, Col, Button, List, Form } from 'antd'
 import gql from 'graphql-tag'
@@ -142,6 +143,7 @@ const ListDishesAndActions = props => {
 					})
 					.then(async result => {
 						const obj = {}
+						// eslint-disable-next-line no-return-assign
 						await result.data.ordersByMenu.map(order =>
 							obj[order.dishId]
 								? // eslint-disable-next-line operator-assignment
@@ -167,6 +169,7 @@ const ListDishesAndActions = props => {
 			.subscribe({
 				async next(data) {
 					const obj = {}
+					// eslint-disable-next-line no-return-assign
 					await data.data.ordersByMenuCreated.map(order =>
 						obj[order.dishId]
 							? // eslint-disable-next-line operator-assignment
@@ -200,9 +203,11 @@ const ListDishesAndActions = props => {
 					.then(async result => {
 						const obj = {}
 						await res.data.menuPublishBySite.dishes.map(
+							// eslint-disable-next-line no-return-assign
 							dish => (obj[dish._id] = 0)
 						)
 						await result.data.ordersCountByUser.map(
+							// eslint-disable-next-line no-return-assign
 							order => (obj[order.dishId] = order.count)
 						)
 						await setOrdersCountByUser(obj)
@@ -384,8 +389,9 @@ const ListDishesAndActions = props => {
 		}
 	}
 
-	// eslint-disable-next-line no-unused-vars
+	// eslint-disable-next-line
 	function saveFormRef(formRef) {
+		// eslint-disable-next-line no-self-assign
 		formRef = formRef
 	}
 
