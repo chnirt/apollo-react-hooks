@@ -27,7 +27,7 @@ deployTest:
     #- sed -i "s/HTTP/http/g" .env.production
     #- sed -i "s/DOMAIN/lunch4.digihcs.com/g" .env.production
     #- cat package.json | grep homepage
-    - CI="" REACT_APP_URL="lunch4test.digihcs.com/graphqllunch" npm run build
+    - CI="" REACT_APP_GRAPHQL_URN="lunch4test.digihcs.com/graphqllunch" npm run build
     - rsync -a -e "ssh -p 1210" ./build/ deploy@192.168.88.104:/var/www/erp_beta/lunch4test --delete
 
 test:
