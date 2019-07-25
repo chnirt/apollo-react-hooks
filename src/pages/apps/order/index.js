@@ -20,7 +20,7 @@ const Order = () => {
 					}}
 					level={2}
 				>
-					Đặt cơm
+					Đặt món
 				</Typography.Title>
 				<ListDishesAndActions />
 			</div>
