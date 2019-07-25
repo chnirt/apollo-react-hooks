@@ -11,6 +11,7 @@ before_script:
 
 stages:
   - deployTest
+  - test
   - deploy
 
 deployTest:
@@ -18,6 +19,7 @@ deployTest:
   only:
     refs:
       - cicd
+      - master
   script:
     #- sed -i "s/HTTP/http/g" package.json
     #- sed -i "s/DOMAIN/lunch4.digihcs.com/g" package.json
@@ -25,8 +27,17 @@ deployTest:
     #- sed -i "s/HTTP/http/g" .env.production
     #- sed -i "s/DOMAIN/lunch4.digihcs.com/g" .env.production
     #- cat package.json | grep homepage
-    - CI="" npm run build
+    - CI="" REACT_APP_URL="lunch4test.digihcs.com/graphqllunch" npm run build
     - rsync -a -e "ssh -p 1210" ./build/ deploy@192.168.88.104:/var/www/erp_beta/lunch4test --delete
+
+test:
+  stage: test
+  only:
+    refs:
+      - cicd
+      - master
+  script:
+    - npm run test
 
 deployN4:
   stage: deploy
