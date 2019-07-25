@@ -33,6 +33,7 @@
 		"chalk": "^2.4.2",
 		"core-js": "3",
 		"customize-cra": "^0.2.12",
+		"eslint": "^5.16.0",
 		"graphql": "^14.3.0",
 		"graphql-tag": "^2.10.1",
 		"i18next": "^15.1.3",
