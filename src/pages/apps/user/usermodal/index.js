@@ -432,8 +432,7 @@ export default HOCQueryMutation([
 		options: props => ({
 			variables: {
 				_id: props.userId || ''
-			},
-			fetchPolicy: 'no-cache'
+			}
 		})
 	},
 	{

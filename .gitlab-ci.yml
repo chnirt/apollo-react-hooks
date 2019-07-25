@@ -1,7 +1,7 @@
 cache:
   key: ${CI_COMMIT_REF_SLUG}
   paths:
-  - node_modules/
+    - node_modules/
 
 before_script:
   - export PATH=$PATH:/home/gitlab-runner/.nvm/versions/node/v11.11.0/bin/

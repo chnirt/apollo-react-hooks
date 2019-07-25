@@ -11,6 +11,6 @@ export default function openNotificationWithIcon(
 		message,
 		description,
 		placement: 'bottomRight',
-		duration: 1
+		duration: 2
 	})
 }
