@@ -21,6 +21,7 @@ function User(props) {
 	}
 
 	function hideModal() {
+		setUserId('')
 		setVisible(false)
 	}
 
@@ -47,7 +48,7 @@ function User(props) {
 					openNotificationWithIcon('success', 'success', 'Success', _id)
 			})
 			.catch(err => {
-				console.log(err)
+				// console.log(err)
 				const errors = err.graphQLErrors.map(error => error.message)
 				openNotificationWithIcon('error', 'failed', 'Failed', errors[0])
 			})
