@@ -8,16 +8,17 @@ import { WebSocketLink } from 'apollo-link-ws'
 import { getMainDefinition } from 'apollo-utilities'
 import store from '../mobx'
 
-const domain = 'devcloud3.digihcs.com'
-const port = '11029'
+const domain = process.env.REACT_APP_DOMAIN || 'devcloud3.digihcs.com'
+const port = process.env.REACT_APP_PORTBE || '11048'
+const end_point = process.env.REACT_APP_END_POINT || 'graphqllunch'
 
 const httpLink = new HttpLink({
 	// uri: 'http://localhost:4000/graphql'
-	uri: `http://${domain}:${port}/graphql`
+	uri: `http://${domain}:${port}/${end_point}`
 })
 
 const wsLink = new WebSocketLink({
-	uri: `ws://${domain}:${port}/graphql`,
+	uri: `ws://${domain}:${port}/${end_point}`,
 	options: {
 		reconnect: true
 	}
