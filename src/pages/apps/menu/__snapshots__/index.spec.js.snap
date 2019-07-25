@@ -12,7 +12,7 @@ exports[`menu correctly 1`] = `
       }
     }
   >
-    Quản lý menu
+    Quản lý menu 
   </h1>
   <div
     className="ant-row menu-list"
