@@ -9,7 +9,7 @@ import { getMainDefinition } from 'apollo-utilities'
 import store from '../mobx'
 
 const domain = 'devcloud3.digihcs.com'
-const port = '11029'
+const port = '11048'
 const end_point = 'graphql'
 
 const urn = process.env.REACT_APP_GRAPHQL_URN || `${domain}:${port}/${end_point}`
