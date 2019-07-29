@@ -12,14 +12,14 @@ const domain = 'devcloud3.digihcs.com'
 const port = '11098'
 const end_point = 'graphqllunch'
 
-const url = process.env.REACT_APP_URL || `${domain}:${port}/${end_point}`
+const urn = process.env.REACT_APP_GRAPHQL_URN || `${domain}:${port}/${end_point}`
 
 const httpLink = new HttpLink({
-	uri: `http://${url}`
+	uri: `http://${urn}`
 })
 
 const wsLink = new WebSocketLink({
-	uri: `ws://${url}`,
+	uri: `ws://${urn}`,
 	options: {
 		reconnect: true
 	}

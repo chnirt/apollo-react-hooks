@@ -114,11 +114,16 @@ function UserModal(props) {
 										variables: {
 											offset: 0,
 											limit: 100
-										},
-										fetchPolicy: 'no-cache'
+										}
 									},
 									{
 										query: GET_ALL_PERMISSIONS_BY_USERID,
+										variables: {
+											_id: props.userId
+										}
+									},
+									{
+										query: GET_USER,
 										variables: {
 											_id: props.userId
 										}
@@ -127,15 +132,17 @@ function UserModal(props) {
 							})
 							.then(res => {
 								// console.log(res)
-								openNotificationWithIcon(
-									'success',
-									'success',
-									'Success',
-									'User is updated'
-								)
+								if (res.data.updateUser === true)
+									openNotificationWithIcon(
+										'success',
+										'success',
+										'Success',
+										'User is updated'
+									)
 								setConfirmLoading(false)
-								props.form.resetFields()
+
 								props.hideModal()
+								props.form.resetFields()
 							})
 							.catch(err => {
 								// console.log(err)
@@ -163,15 +170,17 @@ function UserModal(props) {
 							})
 							.then(res => {
 								// console.log(res)
-								openNotificationWithIcon(
-									'success',
-									'success',
-									'Success',
-									'User is created'
-								)
+								if (res.data.createUser === true)
+									openNotificationWithIcon(
+										'success',
+										'success',
+										'Success',
+										'User is created'
+									)
 								setConfirmLoading(false)
-								props.form.resetFields()
+
 								props.hideModal()
+								props.form.resetFields()
 							})
 							.catch(err => {
 								// console.log(err)
@@ -194,7 +203,7 @@ function UserModal(props) {
 		}
 	}
 
-	console.log(props)
+	// console.log(props)
 
 	const {
 		form,
@@ -202,7 +211,8 @@ function UserModal(props) {
 		visible,
 		getAllSites,
 		getAllPermissionsByUserId,
-		getUser
+		getUser,
+		hideModal
 	} = props
 	const { getFieldDecorator } = form
 
@@ -212,10 +222,7 @@ function UserModal(props) {
 			visible={visible}
 			onOk={handleOk}
 			confirmLoading={confirmLoading}
-			onCancel={() => {
-				props.form.resetFields()
-				props.hideModal()
-			}}
+			onCancel={hideModal}
 			okText="Submit"
 		>
 			<Form {...formItemLayout}>
@@ -226,6 +233,10 @@ function UserModal(props) {
 								{
 									required: true,
 									message: 'Please input your username!'
+								},
+								{
+									min: 4,
+									message: 'Your username must be at least 4 characters'
 								}
 							]
 						})(<Input style={{ fontSize: 16 }} />)}
@@ -237,6 +248,14 @@ function UserModal(props) {
 							{
 								required: true,
 								message: 'Please input your password!'
+							},
+							{
+								min: 1,
+								message: 'Your password must be between 1 and 8 characters'
+							},
+							{
+								max: 8,
+								message: 'Your password must be between 1 and 8 characters'
 							},
 							{
 								validator: validateToNextPassword
@@ -270,6 +289,14 @@ function UserModal(props) {
 							{
 								required: true,
 								message: 'Please input your fullname!'
+							},
+							{
+								min: 3,
+								message: 'Your fullname must be between 3 and 20 characters'
+							},
+							{
+								max: 20,
+								message: 'Your fullname must be between 3 and 20 characters'
 							}
 						]
 					})(<Input style={{ fontSize: 16 }} />)}
@@ -394,8 +421,7 @@ export default HOCQueryMutation([
 			variables: {
 				offset: 0,
 				limit: 100
-			},
-			fetchPolicy: 'no-cache'
+			}
 		}
 	},
 	{
@@ -410,20 +436,21 @@ export default HOCQueryMutation([
 	},
 	{
 		query: GET_ALL_SITES,
-		name: 'getAllSites'
+		name: 'getAllSites',
+		options: {}
 	},
 	{
 		query: GET_ALL_PERMISSIONS,
-		name: 'getAllPermissions'
+		name: 'getAllPermissions',
+		options: {}
 	},
 	{
 		query: GET_USER,
 		name: 'getUser',
 		options: props => ({
 			variables: {
-				_id: props.userId
-			},
-			fetchPolicy: 'no-cache'
+				_id: props.userId || ''
+			}
 		})
 	},
 	{
@@ -434,6 +461,6 @@ export default HOCQueryMutation([
 	{
 		mutation: UPDATE_USER,
 		name: 'updateUser',
-		option: {}
+		options: {}
 	}
 ])(Form.create({ name: 'createUserForm' })(UserModal))
