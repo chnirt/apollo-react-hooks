@@ -8,14 +8,15 @@ exports[`menu correctly 1`] = `
     style={
       Object {
         "color": "#fff",
-        "margin": "16px 24px",
+        "display": "inline",
+        "margin": ".3em 1em",
       }
     }
   >
-    Quản lý menu 
+    Quản lý menu
   </h1>
   <div
-    className="ant-row menu-list"
+    className="menu-list"
   >
     <div
       className="ant-skeleton ant-skeleton-active"

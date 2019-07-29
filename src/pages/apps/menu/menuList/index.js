@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Card, Icon, Col, Row, Button, Modal, Form, Input } from 'antd'
+import { Col, Row, Button, Modal, Form, Input, List, Avatar } from 'antd'
 import gql from 'graphql-tag'
 import { HOCQueryMutation } from '../../../../components/shared/hocQueryAndMutation'
 import openNotificationWithIcon from '../../../../components/shared/openNotificationWithIcon'
@@ -7,6 +7,7 @@ import openNotificationWithIcon from '../../../../components/shared/openNotifica
 function MenuList(props) {
 	const { data, form, mutate } = props
 	const [visible, setVisible] = useState(false)
+	const [hasPublished, setHasPublished] = useState(false)
 
 	async function deleteMenu(id) {
 		Modal.confirm({
@@ -78,63 +79,95 @@ function MenuList(props) {
 	const { getFieldDecorator } = form
 	return (
 		<>
-			{data.menusBySite.map(menu => (
-				<Col
-					key={menu._id}
-					style={{ marginBottom: '20px' }}
-					xs={{ span: 22, offset: 1 }}
-					sm={{ span: 22, offset: 1 }}
-					lg={{ span: 6, offset: 1 }}
-				>
-					<Card
-						actions={[
-							<Icon
-								type="edit"
-								onClick={() =>
-									props.history.push(
-										`/🥢/menu/detail/${props.siteId}/${menu._id}`
-									)
-								}
-							/>,
-							<Icon type="delete" onClick={() => deleteMenu(menu._id)} />
-						]}
-					>
-						<p style={{ height: '1em', lineHeight: '1em' }}>{menu.name}</p>
-					</Card>
-				</Col>
-			))}
-			<Col xs={{ span: 8, offset: 8 }} lg={{ span: 8, offset: 8 }}>
-				<Button ghost icon="plus" onClick={() => setVisible(true)} block>
+			<Row type="flex" justify="end" style={{ marginRight: '1em' }}>
+				<Button type="primary" icon="plus" onClick={() => setVisible(true)}>
 					Thêm menu
 				</Button>
-				<Modal
-					title="Thêm menu"
-					cancelText="Đóng"
-					visible={visible}
-					okText="Lưu"
-					onCancel={() => setVisible(false)}
-					onOk={addMenu}
-					centered
-				>
-					<Form>
-						<Row>
-							<Col span={20} offset={2}>
-								<Form.Item>
-									{getFieldDecorator('name', {
-										rules: [{ required: true, message: 'Nhập tên menu' }],
-										initialValue: ''
-									})(
-										<Input
-											placeholder="Nhập tên menu"
-											style={{ width: '90%' }}
+			</Row>
+			<List
+				pagination
+				style={{
+					margin: '1em',
+					padding: '1em',
+					backgroundColor: '#fff',
+					borderRadius: '.5em'
+				}}
+				dataSource={data.menusBySite}
+				renderItem={menu => {
+					if (menu.isPublished) {
+						setHasPublished(true)
+					}
+					return (
+						<List.Item
+							actions={
+								hasPublished
+									? menu.isPublished && [
+											<Button
+												onClick={() =>
+													props.history.push(
+														`/🥢/menu/detail/${props.siteId}/${menu._id}`
+													)
+												}
+												icon="edit"
+												type="link"
+											/>
+									  ]
+									: [
+											<Button
+												onClick={() =>
+													props.history.push(
+														`/🥢/menu/detail/${props.siteId}/${menu._id}`
+													)
+												}
+												icon="edit"
+												type="link"
+											/>,
+											<Button
+												onClick={() => deleteMenu(menu._id)}
+												icon="delete"
+												type="link"
+											/>
+									  ]
+							}
+							style={{ fontWeight: 'bold' }}
+						>
+							<List.Item.Meta
+								avatar={
+									menu.isPublished && (
+										<Avatar
+											icon="check"
+											size="small"
+											style={{ backgroundColor: '#87d068' }}
 										/>
-									)}
-								</Form.Item>
-							</Col>
-						</Row>
-					</Form>
-				</Modal>
-			</Col>
+									)
+								}
+								title={menu.name}
+							/>
+						</List.Item>
+					)
+				}}
+			/>
+			<Modal
+				title="Thêm menu"
+				cancelText="Đóng"
+				visible={visible}
+				okText="Lưu"
+				onCancel={() => setVisible(false)}
+				onOk={addMenu}
+			>
+				<Form>
+					<Row>
+						<Col span={20} offset={2}>
+							<Form.Item>
+								{getFieldDecorator('name', {
+									rules: [{ required: true, message: 'Nhập tên menu' }],
+									initialValue: ''
+								})(<Input placeholder="Nhập tên menu" />)}
+							</Form.Item>
+						</Col>
+					</Row>
+				</Form>
+			</Modal>
 		</>
 	)
 }
@@ -144,6 +177,7 @@ const GET_MENUS_BY_SITE = gql`
 		menusBySite(siteId: $siteId) {
 			_id
 			name
+			isPublished
 		}
 	}
 `
