@@ -30,7 +30,7 @@ function Layout(props) {
 	const sitesHasPermission = userPers.filter(
 		ele => ele.permissions.indexOf(currentPage) !== -1
 	)
-	console.log(sitesHasPermission)
+	// console.log(sitesHasPermission)
 	return (
 		<div
 			style={{
