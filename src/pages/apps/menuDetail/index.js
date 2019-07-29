@@ -6,9 +6,8 @@ import openNotificationWithIcon from '../../../components/shared/openNotificatio
 import ListDish from './listDish'
 
 function MenuDetail(props) {
-	const { form, data, menuById } = props
-	// eslint-disable-next-line react/destructuring-assignment
-	const { menuId } = props.match.params
+	const { form, data, menuById, match } = props
+	const { menuId } = match.params
 	const [shopId, setShopId] = useState('')
 
 	function changeShop(value) {
@@ -115,8 +114,7 @@ function MenuDetail(props) {
 			</Col>
 			<ListDish
 				publishAndUnpublish={publishAndUnpublish}
-				// eslint-disable-next-line react/destructuring-assignment
-				menuId={props.match.params.menuId}
+				menuId={match.params.menuId}
 				shopId={shopId}
 			/>
 		</Row>
