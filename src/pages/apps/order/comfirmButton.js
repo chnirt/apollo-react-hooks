@@ -66,6 +66,7 @@ const ConfirmButton = props => {
 				onClick={handleConfirmOrder}
 				id="confirm-order"
 				style={{ display: 'block', textAlign: 'center', marginTop: 20 }}
+				type="submit"
 			>
 				Xác nhận
 			</Button>
