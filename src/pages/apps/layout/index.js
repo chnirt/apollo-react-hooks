@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Button, Divider, Select } from 'antd'
+import { Divider, Select, PageHeader, Icon, Avatar } from 'antd'
 import BgDashboard from '../../../assets/images/bg-dashboard.jpg'
 
 const { Option } = Select
@@ -47,35 +47,65 @@ function Layout(props) {
 			{children.props.location.pathname === '/🥢' ? (
 				children
 			) : (
-				<div
-					style={
-						{
-							// perspectiveOrigin: '25% 75%',
-							// transform: 'perspective(300px) rotateY(-20deg)'
+				<div>
+					<PageHeader
+						style={{ backgroundColor: 'transparent' }}
+						title={
+							<Icon
+								type="home"
+								onClick={() => children.props.history.push('/🥢')}
+								style={{ color: '#ffffff' }}
+							/>
 						}
-					}
-				>
-					<Button
-						type="link"
-						icon="left"
-						size="large"
-						style={{ color: '#ffffff' }}
-						onClick={() => children.props.history.goBack()}
+						onBack={() => children.props.history.goBack()}
+						backIcon={<Icon type="arrow-left" style={{ color: '#ffffff' }} />}
+						extra={[
+							<Select
+								defaultValue={currentsite}
+								style={{ width: '12em', marginRight: '1em' }}
+								onChange={handleChange}
+							>
+								{sitesHasPermission.map(item => (
+									<Option key={item.siteId} value={item.siteId}>
+										{item.siteName}
+									</Option>
+								))}
+							</Select>,
+							<Avatar icon="user" style={{ color: '#ffffff' }} />
+						]}
+						footer={<Divider style={{ margin: '0' }} />}
 					/>
-					<Select
-						defaultValue={currentsite}
-						style={{ width: 180, marginRight: '5vw' }}
-						onChange={handleChange}
-					>
-						{sitesHasPermission.map(item => (
-							<Option key={item.siteId} value={item.siteId}>
-								{item.siteName}
-							</Option>
-						))}
-					</Select>
-					<Divider style={{ margin: '4px 0 0' }} />
 					{children}
 				</div>
+				// <div
+				// 	style={
+				// 		{
+				// 			// perspectiveOrigin: '25% 75%',
+				// 			// transform: 'perspective(300px) rotateY(-20deg)'
+				// 		}
+				// 	}
+				// >
+				// 	<Button
+				// 		type="link"
+				// 		icon="left"
+				// 		size="large"
+				// 		style={{ color: '#ffffff' }}
+				// 		onClick={() => children.props.history.goBack()}
+				// 	/>
+				// <Select
+				// 	defaultValue={currentsite}
+				// 	style={{ width: 180, marginRight: '5vw' }}
+				// 	onChange={handleChange}
+				// >
+				// 	{sitesHasPermission.map(item => (
+				// 		<Option key={item.siteId} value={item.siteId}>
+				// 			{item.siteName}
+				// 		</Option>
+				// 	))}
+				// </Select>
+				// 	<Divider style={{ margin: '4px 0 0' }} />
+				// 	{children}
+				// </div>
 			)}
 		</div>
 	)
