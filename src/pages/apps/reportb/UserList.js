@@ -57,7 +57,7 @@ const UserList = ({
 							<Icon type="minus" />
 						</Button>
 						<Button
-							disabled={orderCount === dishCount}
+							disabled={orderCount === dishCount || user.username !== 'admin'}
 							onClick={() => handleChange('add')}
 						>
 							<Icon type="plus" />

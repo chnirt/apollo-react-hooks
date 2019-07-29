@@ -8,8 +8,7 @@ const Order = () => {
 			<div
 				style={{
 					overflow: 'hidden',
-					marginTop: 20,
-					paddingTop: 40
+					marginTop: 10
 				}}
 			>
 				<Typography.Title
