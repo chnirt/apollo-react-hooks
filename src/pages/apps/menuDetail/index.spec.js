@@ -9,7 +9,7 @@ it('menu detail correctly', () => {
 	const MenuDetails = withRouter(MenuDetail)
 	const menu = renderer
 		.create(
-			<MockedProvider mocks={[]}>
+			<MockedProvider addTypename={false} mocks={[]}>
 				<BrowserRouter>
 					<MenuDetails />
 				</BrowserRouter>
