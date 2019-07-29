@@ -55,7 +55,7 @@ function Dashboard(props) {
 		<>
 			<Select
 				defaultValue={currentsite}
-				style={{ width: 180, marginRight: '5vw' }}
+				style={{ width: 130, marginRight: '5vw' }}
 				onChange={handleChange}
 			>
 				{JSON.parse(window.localStorage.getItem('user-permissions')).map(

@@ -30,7 +30,7 @@ function Layout(props) {
 	const sitesHasPermission = userPers.filter(
 		ele => ele.permissions.indexOf(currentPage) !== -1
 	)
-	console.log(sitesHasPermission)
+	// console.log(sitesHasPermission)
 	return (
 		<div
 			style={{
@@ -47,7 +47,14 @@ function Layout(props) {
 			{children.props.location.pathname === '/🥢' ? (
 				children
 			) : (
-				<div>
+				<div
+					style={
+						{
+							// perspectiveOrigin: '25% 75%',
+							// transform: 'perspective(300px) rotateY(-20deg)'
+						}
+					}
+				>
 					<Button
 						type="link"
 						icon="left"
