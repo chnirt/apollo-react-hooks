@@ -1,9 +1,24 @@
-import React from 'react'
-import { Button, Divider } from 'antd'
+import React, { useState } from 'react'
+import { Button, Divider, Select } from 'antd'
 import BgDashboard from '../../../assets/images/bg-dashboard.jpg'
 
+const { Option } = Select
+
 function Layout(props) {
+	const [currentsite, setCurrentsite] = useState(
+		window.localStorage.getItem('currentsite')
+	)
+
 	const { children } = props
+
+	function handleChange(value) {
+		// console.log(`selected ${value}`)
+		setCurrentsite(value)
+		window.localStorage.setItem('currentsite', value)
+	}
+
+	console.log(children.props.location.pathname.split('/🥢/')[1])
+
 	return (
 		<div
 			style={{
@@ -20,7 +35,14 @@ function Layout(props) {
 			{children.props.location.pathname === '/🥢' ? (
 				children
 			) : (
-				<div>
+				<div
+					style={
+						{
+							// perspectiveOrigin: '25% 75%',
+							// transform: 'perspective(300px) rotateY(-20deg)'
+						}
+					}
+				>
 					<Button
 						type="link"
 						icon="left"
@@ -28,6 +50,19 @@ function Layout(props) {
 						style={{ color: '#ffffff' }}
 						onClick={() => children.props.history.goBack()}
 					/>
+					<Select
+						defaultValue={currentsite}
+						style={{ width: 130, marginRight: '5vw' }}
+						onChange={handleChange}
+					>
+						{JSON.parse(window.localStorage.getItem('user-permissions')).map(
+							item => (
+								<Option key={item.siteId} value={item.siteId}>
+									{item.siteName}
+								</Option>
+							)
+						)}
+					</Select>
 					<Divider style={{ margin: '4px 0 0' }} />
 					{children}
 				</div>

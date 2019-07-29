@@ -21,8 +21,10 @@ function User(props) {
 	}
 
 	function hideModal() {
-		setUserId('')
 		setVisible(false)
+		setTimeout(() => {
+			setUserId('')
+		}, 200)
 	}
 
 	function onLockAndUnlock(_id) {

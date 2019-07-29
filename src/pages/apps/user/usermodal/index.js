@@ -211,7 +211,8 @@ function UserModal(props) {
 		visible,
 		getAllSites,
 		getAllPermissionsByUserId,
-		getUser
+		getUser,
+		hideModal
 	} = props
 	const { getFieldDecorator } = form
 
@@ -221,10 +222,7 @@ function UserModal(props) {
 			visible={visible}
 			onOk={handleOk}
 			confirmLoading={confirmLoading}
-			onCancel={() => {
-				props.form.resetFields()
-				props.hideModal()
-			}}
+			onCancel={hideModal}
 			okText="Submit"
 		>
 			<Form {...formItemLayout}>
@@ -432,7 +430,8 @@ export default HOCQueryMutation([
 		options: props => ({
 			variables: {
 				_id: props.userId || ''
-			}
+			},
+			fetchPolicy: 'no-cache'
 		})
 	},
 	{
