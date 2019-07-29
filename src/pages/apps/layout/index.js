@@ -3,22 +3,34 @@ import { Button, Divider, Select } from 'antd'
 import BgDashboard from '../../../assets/images/bg-dashboard.jpg'
 
 const { Option } = Select
-
 function Layout(props) {
 	const [currentsite, setCurrentsite] = useState(
 		window.localStorage.getItem('currentsite')
 	)
-
 	const { children } = props
-
 	function handleChange(value) {
 		// console.log(`selected ${value}`)
 		setCurrentsite(value)
 		window.localStorage.setItem('currentsite', value)
 	}
-
-	console.log(children.props.location.pathname.split('/🥢/')[1])
-
+	const userPers = JSON.parse(localStorage.getItem('user-permissions')).map(
+		ele => ({
+			siteName: ele.siteName,
+			siteId: ele.siteId,
+			permissions: ele.permissions
+				.map(per => per.code)
+				.map(code => code.split('_'))
+				.map(name => name[0])
+				.filter((value, index, arr) => arr.indexOf(value) === index)
+		})
+	)
+	const currentPage = children.props.history.location.pathname
+		.slice(4)
+		.toUpperCase()
+	const sitesHasPermission = userPers.filter(
+		ele => ele.permissions.indexOf(currentPage) !== -1
+	)
+	console.log(sitesHasPermission)
 	return (
 		<div
 			style={{
@@ -52,16 +64,14 @@ function Layout(props) {
 					/>
 					<Select
 						defaultValue={currentsite}
-						style={{ width: 130, marginRight: '5vw' }}
+						style={{ width: 180, marginRight: '5vw' }}
 						onChange={handleChange}
 					>
-						{JSON.parse(window.localStorage.getItem('user-permissions')).map(
-							item => (
-								<Option key={item.siteId} value={item.siteId}>
-									{item.siteName}
-								</Option>
-							)
-						)}
+						{sitesHasPermission.map(item => (
+							<Option key={item.siteId} value={item.siteId}>
+								{item.siteName}
+							</Option>
+						))}
 					</Select>
 					<Divider style={{ margin: '4px 0 0' }} />
 					{children}

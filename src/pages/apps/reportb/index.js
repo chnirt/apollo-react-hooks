@@ -60,11 +60,12 @@ function ReportB({ getMenuBySite, mutate }) {
 				throw err
 			})
 	}
+
 	return (
 		<>
 			{menusBySite &&
 				menusBySite.map(menuBySite => (
-					<div key={menuBySite._id} style={{ margin: '20px 10px 0' }}>
+					<div key={menuBySite._id} className="menus">
 						{menuBySite.dishes && (
 							<MenuList
 								menuBySite={menuBySite}
