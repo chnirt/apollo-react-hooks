@@ -48,16 +48,16 @@ const ORDERS_COUNT_BY_USER = gql`
 	}
 `
 
-const SUBSCRIPTION = gql`
-	subscription {
-		ordersByMenuCreated {
-			menuId
-			count
-			_id
-			dishId
-		}
-	}
-`
+// const SUBSCRIPTION = gql`
+// 	subscription {
+// 		ordersByMenuCreated {
+// 			menuId
+// 			count
+// 			_id
+// 			dishId
+// 		}
+// 	}
+// `
 
 const ORDERS_BY_MENU = gql`
 	query ordersByMenu($menuId: String!) {
@@ -162,26 +162,26 @@ const ListDishesAndActions = props => {
 	}
 
 	async function handleOrderedNumber() {
-		await props.client
-			.subscribe({
-				query: SUBSCRIPTION
-			})
-			.subscribe({
-				async next(data) {
-					const obj = {}
-					// eslint-disable-next-line no-return-assign
-					await data.data.ordersByMenuCreated.map(order =>
-						obj[order.dishId]
-							? // eslint-disable-next-line operator-assignment
-							  (obj[order.dishId] = obj[order.dishId] + order.count)
-							: (obj[order.dishId] = order.count)
-					)
-					await setOrderedNumber(obj)
-				},
-				error(err) {
-					console.error('err', err)
-				}
-			})
+		// await props.client
+		// 	.subscribe({
+		// 		query: SUBSCRIPTION
+		// 	})
+		// 	.subscribe({
+		// 		async next(data) {
+		// 			const obj = {}
+		// 			// eslint-disable-next-line no-return-assign
+		// 			await data.data.ordersByMenuCreated.map(order =>
+		// 				obj[order.dishId]
+		// 					? // eslint-disable-next-line operator-assignment
+		// 					  (obj[order.dishId] = obj[order.dishId] + order.count)
+		// 					: (obj[order.dishId] = order.count)
+		// 			)
+		// 			await setOrderedNumber(obj)
+		// 		},
+		// 		error(err) {
+		// 			console.error('err', err)
+		// 		}
+		// 	})
 	}
 
 	async function handleOrdersCountByUser() {
@@ -403,7 +403,6 @@ const ListDishesAndActions = props => {
 					{isPublish === true ? (
 						<>
 							<List
-								// bordered
 								size="large"
 								dataSource={dishes}
 								renderItem={item => (
@@ -416,6 +415,8 @@ const ListDishesAndActions = props => {
 										key={item._id}
 										actions={[
 											<Button
+												icon="minus"
+												shape="circle"
 												id={`minus-order-${item._id}`}
 												className="minus-order"
 												disabled={
@@ -424,10 +425,10 @@ const ListDishesAndActions = props => {
 													isLocked
 												}
 												onClick={() => handleMinus(item)}
-											>
-												-
-											</Button>,
+											/>,
 											<Button
+												icon="plus"
+												shape="circle"
 												id={`plus-order-${item._id}`}
 												className="plus-order"
 												disabled={
@@ -436,19 +437,17 @@ const ListDishesAndActions = props => {
 													isLocked
 												}
 												onClick={() => handlePlus(item)}
-											>
-												+
-											</Button>
+											/>
 										]}
 										extra={
 											<Button
+												icon="form"
+												shape="circle"
 												type="primary"
 												onClick={() => showModal(item)}
 												id={`note-order-${item._id}`}
 												disabled={ordersCountByUser[item._id] === 0 || isLocked}
-											>
-												Note
-											</Button>
+											/>
 										}
 									>
 										<List.Item.Meta
@@ -457,6 +456,10 @@ const ListDishesAndActions = props => {
 												orderedNumber[item._id]) ||
 												0}/${item.count}`}
 										/>
+										{/* chưa set reponsive CSS cho cái này nên để tạm ở description */}
+										{/* <div style={{marginRight: 20}}>
+											{`${(orderedNumber && orderedNumber[item._id]) || 0}/${item.count}`}
+										</div> */}
 										<div>
 											{(ordersCountByUser && ordersCountByUser[item._id]) || 0}
 										</div>
