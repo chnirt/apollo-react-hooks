@@ -48,16 +48,16 @@ const ORDERS_COUNT_BY_USER = gql`
 	}
 `
 
-// const SUBSCRIPTION = gql`
-// 	subscription {
-// 		ordersByMenuCreated {
-// 			menuId
-// 			count
-// 			_id
-// 			dishId
-// 		}
-// 	}
-// `
+const SUBSCRIPTION = gql`
+	subscription {
+		ordersByMenuCreated {
+			menuId
+			count
+			_id
+			dishId
+		}
+	}
+`
 
 const ORDERS_BY_MENU = gql`
 	query ordersByMenu($menuId: String!) {
@@ -99,6 +99,7 @@ const ListDishesAndActions = props => {
 	const [modalVisible, setModalVisible] = useState(false)
 	const [selectedItem, setSelectedItem] = useState()
 	const [selectedOrder, setSelectedOrder] = useState()
+	// eslint-disable-next-line react/destructuring-assignment
 	let formRef = useRef()
 
 	async function handleDefaultDishes() {
@@ -162,26 +163,26 @@ const ListDishesAndActions = props => {
 	}
 
 	async function handleOrderedNumber() {
-		// await props.client
-		// 	.subscribe({
-		// 		query: SUBSCRIPTION
-		// 	})
-		// 	.subscribe({
-		// 		async next(data) {
-		// 			const obj = {}
-		// 			// eslint-disable-next-line no-return-assign
-		// 			await data.data.ordersByMenuCreated.map(order =>
-		// 				obj[order.dishId]
-		// 					? // eslint-disable-next-line operator-assignment
-		// 					  (obj[order.dishId] = obj[order.dishId] + order.count)
-		// 					: (obj[order.dishId] = order.count)
-		// 			)
-		// 			await setOrderedNumber(obj)
-		// 		},
-		// 		error(err) {
-		// 			console.error('err', err)
-		// 		}
-		// 	})
+		await props.client
+			.subscribe({
+				query: SUBSCRIPTION
+			})
+			.subscribe({
+				async next(data) {
+					const obj = {}
+					// eslint-disable-next-line no-return-assign
+					await data.data.ordersByMenuCreated.map(order =>
+						obj[order.dishId]
+							? // eslint-disable-next-line operator-assignment
+							  (obj[order.dishId] = obj[order.dishId] + order.count)
+							: (obj[order.dishId] = order.count)
+					)
+					await setOrderedNumber(obj)
+				},
+				error(err) {
+					console.error('err', err)
+				}
+			})
 	}
 
 	async function handleOrdersCountByUser() {
@@ -308,7 +309,21 @@ const ListDishesAndActions = props => {
 						dishId: item._id,
 						count: quantity
 					}
-				}
+				},
+				refetchQueries: [
+					{
+						query: ORDERS_COUNT_BY_USER,
+						variables: {
+							menuId
+						}
+					},
+					{
+						query: ORDERS_BY_MENU,
+						variables: {
+							menuId
+						}
+					}
+				]
 			})
 			.then(async res => {
 				await setSelectedOrder(res.data.orderDish)
