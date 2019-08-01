@@ -1,13 +1,14 @@
 import React, { useState } from 'react'
+import { withTranslation } from 'react-i18next'
 import MenuList from './menuList'
 
 function Menu(props) {
 	const [siteId] = useState(window.localStorage.getItem('currentsite'))
-
+	const { t } = props
 	return (
 		<div className="menu">
 			<h1 style={{ margin: '.3em 1em', color: '#fff', display: 'inline' }}>
-				Quản lý menu
+				{t('Manage Menu')}
 			</h1>
 			<div className="menu-list">
 				<MenuList {...props} siteId={siteId} />
@@ -16,4 +17,4 @@ function Menu(props) {
 	)
 }
 
-export default Menu
+export default withTranslation('translations')(Menu)

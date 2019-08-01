@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Col, Row, Button, Modal, Form, Input, List, Avatar } from 'antd'
 import gql from 'graphql-tag'
+import { withTranslation } from 'react-i18next'
 import { HOCQueryMutation } from '../../../../components/shared/hocQueryAndMutation'
 import openNotificationWithIcon from '../../../../components/shared/openNotificationWithIcon'
 
@@ -90,6 +91,7 @@ function MenuList(props) {
 		})
 	}
 	const { getFieldDecorator } = form
+	const { t } = props
 	return (
 		<>
 			<Row type="flex" justify="end" style={{ marginRight: '1em' }}>
@@ -99,7 +101,7 @@ function MenuList(props) {
 					icon="plus"
 					onClick={() => setVisible(true)}
 				>
-					Thêm menu
+					{t('Add menu')}
 				</Button>
 			</Row>
 			<List
@@ -229,21 +231,23 @@ const DELETE_MENU = gql`
 	}
 `
 
-export default HOCQueryMutation([
-	{
-		query: GET_MENUS_BY_SITE,
-		options: props => ({
-			variables: {
-				siteId: props.siteId
-			}
-		})
-	},
-	{
-		mutation: ADD_MENU,
-		name: 'addMenu'
-	},
-	{
-		mutation: DELETE_MENU,
-		name: 'deleteMenu'
-	}
-])(Form.create()(MenuList))
+export default withTranslation('translations')(
+	HOCQueryMutation([
+		{
+			query: GET_MENUS_BY_SITE,
+			options: props => ({
+				variables: {
+					siteId: props.siteId
+				}
+			})
+		},
+		{
+			mutation: ADD_MENU,
+			name: 'addMenu'
+		},
+		{
+			mutation: DELETE_MENU,
+			name: 'deleteMenu'
+		}
+	])(Form.create()(MenuList))
+)

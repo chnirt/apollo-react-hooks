@@ -28,7 +28,7 @@ export const routes = [
 				component: 'menuDetail'
 			},
 			{
-				label: 'Manage Order',
+				label: 'Order',
 				path: '/🥢/order',
 				icon: 'shopping-cart',
 				component: 'order'
@@ -57,7 +57,7 @@ export const menuRoutes = [
 	},
 	{
 		id: 'manage-order',
-		label: 'Manage Order',
+		label: 'Order',
 		path: '/🥢/order',
 		icon: 'shopping-cart',
 		code: 'ORDER'
