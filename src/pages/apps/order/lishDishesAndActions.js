@@ -1,8 +1,9 @@
 /* eslint-disable no-param-reassign */
 import React, { useState, useEffect, useRef } from 'react'
-import { Row, Col, Button, List, Form } from 'antd'
+import { Row, Button, List, Form } from 'antd'
 import gql from 'graphql-tag'
 import { withApollo } from 'react-apollo'
+import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
 import NoteForm from './noteForm'
 import ConfirmButton from './comfirmButton'
 
@@ -121,7 +122,9 @@ const ListDishesAndActions = props => {
 					await setDishes([...res.data.menuPublishBySite.dishes])
 				}
 			})
-			.catch(error)
+			.catch(() => {
+				openNotificationWithIcon('error', 'get-menu', 'Get menu failed', null)
+			})
 	}
 
 	async function handleOrdersByMenu() {
@@ -151,9 +154,18 @@ const ListDishesAndActions = props => {
 						)
 						await setOrderedNumber(obj)
 					})
-					.catch(error)
+					.catch(() => {
+						openNotificationWithIcon(
+							'error',
+							'get-orders',
+							'Get orders failed',
+							null
+						)
+					})
 			})
-			.catch(error)
+			.catch(() => {
+				openNotificationWithIcon('error', 'get-menu', 'Get menu failed', null)
+			})
 	}
 
 	async function handleOrderedNumber() {
@@ -173,8 +185,13 @@ const ListDishesAndActions = props => {
 					)
 					await setOrderedNumber(obj)
 				},
-				error(err) {
-					console.error('err', err)
+				error() {
+					openNotificationWithIcon(
+						'error',
+						'subscription',
+						'Subscription Failed',
+						null
+					)
 				}
 			})
 	}
@@ -207,9 +224,18 @@ const ListDishesAndActions = props => {
 						)
 						await setOrdersCountByUser(obj)
 					})
-					.catch(error)
+					.catch(() => {
+						openNotificationWithIcon(
+							'error',
+							'get-users-order',
+							`Get user's order failed`,
+							null
+						)
+					})
 			})
-			.catch(error)
+			.catch(() => {
+				openNotificationWithIcon('error', 'get-menu', 'Hệ thống đã khóa', null)
+			})
 	}
 
 	async function getOrder(item) {
@@ -224,8 +250,13 @@ const ListDishesAndActions = props => {
 			.then(async res => {
 				await setSelectedOrder(res.data.currentOrder)
 			})
-			.catch(error => {
-				console.dir(error)
+			.catch(() => {
+				openNotificationWithIcon(
+					'error',
+					'get-order-id',
+					'Get order id failed',
+					null
+				)
 			})
 	}
 
@@ -265,9 +296,18 @@ const ListDishesAndActions = props => {
 						}, [])
 						await setOrdersCountByUser(reducedArray)
 					})
-					.catch(error)
+					.catch(() => {
+						openNotificationWithIcon(
+							'error',
+							'get-orders-count-by-user',
+							`Get user's order quantity failed`,
+							null
+						)
+					})
 			})
-			.catch(error)
+			.catch(() => {
+				openNotificationWithIcon('error', 'get-menu', 'Get menu failed', null)
+			})
 		handleOrderedNumber()
 		handleDefaultDishes()
 		// eslint-disable-next-line no-cond-assign
@@ -314,18 +354,28 @@ const ListDishesAndActions = props => {
 			.then(async res => {
 				await setSelectedOrder(res.data.orderDish)
 				if (res.data.orderDish) {
-					console.log('Đặt thành công')
+					openNotificationWithIcon(
+						'success',
+						'alert-order',
+						'Đặt thành công',
+						null
+					)
 					await handleOrderedNumber()
 					await setOrdersCountByUser({
 						...ordersCountByUser,
 						[item._id]: quantity
 					})
 				} else {
-					console.log('something went wrong')
+					openNotificationWithIcon(
+						'error',
+						'alert-order',
+						'Alert order failed',
+						null
+					)
 				}
 			})
-			.catch(error => {
-				console.dir(error)
+			.catch(() => {
+				openNotificationWithIcon('error', 'order', 'Order failed', null)
 			})
 	}
 
@@ -358,13 +408,23 @@ const ListDishesAndActions = props => {
 				})
 				.then(res => {
 					if (res.data.updateOrder) {
-						console.log('Note thành công')
+						openNotificationWithIcon(
+							'success',
+							'alert-note',
+							'Ghi chú thành công',
+							null
+						)
 					} else {
-						console.log('something went wrong')
+						openNotificationWithIcon(
+							'error',
+							'alert-note',
+							'Alert note failed',
+							null
+						)
 					}
 				})
-				.catch(error => {
-					console.dir(error)
+				.catch(() => {
+					openNotificationWithIcon('error', 'note', 'Update order failed', null)
 				})
 			formRef.resetFields()
 			setModalVisible(false)
@@ -399,83 +459,86 @@ const ListDishesAndActions = props => {
 	const CollectionCreateForm = Form.create({ name: 'form_in_modal' })(NoteForm)
 	return (
 		<React.Fragment>
-			<Row>
-				<Col span={22} offset={1}>
-					{isPublish === true ? (
-						<>
-							<List
-								size="large"
-								dataSource={dishes}
-								renderItem={item => (
-									<List.Item
-										style={{
-											backgroundColor: '#fff',
-											marginBottom: 20,
-											padding: 20
-										}}
-										key={item._id}
-										actions={[
-											<Button
-												icon="minus"
-												shape="circle"
-												id={`minus-order-${item._id}`}
-												className="minus-order"
-												disabled={
-													ordersCountByUser[item._id] === 0 ||
-													ordersCountByUser[item._id] === undefined ||
-													isLocked
-												}
-												onClick={() => handleMinus(item)}
-											/>,
-											<Button
-												icon="plus"
-												shape="circle"
-												id={`plus-order-${item._id}`}
-												className="plus-order"
-												disabled={
-													ordersCountByUser[item._id] === item.count ||
-													orderedNumber[item._id] >= item.count ||
-													isLocked
-												}
-												onClick={() => handlePlus(item)}
-											/>
-										]}
-										extra={
-											<Button
-												icon="form"
-												shape="circle"
-												type="primary"
-												onClick={() => showModal(item)}
-												id={`note-order-${item._id}`}
-												disabled={ordersCountByUser[item._id] === 0 || isLocked}
-											/>
+			{isPublish === true ? (
+				<>
+					<List
+						size="large"
+						dataSource={dishes}
+						renderItem={item => (
+							<List.Item
+								style={{
+									backgroundColor: '#fff',
+									marginBottom: 20,
+									padding: 20,
+									borderRadius: 5
+								}}
+								key={item._id}
+								actions={[
+									<Button
+										icon="minus"
+										shape="circle"
+										id={`minus-order-${item._id}`}
+										className="minus-order"
+										disabled={
+											ordersCountByUser[item._id] === 0 ||
+											ordersCountByUser[item._id] === undefined ||
+											isLocked
 										}
-									>
-										<List.Item.Meta
-											title={item.name}
-											description={`${(orderedNumber &&
-												orderedNumber[item._id]) ||
-												0}/${item.count}`}
-										/>
-										{/* chưa set reponsive CSS cho cái này nên để tạm ở description */}
-										{/* <div style={{marginRight: 20}}>
+										onClick={() => handleMinus(item)}
+									/>,
+									<Button
+										icon="plus"
+										shape="circle"
+										id={`plus-order-${item._id}`}
+										className="plus-order"
+										disabled={
+											ordersCountByUser[item._id] === item.count ||
+											orderedNumber[item._id] >= item.count ||
+											isLocked
+										}
+										onClick={() => handlePlus(item)}
+									/>
+								]}
+								extra={
+									<Button
+										icon="form"
+										shape="circle"
+										type="primary"
+										onClick={() => showModal(item)}
+										id={`note-order-${item._id}`}
+										disabled={ordersCountByUser[item._id] === 0 || isLocked}
+									/>
+								}
+							>
+								<List.Item.Meta
+									title={item.name}
+									description={`${(orderedNumber && orderedNumber[item._id]) ||
+										0}/${item.count}`}
+								/>
+								{/* chưa set reponsive CSS cho cái này nên để tạm ở description */}
+								{/* <div style={{marginRight: 20}}>
 											{`${(orderedNumber && orderedNumber[item._id]) || 0}/${item.count}`}
 										</div> */}
-										<div>
-											{(ordersCountByUser && ordersCountByUser[item._id]) || 0}
-										</div>
-									</List.Item>
-								)}
-							/>
-							<ConfirmButton menuId={menuId} />
-						</>
-					) : (
-						<Row type="flex" justify="center" align="middle">
-							<div>Hệ thống đã khóa</div>
-						</Row>
-					)}
-				</Col>
-			</Row>
+								<div>
+									{(ordersCountByUser && ordersCountByUser[item._id]) || 0}
+								</div>
+							</List.Item>
+						)}
+					/>
+					<ConfirmButton menuId={menuId} />
+				</>
+			) : (
+				<Row
+					type="flex"
+					justify="center"
+					align="middle"
+					style={{
+						color: '#fff'
+					}}
+				>
+					<div>Hệ thống đã khóa</div>
+				</Row>
+			)}
 			<CollectionCreateForm
 				wrappedComponentRef={saveFormRef}
 				visible={modalVisible}

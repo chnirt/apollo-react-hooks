@@ -14,19 +14,6 @@ function MenuList(props) {
 		Modal.confirm({
 			title: 'Xóa menu',
 			content: 'Bạn có chắc chắn xóa menu này?',
-			// footer={[
-			// 	<Button
-			// 		key="cancel"
-			// 		type="danger"
-			// 		onClick={() => setVisible(false)}
-			// 		name="cancelDeleteMenu"
-			// 	>
-			// 		Cancel
-			// 	</Button>,
-			// 	<Button key="save" type="primary" onClick={addMenu} name="confirmDeleteMenu">
-			// 		Ok
-			// 	</Button>
-			// ]},
 			onOk: async () => {
 				await mutate
 					.deleteMenu({
