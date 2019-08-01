@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 import React, { useState, useEffect, useRef } from 'react'
-import { Row, Col, Button, List, Form } from 'antd'
+import { Row, Button, List, Form } from 'antd'
 import gql from 'graphql-tag'
 import { withApollo } from 'react-apollo'
 import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
@@ -459,83 +459,86 @@ const ListDishesAndActions = props => {
 	const CollectionCreateForm = Form.create({ name: 'form_in_modal' })(NoteForm)
 	return (
 		<React.Fragment>
-			<Row>
-				<Col span={22} offset={1}>
-					{isPublish === true ? (
-						<>
-							<List
-								size="large"
-								dataSource={dishes}
-								renderItem={item => (
-									<List.Item
-										style={{
-											backgroundColor: '#fff',
-											marginBottom: 20,
-											padding: 20
-										}}
-										key={item._id}
-										actions={[
-											<Button
-												icon="minus"
-												shape="circle"
-												id={`minus-order-${item._id}`}
-												className="minus-order"
-												disabled={
-													ordersCountByUser[item._id] === 0 ||
-													ordersCountByUser[item._id] === undefined ||
-													isLocked
-												}
-												onClick={() => handleMinus(item)}
-											/>,
-											<Button
-												icon="plus"
-												shape="circle"
-												id={`plus-order-${item._id}`}
-												className="plus-order"
-												disabled={
-													ordersCountByUser[item._id] === item.count ||
-													orderedNumber[item._id] >= item.count ||
-													isLocked
-												}
-												onClick={() => handlePlus(item)}
-											/>
-										]}
-										extra={
-											<Button
-												icon="form"
-												shape="circle"
-												type="primary"
-												onClick={() => showModal(item)}
-												id={`note-order-${item._id}`}
-												disabled={ordersCountByUser[item._id] === 0 || isLocked}
-											/>
+			{isPublish === true ? (
+				<>
+					<List
+						size="large"
+						dataSource={dishes}
+						renderItem={item => (
+							<List.Item
+								style={{
+									backgroundColor: '#fff',
+									marginBottom: 20,
+									padding: 20,
+									borderRadius: 5
+								}}
+								key={item._id}
+								actions={[
+									<Button
+										icon="minus"
+										shape="circle"
+										id={`minus-order-${item._id}`}
+										className="minus-order"
+										disabled={
+											ordersCountByUser[item._id] === 0 ||
+											ordersCountByUser[item._id] === undefined ||
+											isLocked
 										}
-									>
-										<List.Item.Meta
-											title={item.name}
-											description={`${(orderedNumber &&
-												orderedNumber[item._id]) ||
-												0}/${item.count}`}
-										/>
-										{/* chưa set reponsive CSS cho cái này nên để tạm ở description */}
-										{/* <div style={{marginRight: 20}}>
+										onClick={() => handleMinus(item)}
+									/>,
+									<Button
+										icon="plus"
+										shape="circle"
+										id={`plus-order-${item._id}`}
+										className="plus-order"
+										disabled={
+											ordersCountByUser[item._id] === item.count ||
+											orderedNumber[item._id] >= item.count ||
+											isLocked
+										}
+										onClick={() => handlePlus(item)}
+									/>
+								]}
+								extra={
+									<Button
+										icon="form"
+										shape="circle"
+										type="primary"
+										onClick={() => showModal(item)}
+										id={`note-order-${item._id}`}
+										disabled={ordersCountByUser[item._id] === 0 || isLocked}
+									/>
+								}
+							>
+								<List.Item.Meta
+									title={item.name}
+									description={`${(orderedNumber && orderedNumber[item._id]) ||
+										0}/${item.count}`}
+								/>
+								{/* chưa set reponsive CSS cho cái này nên để tạm ở description */}
+								{/* <div style={{marginRight: 20}}>
 											{`${(orderedNumber && orderedNumber[item._id]) || 0}/${item.count}`}
 										</div> */}
-										<div>
-											{(ordersCountByUser && ordersCountByUser[item._id]) || 0}
-										</div>
-									</List.Item>
-								)}
-							/>
-							<ConfirmButton menuId={menuId} />
-						</>
-					) : (
-						<Row type="flex" justify="center" align="middle">
-							<div>Hệ thống đã khóa</div>
-						</Row>
-					)}
-				</Col>
-			</Row>
+								<div>
+									{(ordersCountByUser && ordersCountByUser[item._id]) || 0}
+								</div>
+							</List.Item>
+						)}
+					/>
+					<ConfirmButton menuId={menuId} />
+				</>
+			) : (
+				<Row
+					type="flex"
+					justify="center"
+					align="middle"
+					style={{
+						color: '#fff'
+					}}
+				>
+					<div>Hệ thống đã khóa</div>
+				</Row>
+			)}
 			<CollectionCreateForm
 				wrappedComponentRef={saveFormRef}
 				visible={modalVisible}
