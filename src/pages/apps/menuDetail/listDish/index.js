@@ -191,7 +191,9 @@ function ListDish(props) {
 							backgroundColor: '#fff',
 							borderRadius: '.5em'
 						}}
-						pagination
+						pagination={{
+							pageSize: 6
+						}}
 						header={
 							<Row>
 								<Col span={12}>
