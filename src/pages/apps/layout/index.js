@@ -75,13 +75,13 @@ function Layout(props) {
 				<span role="img" aria-label="vi">
 					🇻🇳
 				</span>
-				<span>Việt Nam</span>
+				<span> Việt Nam</span>
 			</Menu.Item>
 			<Menu.Item onClick={onLogout}>
 				<span role="img" aria-label="gb">
 					🇬🇧
 				</span>
-				<span>English</span>
+				<span> English</span>
 			</Menu.Item>
 		</Menu>
 	)
