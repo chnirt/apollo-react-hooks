@@ -13,6 +13,19 @@ function MenuList(props) {
 		Modal.confirm({
 			title: 'Xóa menu',
 			content: 'Bạn có chắc chắn xóa menu này?',
+			// footer={[
+			// 	<Button
+			// 		key="cancel"
+			// 		type="danger"
+			// 		onClick={() => setVisible(false)}
+			// 		name="cancelDeleteMenu"
+			// 	>
+			// 		Cancel
+			// 	</Button>,
+			// 	<Button key="save" type="primary" onClick={addMenu} name="confirmDeleteMenu">
+			// 		Ok
+			// 	</Button>
+			// ]},
 			onOk: async () => {
 				await mutate
 					.deleteMenu({
@@ -80,7 +93,12 @@ function MenuList(props) {
 	return (
 		<>
 			<Row type="flex" justify="end" style={{ marginRight: '1em' }}>
-				<Button type="primary" icon="plus" onClick={() => setVisible(true)}>
+				<Button
+					name="addNewMenu"
+					type="primary"
+					icon="plus"
+					onClick={() => setVisible(true)}
+				>
 					Thêm menu
 				</Button>
 			</Row>
@@ -112,6 +130,7 @@ function MenuList(props) {
 												}
 												icon="edit"
 												type="link"
+												name="btnEditMenu"
 											/>
 									  ]
 									: [
@@ -123,11 +142,13 @@ function MenuList(props) {
 												}
 												icon="edit"
 												type="link"
+												name="btnEditMenu"
 											/>,
 											<Button
 												onClick={() => deleteMenu(menu._id)}
 												icon="delete"
 												type="link"
+												name="btnDeleteMenu"
 											/>
 									  ]
 							}
@@ -154,8 +175,21 @@ function MenuList(props) {
 				cancelText="Đóng"
 				visible={visible}
 				okText="Lưu"
-				onCancel={() => setVisible(false)}
-				onOk={addMenu}
+				// onCancel={() => setVisible(false)}
+				// onOk={addMenu}
+				footer={[
+					<Button
+						key="cancel"
+						type="danger"
+						onClick={() => setVisible(false)}
+						name="cancelAddMenu"
+					>
+						Đóng
+					</Button>,
+					<Button key="save" type="primary" onClick={addMenu} name="addMenu">
+						Thêm
+					</Button>
+				]}
 			>
 				<Form>
 					<Row>

@@ -99,6 +99,7 @@ const ListDishesAndActions = props => {
 	const [modalVisible, setModalVisible] = useState(false)
 	const [selectedItem, setSelectedItem] = useState()
 	const [selectedOrder, setSelectedOrder] = useState()
+	// eslint-disable-next-line react/destructuring-assignment
 	let formRef = useRef()
 
 	async function handleDefaultDishes() {
@@ -294,7 +295,21 @@ const ListDishesAndActions = props => {
 						dishId: item._id,
 						count: quantity
 					}
-				}
+				},
+				refetchQueries: [
+					{
+						query: ORDERS_COUNT_BY_USER,
+						variables: {
+							menuId
+						}
+					},
+					{
+						query: ORDERS_BY_MENU,
+						variables: {
+							menuId
+						}
+					}
+				]
 			})
 			.then(async res => {
 				await setSelectedOrder(res.data.orderDish)
@@ -389,7 +404,6 @@ const ListDishesAndActions = props => {
 					{isPublish === true ? (
 						<>
 							<List
-								// bordered
 								size="large"
 								dataSource={dishes}
 								renderItem={item => (
@@ -402,6 +416,8 @@ const ListDishesAndActions = props => {
 										key={item._id}
 										actions={[
 											<Button
+												icon="minus"
+												shape="circle"
 												id={`minus-order-${item._id}`}
 												className="minus-order"
 												disabled={
@@ -410,10 +426,10 @@ const ListDishesAndActions = props => {
 													isLocked
 												}
 												onClick={() => handleMinus(item)}
-											>
-												-
-											</Button>,
+											/>,
 											<Button
+												icon="plus"
+												shape="circle"
 												id={`plus-order-${item._id}`}
 												className="plus-order"
 												disabled={
@@ -422,19 +438,17 @@ const ListDishesAndActions = props => {
 													isLocked
 												}
 												onClick={() => handlePlus(item)}
-											>
-												+
-											</Button>
+											/>
 										]}
 										extra={
 											<Button
+												icon="form"
+												shape="circle"
 												type="primary"
 												onClick={() => showModal(item)}
 												id={`note-order-${item._id}`}
 												disabled={ordersCountByUser[item._id] === 0 || isLocked}
-											>
-												Note
-											</Button>
+											/>
 										}
 									>
 										<List.Item.Meta
@@ -443,6 +457,10 @@ const ListDishesAndActions = props => {
 												orderedNumber[item._id]) ||
 												0}/${item.count}`}
 										/>
+										{/* chưa set reponsive CSS cho cái này nên để tạm ở description */}
+										{/* <div style={{marginRight: 20}}>
+											{`${(orderedNumber && orderedNumber[item._id]) || 0}/${item.count}`}
+										</div> */}
 										<div>
 											{(ordersCountByUser && ordersCountByUser[item._id]) || 0}
 										</div>
