@@ -122,13 +122,8 @@ const ListDishesAndActions = props => {
 					await setDishes([...res.data.menuPublishBySite.dishes])
 				}
 			})
-			.catch(error => {
-				openNotificationWithIcon(
-					'error',
-					'get-menu',
-					'Get menu failed',
-					error.message
-				)
+			.catch(() => {
+				openNotificationWithIcon('error', 'get-menu', 'Get menu failed', null)
 			})
 	}
 
@@ -159,22 +154,17 @@ const ListDishesAndActions = props => {
 						)
 						await setOrderedNumber(obj)
 					})
-					.catch(error => {
+					.catch(() => {
 						openNotificationWithIcon(
 							'error',
 							'get-orders',
 							'Get orders failed',
-							error.message
+							null
 						)
 					})
 			})
-			.catch(error => {
-				openNotificationWithIcon(
-					'error',
-					'get-menu',
-					'Get menu failed',
-					error.message
-				)
+			.catch(() => {
+				openNotificationWithIcon('error', 'get-menu', 'Get menu failed', null)
 			})
 	}
 
@@ -195,12 +185,12 @@ const ListDishesAndActions = props => {
 					)
 					await setOrderedNumber(obj)
 				},
-				error(err) {
+				error() {
 					openNotificationWithIcon(
 						'error',
 						'subscription',
 						'Subscription Failed',
-						err.message
+						null
 					)
 				}
 			})
@@ -234,17 +224,17 @@ const ListDishesAndActions = props => {
 						)
 						await setOrdersCountByUser(obj)
 					})
-					.catch(error => {
+					.catch(() => {
 						openNotificationWithIcon(
 							'error',
 							'get-users-order',
 							`Get user's order failed`,
-							error.message
+							null
 						)
 					})
 			})
 			.catch(() => {
-				openNotificationWithIcon('error', 'get-menu', 'Get menu failed', '')
+				openNotificationWithIcon('error', 'get-menu', 'Hệ thống đã khóa', null)
 			})
 	}
 
@@ -260,12 +250,12 @@ const ListDishesAndActions = props => {
 			.then(async res => {
 				await setSelectedOrder(res.data.currentOrder)
 			})
-			.catch(error => {
+			.catch(() => {
 				openNotificationWithIcon(
 					'error',
 					'get-order-id',
 					'Get order id failed',
-					error.message
+					null
 				)
 			})
 	}
@@ -306,22 +296,17 @@ const ListDishesAndActions = props => {
 						}, [])
 						await setOrdersCountByUser(reducedArray)
 					})
-					.catch(error => {
+					.catch(() => {
 						openNotificationWithIcon(
 							'error',
 							'get-orders-count-by-user',
 							`Get user's order quantity failed`,
-							error.message
+							null
 						)
 					})
 			})
-			.catch(error => {
-				openNotificationWithIcon(
-					'error',
-					'get-menu',
-					'Get menu failed',
-					error.message
-				)
+			.catch(() => {
+				openNotificationWithIcon('error', 'get-menu', 'Get menu failed', null)
 			})
 		handleOrderedNumber()
 		handleDefaultDishes()
@@ -372,8 +357,8 @@ const ListDishesAndActions = props => {
 					openNotificationWithIcon(
 						'success',
 						'alert-order',
-						'Order successful',
-						'Đặt thành công'
+						'Đặt thành công',
+						null
 					)
 					await handleOrderedNumber()
 					await setOrdersCountByUser({
@@ -385,12 +370,12 @@ const ListDishesAndActions = props => {
 						'error',
 						'alert-order',
 						'Alert order failed',
-						'something went wrong'
+						null
 					)
 				}
 			})
-			.catch(error => {
-				openNotificationWithIcon('error', 'order', 'Order failed', error.message)
+			.catch(() => {
+				openNotificationWithIcon('error', 'order', 'Order failed', null)
 			})
 	}
 
@@ -426,25 +411,20 @@ const ListDishesAndActions = props => {
 						openNotificationWithIcon(
 							'success',
 							'alert-note',
-							'Note successful',
-							'Ghi chú thành công'
+							'Ghi chú thành công',
+							null
 						)
 					} else {
 						openNotificationWithIcon(
 							'error',
 							'alert-note',
 							'Alert note failed',
-							'something went wrong'
+							null
 						)
 					}
 				})
-				.catch(error => {
-					openNotificationWithIcon(
-						'error',
-						'note',
-						'Update order failed',
-						error.message
-					)
+				.catch(() => {
+					openNotificationWithIcon('error', 'note', 'Update order failed', null)
 				})
 			formRef.resetFields()
 			setModalVisible(false)

@@ -55,17 +55,12 @@ const ConfirmButton = props => {
 								'error',
 								'alert-confirm',
 								'Alert confirm failed',
-								'something went wrong'
+								''
 							)
 						}
 					})
-					.catch(error => {
-						openNotificationWithIcon(
-							'error',
-							'confirm',
-							'Confirm failed',
-							error.message
-						)
+					.catch(() => {
+						openNotificationWithIcon('error', 'confirm', 'Confirm failed', '')
 					})
 			})
 	}
