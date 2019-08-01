@@ -153,6 +153,7 @@ function ListDish(props) {
 			<Col span={22} offset={1} style={{ marginTop: '1em' }} order={1}>
 				<Row type="flex" justify="end" align="middle">
 					<Button
+						name="btnAddDish"
 						type="primary"
 						style={{ marginRight: '1em' }}
 						onClick={() => setVisible(true)}
@@ -161,6 +162,7 @@ function ListDish(props) {
 						Thêm món
 					</Button>
 					<Button
+						name="btnSaveMenu"
 						type="primary"
 						onClick={updateMenu}
 						style={{ marginRight: '1em' }}
@@ -170,7 +172,11 @@ function ListDish(props) {
 					>
 						Lưu
 					</Button>
-					<Button type="primary" onClick={() => publishAndUnpublish(hasChange)}>
+					<Button
+						name="btnPublishMenu"
+						type="primary"
+						onClick={() => publishAndUnpublish(hasChange)}
+					>
 						{menuById.menu && menuById.menu.isPublished
 							? 'Hủy công khai'
 							: 'Công khai'}
@@ -262,12 +268,25 @@ function ListDish(props) {
 			</Col>
 			<Modal
 				title="Thêm món ăn"
-				cancelText="Đóng"
+				// cancelText="Đóng"
 				visible={visible}
-				okText="Lưu"
-				onCancel={() => setVisible(false)}
-				onOk={addDish}
+				// okText="Lưu"
+				// onCancel={() => setVisible(false)}
+				// onOk={addDish}
 				afterClose={() => form.resetFields(['name'])}
+				footer={[
+					<Button
+						key="cancel"
+						type="danger"
+						onClick={() => setVisible(false)}
+						name="cancelAddDish"
+					>
+						Đóng
+					</Button>,
+					<Button key="save" type="primary" onClick={addDish} name="addDish">
+						Lưu
+					</Button>
+				]}
 			>
 				<Form>
 					<Row>
