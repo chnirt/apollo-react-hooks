@@ -243,13 +243,8 @@ const ListDishesAndActions = props => {
 						)
 					})
 			})
-			.catch(error => {
-				openNotificationWithIcon(
-					'error',
-					'get-menu',
-					'Get menu failed',
-					error.message
-				)
+			.catch(() => {
+				openNotificationWithIcon('error', 'get-menu', 'Get menu failed', '')
 			})
 	}
 
