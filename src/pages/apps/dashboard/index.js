@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Icon, Col, Row, Card, Typography } from 'antd'
+import { withTranslation } from 'react-i18next'
 import { menuRoutes } from '../../../routes'
 
 const { Title } = Typography
@@ -16,6 +17,7 @@ const gridStyle = {
 function Dashboard(props) {
 	const [currentsite] = useState(window.localStorage.getItem('currentsite'))
 
+	const { t } = props
 	return (
 		<>
 			<Row
@@ -26,7 +28,7 @@ function Dashboard(props) {
 				<Card
 					title={
 						<Title style={{ color: '#ffffff' }} level={3}>
-							Quick actions
+							{t('Quick actions')}
 						</Title>
 					}
 					bordered={false}
@@ -74,7 +76,7 @@ function Dashboard(props) {
 											}}
 											type={item.icon}
 										/>
-										{item.label}
+										{t(item.label)}
 									</Card.Grid>
 								</Col>
 							)
@@ -85,4 +87,4 @@ function Dashboard(props) {
 	)
 }
 
-export default Dashboard
+export default withTranslation('translations')(Dashboard)

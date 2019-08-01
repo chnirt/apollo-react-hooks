@@ -37,6 +37,7 @@
 		"graphql": "^14.3.0",
 		"graphql-tag": "^2.10.1",
 		"i18next": "^15.1.3",
+		"i18next-browser-languagedetector": "^3.0.1",
 		"less": "^3.9.0",
 		"less-loader": "^5.0.0",
 		"mobx": "^5.9.4",

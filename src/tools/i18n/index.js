@@ -1,11 +1,13 @@
 import i18n from 'i18next'
-import { initReactI18next } from 'react-i18next'
+import LanguageDetector from 'i18next-browser-languagedetector'
+// import { initReactI18next } from 'react-i18next'
 
 import en from '../../assets/i18n/locales/en.json'
 import vi from '../../assets/i18n/locales/vi.json'
 
 i18n
-	.use(initReactI18next) // passes i18n down to react-i18next
+	.use(LanguageDetector)
+	// .use(initReactI18next) // passes i18n down to react-i18next
 	.init({
 		resources: {
 			en: {
@@ -15,7 +17,7 @@ i18n
 				translations: vi
 			}
 		},
-		lng: 'en',
+		// lng: 'en',
 		fallbackLng: 'en', // use en if detected lng is not available
 
 		keySeparator: false, // we do not use keys in form messages.welcome
@@ -25,7 +27,10 @@ i18n
 		},
 		// have a common namespace used around the full app
 		ns: ['translations'],
-		defaultNS: 'translations'
+		defaultNS: 'translations',
+		react: {
+			wait: false
+		}
 	})
 
 export default i18n

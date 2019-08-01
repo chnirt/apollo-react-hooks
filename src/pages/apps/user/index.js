@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import gql from 'graphql-tag'
 import { Row, Button, Card, Modal, Typography } from 'antd'
+import { withTranslation } from 'react-i18next'
 import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation'
 import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
 
@@ -95,7 +96,7 @@ function User(props) {
 		})
 	}
 
-	const { data } = props
+	const { data, t } = props
 	const { users } = data
 
 	return (
@@ -104,13 +105,13 @@ function User(props) {
 				<Card
 					title={
 						<Title style={{ color: '#ffffff' }} level={3}>
-							Manage user
+							{t('Manage User')}
 						</Title>
 					}
 					bordered={false}
 					extra={
 						<Button type="primary" block onClick={() => showModal()}>
-							Create user
+							{t('Add user')}
 						</Button>
 					}
 					headStyle={{
@@ -166,24 +167,26 @@ const USER_DELETE = gql`
 	}
 `
 
-export default HOCQueryMutation([
-	{
-		query: GET_ALL_USERS,
-		options: {
-			variables: {
-				offset: 0,
-				limit: 100
+export default withTranslation('translations')(
+	HOCQueryMutation([
+		{
+			query: GET_ALL_USERS,
+			options: {
+				variables: {
+					offset: 0,
+					limit: 100
+				}
 			}
+		},
+		{
+			mutation: USER_LOCK_AND_UNLOCK,
+			name: 'lockAndUnlockUser',
+			option: {}
+		},
+		{
+			mutation: USER_DELETE,
+			name: 'deleteUser',
+			option: {}
 		}
-	},
-	{
-		mutation: USER_LOCK_AND_UNLOCK,
-		name: 'lockAndUnlockUser',
-		option: {}
-	},
-	{
-		mutation: USER_DELETE,
-		name: 'deleteUser',
-		option: {}
-	}
-])(User)
+	])(User)
+)

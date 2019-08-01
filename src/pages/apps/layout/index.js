@@ -1,8 +1,18 @@
 import React, { useState, useEffect } from 'react'
-import { Divider, Select, PageHeader, Icon, Avatar, Menu, Dropdown } from 'antd'
+import {
+	Divider,
+	Select,
+	PageHeader,
+	Icon,
+	Avatar,
+	Menu,
+	Dropdown,
+	LocaleProvider
+} from 'antd'
 import { withApollo } from 'react-apollo'
 import { withRouter } from 'react-router-dom'
 import gql from 'graphql-tag'
+import { withTranslation } from 'react-i18next'
 import { inject, observer } from 'mobx-react'
 import BgDashboard from '../../../assets/images/bg-dashboard.jpg'
 
@@ -55,6 +65,8 @@ function Layout(props) {
 		ele => ele.permissions.indexOf(currentPage) !== -1
 	)
 
+	const { t } = props
+
 	const menu = (
 		<Menu>
 			<Menu.Item>
@@ -64,20 +76,31 @@ function Layout(props) {
 			<Menu.Divider />
 			<Menu.Item onClick={onLogout}>
 				<Icon type="logout" />
-				<span>Đăng xuất</span>
+				<span>{t('Log out')}</span>
 			</Menu.Item>
 		</Menu>
 	)
 
+	function changeLocale({ key }) {
+		// console.log(key)
+		if (key === 'vi') {
+			props.i18n.changeLanguage('vi')
+			props.store.i18nStore.changeLanguage('vi')
+		} else {
+			props.i18n.changeLanguage('en')
+			props.store.i18nStore.changeLanguage('en')
+		}
+	}
+
 	const languages = (
-		<Menu>
-			<Menu.Item>
+		<Menu onClick={changeLocale}>
+			<Menu.Item key="vi">
 				<span role="img" aria-label="vi">
 					🇻🇳
 				</span>
 				<span> Việt Nam</span>
 			</Menu.Item>
-			<Menu.Item onClick={onLogout}>
+			<Menu.Item key="en">
 				<span role="img" aria-label="gb">
 					🇬🇧
 				</span>
@@ -85,7 +108,7 @@ function Layout(props) {
 			</Menu.Item>
 		</Menu>
 	)
-
+	const { store } = props
 	return (
 		<div
 			style={{
@@ -99,58 +122,75 @@ function Layout(props) {
 				WebkitOverflowScrolling: 'touch'
 			}}
 		>
-			<PageHeader
-				style={{ backgroundColor: 'transparent' }}
-				title={
-					<Icon
-						type="home"
-						onClick={() => children.props.history.push('/🥢')}
-						style={{ color: '#ffffff' }}
-					/>
-				}
-				onBack={() => children.props.history.goBack()}
-				backIcon={<Icon type="arrow-left" style={{ color: '#ffffff' }} />}
-				extra={[
-					<Select
-						disabled={children.props.location.pathname.split('/').length > 3}
-						key="1"
-						defaultValue={currentsite}
-						style={{ width: '12em', marginRight: '1em' }}
-						onChange={handleChange}
-					>
-						{children.props.location.pathname === '/🥢'
-							? JSON.parse(window.localStorage.getItem('user-permissions')).map(
-									item => (
+			<LocaleProvider locale={store.i18nStore.locale}>
+				<PageHeader
+					style={{ backgroundColor: 'transparent' }}
+					title={
+						<Icon
+							type="home"
+							onClick={() => children.props.history.push('/🥢')}
+							style={{ color: '#ffffff' }}
+						/>
+					}
+					onBack={() => children.props.history.goBack()}
+					backIcon={<Icon type="arrow-left" style={{ color: '#ffffff' }} />}
+					extra={[
+						<Select
+							disabled={children.props.location.pathname.split('/').length > 3}
+							key="1"
+							defaultValue={currentsite}
+							style={{ width: '12em', marginRight: '1em' }}
+							onChange={handleChange}
+						>
+							{children.props.location.pathname === '/🥢'
+								? JSON.parse(
+										window.localStorage.getItem('user-permissions')
+								  ).map(item => (
 										<Option key={item.siteId} value={item.siteId}>
 											{item.siteName}
 										</Option>
-									)
-							  )
-							: sitesHasPermission.map(item => (
-									<Option key={item.siteId} value={item.siteId}>
-										{item.siteName}
-									</Option>
-							  ))}
-					</Select>,
-					<Dropdown key="2" overlay={menu}>
-						<Avatar
-							icon="user"
-							style={{
-								color: '#ffffff',
-								backgroundColor: 'transparent',
-								marginRight: '.5em'
-							}}
-						/>
-					</Dropdown>,
-					<Dropdown key="3" overlay={languages}>
-						<Avatar
-							icon="global"
-							style={{ color: '#ffffff', backgroundColor: 'transparent' }}
-						/>
-					</Dropdown>
-				]}
-				footer={<Divider style={{ margin: '0' }} />}
-			/>
+								  ))
+								: sitesHasPermission.map(item => (
+										<Option key={item.siteId} value={item.siteId}>
+											{item.siteName}
+										</Option>
+								  ))}
+						</Select>,
+						<Dropdown key="2" overlay={menu}>
+							<Avatar
+								icon="user"
+								style={{
+									color: '#ffffff',
+									backgroundColor: 'transparent',
+									marginRight: '.5em'
+								}}
+							/>
+						</Dropdown>,
+						<Dropdown key="3" overlay={languages}>
+							<Avatar
+								icon="global"
+								style={{ color: '#ffffff', backgroundColor: 'transparent' }}
+							/>
+						</Dropdown>
+						// <Select
+						// 	className="bgc-trans"
+						// 	dropdownStyle={{backgroundColor: 'transparent'}}
+						// 	showArrow={false}
+						// 	defaultValue="vi"
+						// 	onChange={changeLocale}
+						// 	key="3"
+						// >
+						// 	<Option value="vi" key="vi">
+						// 		🇻🇳
+						// 	</Option>
+						// 	<Option value="en" key="en">
+						// 		🇬🇧
+						// 	</Option>
+						// </Select>
+					]}
+					footer={<Divider style={{ margin: '0' }} />}
+				/>
+			</LocaleProvider>
 			<div>{React.cloneElement(children, { siteId: currentsite })}</div>
 		</div>
 	)
@@ -164,4 +204,6 @@ const ME = gql`
 	}
 `
 
-export default withApollo(withRouter(inject('store')(observer(Layout))))
+export default withApollo(
+	withRouter(inject('store')(observer(withTranslation('translations')(Layout))))
+)
