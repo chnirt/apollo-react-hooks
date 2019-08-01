@@ -85,7 +85,9 @@ function MenuList(props) {
 				</Button>
 			</Row>
 			<List
-				pagination
+				pagination={{
+					pageSize: 6
+				}}
 				style={{
 					margin: '1em',
 					padding: '1em',

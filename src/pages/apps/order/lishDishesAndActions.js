@@ -120,9 +120,7 @@ const ListDishesAndActions = props => {
 					await setDishes([...res.data.menuPublishBySite.dishes])
 				}
 			})
-			.catch(error => {
-				console.log(error)
-			})
+			.catch(error)
 	}
 
 	async function handleOrdersByMenu() {
@@ -152,13 +150,9 @@ const ListDishesAndActions = props => {
 						)
 						await setOrderedNumber(obj)
 					})
-					.catch(error => {
-						console.log(error)
-					})
+					.catch(error)
 			})
-			.catch(error => {
-				console.log(error)
-			})
+			.catch(error)
 	}
 
 	async function handleOrderedNumber() {
@@ -212,13 +206,9 @@ const ListDishesAndActions = props => {
 						)
 						await setOrdersCountByUser(obj)
 					})
-					.catch(error => {
-						console.log(error)
-					})
+					.catch(error)
 			})
-			.catch(error => {
-				console.log(error)
-			})
+			.catch(error)
 	}
 
 	async function getOrder(item) {
@@ -274,13 +264,9 @@ const ListDishesAndActions = props => {
 						}, [])
 						await setOrdersCountByUser(reducedArray)
 					})
-					.catch(error => {
-						console.log(error)
-					})
+					.catch(error)
 			})
-			.catch(error => {
-				console.log(error)
-			})
+			.catch(error)
 		handleOrderedNumber()
 		handleDefaultDishes()
 		// eslint-disable-next-line no-cond-assign
