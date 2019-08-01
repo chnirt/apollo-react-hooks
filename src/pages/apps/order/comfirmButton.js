@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Row, Button, Alert } from 'antd'
 import gql from 'graphql-tag'
 import { withApollo } from 'react-apollo'
+import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
 
 const CONFIRM_ORDER = gql`
 	mutation confirmOrder($orderIds: [String]) {
@@ -50,11 +51,21 @@ const ConfirmButton = props => {
 						if (res) {
 							setAlert(true)
 						} else {
-							console.log('something went wrong')
+							openNotificationWithIcon(
+								'error',
+								'alert-confirm',
+								'Alert confirm failed',
+								'something went wrong'
+							)
 						}
 					})
 					.catch(error => {
-						console.dir(error)
+						openNotificationWithIcon(
+							'error',
+							'confirm',
+							'Confirm failed',
+							error.message
+						)
 					})
 			})
 	}

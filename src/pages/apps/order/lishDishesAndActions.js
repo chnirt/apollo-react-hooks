@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Row, Col, Button, List, Form } from 'antd'
 import gql from 'graphql-tag'
 import { withApollo } from 'react-apollo'
+import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
 import NoteForm from './noteForm'
 import ConfirmButton from './comfirmButton'
 
@@ -121,7 +122,14 @@ const ListDishesAndActions = props => {
 					await setDishes([...res.data.menuPublishBySite.dishes])
 				}
 			})
-			.catch(error)
+			.catch(error => {
+				openNotificationWithIcon(
+					'error',
+					'get-menu',
+					'Get menu failed',
+					error.message
+				)
+			})
 	}
 
 	async function handleOrdersByMenu() {
@@ -151,9 +159,23 @@ const ListDishesAndActions = props => {
 						)
 						await setOrderedNumber(obj)
 					})
-					.catch(error)
+					.catch(error => {
+						openNotificationWithIcon(
+							'error',
+							'get-orders',
+							'Get orders failed',
+							error.message
+						)
+					})
 			})
-			.catch(error)
+			.catch(error => {
+				openNotificationWithIcon(
+					'error',
+					'get-menu',
+					'Get menu failed',
+					error.message
+				)
+			})
 	}
 
 	async function handleOrderedNumber() {
@@ -174,7 +196,12 @@ const ListDishesAndActions = props => {
 					await setOrderedNumber(obj)
 				},
 				error(err) {
-					console.error('err', err)
+					openNotificationWithIcon(
+						'error',
+						'subscription',
+						'Subscription Failed',
+						err.message
+					)
 				}
 			})
 	}
@@ -207,9 +234,23 @@ const ListDishesAndActions = props => {
 						)
 						await setOrdersCountByUser(obj)
 					})
-					.catch(error)
+					.catch(error => {
+						openNotificationWithIcon(
+							'error',
+							'get-users-order',
+							`Get user's order failed`,
+							error.message
+						)
+					})
 			})
-			.catch(error)
+			.catch(error => {
+				openNotificationWithIcon(
+					'error',
+					'get-menu',
+					'Get menu failed',
+					error.message
+				)
+			})
 	}
 
 	async function getOrder(item) {
@@ -225,7 +266,12 @@ const ListDishesAndActions = props => {
 				await setSelectedOrder(res.data.currentOrder)
 			})
 			.catch(error => {
-				console.dir(error)
+				openNotificationWithIcon(
+					'error',
+					'get-order-id',
+					'Get order id failed',
+					error.message
+				)
 			})
 	}
 
@@ -265,9 +311,23 @@ const ListDishesAndActions = props => {
 						}, [])
 						await setOrdersCountByUser(reducedArray)
 					})
-					.catch(error)
+					.catch(error => {
+						openNotificationWithIcon(
+							'error',
+							'get-orders-count-by-user',
+							`Get user's order quantity failed`,
+							error.message
+						)
+					})
 			})
-			.catch(error)
+			.catch(error => {
+				openNotificationWithIcon(
+					'error',
+					'get-menu',
+					'Get menu failed',
+					error.message
+				)
+			})
 		handleOrderedNumber()
 		handleDefaultDishes()
 		// eslint-disable-next-line no-cond-assign
@@ -314,18 +374,28 @@ const ListDishesAndActions = props => {
 			.then(async res => {
 				await setSelectedOrder(res.data.orderDish)
 				if (res.data.orderDish) {
-					console.log('Đặt thành công')
+					openNotificationWithIcon(
+						'success',
+						'alert-order',
+						'Order successful',
+						'Đặt thành công'
+					)
 					await handleOrderedNumber()
 					await setOrdersCountByUser({
 						...ordersCountByUser,
 						[item._id]: quantity
 					})
 				} else {
-					console.log('something went wrong')
+					openNotificationWithIcon(
+						'error',
+						'alert-order',
+						'Alert order failed',
+						'something went wrong'
+					)
 				}
 			})
 			.catch(error => {
-				console.dir(error)
+				openNotificationWithIcon('error', 'order', 'Order failed', error.message)
 			})
 	}
 
@@ -358,13 +428,28 @@ const ListDishesAndActions = props => {
 				})
 				.then(res => {
 					if (res.data.updateOrder) {
-						console.log('Note thành công')
+						openNotificationWithIcon(
+							'success',
+							'alert-note',
+							'Note successful',
+							'Ghi chú thành công'
+						)
 					} else {
-						console.log('something went wrong')
+						openNotificationWithIcon(
+							'error',
+							'alert-note',
+							'Alert note failed',
+							'something went wrong'
+						)
 					}
 				})
 				.catch(error => {
-					console.dir(error)
+					openNotificationWithIcon(
+						'error',
+						'note',
+						'Update order failed',
+						error.message
+					)
 				})
 			formRef.resetFields()
 			setModalVisible(false)
