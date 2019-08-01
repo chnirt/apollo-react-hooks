@@ -117,6 +117,7 @@ function MenuList(props) {
 												}
 												icon="edit"
 												type="link"
+												name="btnEditMenu"
 											/>
 									  ]
 									: [
@@ -128,6 +129,7 @@ function MenuList(props) {
 												}
 												icon="edit"
 												type="link"
+												name="btnEditMenu"
 											/>,
 											<Button
 												onClick={() => deleteMenu(menu._id)}
