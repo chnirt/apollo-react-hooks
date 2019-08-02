@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Form, Col, Row, Select, Typography } from 'antd'
 import gql from 'graphql-tag'
+import { withTranslation } from 'react-i18next'
 import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation'
 import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
 import ListDish from './listDish'
@@ -34,19 +35,14 @@ function MenuDetail(props) {
 					]
 				})
 				.then(() => {
-					openNotificationWithIcon('success', 'save', 'Thành công', '')
+					openNotificationWithIcon('success', 'save', t('Success'), '')
 				})
 		}
 	}
 
 	async function publishAndUnpublish(hasChange) {
 		if (hasChange) {
-			openNotificationWithIcon(
-				'warning',
-				'notsave',
-				'Vui lòng lưu menu trước khi công khai',
-				''
-			)
+			openNotificationWithIcon('warning', 'notsave', t('ConfirmSaveMenu'), '')
 		} else if (menuById.menu.dishes.length !== 0) {
 			await props.mutate
 				.publishAndUnpublish({
@@ -67,8 +63,8 @@ function MenuDetail(props) {
 						'success',
 						'publish',
 						menuById.menu && menuById.menu.isPublished
-							? 'Hủy công khai menu thành công'
-							: 'Công khai menu thành công',
+							? t('UnPublishedMenu')
+							: t('PublishedMenu'),
 						''
 					)
 				})
@@ -83,6 +79,7 @@ function MenuDetail(props) {
 	}
 
 	const { getFieldDecorator } = form
+	const { t } = props
 	return (
 		<Row style={{ marginBottom: '1em' }}>
 			<Col span={22} offset={1} order={2}>
@@ -98,7 +95,7 @@ function MenuDetail(props) {
 				{getFieldDecorator('shop')(
 					<Select
 						onChange={changeShop}
-						placeholder="Chọn quán"
+						placeholder={t('SelectShop')}
 						style={{ width: '100%' }}
 						disabled={menuById.menu && menuById.menu.isPublished}
 					>
@@ -160,32 +157,34 @@ const UPDATE_MENU = gql`
 	}
 `
 
-export default HOCQueryMutation([
-	{
-		query: GET_SHOPS_BY_SITE,
-		options: props => ({
-			variables: {
-				siteId: props.match.params.siteId
-			}
-		})
-	},
-	{
-		query: GET_MENU,
-		options: props => ({
-			variables: {
-				id: props.match.params.menuId
-			}
-		}),
-		name: 'menuById'
-	},
-	{
-		mutation: PUBLISH_UNPUBLISH,
-		name: 'publishAndUnpublish',
-		options: {}
-	},
-	{
-		mutation: UPDATE_MENU,
-		name: 'updateMenu',
-		options: {}
-	}
-])(Form.create()(MenuDetail))
+export default withTranslation('translations')(
+	HOCQueryMutation([
+		{
+			query: GET_SHOPS_BY_SITE,
+			options: props => ({
+				variables: {
+					siteId: props.match.params.siteId
+				}
+			})
+		},
+		{
+			query: GET_MENU,
+			options: props => ({
+				variables: {
+					id: props.match.params.menuId
+				}
+			}),
+			name: 'menuById'
+		},
+		{
+			mutation: PUBLISH_UNPUBLISH,
+			name: 'publishAndUnpublish',
+			options: {}
+		},
+		{
+			mutation: UPDATE_MENU,
+			name: 'updateMenu',
+			options: {}
+		}
+	])(Form.create()(MenuDetail))
+)

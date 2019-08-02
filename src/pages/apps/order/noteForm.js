@@ -1,5 +1,6 @@
 import React from 'react'
 import { Button, Modal, Input, Form, Checkbox } from 'antd'
+import { withTranslation } from 'react-i18next'
 
 class NoteForm extends React.Component {
 	constructor(props) {
@@ -33,13 +34,13 @@ class NoteForm extends React.Component {
 	}
 
 	render() {
-		const { visible, onCancel, onCreate, form } = this.props
+		const { visible, onCancel, onCreate, form, t } = this.props
 		const { getFieldDecorator } = form
 		return (
 			<Modal
 				visible={visible}
 				onCancel={onCancel}
-				title="Thêm ghi chú"
+				title={t('Note')}
 				footer={[
 					<Button
 						key="cancel"
@@ -47,17 +48,17 @@ class NoteForm extends React.Component {
 						onClick={onCancel}
 						name="cancelNote"
 					>
-						Đóng
+						{t('Cancel')}
 					</Button>,
 					<Button key="save" type="primary" onClick={onCreate} name="addNote">
-						Thêm
+						{t('Add')}
 					</Button>
 				]}
 			>
 				<Form colon={false} ref={this.form}>
 					<Form.Item>
 						{getFieldDecorator('note', {
-							rules: [{ required: false, message: 'Hãy thêm ghi chú!' }],
+							rules: [{ required: false, message: t('Input note') }],
 							// eslint-disable-next-line react/destructuring-assignment
 							initialValue:
 								// eslint-disable-next-line react/destructuring-assignment
@@ -69,7 +70,7 @@ class NoteForm extends React.Component {
 						})(
 							<Input.TextArea
 								id="orderNoteInput"
-								placeholder="nhập ghi chú"
+								placeholder={t('Input note')}
 								autosize={{ minRows: 3, maxRows: 7 }}
 							/>
 						)}
@@ -79,7 +80,7 @@ class NoteForm extends React.Component {
 							rules: [{ required: false }]
 						})(
 							<Checkbox id="extraRiceCheckbox" onChange={e => this.onChange(e)}>
-								Cơm thêm
+								{t('More rice')}
 							</Checkbox>
 						)}
 					</Form.Item>
@@ -89,4 +90,4 @@ class NoteForm extends React.Component {
 	}
 }
 
-export default NoteForm
+export default withTranslation('translations')(NoteForm)

@@ -47,20 +47,20 @@ function User(props) {
 			.then(res => {
 				//  console.log('hello', res)
 				if (res.data.lockAndUnlockUser === true)
-					openNotificationWithIcon('success', 'success', 'Success', _id)
+					openNotificationWithIcon('success', 'success', t('Success'), null)
 			})
 			.catch(err => {
 				// console.log(err)
 				const errors = err.graphQLErrors.map(error => error.message)
-				openNotificationWithIcon('error', 'failed', 'Failed', errors[0])
+				openNotificationWithIcon('error', 'failed', t('Failed'), errors[0])
 			})
 	}
 
 	function onDelete(_id) {
 		// console.log("onDelete", _id)
 		confirm({
-			title: 'Delete',
-			content: 'Do you want to delete this user?',
+			title: t('DeleteUser'),
+			content: t('ConfirmDelete'),
 			onOk() {
 				// console.log('OK');
 				props.mutate
@@ -81,12 +81,12 @@ function User(props) {
 					.then(res => {
 						// console.log(res)
 						if (res.data.lockAndUnlockUser === true)
-							openNotificationWithIcon('success', 'success', 'Success', _id)
+							openNotificationWithIcon('success', 'success', t('Success'), null)
 					})
 					.catch(err => {
 						// console.log(err)
 						const errors = err.graphQLErrors.map(error => error.message)
-						openNotificationWithIcon('error', 'failed', 'Failed', errors[0])
+						openNotificationWithIcon('error', 'failed', t('Failed'), errors[0])
 					})
 			},
 			onCancel() {

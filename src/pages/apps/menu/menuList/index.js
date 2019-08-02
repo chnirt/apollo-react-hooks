@@ -12,8 +12,8 @@ function MenuList(props) {
 
 	async function deleteMenu(id) {
 		Modal.confirm({
-			title: 'Xóa menu',
-			content: 'Bạn có chắc chắn xóa menu này?',
+			title: t('DeleteMenu'),
+			content: t('ConfirmDelete'),
 			onOk: async () => {
 				await mutate
 					.deleteMenu({
@@ -32,12 +32,7 @@ function MenuList(props) {
 					.then(
 						res =>
 							res &&
-							openNotificationWithIcon(
-								'success',
-								'delete',
-								'Xóa menu thành công',
-								''
-							)
+							openNotificationWithIcon('success', 'delete', t('Success'), '')
 					)
 			}
 		})
@@ -64,12 +59,7 @@ function MenuList(props) {
 					})
 					.then(res => {
 						if (res) {
-							openNotificationWithIcon(
-								'success',
-								'add',
-								'Thêm menu thành công',
-								''
-							)
+							openNotificationWithIcon('success', 'add', t('AddMenuSuccess'), '')
 							form.resetFields()
 							setVisible(false)
 						}
@@ -160,7 +150,7 @@ function MenuList(props) {
 				}}
 			/>
 			<Modal
-				title="Thêm menu"
+				title={t('Add menu')}
 				visible={visible}
 				onCancel={() => setVisible(false)}
 				footer={[
@@ -170,10 +160,10 @@ function MenuList(props) {
 						onClick={() => setVisible(false)}
 						name="cancelAddMenu"
 					>
-						Đóng
+						{t('Cancel')}
 					</Button>,
 					<Button key="save" type="primary" onClick={addMenu} name="addMenu">
-						Thêm
+						{t('Add')}
 					</Button>
 				]}
 			>
@@ -182,9 +172,9 @@ function MenuList(props) {
 						<Col span={20} offset={2}>
 							<Form.Item>
 								{getFieldDecorator('name', {
-									rules: [{ required: true, message: 'Nhập tên menu' }],
+									rules: [{ required: true, message: t('Input menu name') }],
 									initialValue: ''
-								})(<Input placeholder="Nhập tên menu" />)}
+								})(<Input placeholder={t('Input menu name')} />)}
 							</Form.Item>
 						</Col>
 					</Row>
