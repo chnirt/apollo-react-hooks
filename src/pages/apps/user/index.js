@@ -1,11 +1,10 @@
 import React, { useState } from 'react'
 import gql from 'graphql-tag'
-import { Row, Button, Card, Modal, Typography } from 'antd'
+import { Row, Button, Card, Modal, Typography, List } from 'antd'
 import { withTranslation } from 'react-i18next'
 import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation'
 import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
 
-import UserList from './userlist'
 import UserModal from './usermodal'
 
 const { confirm } = Modal
@@ -122,20 +121,44 @@ function User(props) {
 					}}
 					style={{ backgroundColor: 'transparent' }}
 				>
-					{users &&
-						users
-							.filter(item => item.isActive)
-							.map(item => (
-								<UserList
-									key={item._id}
-									{...item}
-									showModal={showModal}
-									onLockAndUnlock={onLockAndUnlock}
-									onDelete={onDelete}
-									visible={visible}
-									hideModal={hideModal}
-								/>
-							))}
+					<List
+						pagination={{
+							pageSize: 8
+						}}
+						style={{
+							margin: '1em',
+							padding: '1em',
+							backgroundColor: '#fff',
+							borderRadius: '.5em'
+						}}
+						dataSource={users.filter(item => item.isActive)}
+						renderItem={user => (
+							<List.Item
+								actions={[
+									<Button
+										onClick={() => showModal(user._id)}
+										icon="edit"
+										type="link"
+										name="btnEditUser"
+									/>,
+									<Button
+										onClick={() => onLockAndUnlock(user._id)}
+										icon={user.isLocked ? 'lock' : 'unlock'}
+										type="link"
+										name="btnLockNUnlockUser"
+									/>,
+									<Button
+										onClick={() => onDelete(user._id)}
+										icon="delete"
+										type="link"
+										name="btnDeleteUser"
+									/>
+								]}
+							>
+								{user.fullName}
+							</List.Item>
+						)}
+					/>
 				</Card>
 				<UserModal userId={userId} visible={visible} hideModal={hideModal} />
 			</Row>

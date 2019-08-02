@@ -1,5 +1,6 @@
 import React from 'react'
 import renderer from 'react-test-renderer'
+import { withTranslation } from 'react-i18next'
 import { MockedProvider } from 'react-apollo/test-utils'
 import gql from 'graphql-tag'
 import Menu from './index'
@@ -40,10 +41,11 @@ it('menu correctly', () => {
 			}
 		}
 	]
+	const MenuWithI18n = withTranslation(Menu)
 	const menu = renderer
 		.create(
 			<MockedProvider addTypename={false} mocks={mocks}>
-				<Menu />
+				<MenuWithI18n />
 			</MockedProvider>
 		)
 		.toJSON()
