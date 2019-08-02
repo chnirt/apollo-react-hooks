@@ -2,6 +2,8 @@ import React from 'react'
 import { Collapse, Button, Icon, Tooltip } from 'antd'
 import gql from 'graphql-tag'
 import XLSX from 'xlsx'
+import { withTranslation } from 'react-i18next'
+
 import ListUser from './listUser'
 import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation'
 
@@ -14,9 +16,9 @@ class listMenu extends React.Component {
 		isActive: false
 	}
 
-	changeActive = () => {
-		this.setState(prevState => ({ isActive: !prevState.isActive }))
-	}
+	// changeActive = () => {
+	// 	this.setState(prevState => ({ isActive: !prevState.isActive }))
+	// }
 
 	export(menu) {
 		const dishes = []
@@ -97,7 +99,11 @@ class listMenu extends React.Component {
 
 		ws['!merges'] = merge
 		ws['!formatRows'] = true
-		ws.D7 = { t: 'n', f: `SUM(D3:D${dishes.length - 3})` || 0 }
+		ws[`D${dishes.length - 2}`] = {
+			t: 'n',
+			f: `SUM(D3:D${dishes.length - 3})` || 0
+		}
+		console.log(ws)
 
 		XLSX.utils.book_append_sheet(wb, ws, 'Sheet1')
 		XLSX.writeFile(wb, `${menu.name}.xlsx`, {
@@ -110,14 +116,19 @@ class listMenu extends React.Component {
 		const { menu, isLock, isActiveProps, getOrderByMenu, menuId } = this.props
 		const { isActive } = this.state
 		return (
-			<Collapse onChange={this.changeActive}>
+			<Collapse className="open-menu">
 				<Panel
 					extra={
 						<>
 							<Tooltip title={menu.isLocked ? 'Unlock menu' : 'Lock menu'}>
 								<Button
-									className="publish style-btn"
-									onClick={e => isLock(e, menu._id)}
+									className="publish style-btn lock-menu"
+									onClick={e => {
+										this.setState(prevState => ({
+											isActive: !prevState.isActive
+										}))
+										isLock(e, menu._id)
+									}}
 								>
 									<Icon type={menu.isLocked ? 'lock' : 'unlock'} />
 								</Button>
@@ -125,16 +136,17 @@ class listMenu extends React.Component {
 
 							<Tooltip title="Complete menu">
 								<Button
-									className="publish style-btn"
+									className="publish style-btn complete-menu"
 									onClick={e => isActiveProps(e, menu._id)}
+									disabled={!isActive}
 								>
 									<Icon type="check" />
 								</Button>
 							</Tooltip>
 
-							<Tooltip title="Complete menu">
+							<Tooltip title="Request menu">
 								<Button
-									className="publish style-btn"
+									className="publish style-btn request-menu"
 									onClick={() => this.export(menu)}
 									disabled={!isActive}
 								>
@@ -143,11 +155,15 @@ class listMenu extends React.Component {
 							</Tooltip>
 						</>
 					}
-					header={menu.name}
-					key="1"
+					header={
+						<span style={{ width: '10em', display: 'inline-block' }}>
+							{menu.name}
+						</span>
+					}
+					key={menu._id}
 					disabled={!!menu.isLocked}
 				>
-					<Collapse>
+					<Collapse className="open-dishes">
 						{menu.dishes &&
 							menu.dishes.map(dish => {
 								// console.log(dish)
@@ -226,41 +242,43 @@ const ME = gql`
 	}
 `
 
-export default HOCQueryMutation([
-	{
-		query: GET_MENU_BY_SITE,
-		name: 'getMenuBySite',
-		options: () => {
-			return {
-				variables: {
-					siteId: localStorage.getItem('currentsite')
+export default withTranslation('translations')(
+	HOCQueryMutation([
+		{
+			query: GET_MENU_BY_SITE,
+			name: 'getMenuBySite',
+			options: () => {
+				return {
+					variables: {
+						siteId: localStorage.getItem('currentsite')
+					}
 				}
 			}
-		}
-	},
-	{
-		query: ORDER_BY_MENU,
-		name: 'getOrderByMenu',
-		options: props => {
-			return {
-				variables: {
-					menuId: props.menuId
+		},
+		{
+			query: ORDER_BY_MENU,
+			name: 'getOrderByMenu',
+			options: props => {
+				return {
+					variables: {
+						menuId: props.menuId
+					}
 				}
 			}
+		},
+		{
+			query: ME,
+			name: 'me'
+		},
+		{
+			mutation: LOCK_AND_UNLOCK_MENU,
+			name: 'lockAndUnLockMenu',
+			option: {}
+		},
+		{
+			mutation: CLOSE_MENU,
+			name: 'closeMenu',
+			option: {}
 		}
-	},
-	{
-		query: ME,
-		name: 'me'
-	},
-	{
-		mutation: LOCK_AND_UNLOCK_MENU,
-		name: 'lockAndUnLockMenu',
-		option: {}
-	},
-	{
-		mutation: CLOSE_MENU,
-		name: 'closeMenu',
-		option: {}
-	}
-])(listMenu)
+	])(listMenu)
+)

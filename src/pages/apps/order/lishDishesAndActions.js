@@ -3,6 +3,8 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Row, Button, List, Form } from 'antd'
 import gql from 'graphql-tag'
 import { withApollo } from 'react-apollo'
+import { withTranslation } from 'react-i18next'
+
 import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
 import NoteForm from './noteForm'
 import ConfirmButton from './comfirmButton'
@@ -123,7 +125,7 @@ const ListDishesAndActions = props => {
 				}
 			})
 			.catch(() => {
-				openNotificationWithIcon('error', 'get-menu', 'Get menu failed', null)
+				openNotificationWithIcon('error', 'get-menu', t('Failed'), null)
 			})
 	}
 
@@ -155,16 +157,11 @@ const ListDishesAndActions = props => {
 						await setOrderedNumber(obj)
 					})
 					.catch(() => {
-						openNotificationWithIcon(
-							'error',
-							'get-orders',
-							'Get orders failed',
-							null
-						)
+						openNotificationWithIcon('error', 'get-orders', t('Failed'), null)
 					})
 			})
 			.catch(() => {
-				openNotificationWithIcon('error', 'get-menu', 'Get menu failed', null)
+				openNotificationWithIcon('error', 'get-menu', t('Failed'), null)
 			})
 	}
 
@@ -186,12 +183,7 @@ const ListDishesAndActions = props => {
 					await setOrderedNumber(obj)
 				},
 				error() {
-					openNotificationWithIcon(
-						'error',
-						'subscription',
-						'Subscription Failed',
-						null
-					)
+					openNotificationWithIcon('error', 'subscription', t('Failed'), null)
 				}
 			})
 	}
@@ -228,13 +220,18 @@ const ListDishesAndActions = props => {
 						openNotificationWithIcon(
 							'error',
 							'get-users-order',
-							`Get user's order failed`,
+							t('Failed'),
 							null
 						)
 					})
 			})
 			.catch(() => {
-				openNotificationWithIcon('error', 'get-menu', 'Hệ thống đã khóa', null)
+				openNotificationWithIcon(
+					'error',
+					'get-menu',
+					t('System has locked'),
+					null
+				)
 			})
 	}
 
@@ -251,12 +248,7 @@ const ListDishesAndActions = props => {
 				await setSelectedOrder(res.data.currentOrder)
 			})
 			.catch(() => {
-				openNotificationWithIcon(
-					'error',
-					'get-order-id',
-					'Get order id failed',
-					null
-				)
+				openNotificationWithIcon('error', 'get-order-id', t('Failed'), null)
 			})
 	}
 
@@ -300,13 +292,13 @@ const ListDishesAndActions = props => {
 						openNotificationWithIcon(
 							'error',
 							'get-orders-count-by-user',
-							`Get user's order quantity failed`,
+							t('Failed'),
 							null
 						)
 					})
 			})
 			.catch(() => {
-				openNotificationWithIcon('error', 'get-menu', 'Get menu failed', null)
+				openNotificationWithIcon('error', 'get-menu', t('Failed'), null)
 			})
 		handleOrderedNumber()
 		handleDefaultDishes()
@@ -354,28 +346,18 @@ const ListDishesAndActions = props => {
 			.then(async res => {
 				await setSelectedOrder(res.data.orderDish)
 				if (res.data.orderDish) {
-					openNotificationWithIcon(
-						'success',
-						'alert-order',
-						'Đặt thành công',
-						null
-					)
+					openNotificationWithIcon('success', 'alert-order', t('Success'), null)
 					await handleOrderedNumber()
 					await setOrdersCountByUser({
 						...ordersCountByUser,
 						[item._id]: quantity
 					})
 				} else {
-					openNotificationWithIcon(
-						'error',
-						'alert-order',
-						'Alert order failed',
-						null
-					)
+					openNotificationWithIcon('error', 'alert-order', t('Failed'), null)
 				}
 			})
 			.catch(() => {
-				openNotificationWithIcon('error', 'order', 'Order failed', null)
+				openNotificationWithIcon('error', 'order', t('Failed'), null)
 			})
 	}
 
@@ -408,23 +390,13 @@ const ListDishesAndActions = props => {
 				})
 				.then(res => {
 					if (res.data.updateOrder) {
-						openNotificationWithIcon(
-							'success',
-							'alert-note',
-							'Ghi chú thành công',
-							null
-						)
+						openNotificationWithIcon('success', 'alert-note', t('Success'), null)
 					} else {
-						openNotificationWithIcon(
-							'error',
-							'alert-note',
-							'Alert note failed',
-							null
-						)
+						openNotificationWithIcon('error', 'alert-note', t('Failed'), null)
 					}
 				})
 				.catch(() => {
-					openNotificationWithIcon('error', 'note', 'Update order failed', null)
+					openNotificationWithIcon('error', 'note', t('Failed'), null)
 				})
 			formRef.resetFields()
 			setModalVisible(false)
@@ -455,7 +427,7 @@ const ListDishesAndActions = props => {
 		// eslint-disable-next-line no-self-assign
 		formRef = formRef
 	}
-
+	const { t } = props
 	const CollectionCreateForm = Form.create({ name: 'form_in_modal' })(NoteForm)
 	return (
 		<React.Fragment>
@@ -536,7 +508,7 @@ const ListDishesAndActions = props => {
 						color: '#fff'
 					}}
 				>
-					<div>Hệ thống đã khóa</div>
+					<div>{t('System has locked')}</div>
 				</Row>
 			)}
 			<CollectionCreateForm
@@ -552,4 +524,4 @@ const ListDishesAndActions = props => {
 	)
 }
 
-export default withApollo(ListDishesAndActions)
+export default withTranslation('translations')(withApollo(ListDishesAndActions))

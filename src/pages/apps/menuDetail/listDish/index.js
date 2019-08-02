@@ -11,6 +11,8 @@ import {
 	List
 } from 'antd'
 import gql from 'graphql-tag'
+import { withTranslation } from 'react-i18next'
+
 import { HOCQueryMutation } from '../../../../components/shared/hocQueryAndMutation'
 import openNotificationWithIcon from '../../../../components/shared/openNotificationWithIcon'
 
@@ -31,8 +33,8 @@ function ListDish(props) {
 
 	async function deleteDish(dishId) {
 		Modal.confirm({
-			title: 'Xóa món ăn',
-			content: 'Bạn có chắc chắn xóa món ăn này?',
+			title: t('DeleteDish'),
+			content: t('ConfirmDelete'),
 			onOk: async () => {
 				await props.mutate
 					.deleteDish({
@@ -43,12 +45,7 @@ function ListDish(props) {
 					.then(
 						() =>
 							data.refetch(shopId) &&
-							openNotificationWithIcon(
-								'success',
-								'delete',
-								'Xóa món ăn thành công',
-								''
-							)
+							openNotificationWithIcon('success', 'delete', t('Success'), '')
 					)
 			}
 		})
@@ -72,7 +69,7 @@ function ListDish(props) {
 							openNotificationWithIcon(
 								'success',
 								'delete',
-								'Xóa món ăn thành công',
+								t('AddDishSuccess'),
 								''
 							)
 						}
@@ -130,23 +127,14 @@ function ListDish(props) {
 						]
 					})
 					.then(() => {
-						openNotificationWithIcon(
-							'success',
-							'save',
-							'Lưu menu thành công',
-							''
-						)
+						openNotificationWithIcon('success', 'save', t('Success'), '')
 						setHasChange(false)
 					})
-			: openNotificationWithIcon(
-					'info',
-					'nochange',
-					'Menu không có thay đổi',
-					''
-			  )
+			: openNotificationWithIcon('info', 'nochange', t('MenuNoChange'), '')
 	}
 
 	const { getFieldDecorator } = form
+	const { t } = props
 
 	return (
 		<>
@@ -159,7 +147,7 @@ function ListDish(props) {
 						onClick={() => setVisible(true)}
 						hidden={shopId === ''}
 					>
-						Thêm món
+						{t('AddDish')}
 					</Button>
 					<Button
 						name="btnSaveMenu"
@@ -170,7 +158,7 @@ function ListDish(props) {
 							shopId === '' || (menuById.menu && menuById.menu.isPublished)
 						}
 					>
-						Lưu
+						{t('Save')}
 					</Button>
 					<Button
 						name="btnPublishMenu"
@@ -178,8 +166,8 @@ function ListDish(props) {
 						onClick={() => publishAndUnpublish(hasChange)}
 					>
 						{menuById.menu && menuById.menu.isPublished
-							? 'Hủy công khai'
-							: 'Công khai'}
+							? t('UnPublish')
+							: t('Publish')}
 					</Button>
 				</Row>
 			</Col>
@@ -197,10 +185,10 @@ function ListDish(props) {
 						header={
 							<Row>
 								<Col span={12}>
-									<b>Món ăn</b>
+									<b>{t('Dish')}</b>
 								</Col>
 								<Col span={6}>
-									<b>Số lượng</b>
+									<b>{t('Count')}</b>
 								</Col>
 							</Row>
 						}
@@ -245,10 +233,10 @@ function ListDish(props) {
 						header={
 							<Row>
 								<Col span={12} offset={1}>
-									<b>Món ăn</b>
+									<b>{t('Dish')}</b>
 								</Col>
 								<Col span={6} offset={1}>
-									<b>Số lượng</b>
+									<b>{t('Count')}</b>
 								</Col>
 							</Row>
 						}
@@ -267,7 +255,7 @@ function ListDish(props) {
 				)}
 			</Col>
 			<Modal
-				title="Thêm món ăn"
+				title={t('Add')}
 				visible={visible}
 				onCancel={() => setVisible(false)}
 				afterClose={() => form.resetFields(['name'])}
@@ -278,10 +266,10 @@ function ListDish(props) {
 						onClick={() => setVisible(false)}
 						name="cancelAddDish"
 					>
-						Đóng
+						{t('Cancel')}
 					</Button>,
 					<Button key="save" type="primary" onClick={addDish} name="addDish">
-						Lưu
+						{t('Add')}
 					</Button>
 				]}
 			>
@@ -290,9 +278,9 @@ function ListDish(props) {
 						<Col span={20} offset={2}>
 							<Form.Item>
 								{getFieldDecorator('name', {
-									rules: [{ required: true, message: 'Nhập tên món ăn!' }],
+									rules: [{ required: true, message: t('InputDish') }],
 									initialValue: ''
-								})(<Input placeholder="Nhập tên món ăn" />)}
+								})(<Input placeholder={t('InputDish')} />)}
 							</Form.Item>
 						</Col>
 					</Row>
@@ -346,38 +334,40 @@ const UPDATE_MENU = gql`
 	}
 `
 
-export default HOCQueryMutation([
-	{
-		query: GET_DISHES_BY_SHOP,
-		options: props => ({
-			variables: {
-				shopId: props.shopId
-			},
-			fetchPolicy: 'no-cache'
-		})
-	},
-	{
-		query: GET_MENU,
-		options: props => ({
-			variables: {
-				id: props.menuId
-			}
-		}),
-		name: 'menuById'
-	},
-	{
-		mutation: DELETE_DISH,
-		name: 'deleteDish',
-		options: {}
-	},
-	{
-		mutation: ADD_DISH_TO_SHOP,
-		name: 'addDish',
-		options: {}
-	},
-	{
-		mutation: UPDATE_MENU,
-		name: 'updateMenu',
-		options: {}
-	}
-])(Form.create()(ListDish))
+export default withTranslation('translations')(
+	HOCQueryMutation([
+		{
+			query: GET_DISHES_BY_SHOP,
+			options: props => ({
+				variables: {
+					shopId: props.shopId
+				},
+				fetchPolicy: 'no-cache'
+			})
+		},
+		{
+			query: GET_MENU,
+			options: props => ({
+				variables: {
+					id: props.menuId
+				}
+			}),
+			name: 'menuById'
+		},
+		{
+			mutation: DELETE_DISH,
+			name: 'deleteDish',
+			options: {}
+		},
+		{
+			mutation: ADD_DISH_TO_SHOP,
+			name: 'addDish',
+			options: {}
+		},
+		{
+			mutation: UPDATE_MENU,
+			name: 'updateMenu',
+			options: {}
+		}
+	])(Form.create()(ListDish))
+)

@@ -1,6 +1,8 @@
 import React from 'react'
 import { Icon, Button } from 'antd'
 import gql from 'graphql-tag'
+import { withTranslation } from 'react-i18next'
+
 import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation'
 import './index.css'
 
@@ -102,15 +104,17 @@ class listUser extends React.Component {
 								disabled={countProps === 0}
 								style={{ marginRight: 10 }}
 								onClick={() => this.handleMinus(countProps)}
+								name="minus"
 							>
 								<Icon type="minus" />
 							</Button>
 							<Button
 								disabled={
-									countProps === dishCount ||
+									countProps >= dishCount ||
 									userId !== '40eb5c20-9e41-11e9-8ded-f5462f3a1447'
 								}
 								onClick={() => this.handlePlus(countProps)}
+								name="add"
 							>
 								<Icon type="plus" />
 							</Button>
@@ -154,37 +158,39 @@ const UPDATE_ORDER = gql`
 	}
 `
 
-export default HOCQueryMutation([
-	{
-		query: GET_USER_NAME,
-		name: 'getUserName',
-		options: props => {
-			return {
-				variables: {
-					_id: props.userId
+export default withTranslation('translations')(
+	HOCQueryMutation([
+		{
+			query: GET_USER_NAME,
+			name: 'getUserName',
+			options: props => {
+				return {
+					variables: {
+						_id: props.userId
+					}
 				}
 			}
-		}
-	},
-	{
-		query: ORDER_BY_MENU,
-		name: 'getOrderByMenu',
-		options: props => {
-			return {
-				variables: {
-					menuId: props.menuId
+		},
+		{
+			query: ORDER_BY_MENU,
+			name: 'getOrderByMenu',
+			options: props => {
+				return {
+					variables: {
+						menuId: props.menuId
+					}
 				}
 			}
+		},
+		{
+			mutation: ORDER_DISH,
+			name: 'orderDish',
+			option: {}
+		},
+		{
+			mutation: UPDATE_ORDER,
+			name: 'updateOrder',
+			option: {}
 		}
-	},
-	{
-		mutation: ORDER_DISH,
-		name: 'orderDish',
-		option: {}
-	},
-	{
-		mutation: UPDATE_ORDER,
-		name: 'updateOrder',
-		option: {}
-	}
-])(listUser)
+	])(listUser)
+)

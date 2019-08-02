@@ -15,6 +15,7 @@ import gql from 'graphql-tag'
 import { withTranslation } from 'react-i18next'
 import { inject, observer } from 'mobx-react'
 import BgDashboard from '../../../assets/images/bg-dashboard.jpg'
+import './index.scss'
 
 const { Option } = Select
 function Layout(props) {
@@ -81,7 +82,7 @@ function Layout(props) {
 		</Menu>
 	)
 
-	function changeLocale({ key }) {
+	function changeLocale(key) {
 		// console.log(key)
 		if (key === 'vi') {
 			props.i18n.changeLanguage('vi')
@@ -92,22 +93,22 @@ function Layout(props) {
 		}
 	}
 
-	const languages = (
-		<Menu onClick={changeLocale}>
-			<Menu.Item key="vi">
-				<span role="img" aria-label="vi">
-					🇻🇳
-				</span>
-				<span> Việt Nam</span>
-			</Menu.Item>
-			<Menu.Item key="en">
-				<span role="img" aria-label="gb">
-					🇬🇧
-				</span>
-				<span> English</span>
-			</Menu.Item>
-		</Menu>
-	)
+	// const languages = (
+	// 	<Menu onClick={changeLocale}>
+	// 		<Menu.Item key="vi">
+	// 			<span role="img" aria-label="vi">
+	// 				🇻🇳
+	// 			</span>
+	// 			<span> Việt Nam</span>
+	// 		</Menu.Item>
+	// 		<Menu.Item key="en">
+	// 			<span role="img" aria-label="gb">
+	// 				🇬🇧
+	// 			</span>
+	// 			<span> English</span>
+	// 		</Menu.Item>
+	// 	</Menu>
+	// )
 	const { store } = props
 	return (
 		<div
@@ -139,7 +140,7 @@ function Layout(props) {
 							disabled={children.props.location.pathname.split('/').length > 3}
 							key="1"
 							defaultValue={currentsite}
-							style={{ width: '12em', marginRight: '1em' }}
+							style={{ width: '10em', marginRight: '.5em' }}
 							onChange={handleChange}
 						>
 							{children.props.location.pathname === '/🥢'
@@ -166,27 +167,33 @@ function Layout(props) {
 								}}
 							/>
 						</Dropdown>,
-						<Dropdown key="3" overlay={languages}>
-							<Avatar
-								icon="global"
-								style={{ color: '#ffffff', backgroundColor: 'transparent' }}
-							/>
-						</Dropdown>
-						// <Select
-						// 	className="bgc-trans"
-						// 	dropdownStyle={{backgroundColor: 'transparent'}}
-						// 	showArrow={false}
-						// 	defaultValue="vi"
-						// 	onChange={changeLocale}
-						// 	key="3"
-						// >
-						// 	<Option value="vi" key="vi">
-						// 		🇻🇳
-						// 	</Option>
-						// 	<Option value="en" key="en">
-						// 		🇬🇧
-						// 	</Option>
-						// </Select>
+						// <Dropdown key="3" overlay={languages}>
+						// 	<Avatar
+						// 		icon="global"
+						// 		style={{ color: '#ffffff', backgroundColor: 'transparent' }}
+						// 	/>
+						// </Dropdown>
+						<Select
+							className="bgc-trans"
+							// dropdownStyle={{ backgroundColor: 'transparent' }}
+							showArrow={false}
+							defaultValue={
+								window.localStorage.getItem('i18nextLng') === 'vi' ? 'vi' : 'en'
+							}
+							onChange={changeLocale}
+							key="3"
+						>
+							<Option value="vi" key="vi">
+								<span role="img" aria-label="vi">
+									🇻🇳
+								</span>
+							</Option>
+							<Option value="en" key="en">
+								<span role="img" aria-label="en">
+									🇬🇧
+								</span>
+							</Option>
+						</Select>
 					]}
 					footer={<Divider style={{ margin: '0' }} />}
 				/>

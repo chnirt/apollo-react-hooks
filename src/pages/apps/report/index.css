@@ -17,3 +17,16 @@
 span.style-btn > button {
 	height: inherit;
 }
+
+.ant-collapse.open-menu
+	> .ant-collapse-item
+	> .ant-collapse-header
+	.ant-collapse-extra {
+	float: none;
+	position: absolute;
+	top: 50%;
+	right: 16px;
+	line-height: 0;
+	text-align: center;
+	transform: translateY(-50%);
+}

@@ -1,8 +1,10 @@
 import React from 'react'
 import { Typography, Col, Row } from 'antd'
+import { withTranslation } from 'react-i18next'
 import ListDishesAndActions from './lishDishesAndActions'
 
-const Order = () => {
+const Order = props => {
+	const { t } = props
 	return (
 		<React.Fragment>
 			<Row
@@ -18,7 +20,7 @@ const Order = () => {
 							color: '#fff'
 						}}
 					>
-						Đặt món
+						{t('Order')}
 					</Typography.Title>
 					<ListDishesAndActions />
 				</Col>
@@ -27,4 +29,4 @@ const Order = () => {
 	)
 }
 
-export default Order
+export default withTranslation('translations')(Order)

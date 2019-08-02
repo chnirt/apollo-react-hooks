@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import gql from 'graphql-tag'
 import { Modal, Form, Input, Select } from 'antd'
+import { withTranslation } from 'react-i18next'
+
 import { HOCQueryMutation } from '../../../../components/shared/hocQueryAndMutation'
 import openNotificationWithIcon from '../../../../components/shared/openNotificationWithIcon'
 
@@ -18,7 +20,7 @@ function UserModal(props) {
 	function compareToFirstPassword(rule, value, callback) {
 		const { form } = props
 		if (value && value !== form.getFieldValue('password')) {
-			callback('Two passwords that you enter is inconsistent!')
+			callback(t('InconsistentPw'))
 		} else {
 			callback()
 		}
@@ -137,7 +139,7 @@ function UserModal(props) {
 										'success',
 										'success',
 										'Success',
-										'User is updated'
+										t('UpdateUserSuccess')
 									)
 								setConfirmLoading(false)
 
@@ -147,7 +149,12 @@ function UserModal(props) {
 							.catch(err => {
 								// console.log(err)
 								const errors = err.graphQLErrors.map(error => error.message)
-								openNotificationWithIcon('error', 'failed', 'Failed', errors[0])
+								openNotificationWithIcon(
+									'error',
+									'failed',
+									t('Failed'),
+									errors[0]
+								)
 								setConfirmLoading(false)
 							})
 					: props.mutate
@@ -175,7 +182,7 @@ function UserModal(props) {
 										'success',
 										'success',
 										'Success',
-										'User is created'
+										t('AddUserSuccess')
 									)
 								setConfirmLoading(false)
 
@@ -185,7 +192,12 @@ function UserModal(props) {
 							.catch(err => {
 								// console.log(err)
 								const errors = err.graphQLErrors.map(error => error.message)
-								openNotificationWithIcon('error', 'failed', 'Failed', errors[0])
+								openNotificationWithIcon(
+									'error',
+									'failed',
+									t('Failed'),
+									errors[0]
+								)
 								setConfirmLoading(false)
 							})
 			}
@@ -212,50 +224,52 @@ function UserModal(props) {
 		getAllSites,
 		getAllPermissionsByUserId,
 		getUser,
-		hideModal
+		hideModal,
+		t
 	} = props
 	const { getFieldDecorator } = form
 
 	return (
 		<Modal
-			title={userId ? 'Update' : 'Create'}
+			title={userId ? t('Update') : t('Add')}
 			visible={visible}
 			onOk={handleOk}
 			confirmLoading={confirmLoading}
 			onCancel={hideModal}
-			okText="Submit"
+			okText={userId ? t('Update') : t('Add')}
+			cancelText={t('Cancel')}
 		>
 			<Form {...formItemLayout}>
 				{!userId && (
-					<Form.Item label="Username">
+					<Form.Item label={t('Username')}>
 						{getFieldDecorator('username', {
 							rules: [
 								{
 									required: true,
-									message: 'Please input your username!'
+									message: t('InputUsername')
 								},
 								{
 									min: 4,
-									message: 'Your username must be at least 4 characters'
+									message: t('UserName4C')
 								}
 							]
 						})(<Input style={{ fontSize: 16 }} />)}
 					</Form.Item>
 				)}
-				<Form.Item label="Password">
+				<Form.Item label={t('Password')}>
 					{getFieldDecorator('password', {
 						rules: [
 							{
 								required: true,
-								message: 'Please input your password!'
+								message: t('InputPassword')
 							},
 							{
 								min: 1,
-								message: 'Your password must be between 1 and 8 characters'
+								message: t('Pw1-8')
 							},
 							{
 								max: 8,
-								message: 'Your password must be between 1 and 8 characters'
+								message: t('Pw1-8')
 							},
 							{
 								validator: validateToNextPassword
@@ -263,12 +277,12 @@ function UserModal(props) {
 						]
 					})(<Input.Password visibilityToggle={false} autoComplete="off" />)}
 				</Form.Item>
-				<Form.Item label="Confirm Password">
+				<Form.Item label={t('Confirm Password')}>
 					{getFieldDecorator('confirm', {
 						rules: [
 							{
 								required: true,
-								message: 'Please confirm your password!'
+								message: t('ConfirmPassword')
 							},
 							{
 								validator: compareToFirstPassword
@@ -282,21 +296,21 @@ function UserModal(props) {
 						/>
 					)}
 				</Form.Item>
-				<Form.Item label="Fullname">
+				<Form.Item label={t('Fullname')}>
 					{getFieldDecorator('fullName', {
 						initialValue: userId && getUser.user && getUser.user.fullName,
 						rules: [
 							{
 								required: true,
-								message: 'Please input your fullname!'
+								message: t('InputFullname')
 							},
 							{
 								min: 3,
-								message: 'Your fullname must be between 3 and 20 characters'
+								message: t('Fn3-20')
 							},
 							{
 								max: 20,
-								message: 'Your fullname must be between 3 and 20 characters'
+								message: t('Fn3-20')
 							}
 						]
 					})(<Input style={{ fontSize: 16 }} />)}
@@ -324,10 +338,7 @@ function UserModal(props) {
 								{getFieldDecorator(`sites.${item._id}`, {
 									initialValue: newArray
 								})(
-									<Select
-										mode="multiple"
-										placeholder="Please select permissions"
-									>
+									<Select mode="multiple" placeholder={t('SelectPermissions')}>
 										{props.getAllPermissions.permissions &&
 											props.getAllPermissions.permissions.map(item1 => {
 												return (
@@ -414,53 +425,55 @@ const GET_USER = gql`
 	}
 `
 
-export default HOCQueryMutation([
-	{
-		query: GET_ALL_USERS,
-		options: {
-			variables: {
-				offset: 0,
-				limit: 100
+export default withTranslation('translations')(
+	HOCQueryMutation([
+		{
+			query: GET_ALL_USERS,
+			options: {
+				variables: {
+					offset: 0,
+					limit: 100
+				}
 			}
+		},
+		{
+			query: GET_ALL_PERMISSIONS_BY_USERID,
+			name: 'getAllPermissionsByUserId',
+			options: props => ({
+				variables: {
+					_id: props.userId || ''
+				},
+				fetchPolicy: 'no-cache'
+			})
+		},
+		{
+			query: GET_ALL_SITES,
+			name: 'getAllSites',
+			options: {}
+		},
+		{
+			query: GET_ALL_PERMISSIONS,
+			name: 'getAllPermissions',
+			options: {}
+		},
+		{
+			query: GET_USER,
+			name: 'getUser',
+			options: props => ({
+				variables: {
+					_id: props.userId || ''
+				}
+			})
+		},
+		{
+			mutation: CREATE_USER,
+			name: 'createUser',
+			option: {}
+		},
+		{
+			mutation: UPDATE_USER,
+			name: 'updateUser',
+			options: {}
 		}
-	},
-	{
-		query: GET_ALL_PERMISSIONS_BY_USERID,
-		name: 'getAllPermissionsByUserId',
-		options: props => ({
-			variables: {
-				_id: props.userId || ''
-			},
-			fetchPolicy: 'no-cache'
-		})
-	},
-	{
-		query: GET_ALL_SITES,
-		name: 'getAllSites',
-		options: {}
-	},
-	{
-		query: GET_ALL_PERMISSIONS,
-		name: 'getAllPermissions',
-		options: {}
-	},
-	{
-		query: GET_USER,
-		name: 'getUser',
-		options: props => ({
-			variables: {
-				_id: props.userId || ''
-			}
-		})
-	},
-	{
-		mutation: CREATE_USER,
-		name: 'createUser',
-		option: {}
-	},
-	{
-		mutation: UPDATE_USER,
-		name: 'updateUser',
-		options: {}
-	}
-])(Form.create({ name: 'createUserForm' })(UserModal))
+	])(Form.create({ name: 'createUserForm' })(UserModal))
+)

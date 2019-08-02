@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Row, Button, Alert } from 'antd'
 import gql from 'graphql-tag'
 import { withApollo } from 'react-apollo'
+import { withTranslation } from 'react-i18next'
 import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
 
 const CONFIRM_ORDER = gql`
@@ -51,21 +52,17 @@ const ConfirmButton = props => {
 						if (res) {
 							setAlert(true)
 						} else {
-							openNotificationWithIcon(
-								'error',
-								'alert-confirm',
-								'Alert confirm failed',
-								''
-							)
+							openNotificationWithIcon('error', 'alert-confirm', t('Failed'), '')
 						}
 					})
 					.catch(() => {
-						openNotificationWithIcon('error', 'confirm', 'Confirm failed', '')
+						openNotificationWithIcon('error', 'confirm', t('Failed'), '')
 					})
 			})
 	}
 
 	const time = new Date(Date.now()).getHours()
+	const { t } = props
 	const confirmButton =
 		time > 11 && time < 15 ? (
 			<Button
@@ -74,14 +71,14 @@ const ConfirmButton = props => {
 				style={{ display: 'block', textAlign: 'center', marginTop: 20 }}
 				type="submit"
 			>
-				Xác nhận
+				{t('Confirm')}
 			</Button>
 		) : null
 	return (
 		<React.Fragment>
 			{alert === true ? (
 				<Alert
-					message="Xác nhận thành công"
+					message={t('ConfirmSuccess')}
 					type="success"
 					showIcon
 					closable
@@ -97,4 +94,4 @@ const ConfirmButton = props => {
 	)
 }
 
-export default withApollo(ConfirmButton)
+export default withTranslation('translations')(withApollo(ConfirmButton))
