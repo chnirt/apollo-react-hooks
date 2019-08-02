@@ -268,11 +268,8 @@ function ListDish(props) {
 			</Col>
 			<Modal
 				title="Thêm món ăn"
-				// cancelText="Đóng"
 				visible={visible}
-				// okText="Lưu"
-				// onCancel={() => setVisible(false)}
-				// onOk={addDish}
+				onCancel={() => setVisible(false)}
 				afterClose={() => form.resetFields(['name'])}
 				footer={[
 					<Button

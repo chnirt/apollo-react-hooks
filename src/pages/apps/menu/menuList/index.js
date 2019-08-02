@@ -161,9 +161,8 @@ function MenuList(props) {
 			/>
 			<Modal
 				title="Thêm menu"
-				cancelText="Đóng"
 				visible={visible}
-				okText="Lưu"
+				onCancel={() => setVisible(false)}
 				footer={[
 					<Button
 						key="cancel"
