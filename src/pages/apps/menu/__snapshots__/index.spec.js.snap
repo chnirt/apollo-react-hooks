@@ -13,7 +13,7 @@ exports[`menu correctly 1`] = `
       }
     }
   >
-    Quản lý menu
+    Manage Menu
   </h1>
   <div
     className="menu-list"
