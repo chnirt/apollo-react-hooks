@@ -164,8 +164,6 @@ function MenuList(props) {
 				cancelText="Đóng"
 				visible={visible}
 				okText="Lưu"
-				// onCancel={() => setVisible(false)}
-				// onOk={addMenu}
 				footer={[
 					<Button
 						key="cancel"

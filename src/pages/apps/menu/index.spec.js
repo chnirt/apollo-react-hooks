@@ -1,9 +1,10 @@
 import React from 'react'
 import renderer from 'react-test-renderer'
-import { withTranslation } from 'react-i18next'
+import { I18nextProvider } from 'react-i18next'
 import { MockedProvider } from 'react-apollo/test-utils'
 import gql from 'graphql-tag'
 import Menu from './index'
+import i18n from '../../../tools/i18n'
 
 // eslint-disable-next-line no-undef
 it('menu correctly', () => {
@@ -12,6 +13,7 @@ it('menu correctly', () => {
 			menusBySite(siteId: $siteId) {
 				_id
 				name
+				isPublished
 			}
 		}
 	`
@@ -19,33 +21,39 @@ it('menu correctly', () => {
 		{
 			request: {
 				query: GET_MENUS_BY_SITE,
-				variables: { siteId: 'fcfd3a00-a22e-11e9-9e72-bb7f31d38655' }
+				variables: {
+					siteId: 'fcfd3a00-a22e-11e9-9e72-bb7f31d38655'
+				}
 			},
 			result: {
 				data: {
 					menusBySite: [
 						{
-							_id: '357f4ca0-a861-11e9-ba38-9f9f09ef187f',
-							name: 'Menu Deli 2/4/6'
+							_id: '956fb000-b432-11e9-b65c-637a7533e809',
+							name: 'Sư Vạn Hạnh Test close button',
+							isPublished: false
 						},
 						{
-							_id: '2f7c7b70-add4-11e9-bf32-7f74609da087',
-							name: 'Menu Deli HH 3/5/7'
+							_id: 'd29d8f70-b369-11e9-bfb3-87c4d28033b8',
+							name: 'Menu Hoa Hồng 2/4/6',
+							isPublished: false
 						},
 						{
-							_id: '1c001ec0-add5-11e9-bf32-7f74609da087',
-							name: 'Menu Deli 2/4/6'
+							_id: 'b3658490-b432-11e9-b65c-637a7533e809',
+							name: 'Hoa Hồng Grab Food các ngày 03, 11, 15, 19, 21, 25, 29',
+							isPublished: true
 						}
 					]
 				}
 			}
 		}
 	]
-	const MenuWithI18n = withTranslation(Menu)
 	const menu = renderer
 		.create(
-			<MockedProvider addTypename={false} mocks={mocks}>
-				<MenuWithI18n />
+			<MockedProvider mocks={mocks} addTypename={false}>
+				<I18nextProvider i18n={i18n}>
+					<Menu />
+				</I18nextProvider>
 			</MockedProvider>
 		)
 		.toJSON()
