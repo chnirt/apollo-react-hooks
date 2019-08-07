@@ -28,3 +28,7 @@ yarn-error.log*
 # logs
 package-lock.json
 yarn.lock
+
+# cypress
+/cypress/videos
+/cypress/screenshots

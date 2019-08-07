@@ -1,33 +1,34 @@
 import React, { useState } from 'react'
 import gql from 'graphql-tag'
+import { graphql, compose } from 'react-apollo'
+
 import { Icon, Button, Empty } from 'antd'
-import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation'
+// import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation'
 
 const UserList = ({
 	orderCountIn,
-	mutate,
 	menuId,
 	dishId,
 	dishCount,
 	orderId,
-	getUser
+	getUser,
+	updateOrder
 }) => {
 	const [orderCount, setOrderCount] = useState(orderCountIn)
 	const { user } = getUser
 	const handleChange = type => {
 		if (orderCount <= dishCount) {
-			mutate
-				.updateOrder({
-					mutation: UPDATE_ORDER,
-					variables: {
-						id: orderId[0]._id,
-						input: {
-							menuId,
-							dishId,
-							count: type === 'add' ? orderCount + 1 : orderCount - 1
-						}
+			updateOrder({
+				mutation: UPDATE_ORDER,
+				variables: {
+					id: orderId[0]._id,
+					input: {
+						menuId,
+						dishId,
+						count: type === 'add' ? orderCount + 1 : orderCount - 1
 					}
-				})
+				}
+			})
 				.then(() => {
 					setOrderCount(type === 'add' ? orderCount + 1 : orderCount - 1)
 				})
@@ -86,9 +87,8 @@ const UPDATE_ORDER = gql`
 	}
 `
 
-export default HOCQueryMutation([
-	{
-		query: GET_USER_NAME,
+export default compose(
+	graphql(GET_USER_NAME, {
 		name: 'getUser',
 		options: props => {
 			return {
@@ -97,10 +97,27 @@ export default HOCQueryMutation([
 				}
 			}
 		}
-	},
-	{
-		mutation: UPDATE_ORDER,
-		name: 'updateOrder',
-		option: {}
-	}
-])(UserList)
+	}),
+	graphql(UPDATE_ORDER, {
+		name: 'updateOrder'
+	})
+)(UserList)
+
+// export default HOCQueryMutation([
+// 	{
+// 		query: GET_USER_NAME,
+// 		name: 'getUser',
+// 		options: props => {
+// 			return {
+// 				variables: {
+// 					_id: props.user.userId
+// 				}
+// 			}
+// 		}
+// 	},
+// 	{
+// 		mutation: UPDATE_ORDER,
+// 		name: 'updateOrder',
+// 		option: {}
+// 	}
+// ])(UserList)
