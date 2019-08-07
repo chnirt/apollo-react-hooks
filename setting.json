@@ -1,0 +1,14 @@
+{
+	"viewportWidth": 375,
+	"viewportHeight": 667,
+	"admin": "admin",
+	"password": "12345678",
+	"wait": 1000,
+	"waitdata": 1000,
+	"clearApp": true,
+	"clearInternals": true,
+	"clearCookies": false,
+	"clearLocalStorage": false,
+	"clearSessionStorage": false,
+	"webLink": "http://lunch4test.digihcs.com"
+}
