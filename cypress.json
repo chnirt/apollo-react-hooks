@@ -1,1 +1,9 @@
-{}
+{
+	"baseUrl": "http://lunch4test.digihcs.com",
+	"viewportWidth": 375,
+	"viewportHeight": 667,
+	"video": false,
+	"chromeWebSecurity": false,
+	"waitForAnimations": false,
+	"animationDistanceThreshold": 100
+}
