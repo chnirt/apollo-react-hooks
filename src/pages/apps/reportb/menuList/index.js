@@ -1,14 +1,17 @@
 import React, { useState } from 'react'
 import gql from 'graphql-tag'
+import { withTranslation } from 'react-i18next'
+import { graphql, compose } from 'react-apollo'
+
 import XLSX from 'xlsx'
 import { Collapse, Tooltip, Icon, Button } from 'antd'
-import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation'
-
-import UserList from './UserList'
+// import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation'
+import UserList from './userList'
 
 const { Panel } = Collapse
 
 const MenuList = ({
+	t,
 	menuBySite,
 	getOrdersByMenu,
 	handleCloseMenu,
@@ -105,7 +108,11 @@ const MenuList = ({
 				disabled={!isActive}
 				extra={
 					<>
-						<Tooltip title={menuBySite.isLocked ? 'Unlock menu' : 'Lock menu'}>
+						<Tooltip
+							title={
+								menuBySite.isLocked ? `${t('Unlock')} menu` : `${t('Lock')} menu`
+							}
+						>
 							<Button
 								className="publish style-btn"
 								onClick={e => handleChangeLockState(e, menuBySite._id)}
@@ -122,7 +129,7 @@ const MenuList = ({
 								<Icon type="check" />
 							</Button>
 						</Tooltip>
-						<Tooltip title="Export file">
+						<Tooltip title={`${t('Export')} file`}>
 							<Button
 								className="publish style-btn"
 								disabled={isActive}
@@ -188,19 +195,34 @@ const ME = gql`
 		}
 	}
 `
-
-export default HOCQueryMutation([
-	{
-		query: GET_ORDERS_BY_MENU,
-		name: 'getOrdersByMenu',
-		options: props => ({
-			variables: {
-				menuId: props.menuBySite._id
-			}
+export default withTranslation('translations')(
+	compose(
+		graphql(GET_ORDERS_BY_MENU, {
+			name: 'getOrdersByMenu',
+			options: props => ({
+				variables: {
+					menuId: props.menuBySite._id
+				}
+			})
+		}),
+		graphql(ME, {
+			name: 'me'
 		})
-	},
-	{
-		query: ME,
-		name: 'me'
-	}
-])(MenuList)
+	)(MenuList)
+)
+
+// export default HOCQueryMutation([
+// 	{
+// 		query: GET_ORDERS_BY_MENU,
+// 		name: 'getOrdersByMenu',
+// 		options: props => ({
+// 			variables: {
+// 				menuId: props.menuBySite._id
+// 			}
+// 		})
+// 	},
+// 	{
+// 		query: ME,
+// 		name: 'me'
+// 	}
+// ])(MenuList)

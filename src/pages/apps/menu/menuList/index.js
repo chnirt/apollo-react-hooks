@@ -2,11 +2,11 @@ import React, { useState } from 'react'
 import { Col, Row, Button, Modal, Form, Input, List, Avatar } from 'antd'
 import gql from 'graphql-tag'
 import { withTranslation } from 'react-i18next'
-import { HOCQueryMutation } from '../../../../components/shared/hocQueryAndMutation'
+import { compose, graphql } from 'react-apollo'
 import openNotificationWithIcon from '../../../../components/shared/openNotificationWithIcon'
 
 function MenuList(props) {
-	const { data, form, mutate } = props
+	const { data, form } = props
 	const [visible, setVisible] = useState(false)
 	const [hasPublished, setHasPublished] = useState(false)
 
@@ -15,7 +15,7 @@ function MenuList(props) {
 			title: t('DeleteMenu'),
 			content: t('ConfirmDelete'),
 			onOk: async () => {
-				await mutate
+				await props
 					.deleteMenu({
 						variables: {
 							id
@@ -42,7 +42,7 @@ function MenuList(props) {
 		e.preventDefault()
 		form.validateFieldsAndScroll(async err => {
 			if (!err) {
-				await mutate
+				await props
 					.addMenu({
 						variables: {
 							name: form.getFieldValue('name'),
@@ -91,6 +91,7 @@ function MenuList(props) {
 					backgroundColor: '#fff',
 					borderRadius: '.5em'
 				}}
+				loading={data.loading}
 				dataSource={data.menusBySite}
 				renderItem={menu => {
 					if (menu.isPublished) {
@@ -205,23 +206,18 @@ const DELETE_MENU = gql`
 	}
 `
 
-export default withTranslation('translations')(
-	HOCQueryMutation([
-		{
-			query: GET_MENUS_BY_SITE,
-			options: props => ({
-				variables: {
-					siteId: props.siteId
-				}
-			})
-		},
-		{
-			mutation: ADD_MENU,
-			name: 'addMenu'
-		},
-		{
-			mutation: DELETE_MENU,
-			name: 'deleteMenu'
-		}
-	])(Form.create()(MenuList))
-)
+export default compose(
+	graphql(GET_MENUS_BY_SITE, {
+		options: props => ({
+			variables: {
+				siteId: props.siteId
+			}
+		})
+	}),
+	graphql(ADD_MENU, {
+		name: 'addMenu'
+	}),
+	graphql(DELETE_MENU, {
+		name: 'deleteMenu'
+	})
+)(withTranslation('translations')(Form.create()(MenuList)))
