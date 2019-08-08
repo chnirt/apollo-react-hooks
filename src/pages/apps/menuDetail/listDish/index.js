@@ -12,7 +12,6 @@ import {
 } from 'antd'
 import gql from 'graphql-tag'
 import { compose, graphql } from 'react-apollo'
-import { withTranslation } from 'react-i18next'
 
 import openNotificationWithIcon from '../../../../components/shared/openNotificationWithIcon'
 
@@ -35,26 +34,6 @@ function ListDish(props) {
 
 	const [visible, setVisible] = useState(false)
 	const [hasChange, setHasChange] = useState(false)
-
-	async function deleteDish(dishId) {
-		Modal.confirm({
-			title: t('DeleteDish'),
-			content: t('ConfirmDelete'),
-			onOk: async () => {
-				await props
-					.deleteDish({
-						variables: {
-							id: dishId
-						}
-					})
-					.then(
-						() =>
-							data.refetch(shopId) &&
-							openNotificationWithIcon('success', 'delete', t('Success'), '')
-					)
-			}
-		})
-	}
 
 	async function addDish(e) {
 		e.preventDefault()
@@ -136,6 +115,26 @@ function ListDish(props) {
 						setHasChange(false)
 					})
 			: openNotificationWithIcon('info', 'nochange', t('MenuNoChange'), '')
+	}
+
+	async function deleteDish(dishId) {
+		Modal.confirm({
+			title: t('DeleteDish'),
+			content: t('ConfirmDelete'),
+			onOk: async () => {
+				await props
+					.deleteDish({
+						variables: {
+							id: dishId
+						}
+					})
+					.then(() => {
+						data.refetch(shopId)
+						changeCount(0, dishId)
+						openNotificationWithIcon('success', 'delete', t('Success'), '')
+					})
+			}
+		})
 	}
 
 	const { getFieldDecorator } = form
@@ -372,4 +371,4 @@ export default compose(
 	graphql(UPDATE_MENU, {
 		name: 'updateMenu'
 	})
-)(withTranslation('translations')(Form.create()(ListDish)))
+)(Form.create()(ListDish))

@@ -110,6 +110,7 @@ function MenuDetail(props) {
 				)}
 			</Col>
 			<ListDish
+				{...props}
 				publishAndUnpublish={publishAndUnpublish}
 				menuId={match.params.menuId}
 				shopId={shopId}
