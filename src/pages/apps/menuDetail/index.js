@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { Form, Col, Row, Select, Typography } from 'antd'
 import gql from 'graphql-tag'
+import { compose, graphql } from 'react-apollo'
 import { withTranslation } from 'react-i18next'
-import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation'
 import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
 import ListDish from './listDish'
 
@@ -17,7 +17,7 @@ function MenuDetail(props) {
 
 	async function changeNameMenu(name) {
 		if (name !== menuById.menu.name) {
-			await props.mutate
+			await props
 				.updateMenu({
 					variables: {
 						id: menuId,
@@ -44,7 +44,7 @@ function MenuDetail(props) {
 		if (hasChange) {
 			openNotificationWithIcon('warning', 'notsave', t('ConfirmSaveMenu'), '')
 		} else if (menuById.menu.dishes.length !== 0) {
-			await props.mutate
+			await props
 				.publishAndUnpublish({
 					variables: { id: menuId },
 					refetchQueries: [
@@ -110,6 +110,7 @@ function MenuDetail(props) {
 				)}
 			</Col>
 			<ListDish
+				{...props}
 				publishAndUnpublish={publishAndUnpublish}
 				menuId={match.params.menuId}
 				shopId={shopId}
@@ -157,34 +158,26 @@ const UPDATE_MENU = gql`
 	}
 `
 
-export default withTranslation('translations')(
-	HOCQueryMutation([
-		{
-			query: GET_SHOPS_BY_SITE,
-			options: props => ({
-				variables: {
-					siteId: props.match.params.siteId
-				}
-			})
-		},
-		{
-			query: GET_MENU,
-			options: props => ({
-				variables: {
-					id: props.match.params.menuId
-				}
-			}),
-			name: 'menuById'
-		},
-		{
-			mutation: PUBLISH_UNPUBLISH,
-			name: 'publishAndUnpublish',
-			options: {}
-		},
-		{
-			mutation: UPDATE_MENU,
-			name: 'updateMenu',
-			options: {}
-		}
-	])(Form.create()(MenuDetail))
-)
+export default compose(
+	graphql(GET_SHOPS_BY_SITE, {
+		options: props => ({
+			variables: {
+				siteId: props.match.params.siteId
+			}
+		})
+	}),
+	graphql(GET_MENU, {
+		options: props => ({
+			variables: {
+				id: props.match.params.menuId
+			}
+		}),
+		name: 'menuById'
+	}),
+	graphql(PUBLISH_UNPUBLISH, {
+		name: 'publishAndUnpublish'
+	}),
+	graphql(UPDATE_MENU, {
+		name: 'updateMenu'
+	})
+)(withTranslation('translations')(Form.create()(MenuDetail)))
