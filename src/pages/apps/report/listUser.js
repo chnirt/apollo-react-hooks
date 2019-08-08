@@ -135,12 +135,6 @@ const GET_USER_NAME = gql`
 	}
 `
 
-const ORDER_DISH = gql`
-	mutation orderDish($input: CreateOrderInput!) {
-		orderDish(input: $input)
-	}
-`
-
 const ORDER_BY_MENU = gql`
 	query ordersByMenu($menuId: String!) {
 		ordersByMenu(menuId: $menuId) {
@@ -170,22 +164,6 @@ export default withTranslation('translations')(
 					}
 				}
 			}
-		},
-		{
-			query: ORDER_BY_MENU,
-			name: 'getOrderByMenu',
-			options: props => {
-				return {
-					variables: {
-						menuId: props.menuId
-					}
-				}
-			}
-		},
-		{
-			mutation: ORDER_DISH,
-			name: 'orderDish',
-			option: {}
 		},
 		{
 			mutation: UPDATE_ORDER,
