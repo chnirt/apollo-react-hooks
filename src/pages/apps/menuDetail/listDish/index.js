@@ -31,15 +31,8 @@ function ListDish(props) {
 		} else {
 			setDishes([])
 		}
-		// setDishes(
-		// 	menuById.menu
-		// 		? shopId !== '' && shopId !== menuById.menu.shopId
-		// 			? []
-		// 			: menuById.menu.dishes
-		// 		: []
-		// )
 	}, [shopId])
-	console.log(dishes)
+
 	const [visible, setVisible] = useState(false)
 	const [hasChange, setHasChange] = useState(false)
 
