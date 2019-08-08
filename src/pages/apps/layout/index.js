@@ -7,7 +7,7 @@ import {
 	Avatar,
 	Menu,
 	Dropdown,
-	LocaleProvider
+	ConfigProvider
 } from 'antd'
 import { withApollo } from 'react-apollo'
 import { withRouter } from 'react-router-dom'
@@ -123,7 +123,7 @@ function Layout(props) {
 				WebkitOverflowScrolling: 'touch'
 			}}
 		>
-			<LocaleProvider locale={store.i18nStore.locale}>
+			<ConfigProvider locale={store.i18nStore.locale}>
 				<PageHeader
 					style={{ backgroundColor: 'transparent' }}
 					title={
@@ -197,7 +197,7 @@ function Layout(props) {
 					]}
 					footer={<Divider style={{ margin: '0' }} />}
 				/>
-			</LocaleProvider>
+			</ConfigProvider>
 			<div>{React.cloneElement(children, { siteId: currentsite })}</div>
 		</div>
 	)

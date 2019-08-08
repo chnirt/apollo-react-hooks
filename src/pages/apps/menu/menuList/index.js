@@ -6,7 +6,6 @@ import { compose, graphql } from 'react-apollo'
 import openNotificationWithIcon from '../../../../components/shared/openNotificationWithIcon'
 
 function MenuList(props) {
-	console.log(props)
 	const { data, form } = props
 	const [visible, setVisible] = useState(false)
 	const [hasPublished, setHasPublished] = useState(false)
@@ -92,6 +91,7 @@ function MenuList(props) {
 					backgroundColor: '#fff',
 					borderRadius: '.5em'
 				}}
+				loading={data.loading}
 				dataSource={data.menusBySite}
 				renderItem={menu => {
 					if (menu.isPublished) {

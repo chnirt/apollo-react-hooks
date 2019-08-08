@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
 	Form,
 	Button,
@@ -11,23 +11,35 @@ import {
 	List
 } from 'antd'
 import gql from 'graphql-tag'
+import { compose, graphql } from 'react-apollo'
 import { withTranslation } from 'react-i18next'
 
-import { HOCQueryMutation } from '../../../../components/shared/hocQueryAndMutation'
 import openNotificationWithIcon from '../../../../components/shared/openNotificationWithIcon'
 
 function ListDish(props) {
 	const { form, data, menuById, shopId, menuId, publishAndUnpublish } = props
 
-	const [dishes, setDishes] = useState(
-		// eslint-disable-next-line no-nested-ternary
-		menuById.menu
-			? shopId !== '' && shopId !== menuById.menu.shopId
-				? []
-				: menuById.menu.dishes
-			: []
-	)
+	const [dishes, setDishes] = useState([])
 
+	useEffect(() => {
+		if (menuById.menu) {
+			if (shopId !== '' && shopId !== menuById.menu.shopId) {
+				setDishes([])
+			} else {
+				setDishes(menuById.menu.dishes)
+			}
+		} else {
+			setDishes([])
+		}
+		// setDishes(
+		// 	menuById.menu
+		// 		? shopId !== '' && shopId !== menuById.menu.shopId
+		// 			? []
+		// 			: menuById.menu.dishes
+		// 		: []
+		// )
+	}, [shopId])
+	console.log(dishes)
 	const [visible, setVisible] = useState(false)
 	const [hasChange, setHasChange] = useState(false)
 
@@ -36,7 +48,7 @@ function ListDish(props) {
 			title: t('DeleteDish'),
 			content: t('ConfirmDelete'),
 			onOk: async () => {
-				await props.mutate
+				await props
 					.deleteDish({
 						variables: {
 							id: dishId
@@ -55,7 +67,7 @@ function ListDish(props) {
 		e.preventDefault()
 		form.validateFieldsAndScroll(async err => {
 			if (!err) {
-				props.mutate
+				props
 					.addDish({
 						variables: {
 							name: form.getFieldValue('name'),
@@ -104,7 +116,7 @@ function ListDish(props) {
 	async function updateMenu() {
 		// eslint-disable-next-line no-unused-expressions
 		hasChange
-			? await props.mutate
+			? await props
 					.updateMenu({
 						variables: {
 							id: menuId,
@@ -172,64 +184,17 @@ function ListDish(props) {
 				</Row>
 			</Col>
 			<Col span={22} offset={1} style={{ marginTop: '1em' }} order={3}>
-				{data.dishesByShop.length !== 0 && (
+				{shopId === '' ? (
 					<List
 						style={{
 							padding: '1em',
 							backgroundColor: '#fff',
 							borderRadius: '.5em'
 						}}
+						loading={data.loading}
 						pagination={{
 							pageSize: 6
 						}}
-						header={
-							<Row>
-								<Col span={12}>
-									<b>{t('Dish')}</b>
-								</Col>
-								<Col span={6}>
-									<b>{t('Count')}</b>
-								</Col>
-							</Row>
-						}
-						dataSource={data.dishesByShop}
-						renderItem={dish => (
-							<List.Item
-								actions={[
-									<Icon type="delete" onClick={() => deleteDish(dish._id)} />
-								]}
-							>
-								<Col span={12}>{dish.name}</Col>
-								<Col span={6} style={{ marginRight: '2em' }}>
-									<InputNumber
-										defaultValue={
-											menuById.menu.dishes.findIndex(
-												item => item._id === dish._id
-											) !== -1
-												? menuById.menu.dishes[
-														menuById.menu.dishes.findIndex(
-															item => item._id === dish._id
-														)
-												  ].count
-												: 0
-										}
-										min={0}
-										max={99}
-										onChange={value => changeCount(value, dish._id, dish.name)}
-									/>
-								</Col>
-							</List.Item>
-						)}
-					/>
-				)}
-				{shopId === '' && (
-					<List
-						style={{
-							padding: '1em',
-							backgroundColor: '#fff',
-							borderRadius: '.5em'
-						}}
-						pagination
 						header={
 							<Row>
 								<Col span={12} offset={1}>
@@ -252,6 +217,60 @@ function ListDish(props) {
 							</List.Item>
 						)}
 					/>
+				) : (
+					data.dishesByShop &&
+					(data.dishesByShop.length !== 0 && (
+						<List
+							style={{
+								padding: '1em',
+								backgroundColor: '#fff',
+								borderRadius: '.5em'
+							}}
+							loading={data.loading}
+							pagination={{
+								pageSize: 6
+							}}
+							header={
+								<Row>
+									<Col span={12}>
+										<b>{t('Dish')}</b>
+									</Col>
+									<Col span={6}>
+										<b>{t('Count')}</b>
+									</Col>
+								</Row>
+							}
+							dataSource={data.loading ? [] : data.dishesByShop}
+							renderItem={dish => (
+								<List.Item
+									actions={[
+										<Icon type="delete" onClick={() => deleteDish(dish._id)} />
+									]}
+								>
+									<Col span={12}>{dish.name}</Col>
+									<Col span={6} style={{ marginRight: '2em' }}>
+										<InputNumber
+											key={dish._id}
+											defaultValue={
+												menuById.menu.dishes.findIndex(
+													item => item._id === dish._id
+												) !== -1
+													? menuById.menu.dishes[
+															menuById.menu.dishes.findIndex(
+																item => item._id === dish._id
+															)
+													  ].count
+													: 0
+											}
+											min={0}
+											max={99}
+											onChange={value => changeCount(value, dish._id, dish.name)}
+										/>
+									</Col>
+								</List.Item>
+							)}
+						/>
+					))
 				)}
 			</Col>
 			<Modal
@@ -334,40 +353,30 @@ const UPDATE_MENU = gql`
 	}
 `
 
-export default withTranslation('translations')(
-	HOCQueryMutation([
-		{
-			query: GET_DISHES_BY_SHOP,
-			options: props => ({
-				variables: {
-					shopId: props.shopId
-				},
-				fetchPolicy: 'no-cache'
-			})
-		},
-		{
-			query: GET_MENU,
-			options: props => ({
-				variables: {
-					id: props.menuId
-				}
-			}),
-			name: 'menuById'
-		},
-		{
-			mutation: DELETE_DISH,
-			name: 'deleteDish',
-			options: {}
-		},
-		{
-			mutation: ADD_DISH_TO_SHOP,
-			name: 'addDish',
-			options: {}
-		},
-		{
-			mutation: UPDATE_MENU,
-			name: 'updateMenu',
-			options: {}
-		}
-	])(Form.create()(ListDish))
-)
+export default compose(
+	graphql(GET_DISHES_BY_SHOP, {
+		options: props => ({
+			variables: {
+				shopId: props.shopId
+			},
+			fetchPolicy: 'no-cache'
+		})
+	}),
+	graphql(GET_MENU, {
+		options: props => ({
+			variables: {
+				id: props.menuId
+			}
+		}),
+		name: 'menuById'
+	}),
+	graphql(DELETE_DISH, {
+		name: 'deleteDish'
+	}),
+	graphql(ADD_DISH_TO_SHOP, {
+		name: 'addDish'
+	}),
+	graphql(UPDATE_MENU, {
+		name: 'updateMenu'
+	})
+)(withTranslation('translations')(Form.create()(ListDish)))
