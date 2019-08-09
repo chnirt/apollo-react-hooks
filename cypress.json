@@ -4,6 +4,5 @@
 	"viewportHeight": 667,
 	"video": false,
 	"chromeWebSecurity": false,
-	"waitForAnimations": false,
-	"animationDistanceThreshold": 100
+	"modifyObstructiveCode": false
 }
