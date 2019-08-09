@@ -40,7 +40,7 @@ function MenuDetail(props) {
 		}
 	}
 
-	async function publishAndUnpublish(hasChange) {
+	async function onPublishAndUnpublish(hasChange) {
 		if (hasChange) {
 			openNotificationWithIcon('warning', 'notsave', t('ConfirmSaveMenu'), '')
 		} else if (menuById.menu.dishes.length !== 0) {
@@ -111,7 +111,7 @@ function MenuDetail(props) {
 			</Col>
 			<ListDish
 				{...props}
-				publishAndUnpublish={publishAndUnpublish}
+				publishAndUnpublish={onPublishAndUnpublish}
 				menuId={match.params.menuId}
 				shopId={shopId}
 			/>
