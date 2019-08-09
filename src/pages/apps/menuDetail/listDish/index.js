@@ -113,7 +113,7 @@ function ListDish(props) {
 			: openNotificationWithIcon('info', 'nochange', t('MenuNoChange'), '')
 	}
 
-	async function deleteMenuDish(dishId) {
+	async function deleteDishInMenu(dishId) {
 		const index = dishes.findIndex(item => item._id === dishId)
 		if (index !== -1) {
 			const list = [...dishes.slice(0, index), ...dishes.slice(index + 1)]
@@ -154,7 +154,7 @@ function ListDish(props) {
 					})
 					.then(async () => {
 						data.refetch(shopId)
-						deleteMenuDish(dishId)
+						deleteDishInMenu(dishId)
 						openNotificationWithIcon('success', 'delete', t('Success'), '')
 					})
 			}
