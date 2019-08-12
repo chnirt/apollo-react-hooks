@@ -13,7 +13,7 @@ import {
 import gql from 'graphql-tag'
 import { compose, graphql } from 'react-apollo'
 
-import openNotificationWithIcon from '../../../../components/shared/openNotificationWithIcon'
+import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
 
 function ListDish(props) {
 	const { form, data, menuById, shopId, menuId, publishAndUnpublish } = props

@@ -3,8 +3,8 @@ import gql from 'graphql-tag'
 import { Modal, Form, Input, Select } from 'antd'
 import { withTranslation } from 'react-i18next'
 
-import { HOCQueryMutation } from '../../../../components/shared/hocQueryAndMutation'
-import openNotificationWithIcon from '../../../../components/shared/openNotificationWithIcon'
+import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation'
+import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
 
 const { Option } = Select
 

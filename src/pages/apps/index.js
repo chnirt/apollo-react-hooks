@@ -12,7 +12,7 @@ export default function Root(props) {
 						key={route.label}
 						{...route}
 						component={props1 => {
-							const MyComponent = withLoadable(import(`./${route.component}`))
+							const MyComponent = withLoadable(import(`../${route.component}`))
 							return <MyComponent {...props1} {...route} routes={route.routes} />
 						}}
 					/>

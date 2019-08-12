@@ -14,7 +14,7 @@ import { withRouter } from 'react-router-dom'
 import gql from 'graphql-tag'
 import { withTranslation } from 'react-i18next'
 import { inject, observer } from 'mobx-react'
-import BgDashboard from '../../../assets/images/bg-dashboard.jpg'
+import BgDashboard from '../../assets/images/bg-dashboard.jpg'
 import './index.scss'
 
 const { Option } = Select
@@ -53,11 +53,7 @@ function Layout(props) {
 		ele => ({
 			siteName: ele.siteName,
 			siteId: ele.siteId,
-			permissions: ele.permissions
-				.map(per => per.code)
-				.map(code => code.split('_'))
-				.map(name => name[0])
-				.filter((value, index, arr) => arr.indexOf(value) === index)
+			permissions: ele.sitepermissions
 		})
 	)
 	const currentPage = children.props.location.pathname.slice(4).toUpperCase()

@@ -3,7 +3,7 @@ import { inject, observer } from 'mobx-react'
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom'
 import { routes } from '../routes'
 import withLoadable from '../tools/loadable'
-import Layout from './apps/layout'
+import Layout from './layout'
 
 function Root(props) {
 	const { store } = props

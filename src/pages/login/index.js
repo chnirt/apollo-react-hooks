@@ -159,6 +159,7 @@ const USER_LOGIN = gql`
 			userPermissions {
 				siteId
 				siteName
+				sitepermissions
 				permissions {
 					_id
 					code
