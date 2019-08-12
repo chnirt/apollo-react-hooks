@@ -3,7 +3,7 @@ import { Form, Col, Row, Select, Typography } from 'antd'
 import gql from 'graphql-tag'
 import { compose, graphql } from 'react-apollo'
 import { withTranslation } from 'react-i18next'
-import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
+import openNotificationWithIcon from '../../components/shared/openNotificationWithIcon'
 import ListDish from './listDish'
 
 function MenuDetail(props) {

@@ -5,7 +5,7 @@ import XLSX from 'xlsx'
 import { withTranslation } from 'react-i18next'
 
 import ListUser from './listUser'
-import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation'
+import { HOCQueryMutation } from '../../components/shared/hocQueryAndMutation'
 
 import './index.css'
 

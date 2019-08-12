@@ -3,7 +3,7 @@ import { Row, Button, Alert } from 'antd'
 import gql from 'graphql-tag'
 import { withApollo } from 'react-apollo'
 import { withTranslation } from 'react-i18next'
-import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
+import openNotificationWithIcon from '../../components/shared/openNotificationWithIcon'
 
 const CONFIRM_ORDER = gql`
 	mutation confirmOrder($orderIds: [String]) {

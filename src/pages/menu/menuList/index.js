@@ -3,7 +3,7 @@ import { Col, Row, Button, Modal, Form, Input, List, Avatar } from 'antd'
 import gql from 'graphql-tag'
 import { withTranslation } from 'react-i18next'
 import { compose, graphql } from 'react-apollo'
-import openNotificationWithIcon from '../../../../components/shared/openNotificationWithIcon'
+import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
 
 function MenuList(props) {
 	const { data, form } = props
