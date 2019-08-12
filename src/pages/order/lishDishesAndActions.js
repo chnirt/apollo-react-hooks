@@ -5,7 +5,7 @@ import gql from 'graphql-tag'
 import { withApollo } from 'react-apollo'
 import { withTranslation } from 'react-i18next'
 
-import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
+import openNotificationWithIcon from '../../components/shared/openNotificationWithIcon'
 import NoteForm from './noteForm'
 import ConfirmButton from './comfirmButton'
 

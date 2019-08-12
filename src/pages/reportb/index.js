@@ -2,7 +2,7 @@ import React from 'react'
 import gql from 'graphql-tag'
 import { graphql, compose } from 'react-apollo'
 
-import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
+import openNotificationWithIcon from '../../components/shared/openNotificationWithIcon'
 // import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation'
 import MenuList from './menuList'
 import './index.scss'

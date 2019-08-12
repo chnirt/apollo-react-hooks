@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Icon, Col, Row, Card, Typography } from 'antd'
 import { withTranslation } from 'react-i18next'
-import { menuRoutes } from '../../../routes'
+import { menuRoutes } from '../../routes'
 
 const { Title } = Typography
 
