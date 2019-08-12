@@ -9,7 +9,7 @@ import { getMainDefinition } from 'apollo-utilities'
 import store from '../mobx'
 
 const domain = 'devcloud3.digihcs.com'
-const port = '11098'
+const port = process.env.REACT_APP_BE_PORT || 11048
 const end_point = 'graphql'
 
 const urn = process.env.REACT_APP_GRAPHQL_URN || `${domain}:${port}/${end_point}`
@@ -21,7 +21,10 @@ const httpLink = new HttpLink({
 const wsLink = new WebSocketLink({
 	uri: `ws://${urn}`,
 	options: {
-		reconnect: true
+		// reconnect: true
+		connectionParams: () => ({
+			token: window.localStorage.getItem('access-token') || ''
+		})
 	}
 })
 
@@ -58,15 +61,11 @@ const errorLink = new OnError(({ graphQLErrors, networkError, operation }) => {
 })
 
 const authLink = setContext((_, { headers }) => {
-	// get the authentication token from local storage if it exists
-	const token = window.localStorage.getItem('access-token')
-	const currentsite = window.localStorage.getItem('currentsite')
 	// return the headers to the context so httpLink can read them
 	return {
 		headers: {
 			...headers,
-			token: token || '',
-			currentsite: currentsite || ''
+			token: window.localStorage.getItem('access-token') || ''
 		}
 	}
 })

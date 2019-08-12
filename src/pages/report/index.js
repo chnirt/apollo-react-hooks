@@ -2,9 +2,9 @@ import React from 'react'
 import gql from 'graphql-tag'
 import { withTranslation } from 'react-i18next'
 
-import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
+import openNotificationWithIcon from '../../components/shared/openNotificationWithIcon'
 import ListMenu from './listMenu'
-import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation'
+import { HOCQueryMutation } from '../../components/shared/hocQueryAndMutation'
 
 import './index.css'
 
