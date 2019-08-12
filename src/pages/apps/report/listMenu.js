@@ -12,15 +12,12 @@ import './index.css'
 const { Panel } = Collapse
 
 class listMenu extends React.Component {
-	state = {
-		isActive: false
-	}
-
 	// changeActive = () => {
 	// 	this.setState(prevState => ({ isActive: !prevState.isActive }))
 	// }
 
-	export(menu) {
+	export(e, menu) {
+		e.stopPropagation()
 		const dishes = []
 		const { getOrderByMenu, me } = this.props
 
@@ -103,7 +100,7 @@ class listMenu extends React.Component {
 			t: 'n',
 			f: `SUM(D3:D${dishes.length - 3})` || 0
 		}
-		console.log(ws)
+		// console.log(ws)
 
 		XLSX.utils.book_append_sheet(wb, ws, 'Sheet1')
 		XLSX.writeFile(wb, `${menu.name}.xlsx`, {
@@ -114,7 +111,6 @@ class listMenu extends React.Component {
 
 	render() {
 		const { menu, isLock, isActiveProps, getOrderByMenu, menuId } = this.props
-		const { isActive } = this.state
 		return (
 			<Collapse className="open-menu">
 				<Panel
@@ -124,9 +120,6 @@ class listMenu extends React.Component {
 								<Button
 									className="publish style-btn lock-menu"
 									onClick={e => {
-										this.setState(prevState => ({
-											isActive: !prevState.isActive
-										}))
 										isLock(e, menu._id)
 									}}
 								>
@@ -138,7 +131,7 @@ class listMenu extends React.Component {
 								<Button
 									className="publish style-btn complete-menu"
 									onClick={e => isActiveProps(e, menu._id)}
-									disabled={!isActive}
+									disabled={!menu.isLocked}
 								>
 									<Icon type="check" />
 								</Button>
@@ -147,8 +140,8 @@ class listMenu extends React.Component {
 							<Tooltip title="Request menu">
 								<Button
 									className="publish style-btn request-menu"
-									onClick={() => this.export(menu)}
-									disabled={!isActive}
+									onClick={e => this.export(e, menu)}
+									disabled={!menu.isLocked}
 								>
 									<Icon type="file-excel" />
 								</Button>
@@ -194,34 +187,6 @@ class listMenu extends React.Component {
 	}
 }
 
-const GET_MENU_BY_SITE = gql`
-	query menusBySite($siteId: String!) {
-		menusBySite(siteId: $siteId) {
-			_id
-			name
-			isActive
-			isLocked
-			dishes {
-				name
-				count
-				_id
-			}
-		}
-	}
-`
-
-const LOCK_AND_UNLOCK_MENU = gql`
-	mutation lockAndUnlockMenu($id: String!) {
-		lockAndUnlockMenu(id: $id)
-	}
-`
-
-const CLOSE_MENU = gql`
-	mutation closeMenu($id: String!) {
-		closeMenu(id: $id)
-	}
-`
-
 const ORDER_BY_MENU = gql`
 	query ordersByMenu($menuId: String!) {
 		ordersByMenu(menuId: $menuId) {
@@ -245,17 +210,6 @@ const ME = gql`
 export default withTranslation('translations')(
 	HOCQueryMutation([
 		{
-			query: GET_MENU_BY_SITE,
-			name: 'getMenuBySite',
-			options: () => {
-				return {
-					variables: {
-						siteId: localStorage.getItem('currentsite')
-					}
-				}
-			}
-		},
-		{
 			query: ORDER_BY_MENU,
 			name: 'getOrderByMenu',
 			options: props => {
@@ -269,16 +223,6 @@ export default withTranslation('translations')(
 		{
 			query: ME,
 			name: 'me'
-		},
-		{
-			mutation: LOCK_AND_UNLOCK_MENU,
-			name: 'lockAndUnLockMenu',
-			option: {}
-		},
-		{
-			mutation: CLOSE_MENU,
-			name: 'closeMenu',
-			option: {}
 		}
 	])(listMenu)
 )

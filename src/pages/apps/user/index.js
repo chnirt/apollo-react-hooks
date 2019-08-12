@@ -103,15 +103,19 @@ function User(props) {
 			<Row>
 				<Card
 					title={
-						<Title style={{ color: '#ffffff' }} level={3}>
-							{t('Manage User')}
-						</Title>
+						<div>
+							<Title style={{ color: '#ffffff' }} level={3}>
+								{t('Manage User')}
+							</Title>
+						</div>
 					}
 					bordered={false}
 					extra={
-						<Button type="primary" block onClick={() => showModal()}>
-							{t('Add user')}
-						</Button>
+						<div>
+							<Button type="primary" block onClick={() => showModal()}>
+								{t('Add user')}
+							</Button>
+						</div>
 					}
 					headStyle={{
 						border: 0
