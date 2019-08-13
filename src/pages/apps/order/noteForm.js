@@ -90,4 +90,4 @@ class NoteForm extends React.Component {
 	}
 }
 
-export default withTranslation('translations')(NoteForm)
+export default React.forwardRef(withTranslation('translations')(NoteForm))
