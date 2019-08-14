@@ -1,3 +1,4 @@
+/* eslint-disable react/destructuring-assignment */
 import React from 'react'
 import { Button, Modal, Input, Form, Checkbox } from 'antd'
 
@@ -11,9 +12,7 @@ class NoteForm extends React.Component {
 	}
 
 	componentDidMount() {
-		// eslint-disable-next-line react/destructuring-assignment
 		if (this.props.refForm) {
-			// eslint-disable-next-line react/destructuring-assignment
 			this.props.refForm(this.props.form)
 		}
 	}
@@ -60,12 +59,9 @@ class NoteForm extends React.Component {
 							rules: [{ required: false, message: t('order.Input note') }],
 							// eslint-disable-next-line react/destructuring-assignment
 							initialValue:
-								// eslint-disable-next-line react/destructuring-assignment
 								this.state.extraRice !== ''
-									? // eslint-disable-next-line react/destructuring-assignment
-									  this.state.extraRice
-									: // eslint-disable-next-line react/destructuring-assignment
-									  this.props.noted
+									? this.state.extraRice
+									: this.props.noted
 						})(
 							<Input.TextArea
 								id="orderNoteInput"
