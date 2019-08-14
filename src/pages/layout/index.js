@@ -172,7 +172,7 @@ function Layout(props) {
 							trigger={['click']}
 							placement="bottomCenter"
 						>
-							<span style={{ color: '#fff' }}>
+							<span style={{ color: '#fff', cursor: 'pointer' }}>
 								{window.localStorage.getItem('i18nextLng') === 'vi'
 									? 'VI'
 									: 'EN'}

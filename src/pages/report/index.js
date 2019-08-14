@@ -139,8 +139,7 @@ export default withTranslation('translations')(
 				return {
 					variables: {
 						siteId: window.localStorage.getItem('currentsite')
-					},
-					fetchPolicy: 'no-cache'
+					}
 				}
 			}
 		},
