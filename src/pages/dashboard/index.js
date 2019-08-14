@@ -18,7 +18,6 @@ function Dashboard(props) {
 	const [currentsite] = useState(window.localStorage.getItem('currentsite'))
 
 	const { t } = props
-	console.log(props)
 	return (
 		<>
 			<Row
