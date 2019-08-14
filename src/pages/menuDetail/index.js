@@ -35,14 +35,19 @@ function MenuDetail(props) {
 					]
 				})
 				.then(() => {
-					openNotificationWithIcon('success', 'save', t('Success'), '')
+					openNotificationWithIcon('success', 'save', t('common.Success'), '')
 				})
 		}
 	}
 
 	async function onPublishAndUnpublish(hasChange) {
 		if (hasChange) {
-			openNotificationWithIcon('warning', 'notsave', t('ConfirmSaveMenu'), '')
+			openNotificationWithIcon(
+				'warning',
+				'notsave',
+				t('menu.ConfirmSaveMenu'),
+				''
+			)
 		} else if (menuById.menu.dishes.length !== 0) {
 			await props
 				.publishAndUnpublish({
@@ -63,18 +68,13 @@ function MenuDetail(props) {
 						'success',
 						'publish',
 						menuById.menu && menuById.menu.isPublished
-							? t('UnPublishedMenu')
-							: t('PublishedMenu'),
+							? t('menu.UnPublishedMenu')
+							: t('menu.PublishedMenu'),
 						''
 					)
 				})
 		} else {
-			openNotificationWithIcon(
-				'error',
-				'publishfail',
-				'Menu không có món ăn để công khai',
-				''
-			)
+			openNotificationWithIcon('error', 'publishfail', t('menu.MenuNoDish'), '')
 		}
 	}
 
@@ -95,7 +95,7 @@ function MenuDetail(props) {
 				{getFieldDecorator('shop')(
 					<Select
 						onChange={changeShop}
-						placeholder={t('SelectShop')}
+						placeholder={t('menu.SelectShop')}
 						style={{ width: '100%' }}
 						disabled={menuById.menu && menuById.menu.isPublished}
 					>

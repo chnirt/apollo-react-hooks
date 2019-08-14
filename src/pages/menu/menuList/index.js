@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { Col, Row, Button, Modal, Form, Input, List, Avatar } from 'antd'
 import gql from 'graphql-tag'
-import { withTranslation } from 'react-i18next'
 import { compose, graphql } from 'react-apollo'
 import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
 
@@ -12,8 +11,8 @@ function MenuList(props) {
 
 	async function deleteMenu(id) {
 		Modal.confirm({
-			title: t('DeleteMenu'),
-			content: t('ConfirmDelete'),
+			title: t('menu.DeleteMenu'),
+			content: t('common.ConfirmDelete'),
 			onOk: async () => {
 				await props
 					.deleteMenu({
@@ -32,7 +31,12 @@ function MenuList(props) {
 					.then(
 						res =>
 							res &&
-							openNotificationWithIcon('success', 'delete', t('Success'), '')
+							openNotificationWithIcon(
+								'success',
+								'delete',
+								t('common.Success'),
+								''
+							)
 					)
 			}
 		})
@@ -59,7 +63,12 @@ function MenuList(props) {
 					})
 					.then(res => {
 						if (res) {
-							openNotificationWithIcon('success', 'add', t('AddMenuSuccess'), '')
+							openNotificationWithIcon(
+								'success',
+								'add',
+								t('menu.AddMenuSuccess'),
+								''
+							)
 							form.resetFields()
 							setVisible(false)
 						}
@@ -78,7 +87,7 @@ function MenuList(props) {
 					icon="plus"
 					onClick={() => setVisible(true)}
 				>
-					{t('Add menu')}
+					{t('menu.Add menu')}
 				</Button>
 			</Row>
 			<List
@@ -151,7 +160,7 @@ function MenuList(props) {
 				}}
 			/>
 			<Modal
-				title={t('Add menu')}
+				title={t('menu.Add menu')}
 				visible={visible}
 				onCancel={() => setVisible(false)}
 				footer={[
@@ -161,10 +170,10 @@ function MenuList(props) {
 						onClick={() => setVisible(false)}
 						name="cancelAddMenu"
 					>
-						{t('Cancel')}
+						{t('common.Cancel')}
 					</Button>,
 					<Button key="save" type="primary" onClick={addMenu} name="addMenu">
-						{t('Add')}
+						{t('common.Add')}
 					</Button>
 				]}
 			>
@@ -173,9 +182,11 @@ function MenuList(props) {
 						<Col span={20} offset={2}>
 							<Form.Item>
 								{getFieldDecorator('name', {
-									rules: [{ required: true, message: t('Input menu name') }],
+									rules: [
+										{ required: true, message: t('menu.Input menu name') }
+									],
 									initialValue: ''
-								})(<Input placeholder={t('Input menu name')} />)}
+								})(<Input placeholder={t('menu.Input menu name')} />)}
 							</Form.Item>
 						</Col>
 					</Row>
@@ -220,4 +231,4 @@ export default compose(
 	graphql(DELETE_MENU, {
 		name: 'deleteMenu'
 	})
-)(withTranslation('translations')(Form.create()(MenuList)))
+)(Form.create()(MenuList))

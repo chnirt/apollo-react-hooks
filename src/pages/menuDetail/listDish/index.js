@@ -53,7 +53,7 @@ function ListDish(props) {
 							openNotificationWithIcon(
 								'success',
 								'delete',
-								t('AddDishSuccess'),
+								t('menu.AddDishSuccess'),
 								''
 							)
 						}
@@ -107,10 +107,10 @@ function ListDish(props) {
 						]
 					})
 					.then(() => {
-						openNotificationWithIcon('success', 'save', t('Success'), '')
+						openNotificationWithIcon('success', 'save', t('common.Success'), '')
 						setHasChange(false)
 					})
-			: openNotificationWithIcon('info', 'nochange', t('MenuNoChange'), '')
+			: openNotificationWithIcon('info', 'nochange', t('menu.MenuNoChange'), '')
 	}
 
 	async function deleteDishInMenu(dishId) {
@@ -155,7 +155,12 @@ function ListDish(props) {
 					.then(async () => {
 						data.refetch(shopId)
 						deleteDishInMenu(dishId)
-						openNotificationWithIcon('success', 'delete', t('Success'), '')
+						openNotificationWithIcon(
+							'success',
+							'delete',
+							t('common.Success'),
+							''
+						)
 					})
 			}
 		})
@@ -175,7 +180,7 @@ function ListDish(props) {
 						onClick={() => setVisible(true)}
 						hidden={shopId === ''}
 					>
-						{t('AddDish')}
+						{t('menu.AddDish')}
 					</Button>
 					<Button
 						name="btnSaveMenu"
@@ -186,7 +191,7 @@ function ListDish(props) {
 							shopId === '' || (menuById.menu && menuById.menu.isPublished)
 						}
 					>
-						{t('Save')}
+						{t('common.Save')}
 					</Button>
 					<Button
 						name="btnPublishMenu"
@@ -194,8 +199,8 @@ function ListDish(props) {
 						onClick={() => publishAndUnpublish(hasChange)}
 					>
 						{menuById.menu && menuById.menu.isPublished
-							? t('UnPublish')
-							: t('Publish')}
+							? t('menu.UnPublish')
+							: t('menu.Publish')}
 					</Button>
 				</Row>
 			</Col>
@@ -214,10 +219,10 @@ function ListDish(props) {
 						header={
 							<Row>
 								<Col span={12} offset={1}>
-									<b>{t('Dish')}</b>
+									<b>{t('menu.Dish')}</b>
 								</Col>
 								<Col span={6} offset={1}>
-									<b>{t('Count')}</b>
+									<b>{t('menu.Count')}</b>
 								</Col>
 							</Row>
 						}
@@ -249,10 +254,10 @@ function ListDish(props) {
 							header={
 								<Row>
 									<Col span={12}>
-										<b>{t('Dish')}</b>
+										<b>{t('menu.Dish')}</b>
 									</Col>
 									<Col span={6}>
-										<b>{t('Count')}</b>
+										<b>{t('menu.Count')}</b>
 									</Col>
 								</Row>
 							}
@@ -290,7 +295,7 @@ function ListDish(props) {
 				)}
 			</Col>
 			<Modal
-				title={t('Add')}
+				title={t('common.Add')}
 				visible={visible}
 				onCancel={() => setVisible(false)}
 				afterClose={() => form.resetFields(['name'])}
@@ -301,10 +306,10 @@ function ListDish(props) {
 						onClick={() => setVisible(false)}
 						name="cancelAddDish"
 					>
-						{t('Cancel')}
+						{t('common.Cancel')}
 					</Button>,
 					<Button key="save" type="primary" onClick={addDish} name="addDish">
-						{t('Add')}
+						{t('common.Add')}
 					</Button>
 				]}
 			>
@@ -313,9 +318,9 @@ function ListDish(props) {
 						<Col span={20} offset={2}>
 							<Form.Item>
 								{getFieldDecorator('name', {
-									rules: [{ required: true, message: t('InputDish') }],
+									rules: [{ required: true, message: t('menu.InputDish') }],
 									initialValue: ''
-								})(<Input placeholder={t('InputDish')} />)}
+								})(<Input placeholder={t('menu.InputDish')} />)}
 							</Form.Item>
 						</Col>
 					</Row>
