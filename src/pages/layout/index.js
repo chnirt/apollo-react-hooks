@@ -182,7 +182,7 @@ function Layout(props) {
 					footer={<Divider style={{ margin: '0' }} />}
 				/>
 			</ConfigProvider>
-			{React.cloneElement(children, { siteId: currentsite })}
+			{React.cloneElement(children, { currentsite })}
 		</div>
 	)
 }

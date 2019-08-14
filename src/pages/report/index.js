@@ -70,6 +70,7 @@ class Report extends React.Component {
 
 	render() {
 		const { getMenuBySite } = this.props
+		console.log(this.props)
 		return (
 			<React.Fragment>
 				<div className="report">

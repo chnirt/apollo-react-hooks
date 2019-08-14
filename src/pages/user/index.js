@@ -144,8 +144,6 @@ function User(props) {
 	const { getUsers, t } = props
 	const { users } = getUsers
 
-	console.log(props)
-
 	return (
 		<>
 			<Row>
