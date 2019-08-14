@@ -1,63 +1,32 @@
 import React, { useState } from 'react'
 import { Row, Button, Alert } from 'antd'
 import gql from 'graphql-tag'
-import { withApollo } from 'react-apollo'
-import { withTranslation } from 'react-i18next'
+import { graphql, compose } from 'react-apollo'
 import openNotificationWithIcon from '../../components/shared/openNotificationWithIcon'
 
-const CONFIRM_ORDER = gql`
-	mutation confirmOrder($orderIds: [String]) {
-		confirmOrder(orderIds: $orderIds)
-	}
-`
-
-const ORDERS_BY_USER = gql`
-	query ordersByUser($menuId: String!) {
-		ordersByUser(menuId: $menuId) {
-			_id
-			userId
-			menuId
-			dishId
-			note
-			count
-			isConfirmed
-			createdAt
-			updatedAt
-		}
-	}
-`
-
-const ConfirmButton = props => {
+function ConfirmButton(props) {
 	const [alert, setAlert] = useState(false)
 
-	async function handleConfirmOrder() {
-		await props.client
-			.query({
-				query: ORDERS_BY_USER,
+	function handleConfirmOrder() {
+		const thisOrderIds = []
+		// eslint-disable-next-line no-unused-expressions
+		props.ordersByUser &&
+			props.ordersByUser.ordersByUser.map(order => thisOrderIds.push(order._id))
+		props
+			.confirmOrder({
 				variables: {
-					menuId: props.menuId
+					orderIds: thisOrderIds
 				}
 			})
-			.then(async result => {
-				const thisOrderIds = []
-				await result.data.ordersByUser.map(order => thisOrderIds.push(order._id))
-				await props.client
-					.mutate({
-						mutation: CONFIRM_ORDER,
-						variables: {
-							orderIds: thisOrderIds
-						}
-					})
-					.then(res => {
-						if (res) {
-							setAlert(true)
-						} else {
-							openNotificationWithIcon('error', 'alert-confirm', t('Failed'), '')
-						}
-					})
-					.catch(() => {
-						openNotificationWithIcon('error', 'confirm', t('Failed'), '')
-					})
+			.then(res => {
+				if (res) {
+					setAlert(true)
+				} else {
+					openNotificationWithIcon('error', 'alert-confirm', t('Failed'), '')
+				}
+			})
+			.catch(() => {
+				openNotificationWithIcon('error', 'confirm', t('Failed'), '')
 			})
 	}
 
@@ -68,7 +37,12 @@ const ConfirmButton = props => {
 			<Button
 				onClick={handleConfirmOrder}
 				id="confirm-order"
-				style={{ display: 'block', textAlign: 'center', marginTop: 20 }}
+				style={{
+					display: 'block',
+					textAlign: 'center',
+					marginTop: 20,
+					marginBottom: 20
+				}}
 				type="submit"
 			>
 				{t('Confirm')}
@@ -94,4 +68,39 @@ const ConfirmButton = props => {
 	)
 }
 
-export default withTranslation('translations')(withApollo(ConfirmButton))
+const CONFIRM_ORDER = gql`
+	mutation confirmOrder($orderIds: [String]) {
+		confirmOrder(orderIds: $orderIds)
+	}
+`
+
+const ORDERS_BY_USER = gql`
+	query ordersByUser($menuId: String!) {
+		ordersByUser(menuId: $menuId) {
+			_id
+			userId
+			menuId
+			dishId
+			note
+			count
+			isConfirmed
+			createdAt
+			updatedAt
+		}
+	}
+`
+
+export default compose(
+	graphql(ORDERS_BY_USER, {
+		name: 'ordersByUser',
+		skip: props => !props.menuId,
+		options: props => ({
+			variables: {
+				menuId: props.menuId
+			}
+		})
+	}),
+	graphql(CONFIRM_ORDER, {
+		name: 'confirmOrder'
+	})
+)(ConfirmButton)
