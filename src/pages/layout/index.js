@@ -192,6 +192,7 @@ const ME = gql`
 		me {
 			username
 			fullName
+			_id
 		}
 	}
 `

@@ -22,11 +22,7 @@ const ORDER_DISH = gql`
 			userId
 			menuId
 			dishId
-			note
 			count
-			isConfirmed
-			createdAt
-			updatedAt
 		}
 	}
 `
@@ -47,9 +43,23 @@ const ORDER_SUBSCRIPTION = gql`
 		isUpdated
 	}
 `
+
+const GET_DATA_ORDER_SUBSCRIPTION = gql`
+	subscription {
+		isUpdatedOrder {
+			menuId
+			dishId
+			orderQuantityNow
+			impactUserId
+			OrderQuantityOfImpactUser
+		}
+	}
+`
+
 export {
 	GET_MENU_PUBLISH_BY_SITE_ID,
 	GET_MENU_ORDERS,
 	ORDER_DISH,
-	ORDER_SUBSCRIPTION
+	ORDER_SUBSCRIPTION,
+	GET_DATA_ORDER_SUBSCRIPTION
 }

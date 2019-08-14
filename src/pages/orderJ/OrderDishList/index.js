@@ -4,36 +4,42 @@ import { graphql, compose } from 'react-apollo'
 import {
 	GET_MENU_ORDERS,
 	ORDER_DISH,
-	ORDER_SUBSCRIPTION
+	GET_DATA_ORDER_SUBSCRIPTION
+	// ORDER_SUBSCRIPTION
 } from '../query/queryOrder'
 import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
 
 function OrderDishList(props) {
-	const { disabled, getMenu, siteId, orderJDish, orderJUpdated } = props
+	const { disabled, getMenu, orderJDish, isUpdatedOrder, userId } = props
 
 	const dishes = getMenu && getMenu.menuOrderJ ? getMenu.menuOrderJ.dishes : []
 
-	const [isLoading, setIsLoading] = useState(false)
+	if (isUpdatedOrder && isUpdatedOrder.isUpdatedOrder) {
+		// nhận được dâta pubsub
+		if (getMenu && getMenu.menuOrderJ) {
+			if (isUpdatedOrder.isUpdatedOrder.menuId === getMenu.menuOrderJ.menuId) {
+				// data nhận được trên cùng menu này
+				const dish = dishes.find(
+					obj => obj.dishId === isUpdatedOrder.isUpdatedOrder.dishId
+				)
 
-	if (siteId && orderJUpdated.isUpdated) {
-		// có update order thì refetch data
-		getMenu
-			.refetch({
-				siteId
-			})
-			.then(() => {})
-			.catch(err => {
-				const errors = err.graphQLErrors.map(error => error.message)
-				openNotificationWithIcon('error', 'failed', 'Failed', errors[0])
-			})
+				if (userId === isUpdatedOrder.isUpdatedOrder.impactUserId) {
+					// nếu user là người tác động nên sự kiện này thì cập nhật lại số lượng order của user
+					dish.MyOrderQuantity =
+						isUpdatedOrder.isUpdatedOrder.OrderQuantityOfImpactUser
+				}
+
+				dish.orderQuantityNow = isUpdatedOrder.isUpdatedOrder.orderQuantityNow
+				// Cập nhật tổng order
+			}
+		}
 	}
 
+	const [isLoading, setIsLoading] = useState(false)
+
 	function onClickUpdate(dishId, action) {
-		setIsLoading(true)
-
-		// const dish = Object.create(dishes.find(_dish => _dish.dishId === dishId))
-
-		const dish = { ...dishes.find(_dish => _dish.dishId === dishId) }
+		const dishRef = dishes.find(_dish => _dish.dishId === dishId)
+		const dish = { ...dishRef }
 
 		if (action === 'up') {
 			if (dish.orderQuantityNow === dish.orderQuantityMax) {
@@ -43,18 +49,17 @@ function OrderDishList(props) {
 					'Failed',
 					`Món này chỉ có tối đa ${dish.orderQuantityMax} phần!`
 				)
-				setIsLoading(false)
 				return
 			}
 			dish.MyOrderQuantity += 1
 		} else {
 			if (dish.MyOrderQuantity === 0) {
-				setIsLoading(false)
 				return
 			}
 			dish.MyOrderQuantity -= 1
 		}
 
+		setIsLoading(true)
 		orderJDish({
 			mutation: ORDER_DISH,
 			variables: {
@@ -162,8 +167,13 @@ export default compose(
 		name: 'orderJDish'
 	}),
 
-	graphql(ORDER_SUBSCRIPTION, {
-		name: 'orderJUpdated',
+	// graphql(ORDER_SUBSCRIPTION, {
+	// 	name: 'orderJUpdated',
+	// 	skip: props => !props.siteId
+	// })
+
+	graphql(GET_DATA_ORDER_SUBSCRIPTION, {
+		name: 'isUpdatedOrder',
 		skip: props => !props.siteId
 	})
 )(OrderDishList)

@@ -7,7 +7,8 @@ function orderJ(props) {
 	const { currentsite } = props
 	const siteId = currentsite
 
-	console.log(props)
+	const { me } = props
+	const userId = me._id || ''
 
 	const LAYOUT = {
 		xs: { span: 24, offset: 0 },
@@ -22,7 +23,7 @@ function orderJ(props) {
 			<div style={{ margin: '0px 20px 0px 20px' }}>
 				<Row>
 					<Col {...LAYOUT}>
-						<OrderDishList siteId={siteId} />
+						<OrderDishList siteId={siteId} userId={userId} />
 					</Col>
 				</Row>
 			</div>
