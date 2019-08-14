@@ -3,7 +3,7 @@ import { Icon, Button } from 'antd'
 import gql from 'graphql-tag'
 import { withTranslation } from 'react-i18next'
 
-import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation'
+import { HOCQueryMutation } from '../../components/shared/hocQueryAndMutation'
 import './index.css'
 
 class listUser extends React.Component {

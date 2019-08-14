@@ -4,7 +4,6 @@ import {
 	Select,
 	PageHeader,
 	Icon,
-	Avatar,
 	Menu,
 	Dropdown,
 	ConfigProvider
@@ -14,8 +13,7 @@ import { withRouter } from 'react-router-dom'
 import gql from 'graphql-tag'
 import { withTranslation } from 'react-i18next'
 import { inject, observer } from 'mobx-react'
-import BgDashboard from '../../../assets/images/bg-dashboard.jpg'
-import './index.scss'
+import BgDashboard from '../../assets/images/bg-dashboard.jpg'
 
 const { Option } = Select
 function Layout(props) {
@@ -49,17 +47,15 @@ function Layout(props) {
 		setCurrentsite(value)
 		window.localStorage.setItem('currentsite', value)
 	}
+
 	const userPers = JSON.parse(localStorage.getItem('user-permissions')).map(
 		ele => ({
 			siteName: ele.siteName,
 			siteId: ele.siteId,
-			permissions: ele.permissions
-				.map(per => per.code)
-				.map(code => code.split('_'))
-				.map(name => name[0])
-				.filter((value, index, arr) => arr.indexOf(value) === index)
+			permissions: ele.sitepermissions
 		})
 	)
+
 	const currentPage = children.props.location.pathname.slice(4).toUpperCase()
 
 	const sitesHasPermission = userPers.filter(
@@ -82,8 +78,8 @@ function Layout(props) {
 		</Menu>
 	)
 
-	function changeLocale(key) {
-		// console.log(key)
+	function changeLocale({ key }) {
+		console.log(key)
 		if (key === 'vi') {
 			props.i18n.changeLanguage('vi')
 			props.store.i18nStore.changeLanguage('vi')
@@ -92,23 +88,41 @@ function Layout(props) {
 			props.store.i18nStore.changeLanguage('en')
 		}
 	}
+	// ;<Select
+	// 	key="3"
+	// 	showArrow={false}
+	// 	defaultValue={
+	// 		window.localStorage.getItem('i18nextLng') === 'vi' ? 'vi' : 'en'
+	// 	}
+	// 	onChange={changeLocale}
+	// 	style={{ width: 42, backgroundColor: 'transparent' }}
+	// >
+	// 	<Option key="vi" value="vi">
+	// 		<span role="img" aria-label="vi">
+	// 			🇻🇳
+	// 		</span>
+	// 	</Option>
+	// 	<Option key="en" value="en">
+	// 		<span role="img" aria-label="en">
+	// 			🇬🇧
+	// 		</span>
+	// 	</Option>
+	// </Select>
 
-	// const languages = (
-	// 	<Menu onClick={changeLocale}>
-	// 		<Menu.Item key="vi">
-	// 			<span role="img" aria-label="vi">
-	// 				🇻🇳
-	// 			</span>
-	// 			<span> Việt Nam</span>
-	// 		</Menu.Item>
-	// 		<Menu.Item key="en">
-	// 			<span role="img" aria-label="gb">
-	// 				🇬🇧
-	// 			</span>
-	// 			<span> English</span>
-	// 		</Menu.Item>
-	// 	</Menu>
-	// )
+	const languages = (
+		<Menu onClick={changeLocale}>
+			<Menu.Item key="vi" value="vi">
+				<span role="img" aria-label="vi">
+					🇻🇳
+				</span>
+			</Menu.Item>
+			<Menu.Item key="en" value="en">
+				<span role="img" aria-label="en">
+					🇬🇧
+				</span>
+			</Menu.Item>
+		</Menu>
+	)
 	const { store } = props
 	return (
 		<div
@@ -137,8 +151,8 @@ function Layout(props) {
 					backIcon={<Icon type="arrow-left" style={{ color: '#ffffff' }} />}
 					extra={[
 						<Select
-							disabled={children.props.location.pathname.split('/').length > 3}
 							key="1"
+							disabled={children.props.location.pathname.split('/').length > 3}
 							defaultValue={currentsite}
 							style={{ width: '10em', marginRight: '.5em' }}
 							onChange={handleChange}
@@ -157,43 +171,35 @@ function Layout(props) {
 										</Option>
 								  ))}
 						</Select>,
-						<Dropdown key="2" overlay={menu}>
-							<Avatar
-								icon="user"
+						<Dropdown key="2" overlay={menu} placement="bottomCenter">
+							<Icon
+								type="user"
 								style={{
 									color: '#ffffff',
-									backgroundColor: 'transparent',
+									fontSize: '16px',
+									fontWeight: 'bold',
+									cursor: 'pointer',
 									marginRight: '.5em'
 								}}
 							/>
 						</Dropdown>,
-						// <Dropdown key="3" overlay={languages}>
-						// 	<Avatar
-						// 		icon="global"
-						// 		style={{ color: '#ffffff', backgroundColor: 'transparent' }}
-						// 	/>
-						// </Dropdown>
-						<Select
-							className="bgc-trans"
-							// dropdownStyle={{ backgroundColor: 'transparent' }}
-							showArrow={false}
-							defaultValue={
-								window.localStorage.getItem('i18nextLng') === 'vi' ? 'vi' : 'en'
-							}
-							onChange={changeLocale}
-							key="3"
-						>
-							<Option value="vi" key="vi">
-								<span role="img" aria-label="vi">
-									🇻🇳
-								</span>
-							</Option>
-							<Option value="en" key="en">
-								<span role="img" aria-label="en">
-									🇬🇧
-								</span>
-							</Option>
-						</Select>
+						<Dropdown key="3" overlay={languages} placement="bottomCenter">
+							{/* <Icon
+								type="global"
+								style={{
+									color: '#ffffff',
+									fontSize: '16px',
+									fontWeight: 'bold',
+									cursor: 'pointer',
+									marginRight: '.5em'
+								}}
+							/> */}
+							<span style={{ color: '#fff' }}>
+								{window.localStorage.getItem('i18nextLng') === 'vi'
+									? 'VI'
+									: 'EN'}
+							</span>
+						</Dropdown>
 					]}
 					footer={<Divider style={{ margin: '0' }} />}
 				/>

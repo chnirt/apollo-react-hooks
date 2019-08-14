@@ -3,7 +3,7 @@ import { Form, Col, Row, Select, Typography } from 'antd'
 import gql from 'graphql-tag'
 import { compose, graphql } from 'react-apollo'
 import { withTranslation } from 'react-i18next'
-import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
+import openNotificationWithIcon from '../../components/shared/openNotificationWithIcon'
 import ListDish from './listDish'
 
 function MenuDetail(props) {
@@ -40,7 +40,7 @@ function MenuDetail(props) {
 		}
 	}
 
-	async function publishAndUnpublish(hasChange) {
+	async function onPublishAndUnpublish(hasChange) {
 		if (hasChange) {
 			openNotificationWithIcon('warning', 'notsave', t('ConfirmSaveMenu'), '')
 		} else if (menuById.menu.dishes.length !== 0) {
@@ -111,7 +111,7 @@ function MenuDetail(props) {
 			</Col>
 			<ListDish
 				{...props}
-				publishAndUnpublish={publishAndUnpublish}
+				publishAndUnpublish={onPublishAndUnpublish}
 				menuId={match.params.menuId}
 				shopId={shopId}
 			/>

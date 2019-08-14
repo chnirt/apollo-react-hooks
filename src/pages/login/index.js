@@ -101,6 +101,7 @@ function Login(props) {
 											<Icon type="mail" style={{ color: 'rgba(0,0,0,.25)' }} />
 										}
 										placeholder="username"
+										style={{ fontSize: '16px' }}
 									/>
 								)}
 							</Form.Item>
@@ -129,6 +130,7 @@ function Login(props) {
 										}
 										type="password"
 										placeholder="Password"
+										style={{ fontSize: '16px' }}
 									/>
 								)}
 							</Form.Item>
@@ -159,6 +161,7 @@ const USER_LOGIN = gql`
 			userPermissions {
 				siteId
 				siteName
+				sitepermissions
 				permissions {
 					_id
 					code

@@ -1,10 +1,9 @@
 import React, { useState } from 'react'
 import gql from 'graphql-tag'
+import { graphql, compose } from 'react-apollo'
 import { Modal, Form, Input, Select } from 'antd'
 import { withTranslation } from 'react-i18next'
-
-import { HOCQueryMutation } from '../../../../components/shared/hocQueryAndMutation'
-import openNotificationWithIcon from '../../../../components/shared/openNotificationWithIcon'
+import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
 
 const { Option } = Select
 
@@ -101,7 +100,7 @@ function UserModal(props) {
 				// console.log(copyValues)
 
 				props.userId
-					? props.mutate
+					? props
 							.updateUser({
 								mutation: UPDATE_USER,
 								variables: {
@@ -157,7 +156,7 @@ function UserModal(props) {
 								)
 								setConfirmLoading(false)
 							})
-					: props.mutate
+					: props
 							.createUser({
 								mutation: CREATE_USER,
 								variables: {
@@ -424,56 +423,104 @@ const GET_USER = gql`
 		}
 	}
 `
+// export default HOCQueryMutation([
+// 	{
+// 		query: GET_ALL_USERS,
+// 		options: {
+// 			variables: {
+// 				offset: 0,
+// 				limit: 100
+// 			}
+// 		}
+// 	},
+// 	{
+// 		query: GET_ALL_PERMISSIONS_BY_USERID,
+// 		name: 'getAllPermissionsByUserId',
+// 		options: props => ({
+// 			variables: {
+// 				_id: props.userId || ''
+// 			},
+// 			fetchPolicy: 'no-cache'
+// 		})
+// 	},
+// 	{
+// 		query: GET_ALL_SITES,
+// 		name: 'getAllSites',
+// 		options: {}
+// 	},
+// 	{
+// 		query: GET_ALL_PERMISSIONS,
+// 		name: 'getAllPermissions',
+// 		options: {}
+// 	},
+// 	{
+// 		query: GET_USER,
+// 		name: 'getUser',
+// 		options: props => ({
+// 			variables: {
+// 				_id: props.userId || ''
+// 			}
+// 		})
+// 	},
+// 	{
+// 		mutation: CREATE_USER,
+// 		name: 'createUser',
+// 		option: {}
+// 	},
+// 	{
+// 		mutation: UPDATE_USER,
+// 		name: 'updateUser',
+// 		options: {}
+// 	}
+// ])(
+// 	withTranslation('translations')(
+// 		Form.create({ name: 'createUserForm' })(UserModal)
+// 	)
+// )
 
-export default withTranslation('translations')(
-	HOCQueryMutation([
-		{
-			query: GET_ALL_USERS,
-			options: {
-				variables: {
-					offset: 0,
-					limit: 100
-				}
+export default compose(
+	graphql(GET_ALL_USERS, {
+		name: 'getUsers',
+		options: {
+			variables: {
+				offset: 0,
+				limit: 100
 			}
-		},
-		{
-			query: GET_ALL_PERMISSIONS_BY_USERID,
-			name: 'getAllPermissionsByUserId',
-			options: props => ({
-				variables: {
-					_id: props.userId || ''
-				},
-				fetchPolicy: 'no-cache'
-			})
-		},
-		{
-			query: GET_ALL_SITES,
-			name: 'getAllSites',
-			options: {}
-		},
-		{
-			query: GET_ALL_PERMISSIONS,
-			name: 'getAllPermissions',
-			options: {}
-		},
-		{
-			query: GET_USER,
-			name: 'getUser',
-			options: props => ({
-				variables: {
-					_id: props.userId || ''
-				}
-			})
-		},
-		{
-			mutation: CREATE_USER,
-			name: 'createUser',
-			option: {}
-		},
-		{
-			mutation: UPDATE_USER,
-			name: 'updateUser',
-			options: {}
 		}
-	])(Form.create({ name: 'createUserForm' })(UserModal))
+	}),
+	graphql(GET_ALL_SITES, {
+		name: 'getAllSites'
+	}),
+	graphql(GET_ALL_PERMISSIONS, {
+		name: 'getAllPermissions'
+	}),
+	graphql(GET_USER, {
+		name: 'getUser',
+		skip: props => !props.userId,
+		options: props => ({
+			variables: {
+				_id: props.userId
+			}
+		})
+	}),
+	graphql(GET_ALL_PERMISSIONS_BY_USERID, {
+		name: 'getAllPermissionsByUserId',
+		skip: props => !props.userId,
+		options: props => ({
+			variables: {
+				_id: props.userId
+			},
+			fetchPolicy: 'no-cache'
+		})
+	}),
+	graphql(CREATE_USER, {
+		name: 'createUser'
+	}),
+	graphql(UPDATE_USER, {
+		name: 'updateUser'
+	})
+)(
+	withTranslation('translations')(
+		Form.create({ name: 'createUserForm' })(UserModal)
+	)
 )

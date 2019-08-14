@@ -13,7 +13,7 @@ import {
 import gql from 'graphql-tag'
 import { compose, graphql } from 'react-apollo'
 
-import openNotificationWithIcon from '../../../../components/shared/openNotificationWithIcon'
+import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
 
 function ListDish(props) {
 	const { form, data, menuById, shopId, menuId, publishAndUnpublish } = props
@@ -65,22 +65,18 @@ function ListDish(props) {
 
 	async function changeCount(value, id, name) {
 		const index = dishes.findIndex(item => item._id === id)
-		let list = []
 		if (index !== -1) {
 			if (value <= 0) {
-				list = [...dishes.slice(0, index), ...dishes.slice(index + 1)]
 				await setDishes([...dishes.slice(0, index), ...dishes.slice(index + 1)])
 			} else {
-				list = [
+				await setDishes([
 					...dishes.slice(0, index),
 					{ ...dishes[index], count: value },
 					...dishes.slice(index + 1)
-				]
-				await setDishes(list)
+				])
 			}
 		} else {
-			list = [...dishes.slice(0), { _id: id, name, count: value }]
-			await setDishes(list)
+			await setDishes([...dishes.slice(0), { _id: id, name, count: value }])
 		}
 		await setHasChange(true)
 	}
@@ -117,6 +113,34 @@ function ListDish(props) {
 			: openNotificationWithIcon('info', 'nochange', t('MenuNoChange'), '')
 	}
 
+	async function deleteDishInMenu(dishId) {
+		const index = dishes.findIndex(item => item._id === dishId)
+		if (index !== -1) {
+			const list = [...dishes.slice(0, index), ...dishes.slice(index + 1)]
+			await props.updateMenu({
+				variables: {
+					id: menuId,
+					menuInfo: {
+						dishes: list.map(dish => ({
+							_id: dish._id,
+							name: dish.name,
+							count: dish.count
+						}))
+					}
+				},
+				refetchQueries: [
+					{
+						query: GET_MENU,
+						variables: {
+							id: menuId
+						}
+					}
+				]
+			})
+			await setDishes(list)
+		}
+	}
+
 	async function deleteDish(dishId) {
 		Modal.confirm({
 			title: t('DeleteDish'),
@@ -128,9 +152,9 @@ function ListDish(props) {
 							id: dishId
 						}
 					})
-					.then(() => {
+					.then(async () => {
 						data.refetch(shopId)
-						changeCount(0, dishId)
+						deleteDishInMenu(dishId)
 						openNotificationWithIcon('success', 'delete', t('Success'), '')
 					})
 			}
