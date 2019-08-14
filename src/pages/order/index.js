@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { Typography, Col, Row } from 'antd'
 import gql from 'graphql-tag'
 import { graphql, compose } from 'react-apollo'
@@ -7,11 +7,6 @@ import DishesListAndActions from './dishesListAndActions'
 
 function Order(props) {
 	const { t, menuPublishBySite, ordersByMenu, ordersCountByUser } = props
-	const [siteId] = useState(localStorage.getItem('currentsite'))
-
-	useEffect(() => {
-		menuPublishBySite.refetch(siteId)
-	}, [localStorage.getItem('currentsite')])
 
 	return (
 		<React.Fragment>
