@@ -1,7 +1,17 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import gql from 'graphql-tag'
 import { graphql, compose } from 'react-apollo'
-import { Row, Button, Card, Modal, Typography, List } from 'antd'
+import {
+	Row,
+	Button,
+	Card,
+	Modal,
+	Typography,
+	List,
+	Input,
+	Tooltip,
+	Icon
+} from 'antd'
 import { withTranslation } from 'react-i18next'
 import openNotificationWithIcon from '../../components/shared/openNotificationWithIcon'
 
@@ -25,12 +35,15 @@ function User(props) {
 		setUserId('')
 	}
 
-	function onLockAndUnlock(_id) {
+	const inputEl = useRef(null)
+
+	function onLockAndUnlock(_id, reason) {
 		// console.log("onLockAndUnlock", _id)
 		props
 			.lockAndUnlockUser({
 				variables: {
-					_id
+					_id,
+					reason
 				},
 				refetchQueries: [
 					{
@@ -45,20 +58,30 @@ function User(props) {
 			.then(res => {
 				//  console.log('hello', res)
 				if (res.data.lockAndUnlockUser === true)
-					openNotificationWithIcon('success', 'success', t('Success'), null)
+					openNotificationWithIcon(
+						'success',
+						'success',
+						t('common.Success'),
+						null
+					)
 			})
 			.catch(err => {
 				// console.log(err)
 				const errors = err.graphQLErrors.map(error => error.message)
-				openNotificationWithIcon('error', 'failed', t('Failed'), errors[0])
+				openNotificationWithIcon(
+					'error',
+					'failed',
+					t('common.Failed'),
+					errors[0]
+				)
 			})
 	}
 
 	function onDelete(_id) {
 		// console.log("onDelete", _id)
 		confirm({
-			title: t('DeleteUser'),
-			content: t('ConfirmDelete'),
+			title: t('user.DeleteUser'),
+			content: t('common.ConfirmDelete'),
 			onOk() {
 				// console.log('OK');
 				props
@@ -79,16 +102,41 @@ function User(props) {
 					.then(res => {
 						// console.log(res)
 						if (res.data.lockAndUnlockUser === true)
-							openNotificationWithIcon('success', 'success', t('Success'), null)
+							openNotificationWithIcon(
+								'success',
+								'success',
+								t('common.Success'),
+								null
+							)
 					})
 					.catch(err => {
 						// console.log(err)
 						const errors = err.graphQLErrors.map(error => error.message)
-						openNotificationWithIcon('error', 'failed', t('Failed'), errors[0])
+						openNotificationWithIcon(
+							'error',
+							'failed',
+							t('common.Failed'),
+							errors[0]
+						)
 					})
 			},
 			onCancel() {
 				// console.log('Cancel');
+			}
+		})
+	}
+
+	function showConfirm(_id) {
+		confirm({
+			title: 'Locked reason ?',
+			content: <Input ref={inputEl} type="text" placeholder="something..." />,
+			onOk() {
+				console.log('OK')
+				// console.log(_id, inputEl.current.state.value)
+				onLockAndUnlock(_id, inputEl.current.state.value)
+			},
+			onCancel() {
+				console.log('Cancel')
 			}
 		})
 	}
@@ -103,7 +151,7 @@ function User(props) {
 					title={
 						<div>
 							<Title style={{ color: '#ffffff' }} level={3}>
-								{t('Manage User')}
+								{t('dashBoard.Manage User')}
 							</Title>
 						</div>
 					}
@@ -111,7 +159,7 @@ function User(props) {
 					extra={
 						<div>
 							<Button type="primary" block onClick={() => showModal()}>
-								{t('Add user')}
+								{t('user.Add user')}
 							</Button>
 						</div>
 					}
@@ -133,6 +181,7 @@ function User(props) {
 							backgroundColor: '#fff',
 							borderRadius: '.5em'
 						}}
+						loading={!users ? true : false}
 						dataSource={users && users.filter(item => item.isActive)}
 						renderItem={user => (
 							<List.Item
@@ -144,7 +193,13 @@ function User(props) {
 										name="btnEditUser"
 									/>,
 									<Button
-										onClick={() => onLockAndUnlock(user._id)}
+										onClick={() => {
+											if (user.isLocked) {
+												onLockAndUnlock(user._id, '')
+											} else {
+												showConfirm(user._id)
+											}
+										}}
 										icon={user.isLocked ? 'lock' : 'unlock'}
 										type="link"
 										name="btnLockNUnlockUser"
@@ -157,12 +212,22 @@ function User(props) {
 									/>
 								]}
 							>
-								{user.fullName}
+								{`${user.fullName} `}
+								{user.reason && (
+									<Tooltip title={user.reason}>
+										<Icon type="question-circle-o" />
+									</Tooltip>
+								)}
 							</List.Item>
 						)}
 					/>
 				</Card>
-				<UserModal userId={userId} visible={visible} hideModal={hideModal} />
+				<UserModal
+					{...props}
+					userId={userId}
+					visible={visible}
+					hideModal={hideModal}
+				/>
 			</Row>
 		</>
 	)
@@ -175,14 +240,15 @@ const GET_ALL_USERS = gql`
 			username
 			fullName
 			isActive
+			reason
 			isLocked
 		}
 	}
 `
 
 const USER_LOCK_AND_UNLOCK = gql`
-	mutation($_id: String!) {
-		lockAndUnlockUser(_id: $_id)
+	mutation($_id: String!, $reason: String!) {
+		lockAndUnlockUser(_id: $_id, reason: $reason)
 	}
 `
 

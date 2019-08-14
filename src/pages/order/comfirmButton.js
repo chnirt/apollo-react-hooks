@@ -45,14 +45,14 @@ function ConfirmButton(props) {
 				}}
 				type="submit"
 			>
-				{t('Confirm')}
+				{t('common.Confirm')}
 			</Button>
 		) : null
 	return (
 		<React.Fragment>
 			{alert === true ? (
 				<Alert
-					message={t('ConfirmSuccess')}
+					message={t('common.ConfirmSuccess')}
 					type="success"
 					showIcon
 					closable

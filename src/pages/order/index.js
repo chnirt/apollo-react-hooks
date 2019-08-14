@@ -28,7 +28,7 @@ function Order(props) {
 							color: '#fff'
 						}}
 					>
-						{t('Order')}
+						{t('dashBoard.Order')}
 					</Typography.Title>
 					{menuPublishBySite.menuPublishBySite &&
 					ordersByMenu.ordersByMenu &&
