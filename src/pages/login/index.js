@@ -34,8 +34,7 @@ function Login(props) {
 						const { token, userPermissions } = res.data.login
 						setLoading(false)
 						if (
-							userPermissions.length > 0 &&
-							userPermissions[0].permissions.length > 0
+							userPermissions.filter(item => item.sitepermissions.length > 0)
 						) {
 							props.store.authStore.authenticate(token, userPermissions)
 							props.history.push('/🥢')
@@ -162,10 +161,6 @@ const USER_LOGIN = gql`
 				siteId
 				siteName
 				sitepermissions
-				permissions {
-					_id
-					code
-				}
 			}
 		}
 	}
