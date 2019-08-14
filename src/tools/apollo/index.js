@@ -8,9 +8,9 @@ import { WebSocketLink } from 'apollo-link-ws'
 import { getMainDefinition } from 'apollo-utilities'
 import store from '../mobx'
 
-const domain = 'devcloud3.digihcs.com'
+const domain = 'localhost'
 const port = process.env.REACT_APP_BE_PORT || 11048
-const end_point = 'graphql'
+const end_point = 'graphqllunch'
 
 const urn = process.env.REACT_APP_GRAPHQL_URN || `${domain}:${port}/${end_point}`
 
