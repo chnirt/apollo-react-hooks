@@ -58,20 +58,30 @@ function User(props) {
 			.then(res => {
 				//  console.log('hello', res)
 				if (res.data.lockAndUnlockUser === true)
-					openNotificationWithIcon('success', 'success', t('Success'), null)
+					openNotificationWithIcon(
+						'success',
+						'success',
+						t('common.Success'),
+						null
+					)
 			})
 			.catch(err => {
 				// console.log(err)
 				const errors = err.graphQLErrors.map(error => error.message)
-				openNotificationWithIcon('error', 'failed', t('Failed'), errors[0])
+				openNotificationWithIcon(
+					'error',
+					'failed',
+					t('common.Failed'),
+					errors[0]
+				)
 			})
 	}
 
 	function onDelete(_id) {
 		// console.log("onDelete", _id)
 		confirm({
-			title: t('DeleteUser'),
-			content: t('ConfirmDelete'),
+			title: t('user.DeleteUser'),
+			content: t('common.ConfirmDelete'),
 			onOk() {
 				// console.log('OK');
 				props
@@ -92,12 +102,22 @@ function User(props) {
 					.then(res => {
 						// console.log(res)
 						if (res.data.lockAndUnlockUser === true)
-							openNotificationWithIcon('success', 'success', t('Success'), null)
+							openNotificationWithIcon(
+								'success',
+								'success',
+								t('common.Success'),
+								null
+							)
 					})
 					.catch(err => {
 						// console.log(err)
 						const errors = err.graphQLErrors.map(error => error.message)
-						openNotificationWithIcon('error', 'failed', t('Failed'), errors[0])
+						openNotificationWithIcon(
+							'error',
+							'failed',
+							t('common.Failed'),
+							errors[0]
+						)
 					})
 			},
 			onCancel() {
@@ -131,7 +151,7 @@ function User(props) {
 					title={
 						<div>
 							<Title style={{ color: '#ffffff' }} level={3}>
-								{t('Manage User')}
+								{t('dashBoard.Manage User')}
 							</Title>
 						</div>
 					}
@@ -139,7 +159,7 @@ function User(props) {
 					extra={
 						<div>
 							<Button type="primary" block onClick={() => showModal()}>
-								{t('Add user')}
+								{t('user.Add user')}
 							</Button>
 						</div>
 					}
@@ -202,7 +222,12 @@ function User(props) {
 						)}
 					/>
 				</Card>
-				<UserModal userId={userId} visible={visible} hideModal={hideModal} />
+				<UserModal
+					{...props}
+					userId={userId}
+					visible={visible}
+					hideModal={hideModal}
+				/>
 			</Row>
 		</>
 	)

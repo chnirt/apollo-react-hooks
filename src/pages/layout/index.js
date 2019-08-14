@@ -71,7 +71,7 @@ function Layout(props) {
 			<Menu.Divider />
 			<Menu.Item onClick={onLogout}>
 				<Icon type="logout" />
-				<span>{t('Log out')}</span>
+				<span>{t('common.Log out')}</span>
 			</Menu.Item>
 		</Menu>
 	)

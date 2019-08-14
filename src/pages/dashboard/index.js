@@ -28,7 +28,7 @@ function Dashboard(props) {
 				<Card
 					title={
 						<Title style={{ color: '#ffffff' }} level={3}>
-							{t('Quick actions')}
+							{t('common.Quick actions')}
 						</Title>
 					}
 					bordered={false}
@@ -76,7 +76,7 @@ function Dashboard(props) {
 											}}
 											type={item.icon}
 										/>
-										{t(item.label)}
+										{t(`dashBoard.${item.label}`)}
 									</Card.Grid>
 								</Col>
 							)
