@@ -3,7 +3,6 @@ import gql from 'graphql-tag'
 import { graphql, compose } from 'react-apollo'
 
 import openNotificationWithIcon from '../../components/shared/openNotificationWithIcon'
-// import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation'
 import MenuList from './menuList'
 import './index.scss'
 
@@ -12,6 +11,7 @@ function ReportB({
 	lockAndUnLockMenu,
 	closeMenu
 }) {
+	// console.log(menusBySite)
 	const siteId = localStorage.getItem('currentsite')
 	const handleCloseMenu = (e, menuId) => {
 		e.stopPropagation()
@@ -69,7 +69,7 @@ function ReportB({
 				menusBySite
 					.filter(menuBySite => menuBySite.isPublished)
 					.map(menuBySite => (
-						<div key={menuBySite._id} className="menus">
+						<div key={menuBySite._id} className="report-menus">
 							{menuBySite.dishes && (
 								<MenuList
 									menuBySite={menuBySite}
@@ -119,7 +119,8 @@ export default compose(
 		options: () => ({
 			variables: {
 				siteId: localStorage.getItem('currentsite')
-			}
+			},
+			fetchPolicy: 'no-cache'
 		})
 	}),
 	graphql(LOCK_AND_UNLOCK_MENU, {
@@ -129,25 +130,3 @@ export default compose(
 		name: 'closeMenu'
 	})
 )(ReportB)
-
-// export default HOCQueryMutation([
-// 	{
-// 		query: GET_MENU_BY_SITE,
-// 		name: 'getMenuBySite',
-// 		options: () => ({
-// 			variables: {
-// 				siteId: localStorage.getItem('currentsite')
-// 			}
-// 		})
-// 	},
-// 	{
-// 		mutation: LOCK_AND_UNLOCK_MENU,
-// 		name: 'lockAndUnLockMenu',
-// 		option: {}
-// 	},
-// 	{
-// 		mutation: CLOSE_MENU,
-// 		name: 'closeMenu',
-// 		option: {}
-// 	}
-// ])(ReportB)
