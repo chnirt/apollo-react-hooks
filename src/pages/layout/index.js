@@ -20,7 +20,7 @@ function Layout(props) {
 	const [currentsite, setCurrentsite] = useState(
 		window.localStorage.getItem('currentsite')
 	)
-	const { children } = props
+	const { children, t, store } = props
 
 	const [me, setMe] = useState('')
 
@@ -62,9 +62,7 @@ function Layout(props) {
 		ele => ele.permissions.indexOf(currentPage) !== -1
 	)
 
-	const { t } = props
-
-	const menu = (
+	const info = (
 		<Menu>
 			<Menu.Item>
 				<Icon type="user" />
@@ -79,7 +77,7 @@ function Layout(props) {
 	)
 
 	function changeLocale({ key }) {
-		console.log(key)
+		// console.log(key)
 		if (key === 'vi') {
 			props.i18n.changeLanguage('vi')
 			props.store.i18nStore.changeLanguage('vi')
@@ -88,26 +86,6 @@ function Layout(props) {
 			props.store.i18nStore.changeLanguage('en')
 		}
 	}
-	// ;<Select
-	// 	key="3"
-	// 	showArrow={false}
-	// 	defaultValue={
-	// 		window.localStorage.getItem('i18nextLng') === 'vi' ? 'vi' : 'en'
-	// 	}
-	// 	onChange={changeLocale}
-	// 	style={{ width: 42, backgroundColor: 'transparent' }}
-	// >
-	// 	<Option key="vi" value="vi">
-	// 		<span role="img" aria-label="vi">
-	// 			🇻🇳
-	// 		</span>
-	// 	</Option>
-	// 	<Option key="en" value="en">
-	// 		<span role="img" aria-label="en">
-	// 			🇬🇧
-	// 		</span>
-	// 	</Option>
-	// </Select>
 
 	const languages = (
 		<Menu onClick={changeLocale}>
@@ -123,7 +101,7 @@ function Layout(props) {
 			</Menu.Item>
 		</Menu>
 	)
-	const { store } = props
+
 	return (
 		<div
 			style={{
@@ -171,7 +149,12 @@ function Layout(props) {
 										</Option>
 								  ))}
 						</Select>,
-						<Dropdown key="2" overlay={menu} placement="bottomCenter">
+						<Dropdown
+							key="2"
+							overlay={info}
+							trigger={['click']}
+							placement="bottomCenter"
+						>
 							<Icon
 								type="user"
 								style={{
@@ -183,17 +166,12 @@ function Layout(props) {
 								}}
 							/>
 						</Dropdown>,
-						<Dropdown key="3" overlay={languages} placement="bottomCenter">
-							{/* <Icon
-								type="global"
-								style={{
-									color: '#ffffff',
-									fontSize: '16px',
-									fontWeight: 'bold',
-									cursor: 'pointer',
-									marginRight: '.5em'
-								}}
-							/> */}
+						<Dropdown
+							key="3"
+							overlay={languages}
+							trigger={['click']}
+							placement="bottomCenter"
+						>
 							<span style={{ color: '#fff' }}>
 								{window.localStorage.getItem('i18nextLng') === 'vi'
 									? 'VI'
