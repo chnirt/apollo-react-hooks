@@ -8,9 +8,9 @@ import { HOCQueryMutation } from '../../components/shared/hocQueryAndMutation'
 
 import './index.css'
 
-class Report extends React.Component {
-	isActive = (e, menuId) => {
-		const { mutate } = this.props
+function Report(props) {
+	const isActive = (e, menuId) => {
+		const { mutate } = props
 		e.stopPropagation()
 		mutate
 			.closeMenu({
@@ -28,7 +28,7 @@ class Report extends React.Component {
 				]
 			})
 			.then(() => {
-				openNotificationWithIcon('success', 'login', t('Success'))
+				openNotificationWithIcon('success', 'login', t('common.Success'))
 			})
 			.catch(() => {
 				// console.log(err)
@@ -36,9 +36,9 @@ class Report extends React.Component {
 			})
 	}
 
-	isLock = (e, menuId) => {
+	const isLock = (e, menuId) => {
 		e.stopPropagation()
-		const { mutate, t } = this.props
+		const { mutate, t } = props
 		mutate
 			.lockAndUnLockMenu({
 				mutation: LOCK_AND_UNLOCK_MENU,
@@ -56,7 +56,7 @@ class Report extends React.Component {
 			})
 			.then(() => {
 				// console.log(data)
-				openNotificationWithIcon('success', 'success', t('Success'))
+				openNotificationWithIcon('success', 'success', t('common.Success'))
 			})
 			.catch(err => {
 				// console.log(err)
@@ -65,40 +65,38 @@ class Report extends React.Component {
 	}
 
 	// componentWillUpdate() {
-	// 	console.log(this.props)
+	// 	console.log( props)
 	// }
 
-	render() {
-		const { getMenuBySite } = this.props
-		return (
-			<React.Fragment>
-				<div className="report">
-					{getMenuBySite.menusBySite &&
-						getMenuBySite.menusBySite
-							.filter(menuBySite => menuBySite.isPublished)
-							.map(menuBySite => {
-								return (
-									<div key={menuBySite._id} style={{ marginBottom: 10 }}>
-										<ListMenu
-											isLock={this.isLock}
-											isActiveProps={this.isActive}
-											menuId={menuBySite._id}
-											menu={menuBySite}
-										/>
-										<div
-											style={{
-												display: 'flex',
-												marginTop: 10,
-												justifyContent: 'space-between'
-											}}
-										/>
-									</div>
-								)
-							})}
-				</div>
-			</React.Fragment>
-		)
-	}
+	const { getMenuBySite } = props
+	return (
+		<React.Fragment>
+			<div className="report">
+				{getMenuBySite.menusBySite &&
+					getMenuBySite.menusBySite
+						.filter(menuBySite => menuBySite.isPublished)
+						.map(menuBySite => {
+							return (
+								<div key={menuBySite._id} style={{ marginBottom: 10 }}>
+									<ListMenu
+										isLock={isLock}
+										isActiveProps={isActive}
+										menuId={menuBySite._id}
+										menu={menuBySite}
+									/>
+									<div
+										style={{
+											display: 'flex',
+											marginTop: 10,
+											justifyContent: 'space-between'
+										}}
+									/>
+								</div>
+							)
+						})}
+			</div>
+		</React.Fragment>
+	)
 }
 
 const GET_MENU_BY_SITE = gql`
@@ -139,8 +137,7 @@ export default withTranslation('translations')(
 				return {
 					variables: {
 						siteId: window.localStorage.getItem('currentsite')
-					},
-					fetchPolicy: 'no-cache'
+					}
 				}
 			}
 		},

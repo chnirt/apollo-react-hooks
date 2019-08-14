@@ -339,6 +339,11 @@ function UserModal(props) {
 									<Select
 										mode="multiple"
 										placeholder={t('user.SelectPermissions')}
+										readonly="true"
+										onFocus={() => {
+											e.preventDefault()
+											// you could change the color of the field to indicate this is the active field.
+										}}
 									>
 										{props.getAllPermissions.permissions &&
 											props.getAllPermissions.permissions.map(item1 => {

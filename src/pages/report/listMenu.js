@@ -11,15 +11,11 @@ import './index.css'
 
 const { Panel } = Collapse
 
-class listMenu extends React.Component {
-	// changeActive = () => {
-	// 	this.setState(prevState => ({ isActive: !prevState.isActive }))
-	// }
-
-	export(e, menu) {
+function listMenu(props) {
+	const exportFile = (e, menu) => {
 		e.stopPropagation()
 		const dishes = []
-		const { getOrderByMenu, me } = this.props
+		const { getOrderByMenu, me } = props
 
 		const orders = getOrderByMenu.ordersByMenu
 
@@ -109,82 +105,82 @@ class listMenu extends React.Component {
 		})
 	}
 
-	render() {
-		const { menu, isLock, isActiveProps, getOrderByMenu, menuId } = this.props
-		return (
-			<Collapse className="open-menu">
-				<Panel
-					extra={
-						<>
-							<Tooltip title={menu.isLocked ? 'Unlock menu' : 'Lock menu'}>
-								<Button
-									className="publish style-btn lock-menu"
-									onClick={e => {
-										isLock(e, menu._id)
-									}}
-								>
-									<Icon type={menu.isLocked ? 'lock' : 'unlock'} />
-								</Button>
-							</Tooltip>
+	const { menu, isLock, isActiveProps, getOrderByMenu, menuId } = props
+	console.log(props)
+	return (
+		<Collapse className="open-menu">
+			<Panel
+				extra={
+					<>
+						<Tooltip title={menu.isLocked ? 'Unlock menu' : 'Lock menu'}>
+							<Button
+								className="publish style-btn lock-menu"
+								onClick={e => {
+									isLock(e, menu._id)
+								}}
+							>
+								<Icon type={menu.isLocked ? 'lock' : 'unlock'} />
+							</Button>
+						</Tooltip>
 
-							<Tooltip title="Complete menu">
-								<Button
-									className="publish style-btn complete-menu"
-									onClick={e => isActiveProps(e, menu._id)}
-									disabled={!menu.isLocked}
-								>
-									<Icon type="check" />
-								</Button>
-							</Tooltip>
+						<Tooltip title="Complete menu">
+							<Button
+								className="publish style-btn complete-menu"
+								onClick={e => isActiveProps(e, menu._id)}
+								disabled={!menu.isLocked}
+								loading={!menu ? true : false}
+							>
+								<Icon type="check" />
+							</Button>
+						</Tooltip>
 
-							<Tooltip title="Request menu">
-								<Button
-									className="publish style-btn request-menu"
-									onClick={e => this.export(e, menu)}
-									disabled={!menu.isLocked}
-								>
-									<Icon type="file-excel" />
-								</Button>
-							</Tooltip>
-						</>
-					}
-					header={
-						<span style={{ width: '10em', display: 'inline-block' }}>
-							{menu.name}
-						</span>
-					}
-					key={menu._id}
-					disabled={!!menu.isLocked}
-				>
-					<Collapse className="open-dishes">
-						{menu.dishes &&
-							menu.dishes.map(dish => {
-								// console.log(dish)
-								return (
-									<Panel header={`${dish.name} x${dish.count}`} key={dish._id}>
-										{getOrderByMenu.ordersByMenu &&
-											getOrderByMenu.ordersByMenu.map(orderByMenu => {
-												return (
-													<ListUser
-														orderId={orderByMenu._id}
-														dishCount={dish.count}
-														menuId={menuId}
-														orderByMenu={orderByMenu}
-														key={orderByMenu._id}
-														userId={orderByMenu.userId}
-														countProps={orderByMenu.count}
-														dishId={dish._id}
-													/>
-												)
-											})}
-									</Panel>
-								)
-							})}
-					</Collapse>
-				</Panel>
-			</Collapse>
-		)
-	}
+						<Tooltip title="Request menu">
+							<Button
+								className="publish style-btn request-menu"
+								onClick={e => exportFile(e, menu)}
+								disabled={!menu.isLocked}
+							>
+								<Icon type="file-excel" />
+							</Button>
+						</Tooltip>
+					</>
+				}
+				header={
+					<span style={{ width: '10em', display: 'inline-block' }}>
+						{menu.name}
+					</span>
+				}
+				key={menu._id}
+				disabled={!!menu.isLocked}
+			>
+				<Collapse className="open-dishes">
+					{menu.dishes &&
+						menu.dishes.map(dish => {
+							// console.log(dish)
+							return (
+								<Panel header={`${dish.name} x${dish.count}`} key={dish._id}>
+									{getOrderByMenu.ordersByMenu &&
+										getOrderByMenu.ordersByMenu.map(orderByMenu => {
+											return (
+												<ListUser
+													orderId={orderByMenu._id}
+													dishCount={dish.count}
+													menuId={menuId}
+													orderByMenu={orderByMenu}
+													key={orderByMenu._id}
+													userId={orderByMenu.userId}
+													countProps={orderByMenu.count}
+													dishId={dish._id}
+												/>
+											)
+										})}
+								</Panel>
+							)
+						})}
+				</Collapse>
+			</Panel>
+		</Collapse>
+	)
 }
 
 const ORDER_BY_MENU = gql`
