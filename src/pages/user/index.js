@@ -1,7 +1,17 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import gql from 'graphql-tag'
 import { graphql, compose } from 'react-apollo'
-import { Row, Button, Card, Modal, Typography, List } from 'antd'
+import {
+	Row,
+	Button,
+	Card,
+	Modal,
+	Typography,
+	List,
+	Input,
+	Tooltip,
+	Icon
+} from 'antd'
 import { withTranslation } from 'react-i18next'
 import openNotificationWithIcon from '../../components/shared/openNotificationWithIcon'
 
@@ -25,12 +35,15 @@ function User(props) {
 		setUserId('')
 	}
 
-	function onLockAndUnlock(_id) {
+	const inputEl = useRef(null)
+
+	function onLockAndUnlock(_id, reason) {
 		// console.log("onLockAndUnlock", _id)
 		props
 			.lockAndUnlockUser({
 				variables: {
-					_id
+					_id,
+					reason
 				},
 				refetchQueries: [
 					{
@@ -113,6 +126,21 @@ function User(props) {
 		})
 	}
 
+	function showConfirm(_id) {
+		confirm({
+			title: 'Locked reason ?',
+			content: <Input ref={inputEl} type="text" placeholder="something..." />,
+			onOk() {
+				console.log('OK')
+				// console.log(_id, inputEl.current.state.value)
+				onLockAndUnlock(_id, inputEl.current.state.value)
+			},
+			onCancel() {
+				console.log('Cancel')
+			}
+		})
+	}
+
 	const { getUsers, t } = props
 	const { users } = getUsers
 
@@ -153,6 +181,7 @@ function User(props) {
 							backgroundColor: '#fff',
 							borderRadius: '.5em'
 						}}
+						loading={!users ? true : false}
 						dataSource={users && users.filter(item => item.isActive)}
 						renderItem={user => (
 							<List.Item
@@ -164,7 +193,13 @@ function User(props) {
 										name="btnEditUser"
 									/>,
 									<Button
-										onClick={() => onLockAndUnlock(user._id)}
+										onClick={() => {
+											if (user.isLocked) {
+												onLockAndUnlock(user._id, '')
+											} else {
+												showConfirm(user._id)
+											}
+										}}
 										icon={user.isLocked ? 'lock' : 'unlock'}
 										type="link"
 										name="btnLockNUnlockUser"
@@ -177,7 +212,12 @@ function User(props) {
 									/>
 								]}
 							>
-								{user.fullName}
+								{`${user.fullName} `}
+								{user.reason && (
+									<Tooltip title={user.reason}>
+										<Icon type="question-circle-o" />
+									</Tooltip>
+								)}
 							</List.Item>
 						)}
 					/>
@@ -200,14 +240,15 @@ const GET_ALL_USERS = gql`
 			username
 			fullName
 			isActive
+			reason
 			isLocked
 		}
 	}
 `
 
 const USER_LOCK_AND_UNLOCK = gql`
-	mutation($_id: String!) {
-		lockAndUnlockUser(_id: $_id)
+	mutation($_id: String!, $reason: String!) {
+		lockAndUnlockUser(_id: $_id, reason: $reason)
 	}
 `
 
