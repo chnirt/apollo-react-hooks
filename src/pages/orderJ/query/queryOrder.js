@@ -1,17 +1,8 @@
 import gql from 'graphql-tag'
 
-const GET_ALL_SITES = gql`
-	query {
-		sites {
-			_id
-			name
-		}
-	}
-`
-
 const GET_MENU_ORDERS = gql`
 	query($siteId: String!) {
-		menuOrder(siteId: $siteId) {
+		menuOrderJ(siteId: $siteId) {
 			menuId
 			dishes {
 				dishId
@@ -25,8 +16,8 @@ const GET_MENU_ORDERS = gql`
 `
 
 const ORDER_DISH = gql`
-	mutation($input: OrderInput!) {
-		orderDish(input: $input) {
+	mutation($input: OrderJInput!) {
+		orderJDish(input: $input) {
 			_id
 			userId
 			menuId
@@ -57,7 +48,6 @@ const ORDER_SUBSCRIPTION = gql`
 	}
 `
 export {
-	GET_ALL_SITES,
 	GET_MENU_PUBLISH_BY_SITE_ID,
 	GET_MENU_ORDERS,
 	ORDER_DISH,

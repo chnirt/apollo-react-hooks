@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Button } from 'antd'
 import { graphql, compose } from 'react-apollo'
 import {
@@ -9,17 +9,13 @@ import {
 import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
 
 function OrderDishList(props) {
-	const { disabled, getMenu, siteId, orderDish, orderUpdated } = props
+	const { disabled, getMenu, siteId, orderJDish, orderJUpdated } = props
 
-	console.log(siteId)
+	const dishes = getMenu && getMenu.menuOrderJ ? getMenu.menuOrderJ.dishes : []
 
-	console.log(getMenu)
+	const [isLoading, setIsLoading] = useState(false)
 
-	const dishes = getMenu && getMenu.menuOrder ? getMenu.menuOrder.dishes : []
-
-	console.log(dishes)
-
-	if (siteId && orderUpdated.isUpdated) {
+	if (siteId && orderJUpdated.isUpdated) {
 		// có update order thì refetch data
 		getMenu
 			.refetch({
@@ -33,7 +29,12 @@ function OrderDishList(props) {
 	}
 
 	function onClickUpdate(dishId, action) {
-		const dish = dishes.find(_dish => _dish.dishId === dishId)
+		setIsLoading(true)
+
+		// const dish = Object.create(dishes.find(_dish => _dish.dishId === dishId))
+
+		const dish = { ...dishes.find(_dish => _dish.dishId === dishId) }
+
 		if (action === 'up') {
 			if (dish.orderQuantityNow === dish.orderQuantityMax) {
 				openNotificationWithIcon(
@@ -42,21 +43,23 @@ function OrderDishList(props) {
 					'Failed',
 					`Món này chỉ có tối đa ${dish.orderQuantityMax} phần!`
 				)
+				setIsLoading(false)
 				return
 			}
 			dish.MyOrderQuantity += 1
 		} else {
 			if (dish.MyOrderQuantity === 0) {
+				setIsLoading(false)
 				return
 			}
 			dish.MyOrderQuantity -= 1
 		}
 
-		orderDish({
+		orderJDish({
 			mutation: ORDER_DISH,
 			variables: {
 				input: {
-					menuId: getMenu.menuOrder.menuId,
+					menuId: getMenu.menuOrderJ.menuId,
 					dishId,
 					count: dish.MyOrderQuantity
 				}
@@ -66,6 +69,9 @@ function OrderDishList(props) {
 			.catch(err => {
 				const errors = err.graphQLErrors.map(error => error.message)
 				openNotificationWithIcon('error', 'failed', 'Failed', errors[0])
+			})
+			.finally(() => {
+				setIsLoading(false)
 			})
 	}
 
@@ -104,7 +110,7 @@ function OrderDishList(props) {
 									{dish.orderQuantityNow}/{dish.orderQuantityMax}
 								</p>
 								<Button
-									disabled={disabled}
+									disabled={disabled || isLoading}
 									style={{
 										color: styleButtonDown
 									}}
@@ -119,7 +125,7 @@ function OrderDishList(props) {
 								/>
 								<Button
 									className="order-plus-button"
-									disabled={disabled}
+									disabled={disabled || isLoading}
 									icon="plus"
 									type="link"
 									shape="circle"
@@ -153,11 +159,11 @@ export default compose(
 	}),
 
 	graphql(ORDER_DISH, {
-		name: 'orderDish'
+		name: 'orderJDish'
 	}),
 
 	graphql(ORDER_SUBSCRIPTION, {
-		name: 'orderUpdated',
+		name: 'orderJUpdated',
 		skip: props => !props.siteId
 	})
 )(OrderDishList)

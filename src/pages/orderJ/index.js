@@ -4,7 +4,8 @@ import './orderJ.css'
 import OrderDishList from './OrderDishList'
 
 function orderJ(props) {
-	const siteId = localStorage.getItem('currentsite')
+	const { currentsite } = props
+	const siteId = currentsite
 
 	console.log(props)
 
