@@ -109,11 +109,11 @@ export default compose(
 	graphql(MENU_BY_SELECTED_SITE, {
 		name: 'menuPublishBySite',
 		skip: !localStorage.getItem('currentsite'),
-		options: {
+		options: () => ({
 			variables: {
 				siteId: localStorage.getItem('currentsite')
 			}
-		}
+		})
 	}),
 	graphql(ORDERS_BY_MENU, {
 		name: 'ordersByMenu',
