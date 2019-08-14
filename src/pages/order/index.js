@@ -20,9 +20,9 @@ const Order = props => {
 							color: '#fff'
 						}}
 					>
-						{t('Order')}
+						{t('dashBoard.Order')}
 					</Typography.Title>
-					<ListDishesAndActions />
+					<ListDishesAndActions {...props} />
 				</Col>
 			</Row>
 		</React.Fragment>

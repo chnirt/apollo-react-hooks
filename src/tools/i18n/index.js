@@ -20,17 +20,18 @@ i18n
 		// lng: 'en',
 		fallbackLng: 'en', // use en if detected lng is not available
 
-		keySeparator: false, // we do not use keys in form messages.welcome
+		// keySeparator: false, // we do not use keys in form messages.welcome
 
-		interpolation: {
-			escapeValue: false // react already safes from xss
-		},
+		// interpolation: {
+		// 	escapeValue: false // react already safes from xss
+		// },
 		// have a common namespace used around the full app
 		ns: ['translations'],
 		defaultNS: 'translations',
 		react: {
 			wait: false
-		}
+		},
+		returnObjects: true
 	})
 
 export default i18n
