@@ -313,7 +313,8 @@ function UserModal(props) {
 						]
 					})(<Input style={{ fontSize: 16 }} />)}
 				</Form.Item>
-				{getAllSites.sites &&
+				{visible &&
+					getAllSites.sites &&
 					getAllSites.sites.map(item => {
 						// console.log('Chin', props.getAllPermissionsByUserId.findAllByUserId)
 						let array = []
@@ -425,76 +426,15 @@ const GET_USER = gql`
 		}
 	}
 `
-// export default HOCQueryMutation([
-// 	{
-// 		query: GET_ALL_USERS,
-// 		options: {
-// 			variables: {
-// 				offset: 0,
-// 				limit: 100
-// 			}
-// 		}
-// 	},
-// 	{
-// 		query: GET_ALL_PERMISSIONS_BY_USERID,
-// 		name: 'getAllPermissionsByUserId',
-// 		options: props => ({
-// 			variables: {
-// 				_id: props.userId || ''
-// 			},
-// 			fetchPolicy: 'no-cache'
-// 		})
-// 	},
-// 	{
-// 		query: GET_ALL_SITES,
-// 		name: 'getAllSites',
-// 		options: {}
-// 	},
-// 	{
-// 		query: GET_ALL_PERMISSIONS,
-// 		name: 'getAllPermissions',
-// 		options: {}
-// 	},
-// 	{
-// 		query: GET_USER,
-// 		name: 'getUser',
-// 		options: props => ({
-// 			variables: {
-// 				_id: props.userId || ''
-// 			}
-// 		})
-// 	},
-// 	{
-// 		mutation: CREATE_USER,
-// 		name: 'createUser',
-// 		option: {}
-// 	},
-// 	{
-// 		mutation: UPDATE_USER,
-// 		name: 'updateUser',
-// 		options: {}
-// 	}
-// ])(
-// 	withTranslation('translations')(
-// 		Form.create({ name: 'createUserForm' })(UserModal)
-// 	)
-// )
 
 export default compose(
-	graphql(GET_ALL_USERS, {
-		name: 'getUsers',
-		options: {
-			variables: {
-				offset: 0,
-				limit: 100
-			}
-		}
-	}),
 	graphql(GET_ALL_SITES, {
-		name: 'getAllSites'
+		name: 'getAllSites',
+		skip: props => !props.visible
 	}),
 	graphql(GET_ALL_PERMISSIONS, {
-		name: 'getAllPermissions'
+		name: 'getAllPermissions',
+		skip: props => !props.visible
 	}),
 	graphql(GET_USER, {
 		name: 'getUser',

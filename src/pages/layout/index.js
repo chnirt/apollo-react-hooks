@@ -172,7 +172,7 @@ function Layout(props) {
 							trigger={['click']}
 							placement="bottomCenter"
 						>
-							<span style={{ color: '#fff' }}>
+							<span style={{ color: '#fff', cursor: 'pointer' }}>
 								{window.localStorage.getItem('i18nextLng') === 'vi'
 									? 'VI'
 									: 'EN'}
@@ -182,7 +182,7 @@ function Layout(props) {
 					footer={<Divider style={{ margin: '0' }} />}
 				/>
 			</ConfigProvider>
-			<div>{React.cloneElement(children, { siteId: currentsite })}</div>
+			{React.cloneElement(children, { siteId: currentsite })}
 		</div>
 	)
 }
