@@ -24,11 +24,14 @@ function ListDish(props) {
 		if (menuById.menu) {
 			if (shopId !== '' && shopId !== menuById.menu.shopId) {
 				setDishes([])
+				setHasChange(false)
 			} else {
 				setDishes(menuById.menu.dishes)
+				setHasChange(false)
 			}
 		} else {
 			setDishes([])
+			setHasChange(false)
 		}
 	}, [shopId])
 
@@ -371,6 +374,7 @@ const UPDATE_MENU = gql`
 
 export default compose(
 	graphql(GET_DISHES_BY_SHOP, {
+		skip: props => props.shopId === '',
 		options: props => ({
 			variables: {
 				shopId: props.shopId
