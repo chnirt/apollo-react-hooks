@@ -2,8 +2,7 @@ import React, { useState } from 'react'
 import gql from 'graphql-tag'
 import { graphql, compose } from 'react-apollo'
 
-import { Icon, Button, Empty } from 'antd'
-// import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation'
+import { Button, Spin } from 'antd'
 
 const UserList = ({
 	orderCountIn,
@@ -51,22 +50,23 @@ const UserList = ({
 					{`${user.fullName} ${orderCount}/${dishCount}`}
 					<div>
 						<Button
+							icon="minus"
+							shape="circle"
 							disabled={orderCount === 0}
 							style={{ marginRight: 10 }}
 							onClick={() => handleChange('sub')}
-						>
-							<Icon type="minus" />
-						</Button>
+						/>
 						<Button
+							icon="plus"
+							shape="circle"
 							disabled={orderCount === dishCount || user.username !== 'admin'}
 							onClick={() => handleChange('add')}
-						>
-							<Icon type="plus" />
-						</Button>
+						/>
 					</div>
 				</div>
 			) : (
-				<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+				// <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+				<Spin style={{ marginLeft: '40%' }} tip="Loading..." />
 			)}
 		</>
 	)
@@ -94,7 +94,8 @@ export default compose(
 			return {
 				variables: {
 					_id: props.user.userId
-				}
+				},
+				fetchPolicy: 'no-cache'
 			}
 		}
 	}),
@@ -102,22 +103,3 @@ export default compose(
 		name: 'updateOrder'
 	})
 )(UserList)
-
-// export default HOCQueryMutation([
-// 	{
-// 		query: GET_USER_NAME,
-// 		name: 'getUser',
-// 		options: props => {
-// 			return {
-// 				variables: {
-// 					_id: props.user.userId
-// 				}
-// 			}
-// 		}
-// 	},
-// 	{
-// 		mutation: UPDATE_ORDER,
-// 		name: 'updateOrder',
-// 		option: {}
-// 	}
-// ])(UserList)
