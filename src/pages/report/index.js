@@ -83,6 +83,7 @@ function Report(props) {
 										isActiveProps={isActive}
 										menuId={menuBySite._id}
 										menu={menuBySite}
+										{...props}
 									/>
 									<div
 										style={{
@@ -133,10 +134,10 @@ export default withTranslation('translations')(
 		{
 			query: GET_MENU_BY_SITE,
 			name: 'getMenuBySite',
-			options: () => {
+			options: props => {
 				return {
 					variables: {
-						siteId: window.localStorage.getItem('currentsite')
+						siteId: props.currentsite
 					}
 				}
 			}

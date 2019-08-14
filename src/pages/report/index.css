@@ -30,3 +30,7 @@ span.style-btn > button {
 	text-align: center;
 	transform: translateY(-50%);
 }
+
+.display-none {
+	display: none;
+}

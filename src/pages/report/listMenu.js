@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Collapse, Button, Icon, Tooltip } from 'antd'
 import gql from 'graphql-tag'
 import XLSX from 'xlsx'
@@ -41,7 +41,7 @@ function listMenu(props) {
 		dishes.unshift([menu.name])
 		dishes.push(['Tổng'])
 		dishes.push([new Date()])
-		dishes.push(['', '', `Người gửi : ${me.me.fullName}`])
+		dishes.push(['', '', `Người gửi : ${me.fullName}`])
 
 		// console.log(dishes)
 
@@ -104,9 +104,8 @@ function listMenu(props) {
 			cellStyles: true
 		})
 	}
-
 	const { menu, isLock, isActiveProps, getOrderByMenu, menuId } = props
-	console.log(props)
+	const [isActive, changeActive] = useState(false)
 	return (
 		<Collapse className="open-menu">
 			<Panel
@@ -126,11 +125,13 @@ function listMenu(props) {
 						<Tooltip title="Complete menu">
 							<Button
 								className="publish style-btn complete-menu"
-								onClick={e => isActiveProps(e, menu._id)}
-								disabled={!menu.isLocked}
-								loading={!menu ? true : false}
+								onClick={e => {
+									isActiveProps(e, menu._id)
+									changeActive(!isActive)
+								}}
+								disabled={!menu.isLocked || isActive}
 							>
-								<Icon type="check" />
+								<Icon type={!isActive ? 'check' : 'loading'} />
 							</Button>
 						</Tooltip>
 
@@ -194,15 +195,6 @@ const ORDER_BY_MENU = gql`
 	}
 `
 
-const ME = gql`
-	query {
-		me {
-			username
-			fullName
-		}
-	}
-`
-
 export default withTranslation('translations')(
 	HOCQueryMutation([
 		{
@@ -215,10 +207,6 @@ export default withTranslation('translations')(
 					}
 				}
 			}
-		},
-		{
-			query: ME,
-			name: 'me'
 		}
 	])(listMenu)
 )

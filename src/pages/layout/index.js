@@ -182,7 +182,7 @@ function Layout(props) {
 					footer={<Divider style={{ margin: '0' }} />}
 				/>
 			</ConfigProvider>
-			<div>{React.cloneElement(children, { siteId: currentsite })}</div>
+			{React.cloneElement(children, { currentsite, me })}
 		</div>
 	)
 }
@@ -191,6 +191,7 @@ const ME = gql`
 	query {
 		me {
 			username
+			fullName
 		}
 	}
 `

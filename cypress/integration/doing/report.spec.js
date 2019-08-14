@@ -3,7 +3,7 @@ import setting from '../../../setting.json'
 const { wait } = setting
 
 it('Report', () => {
-	cy.visit('http://lunch4test.digihcs.com')
+	cy.visit('/')
 	cy.wait(wait)
 	cy.get('input#normal_login_username')
 		.should('be.visible')

@@ -45,8 +45,8 @@ function Dashboard(props) {
 						item =>
 							JSON.parse(window.localStorage.getItem('user-permissions'))
 								.filter(item1 => item1.siteId === currentsite)[0]
-								.permissions.map(item2 => item2.code.split('_')[0])
-								.filter(item3 => item3 === item.code).length > 0 && (
+								.sitepermissions.filter(item3 => item3 === item.code).length >
+								0 && (
 								<Col
 									key={item.label}
 									xs={{
