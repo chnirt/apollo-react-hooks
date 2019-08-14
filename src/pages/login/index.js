@@ -43,9 +43,10 @@ function Login(props) {
 						}
 					})
 					.catch(err1 => {
-						// console.log(err1)
+						console.log(err1)
 						const errors = err1.graphQLErrors.map(error => error.extensions.code)
 						let mess = ''
+						console.log(errors[0])
 						if (errors[0] === '401') {
 							mess = 'Username or Password is not correct'
 						}
