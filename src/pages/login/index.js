@@ -34,8 +34,7 @@ function Login(props) {
 						const { token, userPermissions } = res.data.login
 						setLoading(false)
 						if (
-							userPermissions.length > 0 &&
-							userPermissions[0].permissions.length > 0
+							userPermissions.filter(item => item.sitepermissions.length > 0)
 						) {
 							props.store.authStore.authenticate(token, userPermissions)
 							props.history.push('/🥢')
@@ -44,9 +43,10 @@ function Login(props) {
 						}
 					})
 					.catch(err1 => {
-						// console.log(err1)
+						console.log(err1)
 						const errors = err1.graphQLErrors.map(error => error.extensions.code)
 						let mess = ''
+						console.log(errors[0])
 						if (errors[0] === '401') {
 							mess = 'Username or Password is not correct'
 						}
@@ -162,10 +162,6 @@ const USER_LOGIN = gql`
 				siteId
 				siteName
 				sitepermissions
-				permissions {
-					_id
-					code
-				}
 			}
 		}
 	}
