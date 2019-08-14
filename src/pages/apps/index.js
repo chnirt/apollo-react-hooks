@@ -3,7 +3,7 @@ import { Switch, Route, Redirect } from 'react-router-dom'
 import withLoadable from '../../tools/loadable'
 
 export default function Root(props) {
-	const { routes, currentsite } = props
+	const { routes } = props
 	return (
 		<Switch>
 			{routes &&
@@ -15,7 +15,7 @@ export default function Root(props) {
 							const MyComponent = withLoadable(import(`../${route.component}`))
 							return (
 								<MyComponent
-									currentsite={currentsite}
+									{...props}
 									{...props1}
 									{...route}
 									routes={route.routes}

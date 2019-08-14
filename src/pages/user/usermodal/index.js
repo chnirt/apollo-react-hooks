@@ -202,6 +202,13 @@ function UserModal(props) {
 		})
 	}
 
+	function handleOnFocus() {
+		// document
+		// 	.getElementsByClassName('hide-searchSelect')[0]
+		// 	.getElementsByClassName('ant-select-search__field')[0]
+		// 	.setAttribute('readonly', 'readonly')
+	}
+
 	const formItemLayout = {
 		labelCol: {
 			xs: { span: 24 },
@@ -340,6 +347,8 @@ function UserModal(props) {
 									<Select
 										mode="multiple"
 										placeholder={t('user.SelectPermissions')}
+										className="acexis"
+										onFocus={handleOnFocus}
 									>
 										{props.getAllPermissions.permissions &&
 											props.getAllPermissions.permissions.map(item1 => {
