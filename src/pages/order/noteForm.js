@@ -1,6 +1,5 @@
 import React from 'react'
 import { Button, Modal, Input, Form, Checkbox } from 'antd'
-import { withTranslation } from 'react-i18next'
 
 class NoteForm extends React.Component {
 	constructor(props) {
@@ -20,11 +19,11 @@ class NoteForm extends React.Component {
 	}
 
 	onChange = e => {
+		const { noted, t } = this.props
 		if (e.target.checked) {
 			this.setState({
 				extraRice:
-					// eslint-disable-next-line react/destructuring-assignment
-					(this.props.noted && `Cơm thêm, ${this.props.noted}`) || 'Cơm thêm'
+					(noted && `${t('order.More rice')}, ${noted}`) || t('order.More rice')
 			})
 		} else if (!e.target.checked) {
 			this.setState({
@@ -40,7 +39,7 @@ class NoteForm extends React.Component {
 			<Modal
 				visible={visible}
 				onCancel={onCancel}
-				title={t('Note')}
+				title={t('order.Note')}
 				footer={[
 					<Button
 						key="cancel"
@@ -48,17 +47,17 @@ class NoteForm extends React.Component {
 						onClick={onCancel}
 						name="cancelNote"
 					>
-						{t('Cancel')}
+						{t('common.Cancel')}
 					</Button>,
 					<Button key="save" type="primary" onClick={onCreate} name="addNote">
-						{t('Add')}
+						{t('common.Add')}
 					</Button>
 				]}
 			>
 				<Form colon={false} ref={this.form}>
 					<Form.Item>
 						{getFieldDecorator('note', {
-							rules: [{ required: false, message: t('Input note') }],
+							rules: [{ required: false, message: t('order.Input note') }],
 							// eslint-disable-next-line react/destructuring-assignment
 							initialValue:
 								// eslint-disable-next-line react/destructuring-assignment
@@ -70,7 +69,7 @@ class NoteForm extends React.Component {
 						})(
 							<Input.TextArea
 								id="orderNoteInput"
-								placeholder={t('Input note')}
+								placeholder={t('order.Input note')}
 								autosize={{ minRows: 3, maxRows: 7 }}
 							/>
 						)}
@@ -80,7 +79,7 @@ class NoteForm extends React.Component {
 							rules: [{ required: false }]
 						})(
 							<Checkbox id="extraRiceCheckbox" onChange={e => this.onChange(e)}>
-								{t('More rice')}
+								{t('order.More rice')}
 							</Checkbox>
 						)}
 					</Form.Item>
@@ -90,4 +89,4 @@ class NoteForm extends React.Component {
 	}
 }
 
-export default React.forwardRef(withTranslation('translations')(NoteForm))
+export default NoteForm

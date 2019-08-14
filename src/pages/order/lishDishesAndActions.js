@@ -3,7 +3,6 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Row, Button, List, Form } from 'antd'
 import gql from 'graphql-tag'
 import { withApollo } from 'react-apollo'
-import { withTranslation } from 'react-i18next'
 
 import openNotificationWithIcon from '../../components/shared/openNotificationWithIcon'
 import NoteForm from './noteForm'
@@ -125,7 +124,7 @@ const ListDishesAndActions = props => {
 				}
 			})
 			.catch(() => {
-				openNotificationWithIcon('error', 'get-menu', t('Failed'), null)
+				openNotificationWithIcon('error', 'get-menu', t('common.Failed'), null)
 			})
 	}
 
@@ -157,11 +156,16 @@ const ListDishesAndActions = props => {
 						await setOrderedNumber(obj)
 					})
 					.catch(() => {
-						openNotificationWithIcon('error', 'get-orders', t('Failed'), null)
+						openNotificationWithIcon(
+							'error',
+							'get-orders',
+							t('common.Failed'),
+							null
+						)
 					})
 			})
 			.catch(() => {
-				openNotificationWithIcon('error', 'get-menu', t('Failed'), null)
+				openNotificationWithIcon('error', 'get-menu', t('common.Failed'), null)
 			})
 	}
 
@@ -183,7 +187,12 @@ const ListDishesAndActions = props => {
 					await setOrderedNumber(obj)
 				},
 				error() {
-					openNotificationWithIcon('error', 'subscription', t('Failed'), null)
+					openNotificationWithIcon(
+						'error',
+						'subscription',
+						t('common.Failed'),
+						null
+					)
 				}
 			})
 	}
@@ -220,7 +229,7 @@ const ListDishesAndActions = props => {
 						openNotificationWithIcon(
 							'error',
 							'get-users-order',
-							t('Failed'),
+							t('common.Failed'),
 							null
 						)
 					})
@@ -229,7 +238,7 @@ const ListDishesAndActions = props => {
 				openNotificationWithIcon(
 					'error',
 					'get-menu',
-					t('System has locked'),
+					t('order.System has locked'),
 					null
 				)
 			})
@@ -248,7 +257,12 @@ const ListDishesAndActions = props => {
 				await setSelectedOrder(res.data.currentOrder)
 			})
 			.catch(() => {
-				openNotificationWithIcon('error', 'get-order-id', t('Failed'), null)
+				openNotificationWithIcon(
+					'error',
+					'get-order-id',
+					t('common.Failed'),
+					null
+				)
 			})
 	}
 
@@ -292,13 +306,13 @@ const ListDishesAndActions = props => {
 						openNotificationWithIcon(
 							'error',
 							'get-orders-count-by-user',
-							t('Failed'),
+							t('common.Failed'),
 							null
 						)
 					})
 			})
 			.catch(() => {
-				openNotificationWithIcon('error', 'get-menu', t('Failed'), null)
+				openNotificationWithIcon('error', 'get-menu', t('common.Failed'), null)
 			})
 		handleOrderedNumber()
 		handleDefaultDishes()
@@ -346,18 +360,28 @@ const ListDishesAndActions = props => {
 			.then(async res => {
 				await setSelectedOrder(res.data.orderDish)
 				if (res.data.orderDish) {
-					openNotificationWithIcon('success', 'alert-order', t('Success'), null)
+					openNotificationWithIcon(
+						'success',
+						'alert-order',
+						t('common.Success'),
+						null
+					)
 					await handleOrderedNumber()
 					await setOrdersCountByUser({
 						...ordersCountByUser,
 						[item._id]: quantity
 					})
 				} else {
-					openNotificationWithIcon('error', 'alert-order', t('Failed'), null)
+					openNotificationWithIcon(
+						'error',
+						'alert-order',
+						t('common.Failed'),
+						null
+					)
 				}
 			})
 			.catch(() => {
-				openNotificationWithIcon('error', 'order', t('Failed'), null)
+				openNotificationWithIcon('error', 'order', t('common.Failed'), null)
 			})
 	}
 
@@ -390,13 +414,23 @@ const ListDishesAndActions = props => {
 				})
 				.then(res => {
 					if (res.data.updateOrder) {
-						openNotificationWithIcon('success', 'alert-note', t('Success'), null)
+						openNotificationWithIcon(
+							'success',
+							'alert-note',
+							t('common.Success'),
+							null
+						)
 					} else {
-						openNotificationWithIcon('error', 'alert-note', t('Failed'), null)
+						openNotificationWithIcon(
+							'error',
+							'alert-note',
+							t('common.Failed'),
+							null
+						)
 					}
 				})
 				.catch(() => {
-					openNotificationWithIcon('error', 'note', t('Failed'), null)
+					openNotificationWithIcon('error', 'note', t('common.Failed'), null)
 				})
 			formRef.resetFields()
 			setModalVisible(false)
@@ -497,7 +531,7 @@ const ListDishesAndActions = props => {
 							</List.Item>
 						)}
 					/>
-					<ConfirmButton menuId={menuId} />
+					<ConfirmButton menuId={menuId} {...props} />
 				</>
 			) : (
 				<Row
@@ -508,10 +542,11 @@ const ListDishesAndActions = props => {
 						color: '#fff'
 					}}
 				>
-					<div>{t('System has locked')}</div>
+					<div>{t('order.System has locked')}</div>
 				</Row>
 			)}
 			<CollectionCreateForm
+				{...props}
 				wrappedComponentRef={saveFormRef}
 				visible={modalVisible}
 				onCancel={handleCancel}
@@ -524,4 +559,4 @@ const ListDishesAndActions = props => {
 	)
 }
 
-export default withTranslation('translations')(withApollo(ListDishesAndActions))
+export default withApollo(ListDishesAndActions)

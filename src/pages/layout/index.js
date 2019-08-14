@@ -73,13 +73,13 @@ function Layout(props) {
 			<Menu.Divider />
 			<Menu.Item onClick={onLogout}>
 				<Icon type="logout" />
-				<span>{t('Log out')}</span>
+				<span>{t('common.Log out')}</span>
 			</Menu.Item>
 		</Menu>
 	)
 
 	function changeLocale({ key }) {
-		console.log(key)
+		// console.log(key)
 		if (key === 'vi') {
 			props.i18n.changeLanguage('vi')
 			props.store.i18nStore.changeLanguage('vi')
