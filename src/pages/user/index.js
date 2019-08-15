@@ -23,6 +23,7 @@ const { Title } = Typography
 function User(props) {
 	const [visible, setVisible] = useState(false)
 	const [userId, setUserId] = useState('')
+	const inputEl = useRef(null)
 
 	function showModal(_id) {
 		// console.log(_id)
@@ -34,8 +35,6 @@ function User(props) {
 		setVisible(false)
 		setUserId('')
 	}
-
-	const inputEl = useRef(null)
 
 	function onLockAndUnlock(_id, reason) {
 		// console.log("onLockAndUnlock", _id)
@@ -57,31 +56,21 @@ function User(props) {
 			})
 			.then(res => {
 				//  console.log('hello', res)
-				if (res.data.lockAndUnlockUser === true)
-					openNotificationWithIcon(
-						'success',
-						'success',
-						t('common.Success'),
-						null
-					)
+				if (res.data.lockAndUnlockUser)
+					openNotificationWithIcon('success', 'success', t('Success'), null)
 			})
 			.catch(err => {
 				// console.log(err)
 				const errors = err.graphQLErrors.map(error => error.message)
-				openNotificationWithIcon(
-					'error',
-					'failed',
-					t('common.Failed'),
-					errors[0]
-				)
+				openNotificationWithIcon('error', 'failed', t('Failed'), errors[0])
 			})
 	}
 
 	function onDelete(_id) {
 		// console.log("onDelete", _id)
 		confirm({
-			title: t('user.DeleteUser'),
-			content: t('common.ConfirmDelete'),
+			title: t('DeleteUser'),
+			content: t('ConfirmDelete'),
 			onOk() {
 				// console.log('OK');
 				props
@@ -100,24 +89,14 @@ function User(props) {
 						]
 					})
 					.then(res => {
-						// console.log(res)
-						if (res.data.lockAndUnlockUser === true)
-							openNotificationWithIcon(
-								'success',
-								'success',
-								t('common.Success'),
-								null
-							)
+						console.log(res)
+						if (res.data.deleteUser)
+							openNotificationWithIcon('success', 'success', t('Success'), null)
 					})
 					.catch(err => {
 						// console.log(err)
 						const errors = err.graphQLErrors.map(error => error.message)
-						openNotificationWithIcon(
-							'error',
-							'failed',
-							t('common.Failed'),
-							errors[0]
-						)
+						openNotificationWithIcon('error', 'failed', t('Failed'), errors[0])
 					})
 			},
 			onCancel() {
@@ -151,7 +130,7 @@ function User(props) {
 					title={
 						<div>
 							<Title style={{ color: '#ffffff' }} level={3}>
-								{t('dashBoard.Manage User')}
+								{t('Manage User')}
 							</Title>
 						</div>
 					}
@@ -159,7 +138,7 @@ function User(props) {
 					extra={
 						<div>
 							<Button type="primary" block onClick={() => showModal()}>
-								{t('user.Add user')}
+								{t('Add user')}
 							</Button>
 						</div>
 					}
@@ -222,12 +201,7 @@ function User(props) {
 						)}
 					/>
 				</Card>
-				<UserModal
-					{...props}
-					userId={userId}
-					visible={visible}
-					hideModal={hideModal}
-				/>
+				<UserModal userId={userId} visible={visible} hideModal={hideModal} />
 			</Row>
 		</>
 	)
@@ -239,21 +213,21 @@ const GET_ALL_USERS = gql`
 			_id
 			username
 			fullName
-			isActive
 			reason
+			isActive
 			isLocked
 		}
 	}
 `
 
 const USER_LOCK_AND_UNLOCK = gql`
-	mutation($_id: String!, $reason: String!) {
+	mutation($_id: ID!, $reason: String!) {
 		lockAndUnlockUser(_id: $_id, reason: $reason)
 	}
 `
 
 const USER_DELETE = gql`
-	mutation($_id: String!) {
+	mutation($_id: ID!) {
 		deleteUser(_id: $_id)
 	}
 `
