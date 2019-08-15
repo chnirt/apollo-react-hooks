@@ -18,7 +18,7 @@ function UserModal(props) {
 	function compareToFirstPassword(rule, value, callback) {
 		const { form } = props
 		if (value && value !== form.getFieldValue('password')) {
-			callback(t('src.pages.user.inconsistentPw'))
+			callback(t('src.pages.user.inconsistentPassword'))
 		} else {
 			callback()
 		}
@@ -233,7 +233,6 @@ function UserModal(props) {
 		t
 	} = props
 	const { getFieldDecorator } = form
-	const user = 'src.pages.user'
 
 	return (
 		<Modal
@@ -252,11 +251,11 @@ function UserModal(props) {
 							rules: [
 								{
 									required: true,
-									message: t('src.pages.user.inputUsername')
+									message: t('src.pages.user.usernameRequired')
 								},
 								{
 									min: 4,
-									message: t('src.pages.user.userName4C')
+									message: t('src.pages.user.userNameMin4Characters')
 								}
 							]
 						})(<Input style={{ fontSize: 16 }} />)}
@@ -267,15 +266,15 @@ function UserModal(props) {
 						rules: [
 							{
 								required: true,
-								message: t('src.pages.user.inputPassword')
+								message: t('src.pages.user.passwordRequired')
 							},
 							{
 								min: 1,
-								message: t('src.pages.user.Pw1-8')
+								message: t('src.pages.user.passwordMin1Max8')
 							},
 							{
 								max: 8,
-								message: t('src.pages.user.Pw1-8')
+								message: t('src.pages.user.passwordMin1Max8')
 							},
 							{
 								validator: validateToNextPassword
@@ -308,15 +307,15 @@ function UserModal(props) {
 						rules: [
 							{
 								required: true,
-								message: t('src.pages.user.inputFullname')
+								message: t('src.pages.user.fullNameRequired')
 							},
 							{
 								min: 3,
-								message: t('src.pages.user.fn3-20')
+								message: t('src.pages.user.fullNameMin3Max20')
 							},
 							{
 								max: 20,
-								message: t('src.pages.user.fn3-20')
+								message: t('src.pages.user.fullNameMin3Max20')
 							}
 						]
 					})(<Input style={{ fontSize: 16 }} />)}

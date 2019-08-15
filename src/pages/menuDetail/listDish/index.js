@@ -53,7 +53,7 @@ function ListDish(props) {
 							openNotificationWithIcon(
 								'success',
 								'delete',
-								t('menu.AddDishSuccess'),
+								t('src.pages.menu.addDishSuccess'),
 								''
 							)
 						}
@@ -107,10 +107,20 @@ function ListDish(props) {
 						]
 					})
 					.then(() => {
-						openNotificationWithIcon('success', 'save', t('common.Success'), '')
+						openNotificationWithIcon(
+							'success',
+							'save',
+							t('src.pages.common.success'),
+							''
+						)
 						setHasChange(false)
 					})
-			: openNotificationWithIcon('info', 'nochange', t('menu.MenuNoChange'), '')
+			: openNotificationWithIcon(
+					'info',
+					'nochange',
+					t('src.pages.menu.menuNoChange'),
+					''
+			  )
 	}
 
 	async function deleteDishInMenu(dishId) {
@@ -143,8 +153,8 @@ function ListDish(props) {
 
 	async function deleteDish(dishId) {
 		Modal.confirm({
-			title: t('DeleteDish'),
-			content: t('ConfirmDelete'),
+			title: t('src.pages.deleteDish'),
+			content: t('src.pages.common.confirmDelete'),
 			onOk: async () => {
 				await props
 					.deleteDish({
@@ -158,7 +168,7 @@ function ListDish(props) {
 						openNotificationWithIcon(
 							'success',
 							'delete',
-							t('common.Success'),
+							t('src.pages.common.success'),
 							''
 						)
 					})
@@ -180,7 +190,7 @@ function ListDish(props) {
 						onClick={() => setVisible(true)}
 						hidden={shopId === ''}
 					>
-						{t('menu.AddDish')}
+						{t('src.pages.menu.addDish')}
 					</Button>
 					<Button
 						name="btnSaveMenu"
@@ -191,7 +201,7 @@ function ListDish(props) {
 							shopId === '' || (menuById.menu && menuById.menu.isPublished)
 						}
 					>
-						{t('common.Save')}
+						{t('src.pages.common.save')}
 					</Button>
 					<Button
 						name="btnPublishMenu"
@@ -199,8 +209,8 @@ function ListDish(props) {
 						onClick={() => publishAndUnpublish(hasChange)}
 					>
 						{menuById.menu && menuById.menu.isPublished
-							? t('menu.UnPublish')
-							: t('menu.Publish')}
+							? t('src.pages.menu.unpublish')
+							: t('src.pages.menu.publish')}
 					</Button>
 				</Row>
 			</Col>
@@ -219,10 +229,10 @@ function ListDish(props) {
 						header={
 							<Row>
 								<Col span={12} offset={1}>
-									<b>{t('menu.Dish')}</b>
+									<b>{t('src.pages.menu.dish')}</b>
 								</Col>
 								<Col span={6} offset={1}>
-									<b>{t('menu.Count')}</b>
+									<b>{t('src.pages.menu.count')}</b>
 								</Col>
 							</Row>
 						}
@@ -254,10 +264,10 @@ function ListDish(props) {
 							header={
 								<Row>
 									<Col span={12}>
-										<b>{t('menu.Dish')}</b>
+										<b>{t('src.pages.menu.dish')}</b>
 									</Col>
 									<Col span={6}>
-										<b>{t('menu.Count')}</b>
+										<b>{t('src.pages.menu.count')}</b>
 									</Col>
 								</Row>
 							}
@@ -295,7 +305,7 @@ function ListDish(props) {
 				)}
 			</Col>
 			<Modal
-				title={t('common.Add')}
+				title={t('src.pages.common.add')}
 				visible={visible}
 				onCancel={() => setVisible(false)}
 				afterClose={() => form.resetFields(['name'])}
@@ -306,10 +316,10 @@ function ListDish(props) {
 						onClick={() => setVisible(false)}
 						name="cancelAddDish"
 					>
-						{t('common.Cancel')}
+						{t('src.pages.common.cancel')}
 					</Button>,
 					<Button key="save" type="primary" onClick={addDish} name="addDish">
-						{t('common.Add')}
+						{t('src.pages.common.add')}
 					</Button>
 				]}
 			>
@@ -318,9 +328,11 @@ function ListDish(props) {
 						<Col span={20} offset={2}>
 							<Form.Item>
 								{getFieldDecorator('name', {
-									rules: [{ required: true, message: t('menu.InputDish') }],
+									rules: [
+										{ required: true, message: t('src.pages.menu.inputDish') }
+									],
 									initialValue: ''
-								})(<Input placeholder={t('menu.InputDish')} />)}
+								})(<Input placeholder={t('src.pages.menu.inputDish')} />)}
 							</Form.Item>
 						</Col>
 					</Row>

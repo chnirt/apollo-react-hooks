@@ -1,6 +1,5 @@
 import React from 'react'
 import gql from 'graphql-tag'
-import { withTranslation } from 'react-i18next'
 import { compose, graphql } from 'react-apollo'
 
 import openNotificationWithIcon from '../../components/shared/openNotificationWithIcon'
@@ -28,7 +27,11 @@ function Report(props) {
 			]
 		})
 			.then(() => {
-				openNotificationWithIcon('success', 'login', t('common.Success'))
+				openNotificationWithIcon(
+					'success',
+					'login',
+					t('src.pages.common.success')
+				)
 			})
 			.catch(() => {
 				// console.log(err)
@@ -55,7 +58,11 @@ function Report(props) {
 		})
 			.then(() => {
 				// console.log(data)
-				openNotificationWithIcon('success', 'success', t('common.Success'))
+				openNotificationWithIcon(
+					'success',
+					'success',
+					t('src.pages.common.success')
+				)
 			})
 			.catch(err => {
 				// console.log(err)
@@ -66,7 +73,7 @@ function Report(props) {
 	// componentWillUpdate() {
 	// 	console.log( props)
 	// }
-	console.log(props)
+
 	const { getMenuBySite } = props
 	return (
 		<React.Fragment>
@@ -128,23 +135,21 @@ const CLOSE_MENU = gql`
 	}
 `
 
-export default withTranslation('translations')(
-	compose(
-		graphql(GET_MENU_BY_SITE, {
-			name: 'getMenuBySite',
-			options: props => {
-				return {
-					variables: {
-						siteId: props.currentsite
-					}
+export default compose(
+	graphql(GET_MENU_BY_SITE, {
+		name: 'getMenuBySite',
+		options: props => {
+			return {
+				variables: {
+					siteId: props.currentsite
 				}
 			}
-		}),
-		graphql(LOCK_AND_UNLOCK_MENU, {
-			name: 'lockAndUnLockMenu'
-		}),
-		graphql(CLOSE_MENU, {
-			name: 'closeMenu'
-		})
-	)(Report)
-)
+		}
+	}),
+	graphql(LOCK_AND_UNLOCK_MENU, {
+		name: 'lockAndUnLockMenu'
+	}),
+	graphql(CLOSE_MENU, {
+		name: 'closeMenu'
+	})
+)(Report)

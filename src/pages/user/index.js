@@ -132,7 +132,7 @@ function User(props) {
 				<Input
 					ref={inputEl}
 					type="text"
-					placeholder={t('src.pages.user.inputReason')}
+					placeholder={t('src.pages.user.reasonRequired')}
 				/>
 			),
 			onOk() {
@@ -164,7 +164,7 @@ function User(props) {
 					extra={
 						<div>
 							<Button type="primary" block onClick={() => showModal()}>
-								{t('src.pages.user.addUser')}
+								{t('src.pages.common.add')}
 							</Button>
 						</div>
 					}

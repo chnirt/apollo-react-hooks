@@ -61,17 +61,32 @@ function DishesListAndActions(props) {
 		})
 			.then(async res => {
 				if (res.data.orderDish) {
-					openNotificationWithIcon('success', 'alert-order', t('Success'), null)
+					openNotificationWithIcon(
+						'success',
+						'alert-order',
+						t('src.pages.common.success'),
+						null
+					)
 					await setOrdersCountedByUser({
 						...ordersCountedByUser,
 						[item._id]: quantity
 					})
 				} else {
-					openNotificationWithIcon('error', 'alert-order', t('Failed'), null)
+					openNotificationWithIcon(
+						'error',
+						'alert-order',
+						t('src.pages.common.failed'),
+						null
+					)
 				}
 			})
 			.catch(() => {
-				openNotificationWithIcon('error', 'order', t('Failed'), null)
+				openNotificationWithIcon(
+					'error',
+					'order',
+					t('src.pages.common.failed'),
+					null
+				)
 			})
 	}
 
@@ -188,7 +203,7 @@ function DishesListAndActions(props) {
 						color: '#fff'
 					}}
 				>
-					<div>{t('System has locked')}</div>
+					<div>{t('src.pages.order.systemHasLocked')}</div>
 				</Row>
 			)}
 		</React.Fragment>

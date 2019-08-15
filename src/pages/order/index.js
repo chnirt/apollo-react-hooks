@@ -2,7 +2,6 @@ import React from 'react'
 import { Typography, Col, Row } from 'antd'
 import gql from 'graphql-tag'
 import { graphql, compose } from 'react-apollo'
-import { withTranslation } from 'react-i18next'
 import DishesListAndActions from './dishesListAndActions'
 
 function Order(props) {
@@ -23,7 +22,7 @@ function Order(props) {
 							color: '#fff'
 						}}
 					>
-						{t('dashBoard.Order')}
+						{t('src.pages.dashBoard.Order')}
 					</Typography.Title>
 					{menuPublishBySite.menuPublishBySite &&
 					ordersByMenu.ordersByMenu &&
@@ -46,7 +45,7 @@ function Order(props) {
 								color: '#fff'
 							}}
 						>
-							<div>{t('System has locked')}</div>
+							<div>{t('src.pages.order.systemHasLocked')}</div>
 						</Row>
 					)}
 				</Col>
@@ -132,4 +131,4 @@ export default compose(
 			}
 		})
 	})
-)(withTranslation('translations')(Order))
+)(Order)

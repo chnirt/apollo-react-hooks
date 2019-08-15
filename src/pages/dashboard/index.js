@@ -17,8 +17,6 @@ function Dashboard(props) {
 	const [currentsite] = useState(window.localStorage.getItem('currentsite'))
 
 	const { t } = props
-	const common = 'src.pages.common'
-	const dashBoard = 'src.pages.dashBoard'
 	return (
 		<>
 			<Row
@@ -29,7 +27,7 @@ function Dashboard(props) {
 				<Card
 					title={
 						<Title style={{ color: '#ffffff' }} level={3}>
-							{t(`${common}.quickActions`)}
+							{t(`src.pages.common.quickActions`)}
 						</Title>
 					}
 					bordered={false}
@@ -77,7 +75,7 @@ function Dashboard(props) {
 											}}
 											type={item.icon}
 										/>
-										{t(`${dashBoard}.${item.label}`)}
+										{t(`src.pages.dashBoard.${item.label}`)}
 									</Card.Grid>
 								</Col>
 							)

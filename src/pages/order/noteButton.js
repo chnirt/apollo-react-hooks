@@ -74,14 +74,19 @@ function NoteButton(props) {
 						openNotificationWithIcon(
 							'success',
 							'success-add-note',
-							t('Success'),
+							t('src.pages.common.success'),
 							null
 						)
 				})
 				.catch(err => {
 					// console.log(err)
 					const errors = err.graphQLErrors.map(error => error.message)
-					openNotificationWithIcon('error', 'failed', 'Failed', errors[0])
+					openNotificationWithIcon(
+						'error',
+						'failed',
+						'src.pages.common.failed',
+						errors[0]
+					)
 				})
 			formRef.resetFields()
 			setModalVisible(false)
