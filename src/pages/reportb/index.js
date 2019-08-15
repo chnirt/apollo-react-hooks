@@ -9,12 +9,12 @@ import './index.scss'
 function ReportB({
 	getMenuBySite: { menusBySite },
 	lockAndUnLockMenu,
-	closeMenu
+	closeMenu,
+	me
 }) {
-	// console.log(menusBySite)
 	const siteId = localStorage.getItem('currentsite')
 	const handleCloseMenu = (e, menuId) => {
-		e.stopPropagation()
+		// e.stopPropagation()
 		closeMenu({
 			mutation: CLOSE_MENU,
 			variables: {
@@ -32,7 +32,7 @@ function ReportB({
 			.then(() => {
 				openNotificationWithIcon('success', 'login', 'Close Menu Success')
 			})
-			.catch(() => {
+			.catch(err => {
 				console.log(err)
 				// throw err
 			})
@@ -74,8 +74,9 @@ function ReportB({
 								<MenuList
 									menuBySite={menuBySite}
 									key={menuBySite._id}
-									handleCloseMenu={handleCloseMenu}
-									handleLockMenu={handleLockMenu}
+									closeMenu={handleCloseMenu}
+									lockMenu={handleLockMenu}
+									me={me}
 								/>
 							)}
 						</div>

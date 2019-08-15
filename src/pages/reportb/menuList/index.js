@@ -8,17 +8,17 @@ import UserList from './userList'
 
 const { Panel } = Collapse
 
-const MenuList = ({
-	menuBySite,
-	getOrdersByMenu,
-	handleCloseMenu,
-	handleLockMenu,
-	me
-}) => {
+function MenuList({ menuBySite, getOrdersByMenu, closeMenu, lockMenu, me }) {
 	const [isActive, changeActive] = useState(!menuBySite.isLocked)
+	const [isClosed, setCloseMenu] = useState(!menuBySite.isLocked)
+
 	const handleChangeLockState = (e, menuId) => {
 		changeActive(!isActive)
-		handleLockMenu(e, menuId)
+		lockMenu(e, menuId)
+	}
+	const handleCloseMenu = (e, menuId) => {
+		setCloseMenu(true)
+		closeMenu(e, menuId)
 	}
 	const exportFile = menu => {
 		const dishes = []
@@ -31,9 +31,7 @@ const MenuList = ({
 				counts[order.dishId] = order.count
 			}
 			return counts[order.dishId]
-			// console.log(order.dishId)
 		})
-		// console.log(counts)
 		menu.dishes.forEach(item =>
 			dishes.push([item.name, '', '', counts[item._id] || 0])
 		)
@@ -41,7 +39,7 @@ const MenuList = ({
 		dishes.unshift([menu.name])
 		dishes.push(['Tổng'])
 		dishes.push([new Date()])
-		dishes.push(['', '', `Người gửi : ${me.me.fullName}`])
+		dishes.push(['', '', `Người gửi : ${me.fullName}`])
 		const wb = XLSX.utils.book_new()
 		const ws = XLSX.utils.aoa_to_sheet(dishes, {
 			dateNF: 'HH:mm:ss DD-MM-YYYY'
@@ -98,24 +96,24 @@ const MenuList = ({
 		})
 	}
 	return (
-		<Collapse>
+		<Collapse defaultActiveKey="1">
 			<Panel
 				header={menuBySite.name}
 				showArrow={false}
 				bordered
 				key="1"
-				disabled={!isActive}
+				// disabled={!isActive}
 				extra={
 					<>
 						<Button
 							className="publish style-btn"
 							onClick={e => handleChangeLockState(e, menuBySite._id)}
-							icon={menuBySite.isLocked ? 'lock' : 'unlock'}
+							icon={isActive ? 'unlock' : 'lock'}
 							type="link"
 						/>
 						<Button
 							className={`publish style-btn ${isActive ? 'disable-button' : ''}`}
-							disabled={isActive}
+							disabled={isActive || isClosed}
 							onClick={e => handleCloseMenu(e, menuBySite._id)}
 							icon="check"
 							type="link"
@@ -130,7 +128,7 @@ const MenuList = ({
 					</>
 				}
 			>
-				<Collapse defaultActiveKey="1">
+				<Collapse>
 					{menuBySite.dishes &&
 						menuBySite.dishes.map(dish => {
 							const users =
@@ -141,7 +139,7 @@ const MenuList = ({
 							// console.log(users)
 							return (
 								<Panel
-									showArrow={false}
+									// showArrow={false}
 									header={`${dish.name} x${dish.count}`}
 									key={dish._id}
 								>
@@ -180,14 +178,6 @@ const GET_ORDERS_BY_MENU = gql`
 	}
 `
 
-const ME = gql`
-	query {
-		me {
-			username
-			fullName
-		}
-	}
-`
 export default compose(
 	graphql(GET_ORDERS_BY_MENU, {
 		name: 'getOrdersByMenu',
@@ -196,8 +186,5 @@ export default compose(
 				menuId: props.menuBySite._id
 			}
 		})
-	}),
-	graphql(ME, {
-		name: 'me'
 	})
 )(MenuList)
