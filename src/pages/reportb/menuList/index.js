@@ -1,27 +1,24 @@
 import React, { useState } from 'react'
 import gql from 'graphql-tag'
-import { withTranslation } from 'react-i18next'
 import { graphql, compose } from 'react-apollo'
 
 import XLSX from 'xlsx'
-import { Collapse, Tooltip, Icon, Button } from 'antd'
-// import { HOCQueryMutation } from '../../../components/shared/hocQueryAndMutation'
+import { Collapse, Button } from 'antd'
 import UserList from './userList'
 
 const { Panel } = Collapse
 
-const MenuList = ({
-	t,
-	menuBySite,
-	getOrdersByMenu,
-	handleCloseMenu,
-	handleLockMenu,
-	me
-}) => {
+function MenuList({ menuBySite, getOrdersByMenu, closeMenu, lockMenu, me }) {
 	const [isActive, changeActive] = useState(!menuBySite.isLocked)
+	const [isClosed, setCloseMenu] = useState(!menuBySite.isLocked)
+
 	const handleChangeLockState = (e, menuId) => {
 		changeActive(!isActive)
-		handleLockMenu(e, menuId)
+		lockMenu(e, menuId)
+	}
+	const handleCloseMenu = (e, menuId) => {
+		setCloseMenu(true)
+		closeMenu(e, menuId)
 	}
 	const exportFile = menu => {
 		const dishes = []
@@ -34,9 +31,7 @@ const MenuList = ({
 				counts[order.dishId] = order.count
 			}
 			return counts[order.dishId]
-			// console.log(order.dishId)
 		})
-		// console.log(counts)
 		menu.dishes.forEach(item =>
 			dishes.push([item.name, '', '', counts[item._id] || 0])
 		)
@@ -44,7 +39,7 @@ const MenuList = ({
 		dishes.unshift([menu.name])
 		dishes.push(['Tổng'])
 		dishes.push([new Date()])
-		dishes.push(['', '', `Người gửi : ${me.me.fullName}`])
+		dishes.push(['', '', `Người gửi : ${me.fullName}`])
 		const wb = XLSX.utils.book_new()
 		const ws = XLSX.utils.aoa_to_sheet(dishes, {
 			dateNF: 'HH:mm:ss DD-MM-YYYY'
@@ -101,47 +96,39 @@ const MenuList = ({
 		})
 	}
 	return (
-		<Collapse>
+		<Collapse defaultActiveKey="1">
 			<Panel
 				header={menuBySite.name}
+				showArrow={false}
+				bordered
 				key="1"
-				disabled={!isActive}
+				// disabled={!isActive}
 				extra={
 					<>
-						<Tooltip
-							title={
-								menuBySite.isLocked ? `${t('Unlock')} menu` : `${t('Lock')} menu`
-							}
-						>
-							<Button
-								className="publish style-btn"
-								onClick={e => handleChangeLockState(e, menuBySite._id)}
-							>
-								<Icon type={menuBySite.isLocked ? 'lock' : 'unlock'} />
-							</Button>
-						</Tooltip>
-						<Tooltip title="Complete menu">
-							<Button
-								className="publish style-btn"
-								disabled={isActive}
-								onClick={e => handleCloseMenu(e, menuBySite._id)}
-							>
-								<Icon type="check" />
-							</Button>
-						</Tooltip>
-						<Tooltip title={`${t('Export')} file`}>
-							<Button
-								className="publish style-btn"
-								disabled={isActive}
-								onClick={() => exportFile(menuBySite)}
-							>
-								<Icon type="file-excel" />
-							</Button>
-						</Tooltip>
+						<Button
+							className="publish style-btn"
+							onClick={e => handleChangeLockState(e, menuBySite._id)}
+							icon={isActive ? 'unlock' : 'lock'}
+							type="link"
+						/>
+						<Button
+							className={`publish style-btn ${isActive ? 'disable-button' : ''}`}
+							disabled={isActive || isClosed}
+							onClick={e => handleCloseMenu(e, menuBySite._id)}
+							icon="check"
+							type="link"
+						/>
+						<Button
+							className={`publish style-btn ${isActive ? 'disable-button' : ''}`}
+							disabled={isActive}
+							onClick={() => exportFile(menuBySite)}
+							icon="file-excel"
+							type="link"
+						/>
 					</>
 				}
 			>
-				<Collapse defaultActiveKey="1">
+				<Collapse>
 					{menuBySite.dishes &&
 						menuBySite.dishes.map(dish => {
 							const users =
@@ -151,7 +138,11 @@ const MenuList = ({
 								)
 							// console.log(users)
 							return (
-								<Panel header={`${dish.name} x${dish.count}`} key={dish._id}>
+								<Panel
+									// showArrow={false}
+									header={`${dish.name} x${dish.count}`}
+									key={dish._id}
+								>
 									{users &&
 										users.map(user => (
 											<UserList
@@ -187,42 +178,13 @@ const GET_ORDERS_BY_MENU = gql`
 	}
 `
 
-const ME = gql`
-	query {
-		me {
-			username
-			fullName
-		}
-	}
-`
-export default withTranslation('translations')(
-	compose(
-		graphql(GET_ORDERS_BY_MENU, {
-			name: 'getOrdersByMenu',
-			options: props => ({
-				variables: {
-					menuId: props.menuBySite._id
-				}
-			})
-		}),
-		graphql(ME, {
-			name: 'me'
+export default compose(
+	graphql(GET_ORDERS_BY_MENU, {
+		name: 'getOrdersByMenu',
+		options: props => ({
+			variables: {
+				menuId: props.menuBySite._id
+			}
 		})
-	)(MenuList)
-)
-
-// export default HOCQueryMutation([
-// 	{
-// 		query: GET_ORDERS_BY_MENU,
-// 		name: 'getOrdersByMenu',
-// 		options: props => ({
-// 			variables: {
-// 				menuId: props.menuBySite._id
-// 			}
-// 		})
-// 	},
-// 	{
-// 		query: ME,
-// 		name: 'me'
-// 	}
-// ])(MenuList)
+	})
+)(MenuList)

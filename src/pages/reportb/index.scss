@@ -1,22 +1,30 @@
-.dish-detail {
-	grid-template-columns: repeat(3, 1fr);
-	display: grid;
-	grid-gap: 10px;
-	padding: 5px;
-}
-.menus {
-	margin: 0.5rem;
-}
-.ant-collapse-content > .ant-collapse-content-box {
-	padding: 0.6rem;
-}
-.dish-name {
-	width: 200px;
-}
-.report {
-	padding: 15px;
-}
-.style-btn,
-span.style-btn > button {
-	height: inherit;
+.report-menus {
+	margin: 1rem;
+	.ant-collapse-header {
+		background: white;
+	}
+	.style-btn,
+	span.style-btn > button {
+		height: inherit;
+		width: 3rem;
+		color: red;
+	}
+	span.style-btn:hover {
+		cursor: pointer;
+	}
+	.disable-button {
+		color: gray;
+	}
+	.ant-collapse-content > .ant-collapse-content-box {
+		padding: 0.6rem;
+	}
+	.ant-collapse-extra {
+		float: none;
+		position: absolute;
+		top: 50%;
+		right: 1rem;
+		line-height: 0;
+		text-align: center;
+		transform: translateY(-50%);
+	}
 }
