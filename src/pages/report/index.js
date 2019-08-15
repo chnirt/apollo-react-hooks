@@ -1,32 +1,32 @@
 import React from 'react'
 import gql from 'graphql-tag'
 import { withTranslation } from 'react-i18next'
+import { compose, graphql } from 'react-apollo'
 
 import openNotificationWithIcon from '../../components/shared/openNotificationWithIcon'
 import ListMenu from './listMenu'
-import { HOCQueryMutation } from '../../components/shared/hocQueryAndMutation'
+// import { HOCQueryMutation } from '../../components/shared/hocQueryAndMutation'
 
 import './index.css'
 
 function Report(props) {
 	const isActive = (e, menuId) => {
-		const { mutate } = props
+		const { closeMenu } = props
 		e.stopPropagation()
-		mutate
-			.closeMenu({
-				mutation: CLOSE_MENU,
-				variables: {
-					id: menuId
-				},
-				refetchQueries: () => [
-					{
-						query: GET_MENU_BY_SITE,
-						variables: {
-							siteId: localStorage.getItem('currentsite')
-						}
+		closeMenu({
+			mutation: CLOSE_MENU,
+			variables: {
+				id: menuId
+			},
+			refetchQueries: () => [
+				{
+					query: GET_MENU_BY_SITE,
+					variables: {
+						siteId: localStorage.getItem('currentsite')
 					}
-				]
-			})
+				}
+			]
+		})
 			.then(() => {
 				openNotificationWithIcon('success', 'login', t('common.Success'))
 			})
@@ -38,22 +38,21 @@ function Report(props) {
 
 	const isLock = (e, menuId) => {
 		e.stopPropagation()
-		const { mutate, t } = props
-		mutate
-			.lockAndUnLockMenu({
-				mutation: LOCK_AND_UNLOCK_MENU,
-				variables: {
-					id: menuId
-				},
-				refetchQueries: () => [
-					{
-						query: GET_MENU_BY_SITE,
-						variables: {
-							siteId: localStorage.getItem('currentsite')
-						}
+		const { lockAndUnLockMenu, t } = props
+		lockAndUnLockMenu({
+			mutation: LOCK_AND_UNLOCK_MENU,
+			variables: {
+				id: menuId
+			},
+			refetchQueries: () => [
+				{
+					query: GET_MENU_BY_SITE,
+					variables: {
+						siteId: localStorage.getItem('currentsite')
 					}
-				]
-			})
+				}
+			]
+		})
 			.then(() => {
 				// console.log(data)
 				openNotificationWithIcon('success', 'success', t('common.Success'))
@@ -130,9 +129,8 @@ const CLOSE_MENU = gql`
 `
 
 export default withTranslation('translations')(
-	HOCQueryMutation([
-		{
-			query: GET_MENU_BY_SITE,
+	compose(
+		graphql(GET_MENU_BY_SITE, {
 			name: 'getMenuBySite',
 			options: props => {
 				return {
@@ -141,16 +139,12 @@ export default withTranslation('translations')(
 					}
 				}
 			}
-		},
-		{
-			mutation: LOCK_AND_UNLOCK_MENU,
-			name: 'lockAndUnLockMenu',
-			option: {}
-		},
-		{
-			mutation: CLOSE_MENU,
-			name: 'closeMenu',
-			option: {}
-		}
-	])(Report)
+		}),
+		graphql(LOCK_AND_UNLOCK_MENU, {
+			name: 'lockAndUnLockMenu'
+		}),
+		graphql(CLOSE_MENU, {
+			name: 'closeMenu'
+		})
+	)(Report)
 )

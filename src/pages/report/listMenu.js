@@ -2,16 +2,15 @@ import React, { useState } from 'react'
 import { Collapse, Button, Icon, Tooltip } from 'antd'
 import gql from 'graphql-tag'
 import XLSX from 'xlsx'
-import { withTranslation } from 'react-i18next'
+import { compose, graphql } from 'react-apollo'
 
 import ListUser from './listUser'
-import { HOCQueryMutation } from '../../components/shared/hocQueryAndMutation'
 
 import './index.css'
 
 const { Panel } = Collapse
 
-function listMenu(props) {
+function ListMenu(props) {
 	const exportFile = (e, menu) => {
 		e.stopPropagation()
 		const dishes = []
@@ -195,18 +194,15 @@ const ORDER_BY_MENU = gql`
 	}
 `
 
-export default withTranslation('translations')(
-	HOCQueryMutation([
-		{
-			query: ORDER_BY_MENU,
-			name: 'getOrderByMenu',
-			options: props => {
-				return {
-					variables: {
-						menuId: props.menuId
-					}
+export default compose(
+	graphql(ORDER_BY_MENU, {
+		name: 'getOrderByMenu',
+		options: props => {
+			return {
+				variables: {
+					menuId: props.menuId
 				}
 			}
 		}
-	])(listMenu)
-)
+	})
+)(ListMenu)

@@ -1,39 +1,37 @@
 import React from 'react'
 import { Icon, Button } from 'antd'
 import gql from 'graphql-tag'
-import { withTranslation } from 'react-i18next'
+import { compose, graphql } from 'react-apollo'
 
-import { HOCQueryMutation } from '../../components/shared/hocQueryAndMutation'
 import './index.css'
 
-function listUser(props) {
+function ListUser(props) {
 	const handlePlus = () => {
-		const { mutate, menuId, dishId, dishCount, countProps, orderId } = props
+		const { menuId, dishId, dishCount, countProps, orderId, updateOrder } = props
 		// console.log(countProps, '-----order')
 		// console.log(menuId, '-----menuId')
 		// console.log(dishId, '-----dishId')
 		// console.log(dishCount, '-----dishCount')
 		if (countProps < dishCount) {
-			mutate
-				.updateOrder({
-					mutation: UPDATE_ORDER,
-					variables: {
-						id: orderId,
-						input: {
-							menuId,
-							dishId,
-							count: countProps + 1
+			updateOrder({
+				mutation: UPDATE_ORDER,
+				variables: {
+					id: orderId,
+					input: {
+						menuId,
+						dishId,
+						count: countProps + 1
+					}
+				},
+				refetchQueries: () => [
+					{
+						query: ORDER_BY_MENU,
+						variables: {
+							menuId
 						}
-					},
-					refetchQueries: () => [
-						{
-							query: ORDER_BY_MENU,
-							variables: {
-								menuId
-							}
-						}
-					]
-				})
+					}
+				]
+			})
 				.then(() => {
 					// console.log(res)
 				})
@@ -44,29 +42,27 @@ function listUser(props) {
 	}
 
 	const handleMinus = () => {
-		const { mutate, menuId, dishId, countProps, orderId } = props
-
+		const { menuId, dishId, countProps, orderId, updateOrder } = props
 		if (countProps > 0) {
-			mutate
-				.updateOrder({
-					mutation: UPDATE_ORDER,
-					variables: {
-						id: orderId,
-						input: {
-							menuId,
-							dishId,
-							count: countProps - 1
+			updateOrder({
+				mutation: UPDATE_ORDER,
+				variables: {
+					id: orderId,
+					input: {
+						menuId,
+						dishId,
+						count: countProps - 1
+					}
+				},
+				refetchQueries: () => [
+					{
+						query: ORDER_BY_MENU,
+						variables: {
+							menuId
 						}
-					},
-					refetchQueries: () => [
-						{
-							query: ORDER_BY_MENU,
-							variables: {
-								menuId
-							}
-						}
-					]
-				})
+					}
+				]
+			})
 				.then(() => {
 					// console.log(res)
 				})
@@ -148,23 +144,18 @@ const UPDATE_ORDER = gql`
 	}
 `
 
-export default withTranslation('translations')(
-	HOCQueryMutation([
-		{
-			query: GET_USER_NAME,
-			name: 'getUserName',
-			options: props => {
-				return {
-					variables: {
-						_id: props.userId
-					}
+export default compose(
+	graphql(GET_USER_NAME, {
+		name: 'getUserName',
+		options: props => {
+			return {
+				variables: {
+					_id: props.userId
 				}
 			}
-		},
-		{
-			mutation: UPDATE_ORDER,
-			name: 'updateOrder',
-			option: {}
 		}
-	])(listUser)
-)
+	}),
+	graphql(UPDATE_ORDER, {
+		name: 'updateOrder'
+	})
+)(ListUser)
