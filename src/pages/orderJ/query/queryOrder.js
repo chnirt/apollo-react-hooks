@@ -4,6 +4,8 @@ const GET_MENU_ORDERS = gql`
 	query($siteId: String!) {
 		menuOrderJ(siteId: $siteId) {
 			menuId
+			isPublished
+			isLocked
 			dishes {
 				dishId
 				name
@@ -38,9 +40,9 @@ const GET_MENU_PUBLISH_BY_SITE_ID = gql`
 	}
 `
 
-const ORDER_SUBSCRIPTION = gql`
+const MENU_UPDATED_SUBSCRIPTION = gql`
 	subscription {
-		isUpdated
+		isUpdatedMenu
 	}
 `
 
@@ -60,6 +62,6 @@ export {
 	GET_MENU_PUBLISH_BY_SITE_ID,
 	GET_MENU_ORDERS,
 	ORDER_DISH,
-	ORDER_SUBSCRIPTION,
+	MENU_UPDATED_SUBSCRIPTION,
 	GET_DATA_ORDER_SUBSCRIPTION
 }

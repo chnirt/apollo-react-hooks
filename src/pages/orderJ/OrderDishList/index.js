@@ -4,15 +4,18 @@ import { graphql, compose } from 'react-apollo'
 import {
 	GET_MENU_ORDERS,
 	ORDER_DISH,
-	GET_DATA_ORDER_SUBSCRIPTION
+	GET_DATA_ORDER_SUBSCRIPTION,
+	MENU_UPDATED_SUBSCRIPTION
 	// ORDER_SUBSCRIPTION
 } from '../query/queryOrder'
 import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
 
 function OrderDishList(props) {
-	const { disabled, getMenu, orderJDish, isUpdatedOrder, userId } = props
+	const { getMenu, orderJDish, isUpdatedOrder, userId, isUpdatedMenu } = props
 
 	const dishes = getMenu && getMenu.menuOrderJ ? getMenu.menuOrderJ.dishes : []
+	const isLocked =
+		getMenu && getMenu.menuOrderJ ? getMenu.menuOrderJ.isLocked : false
 
 	if (isUpdatedOrder && isUpdatedOrder.isUpdatedOrder) {
 		// nhận được dâta pubsub
@@ -33,6 +36,10 @@ function OrderDishList(props) {
 				// Cập nhật tổng order
 			}
 		}
+	}
+
+	if (isUpdatedMenu && isUpdatedMenu.isUpdatedMenu) {
+		getMenu.refetch()
 	}
 
 	const [isLoading, setIsLoading] = useState(false)
@@ -86,6 +93,7 @@ function OrderDishList(props) {
 				{dishes.map(dish => {
 					let styleButtonUp = 'red'
 					let styleButtonDown = 'red'
+					let styleCountText = 'red'
 
 					if (dish.orderQuantityNow >= dish.orderQuantityMax) {
 						styleButtonUp = '#ffbcbc'
@@ -95,9 +103,10 @@ function OrderDishList(props) {
 						styleButtonDown = '#ffbcbc'
 					}
 
-					if (disabled) {
+					if (isLocked) {
 						styleButtonUp = 'rgb(201, 201, 201)'
 						styleButtonDown = 'rgb(201, 201, 201)'
+						styleCountText = 'rgb(201, 201, 201)'
 					}
 
 					return (
@@ -106,16 +115,16 @@ function OrderDishList(props) {
 							className="list-dishes-order-item"
 							role="presentation"
 							style={{
-								color: disabled ? 'rgb(201, 201, 201)' : '#2c2c2c'
+								color: isLocked ? 'rgb(201, 201, 201)' : '#2c2c2c'
 							}}
 						>
 							{dish.name} x {dish.MyOrderQuantity}
 							<div className="list-dishes-order-item-Groupsbutton">
-								<p>
+								<p style={{ color: styleCountText }}>
 									{dish.orderQuantityNow}/{dish.orderQuantityMax}
 								</p>
 								<Button
-									disabled={disabled || isLoading}
+									disabled={isLocked || isLoading}
 									style={{
 										color: styleButtonDown
 									}}
@@ -130,7 +139,7 @@ function OrderDishList(props) {
 								/>
 								<Button
 									className="order-plus-button"
-									disabled={disabled || isLoading}
+									disabled={isLocked || isLoading}
 									icon="plus"
 									type="link"
 									shape="circle"
@@ -167,10 +176,10 @@ export default compose(
 		name: 'orderJDish'
 	}),
 
-	// graphql(ORDER_SUBSCRIPTION, {
-	// 	name: 'orderJUpdated',
-	// 	skip: props => !props.siteId
-	// })
+	graphql(MENU_UPDATED_SUBSCRIPTION, {
+		name: 'isUpdatedMenu',
+		skip: props => !props.siteId
+	}),
 
 	graphql(GET_DATA_ORDER_SUBSCRIPTION, {
 		name: 'isUpdatedOrder',
