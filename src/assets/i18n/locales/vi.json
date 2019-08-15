@@ -1,71 +1,75 @@
 {
-	"dashBoard": {
-		"Manage Menu": "Quản lí menu",
-		"Order": "Đặt món",
-		"Manage User": "Quản lí user",
-		"Report": "Báo cáo"
-	},
+	"src": {
+		"pages": {
+			"common": {
+				"logIn": "Đăng nhập",
+				"logOut": "Đăng xuất",
+				"quickActions": "Thao tác nhanh",
+				"cancel": "Hủy",
+				"add": "Thêm",
+				"update": "Sửa",
+				"save": "Lưu",
+				"confirm": "Xác nhận",
+				"failed": "Thất bại",
+				"success": "Thành công",
+				"confirmSuccess": "Xác nhận thành công",
+				"confirmDelete": "Bạn có chắc muốn xóa?"
+			},
 
-	"common": {
-		"Log in": "Đăng nhập",
-		"Log out": "Đăng xuất",
-		"Quick actions": "Thao tác nhanh",
-		"Cancel": "Hủy",
-		"Add": "Thêm",
-		"Update": "Sửa",
-		"Save": "Lưu",
-		"Confirm": "Xác nhận",
-		"Failed": "Thất bại",
-		"Success": "Thành công",
-		"ConfirmSuccess": "Xác nhận thành công",
-		"ConfirmDelete": "Bạn có chắc muốn xóa?"
-	},
+			"dashBoard": {
+				"Manage Menu": "Quản lí menu",
+				"Order": "Đặt món",
+				"Manage User": "Quản lí user",
+				"Report": "Báo cáo"
+			},
 
-	"menu": {
-		"Add menu": "Thêm menu",
-		"Publish": "Công khai",
-		"UnPublish": "Hủy công khai",
-		"Input menu name": "Nhập tên menu",
-		"DeleteMenu": "Xóa menu",
-		"AddMenuSuccess": "Tạo menu thành công",
-		"ConfirmSaveMenu": "Vui lòng lưu menu trước khi công khai",
-		"PublishedMenu": "Công khai menu thành công",
-		"UnPublishedMenu": "Hủy công khai menu thành công",
-		"MenuNoDish": "Menu không có món ăn để công khai",
-		"SelectShop": "Chọn quán",
-		"DeleteDish": "Xóa món ăn",
-		"AddDishSuccess": "Tạo món ăn thành công",
-		"MenuNoChange": "Menu không có gì thay đổi",
-		"AddDish": "Thêm món ăn",
-		"Dish": "Món ăn",
-		"Count": "Số lượng",
-		"InputDish": "Nhập tên món ăn"
-	},
+			"menu": {
+				"Add menu": "Thêm menu",
+				"Publish": "Công khai",
+				"UnPublish": "Hủy công khai",
+				"Input menu name": "Nhập tên menu",
+				"DeleteMenu": "Xóa menu",
+				"AddMenuSuccess": "Tạo menu thành công",
+				"ConfirmSaveMenu": "Vui lòng lưu menu trước khi công khai",
+				"PublishedMenu": "Công khai menu thành công",
+				"UnPublishedMenu": "Hủy công khai menu thành công",
+				"MenuNoDish": "Menu không có món ăn để công khai",
+				"SelectShop": "Chọn quán",
+				"DeleteDish": "Xóa món ăn",
+				"AddDishSuccess": "Tạo món ăn thành công",
+				"MenuNoChange": "Menu không có gì thay đổi",
+				"AddDish": "Thêm món ăn",
+				"Dish": "Món ăn",
+				"Count": "Số lượng",
+				"InputDish": "Nhập tên món ăn"
+			},
 
-	"order": {
-		"Note": "Ghi chú",
-		"Input note": "Nhập ghi chú",
-		"More rice": "Thêm cơm",
-		"System has locked": "Hệ thống đã khóa"
-	},
+			"order": {
+				"Note": "Ghi chú",
+				"Input note": "Nhập ghi chú",
+				"More rice": "Thêm cơm",
+				"System has locked": "Hệ thống đã khóa"
+			},
 
-	"user": {
-		"Add user": "Thêm user",
-		"Username": "Tên đăng nhập",
-		"Password": "Mật khẩu",
-		"Confirm Password": "Xác nhận mật khẩu",
-		"Fullname": "Tên người dùng",
-		"InputUsername": "Nhập tên đăng nhập",
-		"UserName4C": "Tên phải có ít nhất 4 kí tự",
-		"InputPassword": "Nhập mật khẩu",
-		"Pw1-8": "Mật khẩu của bạn phải nhiều hơn 1 và ít hơn 8 kí tự",
-		"ConfirmPassword": "Xác nhận lại mật khẩu",
-		"InputFullname": "Nhập tên của bạn",
-		"Fn3-20": "Tên của bạn phải nhiêu hơn 3 và ít hơn 20 kí tự",
-		"SelectPermissions": "Chọn quyền theo khu vực",
-		"InconsistentPw": "Mật khẩu không trùng",
-		"UpdateUserSuccess": "Sửa tài khoản thành công",
-		"AddUserSuccess": "Tạo tài khoản thành công",
-		"DeleteUser": "Xóa tài khoản"
+			"user": {
+				"Add user": "Thêm user",
+				"Username": "Tên đăng nhập",
+				"Password": "Mật khẩu",
+				"Confirm Password": "Xác nhận mật khẩu",
+				"Fullname": "Tên người dùng",
+				"InputUsername": "Nhập tên đăng nhập",
+				"UserName4C": "Tên phải có ít nhất 4 kí tự",
+				"InputPassword": "Nhập mật khẩu",
+				"Pw1-8": "Mật khẩu của bạn phải nhiều hơn 1 và ít hơn 8 kí tự",
+				"ConfirmPassword": "Xác nhận lại mật khẩu",
+				"InputFullname": "Nhập tên của bạn",
+				"Fn3-20": "Tên của bạn phải nhiêu hơn 3 và ít hơn 20 kí tự",
+				"SelectPermissions": "Chọn quyền theo khu vực",
+				"InconsistentPw": "Mật khẩu không trùng",
+				"UpdateUserSuccess": "Sửa tài khoản thành công",
+				"AddUserSuccess": "Tạo tài khoản thành công",
+				"DeleteUser": "Xóa tài khoản"
+			}
+		}
 	}
 }

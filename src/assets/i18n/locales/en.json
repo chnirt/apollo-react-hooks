@@ -1,71 +1,78 @@
 {
-	"dashBoard": {
-		"Manage Menu": "Manage Menu",
-		"Order": "Manage Order",
-		"Manage User": "Manage User",
-		"Report": "Report"
-	},
+	"src": {
+		"pages": {
+			"common": {
+				"logIn": "Log in",
+				"logOut": "Log out",
+				"quickActions": "Quick actions",
+				"cancel": "Cancel",
+				"add": "Add",
+				"update": "Update",
+				"save": "Save",
+				"confirm": "Confirm",
+				"failed": "Failed",
+				"success": "Success",
+				"confirmSuccess": "Confirm Success",
+				"confirmDelete": "Do you want to delete?"
+			},
 
-	"common": {
-		"Log in": "Log in",
-		"Log out": "Log out",
-		"Quick actions": "Quick actions",
-		"Cancel": "Cancel",
-		"Add": "Add",
-		"Update": "Update",
-		"Save": "Save",
-		"Confirm": "Confirm",
-		"Failed": "Failed",
-		"Success": "Success",
-		"ConfirmSuccess": "Confirm Success",
-		"ConfirmDelete": "Do you want to delete?"
-	},
+			"dashBoard": {
+				"Manage Menu": "Manage Menu",
+				"Order": "Manage Order",
+				"Manage User": "Manage User",
+				"Report": "Report"
+			},
 
-	"menu": {
-		"Add menu": "Add menu",
-		"Publish": "Publish",
-		"UnPublish": "Unpublish",
-		"Input menu name": "Input menu name",
-		"DeleteMenu": "Delete menu",
-		"AddMenuSuccess": "Menu is added",
-		"ConfirmSaveMenu": "Please save menu before publish",
-		"PublishedMenu": "Success publish menu",
-		"UnPublishedMenu": "Success unpublish menu",
-		"MenuNoDish": "Menu no dish to publish",
-		"SelectShop": "Select shop",
-		"DeleteDish": "Delete dish",
-		"AddDishSuccess": "Dish is added",
-		"MenuNoChange": "Menu has no change",
-		"AddDish": "Add Dish",
-		"Dish": "Dish",
-		"Count": "Count",
-		"InputDish": "Please input dish!"
-	},
+			"menu": {
+				"addMenu": "Add menu",
+				"publish": "Publish",
+				"unPublish": "Unpublish",
+				"inputMenuName": "Input menu name",
+				"deleteMenu": "Delete menu",
+				"addMenuSuccess": "Menu is added",
+				"confirmSaveMenu": "Please save menu before publish",
+				"publishedMenu": "Success publish menu",
+				"unPublishedMenu": "Success unpublish menu",
+				"menuNoDish": "Menu no dish to publish",
+				"selectShop": "Select shop",
+				"deleteDish": "Delete dish",
+				"addDishSuccess": "Dish is added",
+				"menuNoChange": "Menu has no change",
+				"addDish": "Add Dish",
+				"dish": "Dish",
+				"count": "Count",
+				"inputDish": "Please input dish!"
+			},
 
-	"order": {
-		"Note": "Note",
-		"Input note": "Input note",
-		"More rice": "More rice",
-		"System has locked": "System has locked"
-	},
+			"order": {
+				"note": "Note",
+				"inputNote": "Input note",
+				"moreRice": "More rice",
+				"systemHasLocked": "System has locked"
+			},
 
-	"user": {
-		"Add user": "Add user",
-		"Username": "Username",
-		"Password": "Password",
-		"Confirm Password": "Confirm Password",
-		"Fullname": "Fullname",
-		"InputUsername": "Please input your username!",
-		"UserName4C": "Your username must be at least 4 characters",
-		"InputPassword": "Please input your password!",
-		"Pw1-8": "Your password must be between 1 and 8 characters",
-		"ConfirmPassword": "Please confirm your password!",
-		"InputFullname": "Please input your fullname!",
-		"Fn3-20": "Your fullname must be between 3 and 20 characters",
-		"SelectPermissions": "Please select permissions",
-		"InconsistentPw": "Two passwords that you enter is inconsistent!",
-		"UpdateUserSuccess": "User is updated",
-		"AddUserSuccess": "User is added",
-		"DeleteUser": "Delete User"
+			"user": {
+				"manageUser": "Manage User",
+				"addUser": "Add user",
+				"userName": "Username",
+				"password": "Password",
+				"confirmPassword": "Confirm Password",
+				"fullName": "Fullname",
+				"inputUsername": "Please input your username!",
+				"userName4C": "Your username must be at least 4 characters",
+				"inputPassword": "Please input your password!",
+				"pw1-8": "Your password must be between 1 and 8 characters",
+				"confirmPasswordAgain": "Please confirm your password!",
+				"inputFullname": "Please input your fullname!",
+				"fn3-20": "Your fullname must be between 3 and 20 characters",
+				"selectPermissions": "Please select permissions",
+				"inconsistentPw": "Two passwords that you enter is inconsistent!",
+				"updateUserSuccess": "User is updated",
+				"addUserSuccess": "User is added",
+				"deleteUser": "Delete User",
+				"reason": "Locked reason ?",
+				"inputReason": "Input reason"
+			}
+		}
 	}
 }

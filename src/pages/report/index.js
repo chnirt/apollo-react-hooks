@@ -66,7 +66,7 @@ function Report(props) {
 	// componentWillUpdate() {
 	// 	console.log( props)
 	// }
-
+	console.log(props)
 	const { getMenuBySite } = props
 	return (
 		<React.Fragment>

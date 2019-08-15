@@ -71,7 +71,7 @@ function Layout(props) {
 			<Menu.Divider />
 			<Menu.Item onClick={onLogout}>
 				<Icon type="logout" />
-				<span>{t('common.Log out')}</span>
+				<span>{t('src.pages.common.logOut')}</span>
 			</Menu.Item>
 		</Menu>
 	)
@@ -162,7 +162,8 @@ function Layout(props) {
 									fontSize: '16px',
 									fontWeight: 'bold',
 									cursor: 'pointer',
-									marginRight: '.5em'
+									marginRight: '.5em',
+									paddingBottom: 9
 								}}
 							/>
 						</Dropdown>,
@@ -172,7 +173,9 @@ function Layout(props) {
 							trigger={['click']}
 							placement="bottomCenter"
 						>
-							<span style={{ color: '#fff', cursor: 'pointer' }}>
+							<span
+								style={{ color: '#fff', cursor: 'pointer', paddingBottom: 9 }}
+							>
 								{window.localStorage.getItem('i18nextLng') === 'vi'
 									? 'VI'
 									: 'EN'}
@@ -182,7 +185,7 @@ function Layout(props) {
 					footer={<Divider style={{ margin: '0' }} />}
 				/>
 			</ConfigProvider>
-			{React.cloneElement(children, { currentsite, me })}
+			{React.cloneElement(children, { currentsite, me, t })}
 		</div>
 	)
 }

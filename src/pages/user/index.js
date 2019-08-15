@@ -12,7 +12,6 @@ import {
 	Tooltip,
 	Icon
 } from 'antd'
-import { withTranslation } from 'react-i18next'
 import openNotificationWithIcon from '../../components/shared/openNotificationWithIcon'
 
 import UserModal from './usermodal'
@@ -61,7 +60,7 @@ function User(props) {
 					openNotificationWithIcon(
 						'success',
 						'success',
-						t('common.Success'),
+						t('src.pages.common.success'),
 						null
 					)
 			})
@@ -71,7 +70,7 @@ function User(props) {
 				openNotificationWithIcon(
 					'error',
 					'failed',
-					t('common.Failed'),
+					t('src.pages.common.failed'),
 					errors[0]
 				)
 			})
@@ -80,8 +79,8 @@ function User(props) {
 	function onDelete(_id) {
 		// console.log("onDelete", _id)
 		confirm({
-			title: t('user.DeleteUser'),
-			content: t('common.ConfirmDelete'),
+			title: t('src.pages.user.deleteUser'),
+			content: t('src.pages.common.confirmDelete'),
 			onOk() {
 				// console.log('OK');
 				props
@@ -105,7 +104,7 @@ function User(props) {
 							openNotificationWithIcon(
 								'success',
 								'success',
-								t('common.Success'),
+								t('src.pages.common.success'),
 								null
 							)
 					})
@@ -115,7 +114,7 @@ function User(props) {
 						openNotificationWithIcon(
 							'error',
 							'failed',
-							t('common.Failed'),
+							t('src.pages.common.failed'),
 							errors[0]
 						)
 					})
@@ -128,10 +127,16 @@ function User(props) {
 
 	function showConfirm(_id) {
 		confirm({
-			title: 'Locked reason ?',
-			content: <Input ref={inputEl} type="text" placeholder="something..." />,
+			title: t('src.pages.user.reason'),
+			content: (
+				<Input
+					ref={inputEl}
+					type="text"
+					placeholder={t('src.pages.user.inputReason')}
+				/>
+			),
 			onOk() {
-				console.log('OK')
+				// console.log('OK')
 				// console.log(_id, inputEl.current.state.value)
 				onLockAndUnlock(_id, inputEl.current.state.value)
 			},
@@ -151,7 +156,7 @@ function User(props) {
 					title={
 						<div>
 							<Title style={{ color: '#ffffff' }} level={3}>
-								{t('dashBoard.Manage User')}
+								{t('src.pages.user.manageUser')}
 							</Title>
 						</div>
 					}
@@ -159,7 +164,7 @@ function User(props) {
 					extra={
 						<div>
 							<Button type="primary" block onClick={() => showModal()}>
-								{t('user.Add user')}
+								{t('src.pages.user.addUser')}
 							</Button>
 						</div>
 					}
@@ -274,4 +279,4 @@ export default compose(
 	graphql(USER_DELETE, {
 		name: 'deleteUser'
 	})
-)(withTranslation('translations')(User))
+)(User)

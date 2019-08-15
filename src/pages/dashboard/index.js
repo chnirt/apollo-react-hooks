@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { Icon, Col, Row, Card, Typography } from 'antd'
-import { withTranslation } from 'react-i18next'
 import { menuRoutes } from '../../routes'
 
 const { Title } = Typography
@@ -18,6 +17,8 @@ function Dashboard(props) {
 	const [currentsite] = useState(window.localStorage.getItem('currentsite'))
 
 	const { t } = props
+	const common = 'src.pages.common'
+	const dashBoard = 'src.pages.dashBoard'
 	return (
 		<>
 			<Row
@@ -28,7 +29,7 @@ function Dashboard(props) {
 				<Card
 					title={
 						<Title style={{ color: '#ffffff' }} level={3}>
-							{t('common.Quick actions')}
+							{t(`${common}.quickActions`)}
 						</Title>
 					}
 					bordered={false}
@@ -76,7 +77,7 @@ function Dashboard(props) {
 											}}
 											type={item.icon}
 										/>
-										{t(`dashBoard.${item.label}`)}
+										{t(`${dashBoard}.${item.label}`)}
 									</Card.Grid>
 								</Col>
 							)
@@ -87,4 +88,4 @@ function Dashboard(props) {
 	)
 }
 
-export default withTranslation('translations')(Dashboard)
+export default Dashboard
