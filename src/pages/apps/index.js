@@ -15,7 +15,7 @@ export default function Root(props) {
 							const MyComponent = withLoadable(import(`../${route.component}`))
 							return (
 								<MyComponent
-									// {...props}
+									{...props}
 									{...props1}
 									{...route}
 									routes={route.routes}
