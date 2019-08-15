@@ -1,8 +1,18 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import gql from 'graphql-tag'
-import { Row, Button, Card, Modal, Typography, List } from 'antd'
+import { graphql, compose } from 'react-apollo'
+import {
+	Row,
+	Button,
+	Card,
+	Modal,
+	Typography,
+	List,
+	Input,
+	Tooltip,
+	Icon
+} from 'antd'
 import { withTranslation } from 'react-i18next'
-import { HOCQueryMutation } from '../../components/shared/hocQueryAndMutation'
 import openNotificationWithIcon from '../../components/shared/openNotificationWithIcon'
 
 import UserModal from './usermodal'
@@ -22,17 +32,18 @@ function User(props) {
 
 	function hideModal() {
 		setVisible(false)
-		setTimeout(() => {
-			setUserId('')
-		}, 200)
+		setUserId('')
 	}
 
-	function onLockAndUnlock(_id) {
+	const inputEl = useRef(null)
+
+	function onLockAndUnlock(_id, reason) {
 		// console.log("onLockAndUnlock", _id)
-		props.mutate
+		props
 			.lockAndUnlockUser({
 				variables: {
-					_id
+					_id,
+					reason
 				},
 				refetchQueries: [
 					{
@@ -63,7 +74,7 @@ function User(props) {
 			content: t('ConfirmDelete'),
 			onOk() {
 				// console.log('OK');
-				props.mutate
+				props
 					.deleteUser({
 						variables: {
 							_id
@@ -95,8 +106,23 @@ function User(props) {
 		})
 	}
 
-	const { data, t } = props
-	const { users } = data
+	function showConfirm(_id) {
+		confirm({
+			title: 'Locked reason ?',
+			content: <Input ref={inputEl} type="text" placeholder="something..." />,
+			onOk() {
+				console.log('OK')
+				// console.log(_id, inputEl.current.state.value)
+				onLockAndUnlock(_id, inputEl.current.state.value)
+			},
+			onCancel() {
+				console.log('Cancel')
+			}
+		})
+	}
+
+	const { getUsers, t } = props
+	const { users } = getUsers
 
 	return (
 		<>
@@ -135,7 +161,8 @@ function User(props) {
 							backgroundColor: '#fff',
 							borderRadius: '.5em'
 						}}
-						dataSource={users.filter(item => item.isActive)}
+						loading={!users ? true : false}
+						dataSource={users && users.filter(item => item.isActive)}
 						renderItem={user => (
 							<List.Item
 								actions={[
@@ -146,7 +173,13 @@ function User(props) {
 										name="btnEditUser"
 									/>,
 									<Button
-										onClick={() => onLockAndUnlock(user._id)}
+										onClick={() => {
+											if (user.isLocked) {
+												onLockAndUnlock(user._id, '')
+											} else {
+												showConfirm(user._id)
+											}
+										}}
 										icon={user.isLocked ? 'lock' : 'unlock'}
 										type="link"
 										name="btnLockNUnlockUser"
@@ -159,7 +192,12 @@ function User(props) {
 									/>
 								]}
 							>
-								{user.fullName}
+								{`${user.fullName} `}
+								{user.reason && (
+									<Tooltip title={user.reason}>
+										<Icon type="question-circle-o" />
+									</Tooltip>
+								)}
 							</List.Item>
 						)}
 					/>
@@ -177,14 +215,15 @@ const GET_ALL_USERS = gql`
 			username
 			fullName
 			isActive
+			reason
 			isLocked
 		}
 	}
 `
 
 const USER_LOCK_AND_UNLOCK = gql`
-	mutation($_id: String!) {
-		lockAndUnlockUser(_id: $_id)
+	mutation($_id: String!, $reason: String!) {
+		lockAndUnlockUser(_id: $_id, reason: $reason)
 	}
 `
 
@@ -194,26 +233,20 @@ const USER_DELETE = gql`
 	}
 `
 
-export default withTranslation('translations')(
-	HOCQueryMutation([
-		{
-			query: GET_ALL_USERS,
-			options: {
-				variables: {
-					offset: 0,
-					limit: 100
-				}
+export default compose(
+	graphql(GET_ALL_USERS, {
+		name: 'getUsers',
+		options: {
+			variables: {
+				offset: 0,
+				limit: 100
 			}
-		},
-		{
-			mutation: USER_LOCK_AND_UNLOCK,
-			name: 'lockAndUnlockUser',
-			option: {}
-		},
-		{
-			mutation: USER_DELETE,
-			name: 'deleteUser',
-			option: {}
 		}
-	])(User)
-)
+	}),
+	graphql(USER_LOCK_AND_UNLOCK, {
+		name: 'lockAndUnlockUser'
+	}),
+	graphql(USER_DELETE, {
+		name: 'deleteUser'
+	})
+)(withTranslation('translations')(User))

@@ -1,26 +1,27 @@
 import React from 'react'
 import gql from 'graphql-tag'
+import { compose, graphql } from 'react-apollo'
 import { withTranslation } from 'react-i18next'
 
 import openNotificationWithIcon from '../../components/shared/openNotificationWithIcon'
 import ListMenu from './listMenu'
-import { HOCQueryMutation } from '../../components/shared/hocQueryAndMutation'
 
 import './index.css'
 
-class Report extends React.Component {
-	isActive = (e, menuId) => {
-		const { mutate } = this.props
+function Report(props) {
+	const { getMenuPublishBySite } = props
+	const { menuPublishBySite } = getMenuPublishBySite
+
+	function isActive(e, menuId) {
 		e.stopPropagation()
-		mutate
+		props
 			.closeMenu({
-				mutation: CLOSE_MENU,
 				variables: {
 					id: menuId
 				},
-				refetchQueries: () => [
+				refetchQueries: [
 					{
-						query: GET_MENU_BY_SITE,
+						query: GET_MENU_PUBLISHED_BY_SITE,
 						variables: {
 							siteId: localStorage.getItem('currentsite')
 						}
@@ -36,18 +37,17 @@ class Report extends React.Component {
 			})
 	}
 
-	isLock = (e, menuId) => {
+	const isLock = (e, menuId) => {
 		e.stopPropagation()
-		const { mutate, t } = this.props
-		mutate
+		const { t } = props
+		props
 			.lockAndUnLockMenu({
-				mutation: LOCK_AND_UNLOCK_MENU,
 				variables: {
 					id: menuId
 				},
-				refetchQueries: () => [
+				refetchQueries: [
 					{
-						query: GET_MENU_BY_SITE,
+						query: GET_MENU_PUBLISHED_BY_SITE,
 						variables: {
 							siteId: localStorage.getItem('currentsite')
 						}
@@ -68,58 +68,52 @@ class Report extends React.Component {
 	// 	console.log(this.props)
 	// }
 
-	render() {
-		const { getMenuBySite } = this.props
-		return (
-			<React.Fragment>
-				<div className="report">
-					{getMenuBySite.menusBySite &&
-						getMenuBySite.menusBySite
-							.filter(menuBySite => menuBySite.isPublished)
-							.map(menuBySite => {
-								return (
-									<div key={menuBySite._id} style={{ marginBottom: 10 }}>
-										<ListMenu
-											isLock={this.isLock}
-											isActiveProps={this.isActive}
-											menuId={menuBySite._id}
-											menu={menuBySite}
-										/>
-										<div
-											style={{
-												display: 'flex',
-												marginTop: 10,
-												justifyContent: 'space-between'
-											}}
-										/>
-									</div>
-								)
-							})}
-				</div>
-			</React.Fragment>
-		)
-	}
+	return (
+		<React.Fragment>
+			<div className="report">
+				{getMenuPublishBySite.menuPublishBySite && (
+					<div style={{ marginBottom: 10 }}>
+						<ListMenu
+							isLock={isLock}
+							isActiveProps={isActive}
+							menuId={menuPublishBySite._id}
+							menu={menuPublishBySite}
+						/>
+						<div
+							style={{
+								display: 'flex',
+								marginTop: 10,
+								justifyContent: 'space-between'
+							}}
+						/>
+					</div>
+				)}
+			</div>
+		</React.Fragment>
+	)
 }
 
-const GET_MENU_BY_SITE = gql`
-	query menusBySite($siteId: String!) {
-		menusBySite(siteId: $siteId) {
+const GET_MENU_PUBLISHED_BY_SITE = gql`
+	query($siteId: String!) {
+		menuPublishBySite(siteId: $siteId) {
 			_id
 			name
-			isActive
-			isLocked
-			isPublished
+			siteId
+			shopId
 			dishes {
+				_id
 				name
 				count
-				_id
 			}
+			isLocked
+			isActive
+			isPublished
 		}
 	}
 `
 
 const LOCK_AND_UNLOCK_MENU = gql`
-	mutation lockAndUnlockMenu($id: String!) {
+	mutation($id: String!) {
 		lockAndUnlockMenu(id: $id)
 	}
 `
@@ -130,28 +124,23 @@ const CLOSE_MENU = gql`
 	}
 `
 
-export default withTranslation('translations')(
-	HOCQueryMutation([
-		{
-			query: GET_MENU_BY_SITE,
-			name: 'getMenuBySite',
-			options: () => {
-				return {
-					variables: {
-						siteId: window.localStorage.getItem('currentsite')
-					}
+export default compose(
+	graphql(LOCK_AND_UNLOCK_MENU, {
+		name: 'lockAndUnLockMenu'
+	}),
+	graphql(CLOSE_MENU, {
+		name: 'closeMenu',
+		options: {}
+	}),
+	graphql(GET_MENU_PUBLISHED_BY_SITE, {
+		name: 'getMenuPublishBySite',
+		options: () => {
+			return {
+				fetchPolicy: 'no-cache',
+				variables: {
+					siteId: window.localStorage.getItem('currentsite')
 				}
 			}
-		},
-		{
-			mutation: LOCK_AND_UNLOCK_MENU,
-			name: 'lockAndUnLockMenu',
-			option: {}
-		},
-		{
-			mutation: CLOSE_MENU,
-			name: 'closeMenu',
-			option: {}
 		}
-	])(Report)
-)
+	})
+)(withTranslation('translations')(Report))
