@@ -134,13 +134,11 @@ export default compose(
 	}),
 	graphql(GET_MENU_PUBLISHED_BY_SITE, {
 		name: 'getMenuPublishBySite',
-		options: () => {
-			return {
-				fetchPolicy: 'no-cache',
-				variables: {
-					siteId: window.localStorage.getItem('currentsite')
-				}
+		options: () => ({
+			// fetchPolicy: 'no-cache',
+			variables: {
+				siteId: window.localStorage.getItem('currentsite')
 			}
-		}
+		})
 	})
 )(withTranslation('translations')(Report))
