@@ -48,6 +48,10 @@ function Layout(props) {
 		window.localStorage.setItem('currentsite', value)
 	}
 
+	if (!localStorage.getItem('user-permissions')) {
+		onLogout()
+	}
+
 	const userPers = JSON.parse(localStorage.getItem('user-permissions')).map(
 		ele => ({
 			siteName: ele.siteName,
@@ -192,6 +196,7 @@ const ME = gql`
 		me {
 			username
 			fullName
+			_id
 		}
 	}
 `
