@@ -13,7 +13,14 @@ export default function Root(props) {
 						{...route}
 						component={props1 => {
 							const MyComponent = withLoadable(import(`../${route.component}`))
-							return <MyComponent {...props1} {...route} routes={route.routes} />
+							return (
+								<MyComponent
+									{...props}
+									{...props1}
+									{...route}
+									routes={route.routes}
+								/>
+							)
 						}}
 					/>
 				))}

@@ -28,7 +28,7 @@ function Dashboard(props) {
 				<Card
 					title={
 						<Title style={{ color: '#ffffff' }} level={3}>
-							{t('Quick actions')}
+							{t('common.Quick actions')}
 						</Title>
 					}
 					bordered={false}
@@ -45,8 +45,8 @@ function Dashboard(props) {
 						item =>
 							JSON.parse(window.localStorage.getItem('user-permissions'))
 								.filter(item1 => item1.siteId === currentsite)[0]
-								.permissions.map(item2 => item2.code.split('_')[0])
-								.filter(item3 => item3 === item.code).length > 0 && (
+								.sitepermissions.filter(item3 => item3 === item.code).length >
+								0 && (
 								<Col
 									key={item.label}
 									xs={{
@@ -76,7 +76,7 @@ function Dashboard(props) {
 											}}
 											type={item.icon}
 										/>
-										{t(item.label)}
+										{t(`dashBoard.${item.label}`)}
 									</Card.Grid>
 								</Col>
 							)

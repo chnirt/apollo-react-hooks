@@ -48,6 +48,10 @@ function Layout(props) {
 		window.localStorage.setItem('currentsite', value)
 	}
 
+	if (!localStorage.getItem('user-permissions')) {
+		onLogout()
+	}
+
 	const userPers = JSON.parse(localStorage.getItem('user-permissions')).map(
 		ele => ({
 			siteName: ele.siteName,
@@ -71,7 +75,7 @@ function Layout(props) {
 			<Menu.Divider />
 			<Menu.Item onClick={onLogout}>
 				<Icon type="logout" />
-				<span>{t('Log out')}</span>
+				<span>{t('common.Log out')}</span>
 			</Menu.Item>
 		</Menu>
 	)
@@ -172,7 +176,7 @@ function Layout(props) {
 							trigger={['click']}
 							placement="bottomCenter"
 						>
-							<span style={{ color: '#fff' }}>
+							<span style={{ color: '#fff', cursor: 'pointer' }}>
 								{window.localStorage.getItem('i18nextLng') === 'vi'
 									? 'VI'
 									: 'EN'}
@@ -182,7 +186,7 @@ function Layout(props) {
 					footer={<Divider style={{ margin: '0' }} />}
 				/>
 			</ConfigProvider>
-			<div>{React.cloneElement(children, { siteId: currentsite })}</div>
+			{React.cloneElement(children, { currentsite, me })}
 		</div>
 	)
 }
@@ -191,6 +195,8 @@ const ME = gql`
 	query {
 		me {
 			username
+			fullName
+			_id
 		}
 	}
 `

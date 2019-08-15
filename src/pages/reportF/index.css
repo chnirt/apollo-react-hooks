@@ -1,32 +1,11 @@
-.dish-detail {
-	grid-template-columns: repeat(3, 1fr);
-	display: grid;
-	grid-gap: 10px;
-	padding: 5px;
-}
-
-.dish-name {
-	width: 200px;
-}
-
 .report {
-	padding: 15px;
+	margin: 1rem;
 }
 
-.style-btn,
-span.style-btn > button {
-	height: inherit;
+.btn-report {
+	color: red;
 }
 
-.ant-collapse.open-menu
-	> .ant-collapse-item
-	> .ant-collapse-header
-	.ant-collapse-extra {
-	float: none;
-	position: absolute;
-	top: 50%;
-	right: 16px;
-	line-height: 0;
-	text-align: center;
-	transform: translateY(-50%);
+.bottom {
+	bottom: 5px;
 }

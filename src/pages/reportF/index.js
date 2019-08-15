@@ -1,144 +1,180 @@
 import React from 'react'
-import gql from 'graphql-tag'
 import { compose, graphql } from 'react-apollo'
 import { withTranslation } from 'react-i18next'
+import { Collapse, Button } from 'antd'
+// import openNotificationWithIcon from '../../components/shared/openNotificationWithIcon'
 
-import openNotificationWithIcon from '../../components/shared/openNotificationWithIcon'
-import ListMenu from './listMenu'
-
+import {
+	MENU_PUBLISH_BY_SITE,
+	LOCK_UNLOCK_MENU,
+	COUNT_BY_MENU,
+	ORDER_DISH,
+	UPDATE_ORDERJ,
+	CLOSE_MENU
+} from './reportQuery/reportQuery'
+import ReportItemDish from './reportItemDish'
 import './index.css'
 
-function Report(props) {
-	const { getMenuPublishBySite } = props
-	const { menuPublishBySite } = getMenuPublishBySite
+const { Panel } = Collapse
 
-	function isActive(e, menuId) {
+function ReportF(props) {
+	const { menuPublish, countOrderByMenu, me } = props
+	const { menuPublishBySite } = menuPublish
+
+	function onLock(e) {
 		e.stopPropagation()
-		props
-			.closeMenu({
-				variables: {
-					id: menuId
-				},
-				refetchQueries: [
-					{
-						query: GET_MENU_PUBLISHED_BY_SITE,
-						variables: {
-							siteId: localStorage.getItem('currentsite')
-						}
+
+		props.lockAndUnlock({
+			variables: {
+				id: menuPublishBySite._id
+			},
+			refetchQueries: [
+				{
+					query: MENU_PUBLISH_BY_SITE,
+					variables: {
+						siteId: menuPublishBySite.siteId
 					}
-				]
-			})
-			.then(() => {
-				openNotificationWithIcon('success', 'login', t('Success'))
-			})
-			.catch(() => {
-				// console.log(err)
-				// throw err
-			})
+				}
+			]
+		})
 	}
 
-	const isLock = (e, menuId) => {
+	function onPlus(e, dishId, currentCount) {
 		e.stopPropagation()
-		const { t } = props
-		props
-			.lockAndUnLockMenu({
-				variables: {
-					id: menuId
-				},
-				refetchQueries: [
-					{
-						query: GET_MENU_PUBLISHED_BY_SITE,
-						variables: {
-							siteId: localStorage.getItem('currentsite')
-						}
-					}
-				]
-			})
-			.then(() => {
-				// console.log(data)
-				openNotificationWithIcon('success', 'success', t('Success'))
-			})
-			.catch(err => {
-				// console.log(err)
-				throw err
-			})
+		props.orderDish({
+			variables: {
+				input: {
+					menuId: menuPublishBySite._id,
+					dishId,
+					count: currentCount + 1
+				}
+			}
+		})
 	}
 
-	// componentWillUpdate() {
-	// 	console.log(this.props)
-	// }
+	function onMinus(userId, dishId, count) {
+		console.log(userId, dishId, count)
+		props.updateOrder({
+			variables: {
+				input: {
+					menuId: menuPublishBySite._id,
+					dishId,
+					count: count - 1
+				},
+				userId
+			},
+			refetchQueries: [
+				{
+					query: COUNT_BY_MENU,
+					variables: {
+						menuId: menuPublishBySite._id
+					}
+				}
+			]
+		})
+	}
+
+	function onCloseMenu() {
+		props.closeMenuToExport({
+			variables: {
+				id: menuPublishBySite._id
+			},
+			refetchQueries: [
+				{
+					query: MENU_PUBLISH_BY_SITE,
+					variables: {
+						siteId: props.currentsite
+					}
+				}
+			]
+		})
+	}
 
 	return (
 		<React.Fragment>
 			<div className="report">
-				{getMenuPublishBySite.menuPublishBySite && (
-					<div style={{ marginBottom: 10 }}>
-						<ListMenu
-							isLock={isLock}
-							isActiveProps={isActive}
-							menuId={menuPublishBySite._id}
-							menu={menuPublishBySite}
-						/>
-						<div
-							style={{
-								display: 'flex',
-								marginTop: 10,
-								justifyContent: 'space-between'
-							}}
-						/>
-					</div>
+				{menuPublish.menuPublishBySite && (
+					<Collapse>
+						<Panel
+							header={menuPublishBySite.name}
+							extra={
+								<div>
+									<Button
+										className="btn-report bottom"
+										onClick={e => onLock(e)}
+										type="link"
+										icon={menuPublishBySite.isLocked ? 'lock' : 'unlock'}
+										shape="circle"
+									/>
+									<Button
+										className="btn-report bottom"
+										icon="snippets"
+										type="link"
+										disabled={menuPublishBySite.isLocked}
+										shape="circle"
+										onClick={onCloseMenu}
+									/>
+									<Button
+										className="btn-report bottom"
+										type="link"
+										icon="file-excel"
+										shape="circle"
+										disabled={menuPublishBySite.isLocked}
+									/>
+								</div>
+							}
+						>
+							{countOrderByMenu.countByMenuJ &&
+								menuPublishBySite.dishes.map(dish => (
+									<ReportItemDish
+										key={dish._id}
+										{...dish}
+										onPlus={onPlus}
+										onMinus={onMinus}
+										me={me}
+										menu={countOrderByMenu.countByMenuJ}
+									/>
+								))}
+						</Panel>
+					</Collapse>
 				)}
 			</div>
 		</React.Fragment>
 	)
 }
 
-const GET_MENU_PUBLISHED_BY_SITE = gql`
-	query($siteId: String!) {
-		menuPublishBySite(siteId: $siteId) {
-			_id
-			name
-			siteId
-			shopId
-			dishes {
-				_id
-				name
-				count
-			}
-			isLocked
-			isActive
-			isPublished
-		}
-	}
-`
-
-const LOCK_AND_UNLOCK_MENU = gql`
-	mutation($id: String!) {
-		lockAndUnlockMenu(id: $id)
-	}
-`
-
-const CLOSE_MENU = gql`
-	mutation closeMenu($id: String!) {
-		closeMenu(id: $id)
-	}
-`
-
 export default compose(
-	graphql(LOCK_AND_UNLOCK_MENU, {
-		name: 'lockAndUnLockMenu'
-	}),
-	graphql(CLOSE_MENU, {
-		name: 'closeMenu',
-		options: {}
-	}),
-	graphql(GET_MENU_PUBLISHED_BY_SITE, {
-		name: 'getMenuPublishBySite',
-		options: () => ({
-			// fetchPolicy: 'no-cache',
+	graphql(MENU_PUBLISH_BY_SITE, {
+		name: 'menuPublish',
+		skip: props => !props.currentsite,
+		options: props => ({
 			variables: {
-				siteId: window.localStorage.getItem('currentsite')
+				siteId: props.currentsite
 			}
 		})
+	}),
+	graphql(LOCK_UNLOCK_MENU, {
+		name: 'lockAndUnlock'
+	}),
+	graphql(COUNT_BY_MENU, {
+		name: 'countOrderByMenu',
+		skip: props => !props.menuPublish.menuPublishBySite,
+		options: props => ({
+			variables: {
+				menuId:
+					(props.menuPublish.menuPublishBySite &&
+						props.menuPublish.menuPublishBySite._id) ||
+					''
+			}
+		})
+	}),
+	graphql(ORDER_DISH, {
+		name: 'orderDish'
+	}),
+	graphql(UPDATE_ORDERJ, {
+		name: 'updateOrder'
+	}),
+	graphql(CLOSE_MENU, {
+		name: 'closeMenuToExport'
 	})
-)(withTranslation('translations')(Report))
+)(withTranslation('translations')(ReportF))

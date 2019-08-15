@@ -8,7 +8,7 @@ function Menu(props) {
 	return (
 		<div className="menu">
 			<h1 style={{ margin: '.3em 1em', color: '#fff', display: 'inline' }}>
-				{t('Manage Menu')}
+				{t('dashBoard.Manage Menu')}
 			</h1>
 			<div className="menu-list">
 				<MenuList {...props} siteId={siteId} />
