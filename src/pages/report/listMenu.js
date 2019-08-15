@@ -33,14 +33,15 @@ function ListMenu(props) {
 		// console.log(counts)
 
 		menu.dishes.forEach(item =>
-			dishes.push([item.name, '', '', counts[item._id] || 0])
+			dishes.push([item.name, '', '', '', '', counts[item._id] || 0])
 		)
 
-		dishes.unshift(['Tên món ăn', '', '', 'Số lượng'])
+		// eslint-disable-next-line prefer-numeric-literals
+		dishes.unshift(['Tên món ăn', '', '', '', '', 'Số lượng'])
 		dishes.unshift([menu.name])
-		dishes.push(['Tổng'])
+		dishes.push(['', '', '', '', 'Tổng'])
 		dishes.push([new Date()])
-		dishes.push(['', '', `Người gửi : ${me.fullName}`])
+		dishes.push(['', '', '', '', `Người gửi : ${me.fullName}`])
 
 		// console.log(dishes)
 
@@ -55,7 +56,7 @@ function ListMenu(props) {
 		const merge = [
 			{
 				s: { r: 0, c: 0 },
-				e: { r: 0, c: 3 }
+				e: { r: 0, c: 5 }
 			},
 			{
 				s: {
@@ -74,7 +75,7 @@ function ListMenu(props) {
 				},
 				e: {
 					r: dishes.length - 2,
-					c: 3
+					c: 5
 				}
 			},
 			{
@@ -84,16 +85,16 @@ function ListMenu(props) {
 				},
 				e: {
 					r: dishes.length - 3,
-					c: 2
+					c: 4
 				}
 			}
 		]
 
 		ws['!merges'] = merge
 		ws['!formatRows'] = true
-		ws[`D${dishes.length - 2}`] = {
+		ws[`F${dishes.length - 2}`] = {
 			t: 'n',
-			f: `SUM(D3:D${dishes.length - 3})` || 0
+			f: `SUM(F3:F${dishes.length - 3})` || 0
 		}
 		// console.log(ws)
 
@@ -106,8 +107,15 @@ function ListMenu(props) {
 	const { menu, isLock, isActiveProps, getOrderByMenu, menuId } = props
 	const [isActive, changeActive] = useState(false)
 	return (
-		<Collapse className="open-menu">
+		<Collapse className="open-menu" defaultActiveKey={menu._id}>
 			<Panel
+				key={menu._id}
+				header={
+					<span style={{ width: '10em', display: 'inline-block' }}>
+						{menu.name}
+					</span>
+				}
+				disabled={!!menu.isLocked}
 				extra={
 					<>
 						<Tooltip title={menu.isLocked ? 'Unlock menu' : 'Lock menu'}>
@@ -145,13 +153,6 @@ function ListMenu(props) {
 						</Tooltip>
 					</>
 				}
-				header={
-					<span style={{ width: '10em', display: 'inline-block' }}>
-						{menu.name}
-					</span>
-				}
-				key={menu._id}
-				disabled={!!menu.isLocked}
 			>
 				<Collapse className="open-dishes">
 					{menu.dishes &&
