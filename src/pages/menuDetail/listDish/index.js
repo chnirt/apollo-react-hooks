@@ -16,7 +16,16 @@ import { compose, graphql } from 'react-apollo'
 import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
 
 function ListDish(props) {
-	const { form, data, menuById, shopId, menuId, publishAndUnpublish } = props
+	const {
+		form,
+		data,
+		menuById,
+		shopId,
+		menuId,
+		publishAndUnpublish,
+		loading,
+		t
+	} = props
 
 	const [dishes, setDishes] = useState([])
 
@@ -170,7 +179,6 @@ function ListDish(props) {
 	}
 
 	const { getFieldDecorator } = form
-	const { t } = props
 
 	return (
 		<>
@@ -199,6 +207,7 @@ function ListDish(props) {
 					<Button
 						name="btnPublishMenu"
 						type="primary"
+						loading={loading}
 						onClick={() => publishAndUnpublish(hasChange)}
 					>
 						{menuById.menu && menuById.menu.isPublished

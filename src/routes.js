@@ -41,7 +41,7 @@ export const routes = [
 			{
 				label: 'Report',
 				path: '/🥢/report',
-				component: 'report'
+				component: 'reportb'
 			}
 		]
 	}
