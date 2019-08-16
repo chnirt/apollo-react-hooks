@@ -24,18 +24,9 @@ function Report(props) {
 					}
 				}
 			]
+		}).then(() => {
+			openNotificationWithIcon('success', 'login', t('src.pages.common.success'))
 		})
-			.then(() => {
-				openNotificationWithIcon(
-					'success',
-					'login',
-					t('src.pages.common.success')
-				)
-			})
-			.catch(() => {
-				// console.log(err)
-				// throw err
-			})
 	}
 
 	const isLock = (e, menuId) => {
@@ -56,7 +47,6 @@ function Report(props) {
 			]
 		})
 			.then(() => {
-				// console.log(data)
 				openNotificationWithIcon(
 					'success',
 					'success',
@@ -64,14 +54,9 @@ function Report(props) {
 				)
 			})
 			.catch(err => {
-				// console.log(err)
 				throw err
 			})
 	}
-
-	// componentWillUpdate() {
-	// 	console.log( props)
-	// }
 
 	const { getMenuBySite } = props
 	return (

@@ -28,10 +28,7 @@ function ListMenu(props) {
 				counts[order.dishId] = order.count
 			}
 			return counts[order.dishId]
-			// console.log(order.dishId)
 		})
-
-		// console.log(counts)
 
 		menu.dishes.forEach(item =>
 			dishes.push([item.name, '', '', '', '', counts[item._id] || 0])
@@ -43,8 +40,6 @@ function ListMenu(props) {
 		dishes.push(['', '', '', '', 'Tổng'])
 		dishes.push([new Date()])
 		dishes.push(['', '', '', '', `Người gửi : ${me.fullName}`])
-
-		// console.log(dishes)
 
 		const wb = XLSX.utils.book_new()
 		const ws = XLSX.utils.aoa_to_sheet(dishes, {
@@ -97,7 +92,6 @@ function ListMenu(props) {
 			t: 'n',
 			f: `SUM(F3:F${dishes.length - 3})` || 0
 		}
-		// console.log(ws)
 
 		XLSX.utils.book_append_sheet(wb, ws, 'Sheet1')
 		XLSX.writeFile(wb, `${menu.name}.xlsx`, {
@@ -114,7 +108,6 @@ function ListMenu(props) {
 			return me._id === order.userId && dishId === order.dishId
 		})
 
-		// console.log(dishId, '-----dishId')
 		if (currentOrder.length < 1) {
 			currentOrder.push({
 				dishId,
@@ -122,28 +115,6 @@ function ListMenu(props) {
 				count: 0
 			})
 		}
-
-		console.log(currentOrder)
-
-		// const aaa = menu.dishes.findIndex(dish => {
-
-		// })
-		// console.log(menu)
-
-		// const orderId = getOrderByMenu.ordersByMenu.filter(order => {
-		// 	return order.dishId === dishId
-		// })[0]._id
-
-		// console.log(orderId, '-----orderId')
-
-		// const lol = menu.dishes.map(dish => {
-		// 	getOrderByMenu.ordersByMenu.map(order => {
-		// 		if(order.dishId !== dish._id) console.log('ok')
-		// 		return 'ok'
-		// 	})
-		// })
-		// console.log(menu)
-		// const aa = getOrderByMenu.ordersByMenu.map(x => console.log(x.dishId))
 
 		const totalCount = menu.dishes.filter(dish => {
 			return dish._id === dishId
@@ -154,7 +125,6 @@ function ListMenu(props) {
 		const counts = {}
 
 		orders.map(order => {
-			console.log(order)
 			if (Object.prototype.hasOwnProperty.call(counts, order.dishId)) {
 				counts[order.dishId] += order.count
 			} else {
@@ -162,11 +132,6 @@ function ListMenu(props) {
 			}
 			return counts[order.dishId]
 		})
-		// console.log(totalCount)
-		// console.log(counts)
-		console.log(dishId)
-
-		// console.log(counts[dishId])
 
 		if (!counts[dishId]) {
 			counts[dishId] = 0
@@ -190,25 +155,20 @@ function ListMenu(props) {
 						}
 					}
 				]
+			}).then(() => {
+				openNotificationWithIcon(
+					'success',
+					'success',
+					'Success',
+					t('src.pages.common.success')
+				)
 			})
-				.then(() => {
-					// console.log(res)
-					openNotificationWithIcon(
-						'success',
-						'success',
-						'Success',
-						t('src.pages.common.success')
-					)
-				})
-				.catch(err => {
-					console.log(err)
-				})
 		}
 	}
 
 	const { menu, isLock, isActiveProps, getOrderByMenu, menuId, t } = props
 	const [isActive, changeActive] = useState(false)
-	// console.log(props)
+
 	return (
 		<Collapse className="open-menu" defaultActiveKey={menu._id}>
 			<Panel
@@ -254,7 +214,6 @@ function ListMenu(props) {
 				<Collapse className="open-dishes">
 					{menu.dishes &&
 						menu.dishes.map(dish => {
-							// console.log(dish)
 							return (
 								<Panel
 									key={dish._id}
