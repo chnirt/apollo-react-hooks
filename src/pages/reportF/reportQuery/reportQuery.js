@@ -65,10 +65,16 @@ const CLOSE_MENU = gql`
 `
 
 const USER = gql`
-	query($_id: String!) {
+	query($_id: ID!) {
 		user(_id: $_id) {
 			fullName
 		}
+	}
+`
+
+const CREATE_ORDER_DISH_NEW = gql`
+	mutation($input: CreateOrderInput!) {
+		orderDish(input: $input)
 	}
 `
 
@@ -79,5 +85,6 @@ export {
 	ORDER_DISH,
 	UPDATE_ORDERJ,
 	CLOSE_MENU,
-	USER
+	USER,
+	CREATE_ORDER_DISH_NEW
 }
