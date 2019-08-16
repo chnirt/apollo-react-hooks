@@ -1,48 +1,14 @@
 import React from 'react'
-import { Icon, Button } from 'antd'
+import { Icon } from 'antd'
 import gql from 'graphql-tag'
 import { compose, graphql } from 'react-apollo'
 
 import './index.css'
+import openNotificationWithIcon from '../../components/shared/openNotificationWithIcon'
 
 function ListUser(props) {
-	const handlePlus = () => {
-		const { menuId, dishId, dishCount, countProps, orderId, updateOrder } = props
-		// console.log(countProps, '-----order')
-		// console.log(menuId, '-----menuId')
-		// console.log(dishId, '-----dishId')
-		// console.log(dishCount, '-----dishCount')
-		if (countProps < dishCount) {
-			updateOrder({
-				mutation: UPDATE_ORDER,
-				variables: {
-					id: orderId,
-					input: {
-						menuId,
-						dishId,
-						count: countProps + 1
-					}
-				},
-				refetchQueries: () => [
-					{
-						query: ORDER_BY_MENU,
-						variables: {
-							menuId
-						}
-					}
-				]
-			})
-				.then(() => {
-					// console.log(res)
-				})
-				.catch(err => {
-					console.log(err)
-				})
-		}
-	}
-
 	const handleMinus = () => {
-		const { menuId, dishId, countProps, orderId, updateOrder } = props
+		const { menuId, dishId, countProps, orderId, updateOrder, t } = props
 		if (countProps > 0) {
 			updateOrder({
 				mutation: UPDATE_ORDER,
@@ -65,6 +31,12 @@ function ListUser(props) {
 			})
 				.then(() => {
 					// console.log(res)
+					openNotificationWithIcon(
+						'success',
+						'success',
+						'Success',
+						t('src.pages.common.success')
+					)
 				})
 				.catch(err => {
 					console.log(err)
@@ -72,14 +44,8 @@ function ListUser(props) {
 		}
 	}
 
-	const {
-		orderByMenu,
-		dishId,
-		getUserName,
-		dishCount,
-		countProps,
-		userId
-	} = props
+	const { orderByMenu, dishId, getUserName, dishCount, countProps } = props
+
 	return (
 		<>
 			{orderByMenu.dishId === dishId && getUserName.user && countProps !== 0 ? (
@@ -93,24 +59,7 @@ function ListUser(props) {
 				>
 					{`${getUserName.user.fullName} ${countProps}/${dishCount}`}
 					<div>
-						<Button
-							disabled={countProps === 0}
-							style={{ marginRight: 10 }}
-							onClick={() => handleMinus(countProps)}
-							name="minus"
-						>
-							<Icon type="minus" />
-						</Button>
-						<Button
-							disabled={
-								countProps >= dishCount ||
-								userId !== '40eb5c20-9e41-11e9-8ded-f5462f3a1447'
-							}
-							onClick={() => handlePlus(countProps)}
-							name="add"
-						>
-							<Icon type="plus" />
-						</Button>
+						<Icon type="minus" onClick={() => handleMinus(countProps)} />
 					</div>
 				</div>
 			) : null}
@@ -119,7 +68,7 @@ function ListUser(props) {
 }
 
 const GET_USER_NAME = gql`
-	query user($_id: String!) {
+	query user($_id: ID!) {
 		user(_id: $_id) {
 			username
 			fullName

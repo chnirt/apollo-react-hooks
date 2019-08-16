@@ -4,7 +4,6 @@ import { compose, graphql } from 'react-apollo'
 
 import openNotificationWithIcon from '../../components/shared/openNotificationWithIcon'
 import ListMenu from './listMenu'
-// import { HOCQueryMutation } from '../../components/shared/hocQueryAndMutation'
 
 import './index.css'
 
@@ -142,7 +141,8 @@ export default compose(
 			return {
 				variables: {
 					siteId: props.currentsite
-				}
+				},
+				fetchPolicy: 'network-only'
 			}
 		}
 	}),

@@ -151,7 +151,7 @@ function UserModal(props) {
 								openNotificationWithIcon(
 									'error',
 									'failed',
-									t('src.pages.common.Failed'),
+									t('src.pages.common.failed'),
 									errors[0]
 								)
 								setConfirmLoading(false)
@@ -240,7 +240,7 @@ function UserModal(props) {
 		>
 			<Form {...formItemLayout}>
 				{!userId && (
-					<Form.Item label={t('src.pages.user.userName')}>
+					<Form.Item label={t('src.pages.user.username')}>
 						{getFieldDecorator('username', {
 							rules: [
 								{
