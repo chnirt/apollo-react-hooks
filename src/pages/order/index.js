@@ -5,11 +5,15 @@ import { graphql, compose } from 'react-apollo'
 import DishesListAndActions from './dishesListAndActions'
 
 function Order(props) {
-	const { t, menuPublishBySite, menuPublishedSubscription } = props
+	const { t, getMenuPublishBySite, getMenuSubscription, currentsite } = props
+	const { menuSubscription, loading } = getMenuSubscription
+	const { menuPublishBySite } = getMenuPublishBySite
 
-	if (!menuPublishedSubscription.loading) {
-		menuPublishBySite.refetch(localStorage.getItem('currentsite'))
-	}
+	const menu = loading
+		? menuPublishBySite
+		: menuSubscription.siteId === currentsite
+		? menuSubscription
+		: menuPublishBySite
 
 	return (
 		<React.Fragment>
@@ -28,13 +32,13 @@ function Order(props) {
 					>
 						{t('src.pages.dashBoard.Order')}
 					</Typography.Title>
-					{menuPublishBySite.menuPublishBySite ? (
+					{menu ? (
 						<DishesListAndActions
 							t={t}
-							menuId={menuPublishBySite.menuPublishBySite._id}
-							isPublished={menuPublishBySite.menuPublishBySite.isPublished}
-							isLocked={menuPublishBySite.menuPublishBySite.isLocked}
-							dishes={menuPublishBySite.menuPublishBySite.dishes}
+							menuId={menu._id}
+							isPublished={menu.isPublished}
+							isLocked={menu.isLocked}
+							dishes={menu.dishes}
 						/>
 					) : (
 						<Row
@@ -66,31 +70,40 @@ const MENU_BY_SELECTED_SITE = gql`
 				count
 			}
 			isPublished
-			isActive
 			isLocked
-			createAt
-			updateAt
 		}
 	}
 `
 
-const SUBSCRIPTION_PUBLISHED_MENU = gql`
+const SUBSCRIPTION_MENU = gql`
 	subscription {
-		menuPublished
+		menuSubscription {
+			_id
+			name
+			siteId
+			dishes {
+				_id
+				name
+				count
+			}
+			isPublished
+			isLocked
+		}
 	}
 `
 
 export default compose(
 	graphql(MENU_BY_SELECTED_SITE, {
-		name: 'menuPublishBySite',
-		skip: !localStorage.getItem('currentsite'),
-		options: () => ({
+		name: 'getMenuPublishBySite',
+		skip: props => !props.currentsite,
+		options: props => ({
 			variables: {
-				siteId: localStorage.getItem('currentsite')
-			}
+				siteId: props.currentsite
+			},
+			fetchPolicy: 'network-only'
 		})
 	}),
-	graphql(SUBSCRIPTION_PUBLISHED_MENU, {
-		name: 'menuPublishedSubscription'
+	graphql(SUBSCRIPTION_MENU, {
+		name: 'getMenuSubscription'
 	})
 )(Order)

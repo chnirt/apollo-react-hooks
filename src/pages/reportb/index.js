@@ -73,7 +73,7 @@ function ReportB({
 							{menuBySite.dishes && (
 								<MenuList
 									menuBySite={menuBySite}
-									key={menuBySite._id}
+									// key={menuBySite._id}
 									closeMenu={handleCloseMenu}
 									lockMenu={handleLockMenu}
 									me={me}
