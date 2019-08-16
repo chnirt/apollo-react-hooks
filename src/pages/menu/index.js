@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import MenuList from './menuList'
 
-function Menu({ currentsite }) {
+function Menu(props) {
+	const { currentsite } = props
 	const [siteId] = useState(currentsite)
 	return (
 		<div className="menu">
