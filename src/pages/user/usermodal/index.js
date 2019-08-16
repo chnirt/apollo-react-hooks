@@ -341,8 +341,6 @@ function UserModal(props) {
 									<Select
 										mode="multiple"
 										placeholder={t('src.pages.user.selectPermissions')}
-										className="acexis"
-										onFocus={handleOnFocus}
 									>
 										{props.getAllPermissions.permissions &&
 											props.getAllPermissions.permissions.map(item1 => {

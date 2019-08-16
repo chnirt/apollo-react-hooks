@@ -22,6 +22,7 @@ const { Title } = Typography
 function User(props) {
 	const [visible, setVisible] = useState(false)
 	const [userId, setUserId] = useState('')
+	const [loading, setLoading] = useState(false)
 	const inputEl = useRef(null)
 
 	function showModal(_id) {
@@ -62,6 +63,7 @@ function User(props) {
 						t('src.pages.common.success'),
 						null
 					)
+				setLoading(false)
 			})
 			.catch(err => {
 				// console.log(err)
@@ -72,6 +74,7 @@ function User(props) {
 					t('src.pages.common.failed'),
 					errors[0]
 				)
+				setLoading(false)
 			})
 	}
 
@@ -106,6 +109,7 @@ function User(props) {
 								t('src.pages.common.success'),
 								null
 							)
+						setLoading(false)
 					})
 					.catch(err => {
 						// console.log(err)
@@ -116,10 +120,12 @@ function User(props) {
 							t('src.pages.common.failed'),
 							errors[0]
 						)
+						setLoading(false)
 					})
 			},
 			onCancel() {
 				// console.log('Cancel');
+				setLoading(false)
 			}
 		})
 	}
@@ -140,7 +146,8 @@ function User(props) {
 				onLockAndUnlock(_id, inputEl.current.state.value)
 			},
 			onCancel() {
-				console.log('Cancel')
+				// console.log('Cancel')
+				setLoading(false)
 			}
 		})
 	}
@@ -185,7 +192,7 @@ function User(props) {
 							backgroundColor: '#fff',
 							borderRadius: '.5em'
 						}}
-						loading={!users ? true : false}
+						loading={!users || loading ? true : false}
 						dataSource={users && users.filter(item => item.isActive)}
 						renderItem={user => (
 							<List.Item
@@ -198,6 +205,7 @@ function User(props) {
 									/>,
 									<Button
 										onClick={() => {
+											setLoading(true)
 											if (user.isLocked) {
 												onLockAndUnlock(user._id, '')
 											} else {
@@ -209,7 +217,10 @@ function User(props) {
 										name="btnLockNUnlockUser"
 									/>,
 									<Button
-										onClick={() => onDelete(user._id)}
+										onClick={() => {
+											setLoading(true)
+											onDelete(user._id)
+										}}
 										icon="delete"
 										type="link"
 										name="btnDeleteUser"

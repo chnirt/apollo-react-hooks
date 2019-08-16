@@ -23,7 +23,8 @@ const wsLink = new WebSocketLink({
 	options: {
 		// reconnect: true
 		connectionParams: () => ({
-			token: window.localStorage.getItem('access-token') || ''
+			token: window.localStorage.getItem('access-token') || '',
+			currentsite: window.localStorage.getItem('currentsite') || ''
 		})
 	}
 })
@@ -65,7 +66,8 @@ const authLink = setContext((_, { headers }) => {
 	return {
 		headers: {
 			...headers,
-			token: window.localStorage.getItem('access-token') || ''
+			token: window.localStorage.getItem('access-token') || '',
+			currentsite: window.localStorage.getItem('currentsite') || ''
 		}
 	}
 })
