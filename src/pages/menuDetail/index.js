@@ -7,9 +7,10 @@ import openNotificationWithIcon from '../../components/shared/openNotificationWi
 import ListDish from './listDish'
 
 function MenuDetail(props) {
-	const { form, data, menuById, match } = props
+	const { form, data, menuById, match, t } = props
 	const { menuId } = match.params
 	const [shopId, setShopId] = useState('')
+	const [loading, setLoading] = useState(false)
 
 	function changeShop(value) {
 		setShopId(value)
@@ -49,6 +50,7 @@ function MenuDetail(props) {
 				''
 			)
 		} else if (menuById.menu.dishes.length !== 0) {
+			setLoading(true)
 			await props
 				.publishAndUnpublish({
 					variables: { id: menuId },
@@ -72,6 +74,7 @@ function MenuDetail(props) {
 							: t('menu.PublishedMenu'),
 						''
 					)
+					setLoading(false)
 				})
 		} else {
 			openNotificationWithIcon('error', 'publishfail', t('menu.MenuNoDish'), '')
@@ -79,7 +82,7 @@ function MenuDetail(props) {
 	}
 
 	const { getFieldDecorator } = form
-	const { t } = props
+
 	return (
 		<Row style={{ marginBottom: '1em' }}>
 			<Col span={22} offset={1} order={2}>
@@ -111,6 +114,7 @@ function MenuDetail(props) {
 			</Col>
 			<ListDish
 				{...props}
+				loading={loading}
 				publishAndUnpublish={onPublishAndUnpublish}
 				menuId={match.params.menuId}
 				shopId={shopId}

@@ -8,33 +8,40 @@ import NoteButton from './noteButton'
 
 function DishesListAndActions(props) {
 	const [ordersCountedByUser, setOrdersCountedByUser] = useState({})
+	const [loading, setLoading] = useState(false)
 	const {
 		t,
-		ordersByMenuC,
-		ordersCountByUserC,
+		getOrdersByUser,
+		getOrdersByMenu,
 		ordersByMenuCreated,
 		menuId,
 		dishes,
 		orderDish,
 		isPublished,
 		isLocked,
-		ordersByMenu
+		menuLockedSubscription
 	} = props
 
+	const { ordersByUser } = getOrdersByUser
+	const { ordersCountByMenu } = getOrdersByMenu
+
 	async function handleOrdersCountByUser() {
-		const obj = {}
-		// eslint-disable-next-line no-return-assign
-		await dishes.map(dish => (obj[dish._id] = 0))
-		// eslint-disable-next-line no-return-assign
-		ordersCountByUserC.map(order => (obj[order.dishId] = order.count))
-		await setOrdersCountedByUser(obj)
+		if (ordersByUser) {
+			const obj = {}
+			// eslint-disable-next-line no-return-assign
+			await dishes.map(dish => (obj[dish._id] = 0))
+			// eslint-disable-next-line no-return-assign
+			ordersByUser.map(order => (obj[order.dishId] = order.count))
+			await setOrdersCountedByUser(obj)
+		}
 	}
 
 	useEffect(() => {
 		handleOrdersCountByUser()
-	}, [])
+	}, [ordersByUser])
 
 	async function createOrder(item, quantity) {
+		setLoading(true)
 		orderDish({
 			mutation: ORDER_DISH,
 			variables: {
@@ -69,9 +76,11 @@ function DishesListAndActions(props) {
 				} else {
 					openNotificationWithIcon('error', 'alert-order', t('Failed'), null)
 				}
+				setLoading(false)
 			})
 			.catch(() => {
 				openNotificationWithIcon('error', 'order', t('Failed'), null)
+				setLoading(false)
 			})
 	}
 
@@ -96,86 +105,93 @@ function DishesListAndActions(props) {
 
 	return (
 		<React.Fragment>
-			{isPublished === true ? (
+			{isPublished ? (
 				<>
 					<List
 						size="large"
 						dataSource={dishes}
-						renderItem={item => (
-							<List.Item
-								style={{
-									backgroundColor: '#fff',
-									marginBottom: 20,
-									padding: 20,
-									borderRadius: 5
-								}}
-								key={item._id}
-								actions={[
-									<Button
-										icon="minus"
-										shape="circle"
-										id={`minus-order-${item._id}`}
-										className="minus-order"
-										disabled={
-											ordersCountedByUser[item._id] === 0 ||
-											ordersCountedByUser[item._id] === undefined ||
-											isLocked
-										}
-										onClick={() => handleMinus(item)}
-									/>,
-									<Button
-										icon="plus"
-										shape="circle"
-										id={`plus-order-${item._id}`}
-										className="plus-order"
-										disabled={
-											ordersCountedByUser[item._id] === item.count || isLocked
-										}
-										onClick={() => handlePlus(item)}
+						renderItem={item => {
+							const total =
+								ordersByMenuCreated.ordersByMenuCreated &&
+								ordersByMenuCreated.ordersByMenuCreated.findIndex(
+									order => order._id === item._id
+								) !== -1
+									? ordersByMenuCreated.ordersByMenuCreated[
+											ordersByMenuCreated.ordersByMenuCreated.findIndex(
+												order => order._id === item._id
+											)
+									  ].count
+									: ordersCountByMenu &&
+									  ordersCountByMenu.findIndex(
+											order => order._id === item._id
+									  ) !== -1
+									? ordersCountByMenu[
+											ordersCountByMenu.findIndex(
+												order => order._id === item._id
+											)
+									  ].count
+									: 0
+							return (
+								<List.Item
+									style={{
+										backgroundColor: '#fff',
+										marginBottom: 20,
+										padding: 20,
+										borderRadius: 5
+									}}
+									key={item._id}
+									actions={[
+										<Button
+											icon="minus"
+											shape="circle"
+											loading={loading}
+											id={`minus-order-${item._id}`}
+											className="minus-order"
+											disabled={
+												menuLockedSubscription.menuLocked ||
+												ordersCountedByUser[item._id] <= 0 ||
+												isLocked
+											}
+											onClick={() => handleMinus(item)}
+										/>,
+										<Button
+											icon="plus"
+											shape="circle"
+											loading={loading}
+											id={`plus-order-${item._id}`}
+											className="plus-order"
+											disabled={
+												menuLockedSubscription.menuLocked ||
+												total >= item.count ||
+												isLocked
+											}
+											onClick={() => handlePlus(item)}
+										/>
+									]}
+									extra={
+										<NoteButton
+											t={t}
+											dishId={item._id}
+											menuId={menuId}
+											quantity={ordersCountedByUser[item._id]}
+											isLocked={
+												menuLockedSubscription.menuLocked ||
+												ordersCountedByUser[item._id] <= 0 ||
+												isLocked
+											}
+										/>
+									}
+								>
+									<List.Item.Meta
+										title={item.name}
+										description={`${total}/${item.count}`}
 									/>
-								]}
-								extra={
-									<NoteButton
-										t={t}
-										dishId={item._id}
-										menuId={menuId}
-										quantity={ordersCountedByUser[item._id]}
-										isLocked={isLocked}
-										ordersCountedByUser={ordersCountedByUser}
-										ordersByMenu={ordersByMenu.ordersByMenu}
-									/>
-								}
-							>
-								<List.Item.Meta
-									title={item.name}
-									description={`${
-										// eslint-disable-next-line no-nested-ternary
-										ordersByMenuCreated.ordersByMenuCreated &&
-										ordersByMenuCreated.ordersByMenuCreated.findIndex(
-											order => order.dishId === item._id
-										) !== -1
-											? ordersByMenuCreated.ordersByMenuCreated[
-													ordersByMenuCreated.ordersByMenuCreated.findIndex(
-														order => order.dishId === item._id
-													)
-											  ].count
-											: ordersByMenuC &&
-											  ordersByMenuC.findIndex(
-													order => order.dishId === item._id
-											  ) !== -1
-											? ordersByMenuC[
-													ordersByMenuC.findIndex(
-														order => order.dishId === item._id
-													)
-											  ].count
-											: 0
-									}/${item.count}`}
-								/>
-								<div>
-									{(ordersCountedByUser && ordersCountedByUser[item._id]) || 0}
-								</div>
-							</List.Item>
-						)}
+									<div>
+										{(ordersCountedByUser && ordersCountedByUser[item._id]) || 0}
+									</div>
+								</List.Item>
+							)
+						}}
 					/>
 					<ConfirmButton t={t} />
 				</>
@@ -195,35 +211,12 @@ function DishesListAndActions(props) {
 	)
 }
 
-const ORDER_DISH = gql`
-	mutation orderDish($input: CreateOrderInput!) {
-		orderDish(input: $input)
-	}
-`
-
-const ORDERS_BY_MENU_SUBSCRIPTION = gql`
-	subscription {
-		ordersByMenuCreated {
-			menuId
-			count
-			_id
-			dishId
-		}
-	}
-`
-
 const ORDERS_BY_MENU = gql`
-	query ordersByMenu($menuId: String!) {
-		ordersByMenu(menuId: $menuId) {
-			_id
-			userId
+	query($menuId: String!) {
+		ordersCountByMenu(menuId: $menuId) {
 			menuId
-			dishId
-			note
+			_id
 			count
-			isConfirmed
-			createdAt
-			updatedAt
 		}
 	}
 `
@@ -238,20 +231,44 @@ const ORDERS_BY_USER = gql`
 	}
 `
 
+const ORDER_DISH = gql`
+	mutation orderDish($input: CreateOrderInput!) {
+		orderDish(input: $input)
+	}
+`
+
+const SUBSCRIPTION_LOCKED_MENU = gql`
+	subscription {
+		menuLocked
+	}
+`
+
+const ORDERS_BY_MENU_SUBSCRIPTION = gql`
+	subscription {
+		ordersByMenuCreated {
+			menuId
+			count
+			_id
+		}
+	}
+`
+
 export default compose(
 	graphql(ORDER_DISH, {
 		name: 'orderDish'
 	}),
-	graphql(ORDERS_BY_USER, {
-		name: 'ordersCountByUser',
+	graphql(ORDERS_BY_MENU, {
+		name: 'getOrdersByMenu',
+		skip: props => !props.menuId,
 		options: props => ({
 			variables: {
 				menuId: props.menuId
 			}
 		})
 	}),
-	graphql(ORDERS_BY_MENU, {
-		name: 'ordersByMenu',
+	graphql(ORDERS_BY_USER, {
+		name: 'getOrdersByUser',
+		skip: props => !props.menuId,
 		options: props => ({
 			variables: {
 				menuId: props.menuId
@@ -260,5 +277,8 @@ export default compose(
 	}),
 	graphql(ORDERS_BY_MENU_SUBSCRIPTION, {
 		name: 'ordersByMenuCreated'
+	}),
+	graphql(SUBSCRIPTION_LOCKED_MENU, {
+		name: 'menuLockedSubscription'
 	})
 )(DishesListAndActions)

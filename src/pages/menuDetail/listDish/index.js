@@ -16,7 +16,16 @@ import { compose, graphql } from 'react-apollo'
 import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
 
 function ListDish(props) {
-	const { form, data, menuById, shopId, menuId, publishAndUnpublish } = props
+	const {
+		form,
+		data,
+		menuById,
+		shopId,
+		menuId,
+		publishAndUnpublish,
+		loading,
+		t
+	} = props
 
 	const [dishes, setDishes] = useState([])
 
@@ -24,11 +33,14 @@ function ListDish(props) {
 		if (menuById.menu) {
 			if (shopId !== '' && shopId !== menuById.menu.shopId) {
 				setDishes([])
+				setHasChange(false)
 			} else {
 				setDishes(menuById.menu.dishes)
+				setHasChange(false)
 			}
 		} else {
 			setDishes([])
+			setHasChange(false)
 		}
 	}, [shopId])
 
@@ -167,7 +179,6 @@ function ListDish(props) {
 	}
 
 	const { getFieldDecorator } = form
-	const { t } = props
 
 	return (
 		<>
@@ -196,6 +207,7 @@ function ListDish(props) {
 					<Button
 						name="btnPublishMenu"
 						type="primary"
+						loading={loading}
 						onClick={() => publishAndUnpublish(hasChange)}
 					>
 						{menuById.menu && menuById.menu.isPublished
@@ -376,6 +388,7 @@ const UPDATE_MENU = gql`
 
 export default compose(
 	graphql(GET_DISHES_BY_SHOP, {
+		skip: props => props.shopId === '',
 		options: props => ({
 			variables: {
 				shopId: props.shopId
