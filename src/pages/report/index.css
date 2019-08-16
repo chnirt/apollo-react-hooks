@@ -21,6 +21,10 @@ span.style-btn > button {
 .ant-collapse.open-menu
 	> .ant-collapse-item
 	> .ant-collapse-header
+	.ant-collapse-extra,
+.ant-collapse.open-dishes
+	> .ant-collapse-item
+	> .ant-collapse-header
 	.ant-collapse-extra {
 	float: none;
 	position: absolute;
@@ -29,4 +33,8 @@ span.style-btn > button {
 	line-height: 0;
 	text-align: center;
 	transform: translateY(-50%);
+}
+
+.display-none {
+	display: none;
 }
