@@ -28,19 +28,14 @@ function ListUser(props) {
 						}
 					}
 				]
+			}).then(() => {
+				openNotificationWithIcon(
+					'success',
+					'success',
+					'Success',
+					t('src.pages.common.success')
+				)
 			})
-				.then(() => {
-					// console.log(res)
-					openNotificationWithIcon(
-						'success',
-						'success',
-						'Success',
-						t('src.pages.common.success')
-					)
-				})
-				.catch(err => {
-					console.log(err)
-				})
 		}
 	}
 
