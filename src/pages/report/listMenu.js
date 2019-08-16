@@ -7,7 +7,7 @@ import { compose, graphql } from 'react-apollo'
 import ListUser from './listUser'
 
 import './index.css'
-// import openNotificationWithIcon from '../../components/shared/openNotificationWithIcon'
+import openNotificationWithIcon from '../../components/shared/openNotificationWithIcon'
 
 const { Panel } = Collapse
 
@@ -108,34 +108,53 @@ function ListMenu(props) {
 
 	const handlePlus = (e, dishId) => {
 		e.stopPropagation()
-		// const { menuId, getOrderByMenu, updateOrder, t, menu, me } = props
+		const { menuId, getOrderByMenu, orderDish, t, menu, me } = props
 
 		const currentOrder = getOrderByMenu.ordersByMenu.filter(order => {
 			return me._id === order.userId && dishId === order.dishId
 		})
 
-		if (currentOrder === null) {
+		// console.log(dishId, '-----dishId')
+		if (currentOrder.length < 1) {
 			currentOrder.push({
-				_id: orderId,
-				userId: me._id,
 				dishId,
+				menuId,
 				count: 0
 			})
 		}
+
+		console.log(currentOrder)
+
+		// const aaa = menu.dishes.findIndex(dish => {
+
+		// })
+		// console.log(menu)
 
 		// const orderId = getOrderByMenu.ordersByMenu.filter(order => {
 		// 	return order.dishId === dishId
 		// })[0]._id
 
-		// const totalCount = menu.dishes.filter(dish => {
-		// 	return dish._id === dishId
-		// })[0].count
+		// console.log(orderId, '-----orderId')
+
+		// const lol = menu.dishes.map(dish => {
+		// 	getOrderByMenu.ordersByMenu.map(order => {
+		// 		if(order.dishId !== dish._id) console.log('ok')
+		// 		return 'ok'
+		// 	})
+		// })
+		// console.log(menu)
+		// const aa = getOrderByMenu.ordersByMenu.map(x => console.log(x.dishId))
+
+		const totalCount = menu.dishes.filter(dish => {
+			return dish._id === dishId
+		})[0].count
 
 		const orders = getOrderByMenu.ordersByMenu
 
 		const counts = {}
 
 		orders.map(order => {
+			console.log(order)
 			if (Object.prototype.hasOwnProperty.call(counts, order.dishId)) {
 				counts[order.dishId] += order.count
 			} else {
@@ -143,43 +162,48 @@ function ListMenu(props) {
 			}
 			return counts[order.dishId]
 		})
+		// console.log(totalCount)
+		// console.log(counts)
+		console.log(dishId)
 
-		console.log(props)
-		console.log(currentOrder)
+		// console.log(counts[dishId])
 
-		// if (counts[dishId] < totalCount) {
-		// 	updateOrder({
-		// 		mutation: UPDATE_ORDER,
-		// 		variables: {
-		// 			id: orderId,
-		// 			input: {
-		// 				menuId,
-		// 				dishId,
-		// 				count: currentOrder + 1
-		// 			}
-		// 		},
-		// 		refetchQueries: () => [
-		// 			{
-		// 				query: ORDER_BY_MENU,
-		// 				variables: {
-		// 					menuId
-		// 				}
-		// 			}
-		// 		]
-		// 	})
-		// 		.then(() => {
-		// 			// console.log(res)
-		// 			openNotificationWithIcon(
-		// 				'success',
-		// 				'success',
-		// 				'Success',
-		// 				t('src.pages.common.success')
-		// 			)
-		// 		})
-		// 		.catch(err => {
-		// 			console.log(err)
-		// 		})
-		// }
+		if (!counts[dishId]) {
+			counts[dishId] = 0
+		}
+
+		if (counts[dishId] < totalCount) {
+			orderDish({
+				mutation: ORDER_DISH,
+				variables: {
+					input: {
+						menuId,
+						dishId,
+						count: currentOrder[0].count + 1
+					}
+				},
+				refetchQueries: () => [
+					{
+						query: ORDER_BY_MENU,
+						variables: {
+							menuId
+						}
+					}
+				]
+			})
+				.then(() => {
+					// console.log(res)
+					openNotificationWithIcon(
+						'success',
+						'success',
+						'Success',
+						t('src.pages.common.success')
+					)
+				})
+				.catch(err => {
+					console.log(err)
+				})
+		}
 	}
 
 	const { menu, isLock, isActiveProps, getOrderByMenu, menuId, t } = props
@@ -289,6 +313,12 @@ const UPDATE_ORDER = gql`
 	}
 `
 
+const ORDER_DISH = gql`
+	mutation orderDish($input: CreateOrderInput!) {
+		orderDish(input: $input)
+	}
+`
+
 export default compose(
 	graphql(ORDER_BY_MENU, {
 		name: 'getOrderByMenu',
@@ -302,5 +332,8 @@ export default compose(
 	}),
 	graphql(UPDATE_ORDER, {
 		name: 'updateOrder'
+	}),
+	graphql(ORDER_DISH, {
+		name: 'orderDish'
 	})
 )(ListMenu)

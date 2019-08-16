@@ -2,14 +2,14 @@ import React, { useState } from 'react'
 import { Form, Col, Row, Select, Typography } from 'antd'
 import gql from 'graphql-tag'
 import { compose, graphql } from 'react-apollo'
-import { withTranslation } from 'react-i18next'
 import openNotificationWithIcon from '../../components/shared/openNotificationWithIcon'
 import ListDish from './listDish'
 
 function MenuDetail(props) {
-	const { form, data, menuById, match } = props
+	const { form, data, menuById, match, t } = props
 	const { menuId } = match.params
 	const [shopId, setShopId] = useState('')
+	const [loading, setLoading] = useState(false)
 
 	function changeShop(value) {
 		setShopId(value)
@@ -35,7 +35,12 @@ function MenuDetail(props) {
 					]
 				})
 				.then(() => {
-					openNotificationWithIcon('success', 'save', t('common.Success'), '')
+					openNotificationWithIcon(
+						'success',
+						'save',
+						t('src.pages.common.success'),
+						''
+					)
 				})
 		}
 	}
@@ -45,10 +50,11 @@ function MenuDetail(props) {
 			openNotificationWithIcon(
 				'warning',
 				'notsave',
-				t('menu.ConfirmSaveMenu'),
+				t('src.pages.menu.confirmSaveMenu'),
 				''
 			)
 		} else if (menuById.menu.dishes.length !== 0) {
+			setLoading(true)
 			await props
 				.publishAndUnpublish({
 					variables: { id: menuId },
@@ -68,18 +74,24 @@ function MenuDetail(props) {
 						'success',
 						'publish',
 						menuById.menu && menuById.menu.isPublished
-							? t('menu.UnPublishedMenu')
-							: t('menu.PublishedMenu'),
+							? t('src.pages.menu.unpublishedMenu')
+							: t('src.pages.menu.publishedMenu'),
 						''
 					)
+					setLoading(false)
 				})
 		} else {
-			openNotificationWithIcon('error', 'publishfail', t('menu.MenuNoDish'), '')
+			openNotificationWithIcon(
+				'error',
+				'publishfail',
+				t('src.pages.menu.menuNoDish'),
+				''
+			)
 		}
 	}
 
 	const { getFieldDecorator } = form
-	const { t } = props
+
 	return (
 		<Row style={{ marginBottom: '1em' }}>
 			<Col span={22} offset={1} order={2}>
@@ -95,7 +107,7 @@ function MenuDetail(props) {
 				{getFieldDecorator('shop')(
 					<Select
 						onChange={changeShop}
-						placeholder={t('menu.SelectShop')}
+						placeholder={t('src.pages.menu.selectShop')}
 						style={{ width: '100%' }}
 						disabled={menuById.menu && menuById.menu.isPublished}
 					>
@@ -111,6 +123,7 @@ function MenuDetail(props) {
 			</Col>
 			<ListDish
 				{...props}
+				loading={loading}
 				publishAndUnpublish={onPublishAndUnpublish}
 				menuId={match.params.menuId}
 				shopId={shopId}
@@ -180,4 +193,4 @@ export default compose(
 	graphql(UPDATE_MENU, {
 		name: 'updateMenu'
 	})
-)(withTranslation('translations')(Form.create()(MenuDetail)))
+)(Form.create()(MenuDetail))

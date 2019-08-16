@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import gql from 'graphql-tag'
 import { graphql, compose } from 'react-apollo'
 import { Modal, Form, Input, Select } from 'antd'
+import { withTranslation } from 'react-i18next'
 import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
 
 const { Option } = Select
@@ -18,7 +19,7 @@ function UserModal(props) {
 	function compareToFirstPassword(rule, value, callback) {
 		const { form } = props
 		if (value && value !== form.getFieldValue('password')) {
-			callback(t('user.InconsistentPw'))
+			callback(t('src.pages.user.inconsistentPassword'))
 		} else {
 			callback()
 		}
@@ -132,12 +133,12 @@ function UserModal(props) {
 							})
 							.then(res => {
 								// console.log(res)
-								if (res.data.updateUser === true)
+								if (res.data.updateUser)
 									openNotificationWithIcon(
 										'success',
 										'success',
 										'Success',
-										t('user.UpdateUserSuccess')
+										t('src.pages.user.updateUserSuccess')
 									)
 								setConfirmLoading(false)
 
@@ -150,7 +151,7 @@ function UserModal(props) {
 								openNotificationWithIcon(
 									'error',
 									'failed',
-									t('common.Failed'),
+									t('src.pages.common.failed'),
 									errors[0]
 								)
 								setConfirmLoading(false)
@@ -175,12 +176,12 @@ function UserModal(props) {
 							})
 							.then(res => {
 								// console.log(res)
-								if (res.data.createUser === true)
+								if (res.data.createUser)
 									openNotificationWithIcon(
 										'success',
 										'success',
 										'Success',
-										t('user.AddUserSuccess')
+										t('src.pages.user.addUserSuccess')
 									)
 								setConfirmLoading(false)
 
@@ -193,20 +194,13 @@ function UserModal(props) {
 								openNotificationWithIcon(
 									'error',
 									'failed',
-									t('common.Failed'),
+									t('src.pages.common.failed'),
 									errors[0]
 								)
 								setConfirmLoading(false)
 							})
 			}
 		})
-	}
-
-	function handleOnFocus() {
-		// document
-		// 	.getElementsByClassName('hide-searchSelect')[0]
-		// 	.getElementsByClassName('ant-select-search__field')[0]
-		// 	.setAttribute('readonly', 'readonly')
 	}
 
 	const formItemLayout = {
@@ -236,45 +230,45 @@ function UserModal(props) {
 
 	return (
 		<Modal
-			title={userId ? t('common.Update') : t('common.Add')}
+			title={userId ? t('src.pages.common.update') : t('src.pages.common.add')}
 			visible={visible}
 			onOk={handleOk}
 			confirmLoading={confirmLoading}
 			onCancel={hideModal}
-			okText={userId ? t('common.Update') : t('common.Add')}
-			cancelText={t('common.Cancel')}
+			okText={userId ? t('src.pages.common.update') : t('src.pages.common.add')}
+			cancelText={t('src.pages.common.cancel')}
 		>
 			<Form {...formItemLayout}>
 				{!userId && (
-					<Form.Item label={t('user.Username')}>
+					<Form.Item label={t('src.pages.user.username')}>
 						{getFieldDecorator('username', {
 							rules: [
 								{
 									required: true,
-									message: t('user.InputUsername')
+									message: t('src.pages.user.usernameRequired')
 								},
 								{
 									min: 4,
-									message: t('user.UserName4C')
+									message: t('src.pages.user.userNameMin4Characters')
 								}
 							]
 						})(<Input style={{ fontSize: 16 }} />)}
 					</Form.Item>
 				)}
-				<Form.Item label={t('user.Password')}>
+				<Form.Item label={t('src.pages.user.password')}>
 					{getFieldDecorator('password', {
 						rules: [
 							{
 								required: true,
-								message: t('user.InputPassword')
+								message: t('src.pages.user.passwordRequired')
 							},
 							{
 								min: 1,
-								message: t('user.Pw1-8')
+								message: t('src.pages.user.passwordMin1Max8')
 							},
 							{
 								max: 8,
-								message: t('user.Pw1-8')
+								message: t('src.pages.user.passwordMin1Max8')
 							},
 							{
 								validator: validateToNextPassword
@@ -282,12 +276,12 @@ function UserModal(props) {
 						]
 					})(<Input.Password visibilityToggle={false} autoComplete="off" />)}
 				</Form.Item>
-				<Form.Item label={t('user.Confirm Password')}>
+				<Form.Item label={t('src.pages.user.confirmPassword')}>
 					{getFieldDecorator('confirm', {
 						rules: [
 							{
 								required: true,
-								message: t('user.ConfirmPassword')
+								message: t('src.pages.user.confirmPasswordAgain')
 							},
 							{
 								validator: compareToFirstPassword
@@ -301,21 +295,21 @@ function UserModal(props) {
 						/>
 					)}
 				</Form.Item>
-				<Form.Item label={t('user.Fullname')}>
+				<Form.Item label={t('src.pages.user.fullName')}>
 					{getFieldDecorator('fullName', {
 						initialValue: userId && getUser.user && getUser.user.fullName,
 						rules: [
 							{
 								required: true,
-								message: t('user.InputFullname')
+								message: t('src.pages.user.fullNameRequired')
 							},
 							{
 								min: 3,
-								message: t('user.Fn3-20')
+								message: t('src.pages.user.fullNameMin3Max20')
 							},
 							{
 								max: 20,
-								message: t('user.Fn3-20')
+								message: t('src.pages.user.fullNameMin3Max20')
 							}
 						]
 					})(<Input style={{ fontSize: 16 }} />)}
@@ -346,9 +340,7 @@ function UserModal(props) {
 								})(
 									<Select
 										mode="multiple"
-										placeholder={t('user.SelectPermissions')}
-										className="acexis"
-										onFocus={handleOnFocus}
+										placeholder={t('src.pages.user.selectPermissions')}
 									>
 										{props.getAllPermissions.permissions &&
 											props.getAllPermissions.permissions.map(item1 => {
@@ -399,7 +391,7 @@ const CREATE_USER = gql`
 `
 
 const UPDATE_USER = gql`
-	mutation updateUser($_id: String!, $input: UpdateUserInput!) {
+	mutation updateUser($_id: ID!, $input: UpdateUserInput!) {
 		updateUser(_id: $_id, input: $input)
 	}
 `
@@ -407,17 +399,18 @@ const UPDATE_USER = gql`
 const GET_ALL_USERS = gql`
 	query($offset: Int!, $limit: Int!) {
 		users(offset: $offset, limit: $limit) {
+			_id
 			username
 			fullName
+			reason
 			isActive
 			isLocked
-			_id
 		}
 	}
 `
 
 const GET_ALL_PERMISSIONS_BY_USERID = gql`
-	query($_id: String!) {
+	query($_id: ID!) {
 		findAllByUserId(_id: $_id) {
 			siteId
 			permissions {
@@ -429,7 +422,7 @@ const GET_ALL_PERMISSIONS_BY_USERID = gql`
 `
 
 const GET_USER = gql`
-	query($_id: String!) {
+	query($_id: ID!) {
 		user(_id: $_id) {
 			fullName
 		}
@@ -470,4 +463,8 @@ export default compose(
 	graphql(UPDATE_USER, {
 		name: 'updateUser'
 	})
-)(Form.create({ name: 'createUserForm' })(UserModal))
+)(
+	withTranslation('translations')(
+		Form.create({ name: 'createUserForm' })(UserModal)
+	)
+)

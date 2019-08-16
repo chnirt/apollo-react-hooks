@@ -6,7 +6,8 @@ import {
 	Icon,
 	Menu,
 	Dropdown,
-	ConfigProvider
+	ConfigProvider,
+	Row
 } from 'antd'
 import { withApollo } from 'react-apollo'
 import { withRouter } from 'react-router-dom'
@@ -48,30 +49,34 @@ function Layout(props) {
 		window.localStorage.setItem('currentsite', value)
 	}
 
-	const userPers = JSON.parse(localStorage.getItem('user-permissions')).map(
-		ele => ({
-			siteName: ele.siteName,
-			siteId: ele.siteId,
-			permissions: ele.sitepermissions
-		})
-	)
+	if (!localStorage.getItem('user-permissions')) {
+		onLogout()
+	}
+
+	const userPermissions = JSON.parse(
+		localStorage.getItem('user-permissions')
+	).map(item => ({
+		siteName: item.siteName,
+		siteId: item.siteId,
+		permissions: item.sitepermissions
+	}))
 
 	const currentPage = children.props.location.pathname.slice(4).toUpperCase()
 
-	const sitesHasPermission = userPers.filter(
-		ele => ele.permissions.indexOf(currentPage) !== -1
+	const sitesHasPermission = userPermissions.filter(
+		item => item.permissions.indexOf(currentPage) !== -1
 	)
 
 	const info = (
 		<Menu>
-			<Menu.Item>
+			<Menu.Item disabled>
 				<Icon type="user" />
 				<span>{me.username}</span>
 			</Menu.Item>
 			<Menu.Divider />
 			<Menu.Item onClick={onLogout}>
 				<Icon type="logout" />
-				<span>{t('common.Log out')}</span>
+				<span>{t('src.pages.common.logOut')}</span>
 			</Menu.Item>
 		</Menu>
 	)
@@ -162,7 +167,8 @@ function Layout(props) {
 									fontSize: '16px',
 									fontWeight: 'bold',
 									cursor: 'pointer',
-									marginRight: '.5em'
+									marginRight: '.5em',
+									paddingBottom: 9
 								}}
 							/>
 						</Dropdown>,
@@ -172,7 +178,9 @@ function Layout(props) {
 							trigger={['click']}
 							placement="bottomCenter"
 						>
-							<span style={{ color: '#fff', cursor: 'pointer' }}>
+							<span
+								style={{ color: '#fff', cursor: 'pointer', paddingBottom: 9 }}
+							>
 								{window.localStorage.getItem('i18nextLng') === 'vi'
 									? 'VI'
 									: 'EN'}
@@ -182,7 +190,13 @@ function Layout(props) {
 					footer={<Divider style={{ margin: '0' }} />}
 				/>
 			</ConfigProvider>
-			{React.cloneElement(children, { currentsite, me })}
+			<Row
+				style={{
+					height: 'calc(100vh - 67px)'
+				}}
+			>
+				{React.cloneElement(children, { currentsite, me, t })}
+			</Row>
 		</div>
 	)
 }
@@ -192,6 +206,7 @@ const ME = gql`
 		me {
 			username
 			fullName
+			_id
 		}
 	}
 `

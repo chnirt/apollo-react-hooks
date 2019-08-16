@@ -22,7 +22,8 @@ class NoteForm extends React.Component {
 		if (e.target.checked) {
 			this.setState({
 				extraRice:
-					(noted && `${t('order.More rice')}, ${noted}`) || t('order.More rice')
+					(noted && `${t('src.pages.order.moreRice')}, ${noted}`) ||
+					t('src.pages.order.moreRice')
 			})
 		} else if (!e.target.checked) {
 			this.setState({
@@ -38,7 +39,7 @@ class NoteForm extends React.Component {
 			<Modal
 				visible={visible}
 				onCancel={onCancel}
-				title={t('order.Note')}
+				title={t('src.pages.order.note')}
 				footer={[
 					<Button
 						key="cancel"
@@ -46,17 +47,19 @@ class NoteForm extends React.Component {
 						onClick={onCancel}
 						name="cancelNote"
 					>
-						{t('common.Cancel')}
+						{t('src.pages.common.cancel')}
 					</Button>,
 					<Button key="save" type="primary" onClick={onCreate} name="addNote">
-						{t('common.Add')}
+						{t('src.pages.common.add')}
 					</Button>
 				]}
 			>
 				<Form colon={false} ref={this.form}>
 					<Form.Item>
 						{getFieldDecorator('note', {
-							rules: [{ required: false, message: t('order.Input note') }],
+							rules: [
+								{ required: false, message: t('src.pages.order.inputNote') }
+							],
 							// eslint-disable-next-line react/destructuring-assignment
 							initialValue:
 								this.state.extraRice !== ''
@@ -65,7 +68,7 @@ class NoteForm extends React.Component {
 						})(
 							<Input.TextArea
 								id="orderNoteInput"
-								placeholder={t('order.Input note')}
+								placeholder={t('src.pages.order.inputNote')}
 								autosize={{ minRows: 3, maxRows: 7 }}
 							/>
 						)}
@@ -75,7 +78,7 @@ class NoteForm extends React.Component {
 							rules: [{ required: false }]
 						})(
 							<Checkbox id="extraRiceCheckbox" onChange={e => this.onChange(e)}>
-								{t('order.More rice')}
+								{t('src.pages.order.moreRice')}
 							</Checkbox>
 						)}
 					</Form.Item>

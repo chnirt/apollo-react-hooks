@@ -141,7 +141,8 @@ export default compose(
 			return {
 				variables: {
 					siteId: props.currentsite
-				}
+				},
+				fetchPolicy: 'network-only'
 			}
 		}
 	}),
