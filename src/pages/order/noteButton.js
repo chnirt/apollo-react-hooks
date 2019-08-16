@@ -20,6 +20,7 @@ function NoteButton(props) {
 				loading={loading}
 				icon="form"
 				shape="circle"
+				size="small"
 				type="primary"
 				onClick={showModal}
 				id={`note-order-${dishId}`}
