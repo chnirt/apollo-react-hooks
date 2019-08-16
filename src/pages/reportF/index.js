@@ -125,36 +125,44 @@ function ReportF(props) {
 
 	function onPlus(e, dishId, currentCount) {
 		e.stopPropagation()
-		props.orderDish({
-			variables: {
-				input: {
-					menuId: menuPublishBySite._id,
-					dishId,
-					count: currentCount + 1
+		props
+			.orderDish({
+				variables: {
+					input: {
+						menuId: menuPublishBySite._id,
+						dishId,
+						count: currentCount + 1
+					}
 				}
-			}
-		})
-	}
-
-	function onMinus(userId, dishId, count) {
-		props.updateOrder({
-			variables: {
-				input: {
-					menuId: menuPublishBySite._id,
-					dishId,
-					count: count - 1
-				},
-				userId
-			},
-			refetchQueries: [
-				{
-					query: COUNT_BY_MENU,
+			})
+			.then(() => {
+				props.countOrderByMenu.refetch({
 					variables: {
 						menuId: menuPublishBySite._id
 					}
+				})
+			})
+	}
+
+	function onMinus(userId, dishId, count) {
+		props
+			.updateOrder({
+				variables: {
+					input: {
+						menuId: menuPublishBySite._id,
+						dishId,
+						count: count - 1
+					},
+					userId
 				}
-			]
-		})
+			})
+			.then(() => {
+				props.countOrderByMenu.refetch({
+					variables: {
+						menuId: menuPublishBySite._id
+					}
+				})
+			})
 	}
 
 	function onCloseMenu(e) {
@@ -249,6 +257,7 @@ export default compose(
 		name: 'countOrderByMenu',
 		skip: props => !props.menuPublish.menuPublishBySite,
 		options: props => ({
+			fetchPolicy: 'no-cache',
 			variables: {
 				menuId:
 					(props.menuPublish.menuPublishBySite &&
