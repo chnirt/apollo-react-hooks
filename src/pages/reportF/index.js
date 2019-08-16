@@ -216,7 +216,7 @@ function ReportF(props) {
 									block
 									onClick={e => onLock(e)}
 									loading={loadingLock}
-									disabled={countOrderByMenu.countByMenuJ ? false : true}
+									disabled={countOrderByMenu.countByMenuJ ? loading : true}
 								>
 									{menuPublishBySite.isLocked ? 'Lock' : 'Unlock'}
 								</Button>
