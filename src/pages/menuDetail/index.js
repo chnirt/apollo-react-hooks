@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { Form, Col, Row, Select, Typography } from 'antd'
 import gql from 'graphql-tag'
 import { compose, graphql } from 'react-apollo'
-import { withTranslation } from 'react-i18next'
 import openNotificationWithIcon from '../../components/shared/openNotificationWithIcon'
 import ListDish from './listDish'
 
@@ -36,7 +35,12 @@ function MenuDetail(props) {
 					]
 				})
 				.then(() => {
-					openNotificationWithIcon('success', 'save', t('common.Success'), '')
+					openNotificationWithIcon(
+						'success',
+						'save',
+						t('src.pages.common.success'),
+						''
+					)
 				})
 		}
 	}
@@ -46,7 +50,7 @@ function MenuDetail(props) {
 			openNotificationWithIcon(
 				'warning',
 				'notsave',
-				t('menu.ConfirmSaveMenu'),
+				t('src.pages.menu.confirmSaveMenu'),
 				''
 			)
 		} else if (menuById.menu.dishes.length !== 0) {
@@ -70,14 +74,19 @@ function MenuDetail(props) {
 						'success',
 						'publish',
 						menuById.menu && menuById.menu.isPublished
-							? t('menu.UnPublishedMenu')
-							: t('menu.PublishedMenu'),
+							? t('src.pages.menu.unpublishedMenu')
+							: t('src.pages.menu.publishedMenu'),
 						''
 					)
 					setLoading(false)
 				})
 		} else {
-			openNotificationWithIcon('error', 'publishfail', t('menu.MenuNoDish'), '')
+			openNotificationWithIcon(
+				'error',
+				'publishfail',
+				t('src.pages.menu.menuNoDish'),
+				''
+			)
 		}
 	}
 
@@ -98,7 +107,7 @@ function MenuDetail(props) {
 				{getFieldDecorator('shop')(
 					<Select
 						onChange={changeShop}
-						placeholder={t('menu.SelectShop')}
+						placeholder={t('src.pages.menu.selectShop')}
 						style={{ width: '100%' }}
 						disabled={menuById.menu && menuById.menu.isPublished}
 					>
@@ -184,4 +193,4 @@ export default compose(
 	graphql(UPDATE_MENU, {
 		name: 'updateMenu'
 	})
-)(withTranslation('translations')(Form.create()(MenuDetail)))
+)(Form.create()(MenuDetail))

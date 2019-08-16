@@ -22,11 +22,21 @@ function ConfirmButton(props) {
 				if (res) {
 					setAlert(true)
 				} else {
-					openNotificationWithIcon('error', 'alert-confirm', t('Failed'), '')
+					openNotificationWithIcon(
+						'error',
+						'alert-confirm',
+						t('src.pages.common.failed'),
+						''
+					)
 				}
 			})
 			.catch(() => {
-				openNotificationWithIcon('error', 'confirm', t('Failed'), '')
+				openNotificationWithIcon(
+					'error',
+					'confirm',
+					t('src.pages.common.failed'),
+					''
+				)
 			})
 	}
 
@@ -43,16 +53,16 @@ function ConfirmButton(props) {
 					marginTop: 20,
 					marginBottom: 20
 				}}
-				type="submit"
+				type="primary"
 			>
-				{t('common.Confirm')}
+				{t('src.pages.common.confirm')}
 			</Button>
 		) : null
 	return (
 		<React.Fragment>
 			{alert === true ? (
 				<Alert
-					message={t('common.ConfirmSuccess')}
+					message={t('src.pages.common.confirmSuccess')}
 					type="success"
 					showIcon
 					closable

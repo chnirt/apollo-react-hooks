@@ -4,7 +4,7 @@ import ModalNoteForm from './modalNoteForm'
 
 function NoteButton(props) {
 	const [modalVisible, setModalVisible] = useState(false)
-	const { t, isLocked, menuId, quantity, dishId } = props
+	const { t, isLocked, menuId, quantity, dishId, loading } = props
 
 	async function showModal() {
 		await setModalVisible(true)
@@ -17,6 +17,7 @@ function NoteButton(props) {
 	return (
 		<div>
 			<Button
+				loading={loading}
 				icon="form"
 				shape="circle"
 				type="primary"

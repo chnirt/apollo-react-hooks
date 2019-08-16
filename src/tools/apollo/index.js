@@ -23,7 +23,8 @@ const wsLink = new WebSocketLink({
 	options: {
 		// reconnect: true
 		connectionParams: () => ({
-			token: window.localStorage.getItem('access-token') || ''
+			token: window.localStorage.getItem('access-token') || '',
+			currentsite: window.localStorage.getItem('currentsite') || ''
 		})
 	}
 })
@@ -47,7 +48,7 @@ const errorLink = new OnError(({ graphQLErrors, networkError, operation }) => {
 			console.log(
 				`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}, Code: ${extensions.code}`
 			)
-			if (extensions.code === '498') {
+			if (extensions.code === '498' || extensions.code === '499') {
 				store.authStore.logout()
 				window.location.pathname = '/login'
 			}
@@ -65,7 +66,8 @@ const authLink = setContext((_, { headers }) => {
 	return {
 		headers: {
 			...headers,
-			token: window.localStorage.getItem('access-token') || ''
+			token: window.localStorage.getItem('access-token') || '',
+			currentsite: window.localStorage.getItem('currentsite') || ''
 		}
 	}
 })
