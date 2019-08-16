@@ -31,7 +31,7 @@ export const routes = [
 				label: 'Order',
 				path: '/🥢/order',
 				icon: 'shopping-cart',
-				component: 'orderJ'
+				component: 'order'
 			},
 			{
 				label: 'Manage User',

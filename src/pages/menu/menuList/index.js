@@ -222,7 +222,8 @@ export default compose(
 		options: props => ({
 			variables: {
 				siteId: props.siteId
-			}
+			},
+			fetchPolicy: 'network-only'
 		})
 	}),
 	graphql(ADD_MENU, {
