@@ -19,7 +19,7 @@ function UserModal(props) {
 	function compareToFirstPassword(rule, value, callback) {
 		const { form } = props
 		if (value && value !== form.getFieldValue('password')) {
-			callback(t('InconsistentPw'))
+			callback(t('src.pages.user.inconsistentPassword'))
 		} else {
 			callback()
 		}
@@ -138,7 +138,7 @@ function UserModal(props) {
 										'success',
 										'success',
 										'Success',
-										t('UpdateUserSuccess')
+										t('src.pages.user.updateUserSuccess')
 									)
 								setConfirmLoading(false)
 
@@ -151,7 +151,7 @@ function UserModal(props) {
 								openNotificationWithIcon(
 									'error',
 									'failed',
-									t('Failed'),
+									t('src.pages.common.Failed'),
 									errors[0]
 								)
 								setConfirmLoading(false)
@@ -181,7 +181,7 @@ function UserModal(props) {
 										'success',
 										'success',
 										'Success',
-										t('AddUserSuccess')
+										t('src.pages.user.addUserSuccess')
 									)
 								setConfirmLoading(false)
 
@@ -194,7 +194,7 @@ function UserModal(props) {
 								openNotificationWithIcon(
 									'error',
 									'failed',
-									t('Failed'),
+									t('src.pages.common.failed'),
 									errors[0]
 								)
 								setConfirmLoading(false)
@@ -230,45 +230,45 @@ function UserModal(props) {
 
 	return (
 		<Modal
-			title={userId ? t('Update') : t('Add')}
+			title={userId ? t('src.pages.common.update') : t('src.pages.common.add')}
 			visible={visible}
 			onOk={handleOk}
 			confirmLoading={confirmLoading}
 			onCancel={hideModal}
-			okText={userId ? t('Update') : t('Add')}
-			cancelText={t('Cancel')}
+			okText={userId ? t('src.pages.common.update') : t('src.pages.common.add')}
+			cancelText={t('src.pages.common.cancel')}
 		>
 			<Form {...formItemLayout}>
 				{!userId && (
-					<Form.Item label={t('Username')}>
+					<Form.Item label={t('src.pages.user.userName')}>
 						{getFieldDecorator('username', {
 							rules: [
 								{
 									required: true,
-									message: t('InputUsername')
+									message: t('src.pages.user.usernameRequired')
 								},
 								{
 									min: 4,
-									message: t('UserName4C')
+									message: t('src.pages.user.userNameMin4Characters')
 								}
 							]
 						})(<Input style={{ fontSize: 16 }} />)}
 					</Form.Item>
 				)}
-				<Form.Item label={t('Password')}>
+				<Form.Item label={t('src.pages.user.password')}>
 					{getFieldDecorator('password', {
 						rules: [
 							{
 								required: true,
-								message: t('InputPassword')
+								message: t('src.pages.user.passwordRequired')
 							},
 							{
 								min: 1,
-								message: t('Pw1-8')
+								message: t('src.pages.user.passwordMin1Max8')
 							},
 							{
 								max: 8,
-								message: t('Pw1-8')
+								message: t('src.pages.user.passwordMin1Max8')
 							},
 							{
 								validator: validateToNextPassword
@@ -276,12 +276,12 @@ function UserModal(props) {
 						]
 					})(<Input.Password visibilityToggle={false} autoComplete="off" />)}
 				</Form.Item>
-				<Form.Item label={t('Confirm Password')}>
+				<Form.Item label={t('src.pages.user.confirmPassword')}>
 					{getFieldDecorator('confirm', {
 						rules: [
 							{
 								required: true,
-								message: t('ConfirmPassword')
+								message: t('src.pages.user.confirmPasswordAgain')
 							},
 							{
 								validator: compareToFirstPassword
@@ -295,21 +295,21 @@ function UserModal(props) {
 						/>
 					)}
 				</Form.Item>
-				<Form.Item label={t('Fullname')}>
+				<Form.Item label={t('src.pages.user.fullName')}>
 					{getFieldDecorator('fullName', {
 						initialValue: userId && getUser.user && getUser.user.fullName,
 						rules: [
 							{
 								required: true,
-								message: t('InputFullname')
+								message: t('src.pages.user.fullNameRequired')
 							},
 							{
 								min: 3,
-								message: t('Fn3-20')
+								message: t('src.pages.user.fullNameMin3Max20')
 							},
 							{
 								max: 20,
-								message: t('Fn3-20')
+								message: t('src.pages.user.fullNameMin3Max20')
 							}
 						]
 					})(<Input style={{ fontSize: 16 }} />)}
@@ -338,7 +338,12 @@ function UserModal(props) {
 								{getFieldDecorator(`sites.${item._id}`, {
 									initialValue: newArray
 								})(
-									<Select mode="multiple" placeholder={t('SelectPermissions')}>
+									<Select
+										mode="multiple"
+										placeholder={t('src.pages.user.selectPermissions')}
+										className="acexis"
+										onFocus={handleOnFocus}
+									>
 										{props.getAllPermissions.permissions &&
 											props.getAllPermissions.permissions.map(item1 => {
 												return (

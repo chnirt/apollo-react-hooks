@@ -1,8 +1,21 @@
 import React, { useState } from 'react'
-import { Col, Row, Button, Modal, Form, Input, List, Avatar } from 'antd'
+import {
+	Col,
+	Row,
+	Button,
+	Modal,
+	Form,
+	Input,
+	List,
+	Avatar,
+	Card,
+	Typography
+} from 'antd'
 import gql from 'graphql-tag'
 import { compose, graphql } from 'react-apollo'
 import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
+
+const { Title } = Typography
 
 function MenuList(props) {
 	const { data, form } = props
@@ -11,8 +24,8 @@ function MenuList(props) {
 
 	async function deleteMenu(id) {
 		Modal.confirm({
-			title: t('menu.DeleteMenu'),
-			content: t('common.ConfirmDelete'),
+			title: t('src.pages.menu.deleteMenu'),
+			content: t('src.pages.common.confirmDelete'),
 			onOk: async () => {
 				await props
 					.deleteMenu({
@@ -34,7 +47,7 @@ function MenuList(props) {
 							openNotificationWithIcon(
 								'success',
 								'delete',
-								t('common.Success'),
+								t('src.pages.common.success'),
 								''
 							)
 					)
@@ -66,7 +79,7 @@ function MenuList(props) {
 							openNotificationWithIcon(
 								'success',
 								'add',
-								t('menu.AddMenuSuccess'),
+								t('src.pages.menu.addMenuSuccess'),
 								''
 							)
 							form.resetFields()
@@ -80,87 +93,108 @@ function MenuList(props) {
 	const { t } = props
 	return (
 		<>
-			<Row type="flex" justify="end" style={{ marginRight: '1em' }}>
-				<Button
-					name="addNewMenu"
-					type="primary"
-					icon="plus"
-					onClick={() => setVisible(true)}
-				>
-					{t('menu.Add menu')}
-				</Button>
-			</Row>
-			<List
-				pagination={{
-					pageSize: 6
-				}}
-				style={{
-					margin: '1em',
-					padding: '1em',
-					backgroundColor: '#fff',
-					borderRadius: '.5em'
-				}}
-				loading={data.loading}
-				dataSource={data.menusBySite}
-				renderItem={menu => {
-					if (menu.isPublished) {
-						setHasPublished(true)
-					}
-					return (
-						<List.Item
-							actions={
-								hasPublished
-									? menu.isPublished && [
-											<Button
-												onClick={() =>
-													props.history.push(
-														`/🥢/menu/detail/${props.siteId}/${menu._id}`
-													)
-												}
-												icon="edit"
-												type="link"
-												name="btnEditMenu"
-											/>
-									  ]
-									: [
-											<Button
-												onClick={() =>
-													props.history.push(
-														`/🥢/menu/detail/${props.siteId}/${menu._id}`
-													)
-												}
-												icon="edit"
-												type="link"
-												name="btnEditMenu"
-											/>,
-											<Button
-												onClick={() => deleteMenu(menu._id)}
-												icon="delete"
-												type="link"
-												name="btnDeleteMenu"
-											/>
-									  ]
-							}
-							style={{ fontWeight: 'bold' }}
+			<Card
+				title={
+					<div>
+						<Title style={{ color: '#ffffff' }} level={3}>
+							{t('src.pages.menu.manageMenu')}
+						</Title>
+					</div>
+				}
+				bordered={false}
+				extra={
+					<div>
+						<Button
+							name="addNewMenu"
+							type="primary"
+							icon="plus"
+							onClick={() => setVisible(true)}
 						>
-							<List.Item.Meta
-								avatar={
-									menu.isPublished && (
-										<Avatar
-											icon="check"
-											size="small"
-											style={{ backgroundColor: '#87d068' }}
-										/>
-									)
-								}
-								title={menu.name}
-							/>
-						</List.Item>
-					)
+							{t('src.pages.common.add')}
+						</Button>
+					</div>
+				}
+				headStyle={{
+					border: 0
 				}}
-			/>
+				bodyStyle={{
+					padding: 0
+				}}
+				style={{ backgroundColor: 'transparent' }}
+			>
+				<List
+					pagination={{
+						pageSize: 6
+					}}
+					style={{
+						margin: '1em',
+						padding: '1em',
+						backgroundColor: '#fff',
+						borderRadius: '.5em'
+					}}
+					loading={data.loading}
+					dataSource={data.menusBySite}
+					renderItem={menu => {
+						if (menu.isPublished) {
+							setHasPublished(true)
+						}
+						return (
+							<List.Item
+								actions={
+									hasPublished
+										? menu.isPublished && [
+												<Button
+													onClick={() =>
+														props.history.push(
+															`/🥢/menu/detail/${props.siteId}/${menu._id}`
+														)
+													}
+													icon="edit"
+													type="link"
+													name="btnEditMenu"
+												/>
+										  ]
+										: [
+												<Button
+													onClick={() =>
+														props.history.push(
+															`/🥢/menu/detail/${props.siteId}/${menu._id}`
+														)
+													}
+													icon="edit"
+													type="link"
+													name="btnEditMenu"
+												/>,
+												<Button
+													onClick={() => deleteMenu(menu._id)}
+													icon="delete"
+													type="link"
+													name="btnDeleteMenu"
+												/>
+										  ]
+								}
+								style={{ fontWeight: 'bold' }}
+							>
+								<List.Item.Meta
+									avatar={
+										menu.isPublished && (
+											<Avatar
+												icon="check"
+												size="small"
+												style={{ backgroundColor: '#87d068' }}
+											/>
+										)
+									}
+									title={menu.name}
+								/>
+							</List.Item>
+						)
+					}}
+				/>
+			</Card>
+
 			<Modal
-				title={t('menu.Add menu')}
+				title={t('src.pages.menu.addMenu')}
 				visible={visible}
 				onCancel={() => setVisible(false)}
 				footer={[
@@ -170,10 +204,10 @@ function MenuList(props) {
 						onClick={() => setVisible(false)}
 						name="cancelAddMenu"
 					>
-						{t('common.Cancel')}
+						{t('src.pages.common.cancel')}
 					</Button>,
 					<Button key="save" type="primary" onClick={addMenu} name="addMenu">
-						{t('common.Add')}
+						{t('src.pages.common.add')}
 					</Button>
 				]}
 			>
@@ -183,10 +217,13 @@ function MenuList(props) {
 							<Form.Item>
 								{getFieldDecorator('name', {
 									rules: [
-										{ required: true, message: t('menu.Input menu name') }
+										{
+											required: true,
+											message: t('src.pages.menu.inputMenuName')
+										}
 									],
 									initialValue: ''
-								})(<Input placeholder={t('menu.Input menu name')} />)}
+								})(<Input placeholder={t('src.pages.menu.inputMenuName')} />)}
 							</Form.Item>
 						</Col>
 					</Row>

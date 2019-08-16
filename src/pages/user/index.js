@@ -12,7 +12,6 @@ import {
 	Tooltip,
 	Icon
 } from 'antd'
-import { withTranslation } from 'react-i18next'
 import openNotificationWithIcon from '../../components/shared/openNotificationWithIcon'
 
 import UserModal from './usermodal'
@@ -56,21 +55,31 @@ function User(props) {
 			})
 			.then(res => {
 				//  console.log('hello', res)
-				if (res.data.lockAndUnlockUser)
-					openNotificationWithIcon('success', 'success', t('Success'), null)
+				if (res.data.lockAndUnlockUser === true)
+					openNotificationWithIcon(
+						'success',
+						'success',
+						t('src.pages.common.success'),
+						null
+					)
 			})
 			.catch(err => {
 				// console.log(err)
 				const errors = err.graphQLErrors.map(error => error.message)
-				openNotificationWithIcon('error', 'failed', t('Failed'), errors[0])
+				openNotificationWithIcon(
+					'error',
+					'failed',
+					t('src.pages.common.failed'),
+					errors[0]
+				)
 			})
 	}
 
 	function onDelete(_id) {
 		// console.log("onDelete", _id)
 		confirm({
-			title: t('DeleteUser'),
-			content: t('ConfirmDelete'),
+			title: t('src.pages.user.deleteUser'),
+			content: t('src.pages.common.confirmDelete'),
 			onOk() {
 				// console.log('OK');
 				props
@@ -89,14 +98,24 @@ function User(props) {
 						]
 					})
 					.then(res => {
-						console.log(res)
-						if (res.data.deleteUser)
-							openNotificationWithIcon('success', 'success', t('Success'), null)
+						// console.log(res)
+						if (res.data.lockAndUnlockUser === true)
+							openNotificationWithIcon(
+								'success',
+								'success',
+								t('src.pages.common.success'),
+								null
+							)
 					})
 					.catch(err => {
 						// console.log(err)
 						const errors = err.graphQLErrors.map(error => error.message)
-						openNotificationWithIcon('error', 'failed', t('Failed'), errors[0])
+						openNotificationWithIcon(
+							'error',
+							'failed',
+							t('src.pages.common.failed'),
+							errors[0]
+						)
 					})
 			},
 			onCancel() {
@@ -107,10 +126,16 @@ function User(props) {
 
 	function showConfirm(_id) {
 		confirm({
-			title: 'Locked reason ?',
-			content: <Input ref={inputEl} type="text" placeholder="something..." />,
+			title: t('src.pages.user.reason'),
+			content: (
+				<Input
+					ref={inputEl}
+					type="text"
+					placeholder={t('src.pages.user.reasonRequired')}
+				/>
+			),
 			onOk() {
-				console.log('OK')
+				// console.log('OK')
 				// console.log(_id, inputEl.current.state.value)
 				onLockAndUnlock(_id, inputEl.current.state.value)
 			},
@@ -130,7 +155,7 @@ function User(props) {
 					title={
 						<div>
 							<Title style={{ color: '#ffffff' }} level={3}>
-								{t('Manage User')}
+								{t('src.pages.user.manageUser')}
 							</Title>
 						</div>
 					}
@@ -138,7 +163,7 @@ function User(props) {
 					extra={
 						<div>
 							<Button type="primary" block onClick={() => showModal()}>
-								{t('Add user')}
+								{t('src.pages.common.add')}
 							</Button>
 						</div>
 					}
@@ -248,4 +273,4 @@ export default compose(
 	graphql(USER_DELETE, {
 		name: 'deleteUser'
 	})
-)(withTranslation('translations')(User))
+)(User)

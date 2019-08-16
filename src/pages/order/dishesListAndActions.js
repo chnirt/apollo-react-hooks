@@ -4,7 +4,7 @@ import gql from 'graphql-tag'
 import { graphql, compose } from 'react-apollo'
 import openNotificationWithIcon from '../../components/shared/openNotificationWithIcon'
 import ConfirmButton from './comfirmButton'
-import NoteButton from './noteButton'
+// import NoteButton from './noteButton'
 
 function DishesListAndActions(props) {
 	const [ordersCountedByUser, setOrdersCountedByUser] = useState({})
@@ -68,19 +68,33 @@ function DishesListAndActions(props) {
 		})
 			.then(async res => {
 				if (res.data.orderDish) {
-					openNotificationWithIcon('success', 'alert-order', t('Success'), null)
+					openNotificationWithIcon(
+						'success',
+						'alert-order',
+						t('src.pages.common.success'),
+						null
+					)
 					await setOrdersCountedByUser({
 						...ordersCountedByUser,
 						[item._id]: quantity
 					})
 				} else {
-					openNotificationWithIcon('error', 'alert-order', t('Failed'), null)
+					openNotificationWithIcon(
+						'error',
+						'alert-order',
+						t('src.pages.common.failed'),
+						null
+					)
 				}
 				setLoading(false)
 			})
 			.catch(() => {
-				openNotificationWithIcon('error', 'order', t('Failed'), null)
-				setLoading(false)
+				openNotificationWithIcon(
+					'error',
+					'order',
+					t('src.pages.common.failed'),
+					null
+				)
 			})
 	}
 
@@ -168,19 +182,19 @@ function DishesListAndActions(props) {
 											onClick={() => handlePlus(item)}
 										/>
 									]}
-									extra={
-										<NoteButton
-											t={t}
-											dishId={item._id}
-											menuId={menuId}
-											quantity={ordersCountedByUser[item._id]}
-											isLocked={
-												menuLockedSubscription.menuLocked ||
-												ordersCountedByUser[item._id] <= 0 ||
-												isLocked
-											}
-										/>
-									}
+									// extra={
+									// 	<NoteButton
+									// 		t={t}
+									// 		dishId={item._id}
+									// 		menuId={menuId}
+									// 		quantity={ordersCountedByUser[item._id]}
+									// 		isLocked={
+									// 			menuLockedSubscription.menuLocked ||
+									// 			ordersCountedByUser[item._id] <= 0 ||
+									// 			isLocked
+									// 		}
+									// 	/>
+									// }
 								>
 									<List.Item.Meta
 										title={item.name}
@@ -204,7 +218,7 @@ function DishesListAndActions(props) {
 						color: '#fff'
 					}}
 				>
-					<div>{t('System has locked')}</div>
+					<div>{t('src.pages.order.systemHasLocked')}</div>
 				</Row>
 			)}
 		</React.Fragment>
