@@ -1,25 +1,20 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Collapse, Button, Icon, Tooltip } from 'antd'
 import gql from 'graphql-tag'
 import XLSX from 'xlsx'
-import { withTranslation } from 'react-i18next'
+import { compose, graphql } from 'react-apollo'
 
 import ListUser from './listUser'
-import { HOCQueryMutation } from '../../components/shared/hocQueryAndMutation'
 
 import './index.css'
 
 const { Panel } = Collapse
 
-class listMenu extends React.Component {
-	// changeActive = () => {
-	// 	this.setState(prevState => ({ isActive: !prevState.isActive }))
-	// }
-
-	export(e, menu) {
+function ListMenu(props) {
+	const exportFile = (e, menu) => {
 		e.stopPropagation()
 		const dishes = []
-		const { getOrderByMenu, me } = this.props
+		const { getOrderByMenu, me } = props
 
 		const orders = getOrderByMenu.ordersByMenu
 
@@ -38,14 +33,15 @@ class listMenu extends React.Component {
 		// console.log(counts)
 
 		menu.dishes.forEach(item =>
-			dishes.push([item.name, '', '', counts[item._id] || 0])
+			dishes.push([item.name, '', '', '', '', counts[item._id] || 0])
 		)
 
-		dishes.unshift(['Tên món ăn', '', '', 'Số lượng'])
+		// eslint-disable-next-line prefer-numeric-literals
+		dishes.unshift(['Tên món ăn', '', '', '', '', 'Số lượng'])
 		dishes.unshift([menu.name])
-		dishes.push(['Tổng'])
+		dishes.push(['', '', '', '', 'Tổng'])
 		dishes.push([new Date()])
-		dishes.push(['', '', `Người gửi : ${me.me.fullName}`])
+		dishes.push(['', '', '', '', `Người gửi : ${me.fullName}`])
 
 		// console.log(dishes)
 
@@ -60,7 +56,7 @@ class listMenu extends React.Component {
 		const merge = [
 			{
 				s: { r: 0, c: 0 },
-				e: { r: 0, c: 3 }
+				e: { r: 0, c: 5 }
 			},
 			{
 				s: {
@@ -79,7 +75,7 @@ class listMenu extends React.Component {
 				},
 				e: {
 					r: dishes.length - 2,
-					c: 3
+					c: 5
 				}
 			},
 			{
@@ -89,16 +85,16 @@ class listMenu extends React.Component {
 				},
 				e: {
 					r: dishes.length - 3,
-					c: 2
+					c: 4
 				}
 			}
 		]
 
 		ws['!merges'] = merge
 		ws['!formatRows'] = true
-		ws[`D${dishes.length - 2}`] = {
+		ws[`F${dishes.length - 2}`] = {
 			t: 'n',
-			f: `SUM(D3:D${dishes.length - 3})` || 0
+			f: `SUM(F3:F${dishes.length - 3})` || 0
 		}
 		// console.log(ws)
 
@@ -108,83 +104,84 @@ class listMenu extends React.Component {
 			cellStyles: true
 		})
 	}
+	const { menu, isLock, isActiveProps, getOrderByMenu, menuId } = props
+	const [isActive, changeActive] = useState(false)
+	return (
+		<Collapse className="open-menu" defaultActiveKey={menu._id}>
+			<Panel
+				key={menu._id}
+				header={
+					<span style={{ width: '10em', display: 'inline-block' }}>
+						{menu.name}
+					</span>
+				}
+				disabled={!!menu.isLocked}
+				extra={
+					<>
+						<Tooltip title={menu.isLocked ? 'Unlock menu' : 'Lock menu'}>
+							<Button
+								className="publish style-btn lock-menu"
+								onClick={e => {
+									isLock(e, menu._id)
+								}}
+							>
+								<Icon type={menu.isLocked ? 'lock' : 'unlock'} />
+							</Button>
+						</Tooltip>
 
-	render() {
-		const { menu, isLock, isActiveProps, getOrderByMenu, menuId } = this.props
-		return (
-			<Collapse className="open-menu">
-				<Panel
-					extra={
-						<>
-							<Tooltip title={menu.isLocked ? 'Unlock menu' : 'Lock menu'}>
-								<Button
-									className="publish style-btn lock-menu"
-									onClick={e => {
-										isLock(e, menu._id)
-									}}
-								>
-									<Icon type={menu.isLocked ? 'lock' : 'unlock'} />
-								</Button>
-							</Tooltip>
+						<Tooltip title="Complete menu">
+							<Button
+								className="publish style-btn complete-menu"
+								onClick={e => {
+									isActiveProps(e, menu._id)
+									changeActive(!isActive)
+								}}
+								disabled={!menu.isLocked || isActive}
+							>
+								<Icon type={!isActive ? 'check' : 'loading'} />
+							</Button>
+						</Tooltip>
 
-							<Tooltip title="Complete menu">
-								<Button
-									className="publish style-btn complete-menu"
-									onClick={e => isActiveProps(e, menu._id)}
-									disabled={!menu.isLocked}
-								>
-									<Icon type="check" />
-								</Button>
-							</Tooltip>
-
-							<Tooltip title="Request menu">
-								<Button
-									className="publish style-btn request-menu"
-									onClick={e => this.export(e, menu)}
-									disabled={!menu.isLocked}
-								>
-									<Icon type="file-excel" />
-								</Button>
-							</Tooltip>
-						</>
-					}
-					header={
-						<span style={{ width: '10em', display: 'inline-block' }}>
-							{menu.name}
-						</span>
-					}
-					key={menu._id}
-					disabled={!!menu.isLocked}
-				>
-					<Collapse className="open-dishes">
-						{menu.dishes &&
-							menu.dishes.map(dish => {
-								// console.log(dish)
-								return (
-									<Panel header={`${dish.name} x${dish.count}`} key={dish._id}>
-										{getOrderByMenu.ordersByMenu &&
-											getOrderByMenu.ordersByMenu.map(orderByMenu => {
-												return (
-													<ListUser
-														orderId={orderByMenu._id}
-														dishCount={dish.count}
-														menuId={menuId}
-														orderByMenu={orderByMenu}
-														key={orderByMenu._id}
-														userId={orderByMenu.userId}
-														countProps={orderByMenu.count}
-														dishId={dish._id}
-													/>
-												)
-											})}
-									</Panel>
-								)
-							})}
-					</Collapse>
-				</Panel>
-			</Collapse>
-		)
-	}
+						<Tooltip title="Request menu">
+							<Button
+								className="publish style-btn request-menu"
+								onClick={e => exportFile(e, menu)}
+								disabled={!menu.isLocked}
+							>
+								<Icon type="file-excel" />
+							</Button>
+						</Tooltip>
+					</>
+				}
+			>
+				<Collapse className="open-dishes">
+					{menu.dishes &&
+						menu.dishes.map(dish => {
+							// console.log(dish)
+							return (
+								<Panel header={`${dish.name} x${dish.count}`} key={dish._id}>
+									{getOrderByMenu.ordersByMenu &&
+										getOrderByMenu.ordersByMenu.map(orderByMenu => {
+											return (
+												<ListUser
+													orderId={orderByMenu._id}
+													dishCount={dish.count}
+													menuId={menuId}
+													orderByMenu={orderByMenu}
+													key={orderByMenu._id}
+													userId={orderByMenu.userId}
+													countProps={orderByMenu.count}
+													dishId={dish._id}
+												/>
+											)
+										})}
+								</Panel>
+							)
+						})}
+				</Collapse>
+			</Panel>
+		</Collapse>
+	)
 }
 
 const ORDER_BY_MENU = gql`
@@ -198,31 +195,15 @@ const ORDER_BY_MENU = gql`
 	}
 `
 
-const ME = gql`
-	query {
-		me {
-			username
-			fullName
-		}
-	}
-`
-
-export default withTranslation('translations')(
-	HOCQueryMutation([
-		{
-			query: ORDER_BY_MENU,
-			name: 'getOrderByMenu',
-			options: props => {
-				return {
-					variables: {
-						menuId: props.menuId
-					}
+export default compose(
+	graphql(ORDER_BY_MENU, {
+		name: 'getOrderByMenu',
+		options: props => {
+			return {
+				variables: {
+					menuId: props.menuId
 				}
 			}
-		},
-		{
-			query: ME,
-			name: 'me'
 		}
-	])(listMenu)
-)
+	})
+)(ListMenu)
