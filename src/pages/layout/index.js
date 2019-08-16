@@ -6,7 +6,8 @@ import {
 	Icon,
 	Menu,
 	Dropdown,
-	ConfigProvider
+	ConfigProvider,
+	Row
 } from 'antd'
 import { withApollo } from 'react-apollo'
 import { withRouter } from 'react-router-dom'
@@ -68,7 +69,7 @@ function Layout(props) {
 
 	const info = (
 		<Menu>
-			<Menu.Item>
+			<Menu.Item disabled>
 				<Icon type="user" />
 				<span>{me.username}</span>
 			</Menu.Item>
@@ -189,7 +190,13 @@ function Layout(props) {
 					footer={<Divider style={{ margin: '0' }} />}
 				/>
 			</ConfigProvider>
-			{React.cloneElement(children, { currentsite, me, t })}
+			<Row
+				style={{
+					height: 'calc(100vh - 67px)'
+				}}
+			>
+				{React.cloneElement(children, { currentsite, me, t })}
+			</Row>
 		</div>
 	)
 }
