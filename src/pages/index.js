@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import { inject, observer } from 'mobx-react'
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom'
+import Loading from '../components/shared/loading'
 import { routes } from '../routes'
-import withLoadable from '../tools/loadable'
+// import withLoadable from '../tools/loadable'
 import Layout from './layout'
 
 function Root(props) {
@@ -10,48 +11,58 @@ function Root(props) {
 	const { authStore } = store
 	const { isAuth } = authStore
 	return (
-		<BrowserRouter>
-			<Switch>
-				{routes &&
-					routes.map(route =>
-						route.private ? (
-							// Private
-							<Route
-								key={route.label}
-								{...route}
-								component={props1 => {
-									const MyComponent = withLoadable(
-										import(`./${route.component}`)
-									)
-									return isAuth ? (
-										<Layout>
-											<MyComponent {...props1} {...route} />
-										</Layout>
-									) : (
-										<Redirect to="/login" />
-									)
-								}}
-							/>
-						) : (
-							// Not private
-							<Route
-								key={route.label}
-								{...route}
-								component={props1 => {
-									const MyComponent = withLoadable(
-										import(`./${route.component}`)
-									)
-									return !isAuth ? (
-										<MyComponent {...props1} {...route} />
-									) : (
-										<Redirect to="/" />
-									)
-								}}
-							/>
-						)
-					)}
-			</Switch>
-		</BrowserRouter>
+		<Suspense fallback={<Loading />}>
+			<BrowserRouter>
+				<Switch>
+					{routes &&
+						routes.map(route =>
+							route.private ? (
+								// Private
+								<Route
+									key={route.label}
+									{...route}
+									component={props1 => {
+										// const MyComponent = withLoadable(
+										// 	import(`./${route.component}`)
+										// )
+										const LazyComponent = React.lazy(() =>
+											import(`./${route.component}`)
+										)
+										return isAuth ? (
+											<Layout>
+												{/* <MyComponent {...props1} {...route} /> */}
+												<LazyComponent {...props1} {...route} />
+											</Layout>
+										) : (
+											<Redirect to="/login" />
+										)
+									}}
+								/>
+							) : (
+								// Not private
+								<Route
+									key={route.label}
+									{...route}
+									component={props1 => {
+										// const MyComponent = withLoadable(
+										// 	import(`./${route.component}`)
+										// )
+										const LazyComponent = React.lazy(() =>
+											import(`./${route.component}`)
+										)
+										return !isAuth ? (
+											// <MyComponent {...props1} {...route} />
+											<LazyComponent {...props1} {...route} />
+										) : (
+											<Redirect to="/" />
+										)
+									}}
+								/>
+							)
+						)}
+				</Switch>
+			</BrowserRouter>
+		</Suspense>
 	)
 }
 // export default Root
