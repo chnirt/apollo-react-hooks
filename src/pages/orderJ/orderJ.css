@@ -1,0 +1,68 @@
+.order-manager-header h1 {
+	color: #ffffff;
+	font-family: 'Allura', cursive;
+	/* font-size: 2em; */
+	font-size: 1.5em;
+	display: inline;
+}
+
+.order-manager-header {
+	margin: 20px 20px 10px 20px;
+}
+
+.create-order {
+	background-color: rgba(255, 255, 255, 0.9);
+	height: 55px;
+	line-height: 55px;
+	width: 100%;
+	position: fixed;
+	bottom: 0px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.create-order-button {
+	width: 200px;
+	height: 40px;
+}
+
+/* -------------- */
+
+.site-select-order {
+	margin: 20px;
+}
+
+.list-dishes-order {
+	list-style-type: none;
+	padding-inline-start: 0px;
+}
+
+.list-dishes-order-item {
+	margin: 15px 0px;
+	background-color: white;
+	height: 40px;
+	line-height: 40px;
+	border-radius: 5px;
+	box-shadow: 1px 0 0 0 #e8e8e8, 0 1px 0 0 #e8e8e8, 1px 1px 0 0 #e8e8e8,
+		1px 0 0 0 #e8e8e8 inset, 0 1px 0 0 #e8e8e8 inset;
+	padding-left: 15px;
+	font-weight: 500;
+	color: #2c2c2c;
+}
+
+.list-dishes-order-item-Groupsbutton {
+	float: right;
+}
+
+.list-dishes-order-item-Groupsbutton button {
+	margin: 5px 1px;
+}
+
+.list-dishes-order-item-Groupsbutton p {
+	margin: 2px;
+	color: red;
+	float: left;
+	font-size: 0.8em;
+	margin-top: 1px;
+}

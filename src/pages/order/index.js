@@ -5,7 +5,11 @@ import { graphql, compose } from 'react-apollo'
 import DishesListAndActions from './dishesListAndActions'
 
 function Order(props) {
-	const { t, menuPublishBySite, ordersByMenu, ordersCountByUser } = props
+	const { t, menuPublishBySite, menuPublishedSubscription } = props
+
+	if (!menuPublishedSubscription.loading) {
+		menuPublishBySite.refetch(localStorage.getItem('currentsite'))
+	}
 
 	return (
 		<React.Fragment>
@@ -24,17 +28,13 @@ function Order(props) {
 					>
 						{t('src.pages.dashBoard.Order')}
 					</Typography.Title>
-					{menuPublishBySite.menuPublishBySite &&
-					ordersByMenu.ordersByMenu &&
-					ordersCountByUser.ordersCountByUser ? (
+					{menuPublishBySite.menuPublishBySite ? (
 						<DishesListAndActions
 							t={t}
 							menuId={menuPublishBySite.menuPublishBySite._id}
 							isPublished={menuPublishBySite.menuPublishBySite.isPublished}
 							isLocked={menuPublishBySite.menuPublishBySite.isLocked}
 							dishes={menuPublishBySite.menuPublishBySite.dishes}
-							ordersByMenuC={ordersByMenu.ordersByMenu}
-							ordersCountByUserC={ordersCountByUser.ordersCountByUser}
 						/>
 					) : (
 						<Row
@@ -73,29 +73,10 @@ const MENU_BY_SELECTED_SITE = gql`
 		}
 	}
 `
-const ORDERS_BY_MENU = gql`
-	query ordersByMenu($menuId: String!) {
-		ordersByMenu(menuId: $menuId) {
-			_id
-			userId
-			menuId
-			dishId
-			note
-			count
-			isConfirmed
-			createdAt
-			updatedAt
-		}
-	}
-`
 
-const ORDERS_COUNT_BY_USER = gql`
-	query ordersCountByUser($menuId: String!) {
-		ordersCountByUser(menuId: $menuId) {
-			menuId
-			dishId
-			count
-		}
+const SUBSCRIPTION_PUBLISHED_MENU = gql`
+	subscription {
+		menuPublished
 	}
 `
 
@@ -109,26 +90,7 @@ export default compose(
 			}
 		})
 	}),
-	graphql(ORDERS_BY_MENU, {
-		name: 'ordersByMenu',
-		skip: props => !props.menuPublishBySite.menuPublishBySite,
-		options: props => ({
-			variables: {
-				menuId:
-					props.menuPublishBySite.menuPublishBySite &&
-					props.menuPublishBySite.menuPublishBySite._id
-			}
-		})
-	}),
-	graphql(ORDERS_COUNT_BY_USER, {
-		name: 'ordersCountByUser',
-		skip: props => !props.menuPublishBySite.menuPublishBySite,
-		options: props => ({
-			variables: {
-				menuId:
-					props.menuPublishBySite.menuPublishBySite &&
-					props.menuPublishBySite.menuPublishBySite._id
-			}
-		})
+	graphql(SUBSCRIPTION_PUBLISHED_MENU, {
+		name: 'menuPublishedSubscription'
 	})
 )(Order)

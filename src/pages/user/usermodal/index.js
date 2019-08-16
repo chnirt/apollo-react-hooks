@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import gql from 'graphql-tag'
 import { graphql, compose } from 'react-apollo'
 import { Modal, Form, Input, Select } from 'antd'
+import { withTranslation } from 'react-i18next'
 import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
 
 const { Option } = Select
@@ -132,7 +133,7 @@ function UserModal(props) {
 							})
 							.then(res => {
 								// console.log(res)
-								if (res.data.updateUser === true)
+								if (res.data.updateUser)
 									openNotificationWithIcon(
 										'success',
 										'success',
@@ -175,7 +176,7 @@ function UserModal(props) {
 							})
 							.then(res => {
 								// console.log(res)
-								if (res.data.createUser === true)
+								if (res.data.createUser)
 									openNotificationWithIcon(
 										'success',
 										'success',
@@ -202,13 +203,6 @@ function UserModal(props) {
 		})
 	}
 
-	function handleOnFocus() {
-		// document
-		// 	.getElementsByClassName('hide-searchSelect')[0]
-		// 	.getElementsByClassName('ant-select-search__field')[0]
-		// 	.setAttribute('readonly', 'readonly')
-	}
-
 	const formItemLayout = {
 		labelCol: {
 			xs: { span: 24 },
@@ -220,7 +214,7 @@ function UserModal(props) {
 		}
 	}
 
-	// console.log(props)
+	console.log(props)
 
 	const {
 		form,
@@ -399,7 +393,7 @@ const CREATE_USER = gql`
 `
 
 const UPDATE_USER = gql`
-	mutation updateUser($_id: String!, $input: UpdateUserInput!) {
+	mutation updateUser($_id: ID!, $input: UpdateUserInput!) {
 		updateUser(_id: $_id, input: $input)
 	}
 `
@@ -407,17 +401,18 @@ const UPDATE_USER = gql`
 const GET_ALL_USERS = gql`
 	query($offset: Int!, $limit: Int!) {
 		users(offset: $offset, limit: $limit) {
+			_id
 			username
 			fullName
+			reason
 			isActive
 			isLocked
-			_id
 		}
 	}
 `
 
 const GET_ALL_PERMISSIONS_BY_USERID = gql`
-	query($_id: String!) {
+	query($_id: ID!) {
 		findAllByUserId(_id: $_id) {
 			siteId
 			permissions {
@@ -429,7 +424,7 @@ const GET_ALL_PERMISSIONS_BY_USERID = gql`
 `
 
 const GET_USER = gql`
-	query($_id: String!) {
+	query($_id: ID!) {
 		user(_id: $_id) {
 			fullName
 		}
@@ -470,4 +465,8 @@ export default compose(
 	graphql(UPDATE_USER, {
 		name: 'updateUser'
 	})
-)(Form.create({ name: 'createUserForm' })(UserModal))
+)(
+	withTranslation('translations')(
+		Form.create({ name: 'createUserForm' })(UserModal)
+	)
+)

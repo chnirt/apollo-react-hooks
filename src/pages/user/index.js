@@ -22,6 +22,7 @@ const { Title } = Typography
 function User(props) {
 	const [visible, setVisible] = useState(false)
 	const [userId, setUserId] = useState('')
+	const inputEl = useRef(null)
 
 	function showModal(_id) {
 		// console.log(_id)
@@ -33,8 +34,6 @@ function User(props) {
 		setVisible(false)
 		setUserId('')
 	}
-
-	const inputEl = useRef(null)
 
 	function onLockAndUnlock(_id, reason) {
 		// console.log("onLockAndUnlock", _id)
@@ -227,12 +226,7 @@ function User(props) {
 						)}
 					/>
 				</Card>
-				<UserModal
-					{...props}
-					userId={userId}
-					visible={visible}
-					hideModal={hideModal}
-				/>
+				<UserModal userId={userId} visible={visible} hideModal={hideModal} />
 			</Row>
 		</>
 	)
@@ -244,21 +238,21 @@ const GET_ALL_USERS = gql`
 			_id
 			username
 			fullName
-			isActive
 			reason
+			isActive
 			isLocked
 		}
 	}
 `
 
 const USER_LOCK_AND_UNLOCK = gql`
-	mutation($_id: String!, $reason: String!) {
+	mutation($_id: ID!, $reason: String!) {
 		lockAndUnlockUser(_id: $_id, reason: $reason)
 	}
 `
 
 const USER_DELETE = gql`
-	mutation($_id: String!) {
+	mutation($_id: ID!) {
 		deleteUser(_id: $_id)
 	}
 `
