@@ -214,7 +214,7 @@ function UserModal(props) {
 		}
 	}
 
-	console.log(props)
+	// console.log(props)
 
 	const {
 		form,
