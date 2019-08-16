@@ -48,7 +48,7 @@ const errorLink = new OnError(({ graphQLErrors, networkError, operation }) => {
 			console.log(
 				`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}, Code: ${extensions.code}`
 			)
-			if (extensions.code === '498') {
+			if (extensions.code === '498' || extensions.code === '499') {
 				store.authStore.logout()
 				window.location.pathname = '/login'
 			}

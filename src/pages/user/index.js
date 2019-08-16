@@ -2,7 +2,6 @@ import React, { useState, useRef } from 'react'
 import gql from 'graphql-tag'
 import { graphql, compose } from 'react-apollo'
 import {
-	Row,
 	Button,
 	Card,
 	Modal,
@@ -157,88 +156,86 @@ function User(props) {
 
 	return (
 		<>
-			<Row>
-				<Card
-					title={
-						<div>
-							<Title style={{ color: '#ffffff' }} level={3}>
-								{t('src.pages.user.manageUser')}
-							</Title>
-						</div>
-					}
-					bordered={false}
-					extra={
-						<div>
-							<Button type="primary" block onClick={() => showModal()}>
-								{t('src.pages.common.add')}
-							</Button>
-						</div>
-					}
-					headStyle={{
-						border: 0
+			<Card
+				title={
+					<div>
+						<Title style={{ color: '#ffffff' }} level={3}>
+							{t('src.pages.user.manageUser')}
+						</Title>
+					</div>
+				}
+				bordered={false}
+				extra={
+					<div>
+						<Button type="primary" block onClick={() => showModal()}>
+							{t('src.pages.common.add')}
+						</Button>
+					</div>
+				}
+				headStyle={{
+					border: 0
+				}}
+				bodyStyle={{
+					padding: 0
+				}}
+				style={{ backgroundColor: 'transparent' }}
+			>
+				<List
+					pagination={{
+						pageSize: 8
 					}}
-					bodyStyle={{
-						padding: 0
+					style={{
+						margin: '1em',
+						padding: '1em',
+						backgroundColor: '#fff',
+						borderRadius: '.5em'
 					}}
-					style={{ backgroundColor: 'transparent' }}
-				>
-					<List
-						pagination={{
-							pageSize: 8
-						}}
-						style={{
-							margin: '1em',
-							padding: '1em',
-							backgroundColor: '#fff',
-							borderRadius: '.5em'
-						}}
-						loading={!users || loading ? true : false}
-						dataSource={users && users.filter(item => item.isActive)}
-						renderItem={user => (
-							<List.Item
-								actions={[
-									<Button
-										onClick={() => showModal(user._id)}
-										icon="edit"
-										type="link"
-										name="btnEditUser"
-									/>,
-									<Button
-										onClick={() => {
-											setLoading(true)
-											if (user.isLocked) {
-												onLockAndUnlock(user._id, '')
-											} else {
-												showConfirm(user._id)
-											}
-										}}
-										icon={user.isLocked ? 'lock' : 'unlock'}
-										type="link"
-										name="btnLockNUnlockUser"
-									/>,
-									<Button
-										onClick={() => {
-											setLoading(true)
-											onDelete(user._id)
-										}}
-										icon="delete"
-										type="link"
-										name="btnDeleteUser"
-									/>
-								]}
-							>
-								{`${user.fullName} `}
-								{user.reason && (
-									<Tooltip title={user.reason}>
-										<Icon type="question-circle-o" />
-									</Tooltip>
-								)}
-							</List.Item>
-						)}
-					/>
-				</Card>
-				<UserModal userId={userId} visible={visible} hideModal={hideModal} />
-			</Row>
+					loading={!users || loading ? true : false}
+					dataSource={users && users.filter(item => item.isActive)}
+					renderItem={user => (
+						<List.Item
+							actions={[
+								<Button
+									onClick={() => showModal(user._id)}
+									icon="edit"
+									type="link"
+									name="btnEditUser"
+								/>,
+								<Button
+									onClick={() => {
+										setLoading(true)
+										if (user.isLocked) {
+											onLockAndUnlock(user._id, '')
+										} else {
+											showConfirm(user._id)
+										}
+									}}
+									icon={user.isLocked ? 'lock' : 'unlock'}
+									type="link"
+									name="btnLockNUnlockUser"
+								/>,
+								<Button
+									onClick={() => {
+										setLoading(true)
+										onDelete(user._id)
+									}}
+									icon="delete"
+									type="link"
+									name="btnDeleteUser"
+								/>
+							]}
+						>
+							{`${user.fullName} `}
+							{user.reason && (
+								<Tooltip title={user.reason}>
+									<Icon type="question-circle-o" />
+								</Tooltip>
+							)}
+						</List.Item>
+					)}
+				/>
+			</Card>
+			<UserModal userId={userId} visible={visible} hideModal={hideModal} />
 		</>
 	)
 }

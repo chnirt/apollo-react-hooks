@@ -53,18 +53,18 @@ function Layout(props) {
 		onLogout()
 	}
 
-	const userPers = JSON.parse(localStorage.getItem('user-permissions')).map(
-		ele => ({
-			siteName: ele.siteName,
-			siteId: ele.siteId,
-			permissions: ele.sitepermissions
-		})
-	)
+	const userPermissions = JSON.parse(
+		localStorage.getItem('user-permissions')
+	).map(item => ({
+		siteName: item.siteName,
+		siteId: item.siteId,
+		permissions: item.sitepermissions
+	}))
 
 	const currentPage = children.props.location.pathname.slice(4).toUpperCase()
 
-	const sitesHasPermission = userPers.filter(
-		ele => ele.permissions.indexOf(currentPage) !== -1
+	const sitesHasPermission = userPermissions.filter(
+		item => item.permissions.indexOf(currentPage) !== -1
 	)
 
 	const info = (
