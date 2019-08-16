@@ -12,13 +12,19 @@ const { Panel } = Collapse
 
 function ReportItemDish(props) {
 	const { name, me, menu, _id, onPlus, onMinus } = props
-	const max = menu
-		.filter(order => order.dishId === _id)
-		.map(order => order.count)
-		.reduce((a, b) => a + b)
-	const currentCount = menu.filter(
-		order => order.dishId === _id && order.userId === me._id
-	)[0].count
+	const max =
+		menu.filter(order => order.dishId === _id).length > 0
+			? menu
+					.filter(order => order.dishId === _id)
+					.map(order => order.count)
+					.reduce((a, b) => a + b)
+			: 0
+	const currentCount =
+		menu.filter(order => order.dishId === _id && order.userId === me._id)
+			.length > 0
+			? menu.filter(order => order.dishId === _id && order.userId === me._id)[0]
+					.count
+			: 0
 	return (
 		<React.Fragment>
 			<Collapse>
