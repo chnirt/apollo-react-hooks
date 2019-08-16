@@ -65,7 +65,7 @@ const CLOSE_MENU = gql`
 `
 
 const USER = gql`
-	query($_id: String!) {
+	query($_id: ID!) {
 		user(_id: $_id) {
 			fullName
 		}
