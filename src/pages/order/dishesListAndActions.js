@@ -121,7 +121,11 @@ function DishesListAndActions(props) {
 			{isPublished ? (
 				<>
 					<List
-						size="large"
+						style={{
+							padding: '1em',
+							backgroundColor: '#fff',
+							borderRadius: '.5em'
+						}}
 						dataSource={dishes}
 						renderItem={item => {
 							const total =
@@ -146,17 +150,14 @@ function DishesListAndActions(props) {
 									: 0
 							return (
 								<List.Item
-									style={{
-										backgroundColor: '#fff',
-										marginBottom: 20,
-										padding: 20,
-										borderRadius: 5
-									}}
 									key={item._id}
 									actions={[
 										<Button
 											icon="minus"
 											shape="circle"
+											ghost
+											type="primary"
+											size="small"
 											loading={loading}
 											id={`minus-order-${item._id}`}
 											className="minus-order"
@@ -166,6 +167,9 @@ function DishesListAndActions(props) {
 										<Button
 											icon="plus"
 											shape="circle"
+											ghost
+											type="primary"
+											size="small"
 											loading={loading}
 											id={`plus-order-${item._id}`}
 											className="plus-order"
@@ -188,9 +192,7 @@ function DishesListAndActions(props) {
 										title={item.name}
 										description={`${total}/${item.count}`}
 									/>
-									<div>
-										{(ordersCountedByUser && ordersCountedByUser[item._id]) || 0}
-									</div>
+									{(ordersCountedByUser && ordersCountedByUser[item._id]) || 0}
 								</List.Item>
 							)
 						}}
