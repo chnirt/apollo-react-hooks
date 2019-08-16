@@ -36,13 +36,18 @@ function ModalNoteForm(props) {
 	}, [data])
 
 	function onChange(e) {
-		if (e.target.checked) {
-			setExtraRice(
-				extraRice !== ''
-					? `${t('order.More rice')}, ${extraRice}`
-					: t('order.More rice')
-			)
+		let note = ''
+		if (e.target.id === 'note') {
+			note = `${e.target.value}`
+		} else if (e.target.checked) {
+			note = `${t('src.pages.order.moreRice')}, ${extraRice}`
+		} else {
+			note = extraRice.substr(`${t('src.pages.order.moreRice')}`.length + 2)
 		}
+		setExtraRice(note)
+		form.setFieldsValue({
+			note
+		})
 	}
 
 	function handleNote() {
@@ -92,31 +97,37 @@ function ModalNoteForm(props) {
 	return (
 		<Modal
 			visible={visible}
-			title={t('order.Note')}
+			title={t('src.pages.order.note')}
 			onCancel={() => closeModal()}
 			footer={[
 				<Button
 					key="cancel"
 					type="danger"
-					onClick={() => closeModal()}
+					onClick={() => {
+						closeModal()
+						form.resetFields()
+					}}
 					name="cancelNote"
 				>
-					{t('common.Cancel')}
+					{t('src.pages.common.cancel')}
 				</Button>,
 				<Button key="save" type="primary" onClick={handleNote} name="addNote">
-					{t('common.Add')}
+					{t('src.pages.common.add')}
 				</Button>
 			]}
 		>
 			<Form>
 				<Form.Item>
 					{getFieldDecorator('note', {
-						rules: [{ required: false, message: t('order.Input note') }],
+						rules: [
+							{ required: false, message: t('src.pages.order.inputNote') }
+						],
 						initialValue: extraRice
 					})(
 						<Input.TextArea
 							id="orderNoteInput"
-							placeholder={t('order.Input note')}
+							placeholder={t('src.pages.order.inputNote')}
+							onChange={onChange}
 							autosize={{ minRows: 3, maxRows: 7 }}
 						/>
 					)}
@@ -126,7 +137,7 @@ function ModalNoteForm(props) {
 						rules: [{ required: false }]
 					})(
 						<Checkbox id="extraRiceCheckbox" onChange={onChange}>
-							{t('order.More rice')}
+							{t('src.pages.order.moreRice')}
 						</Checkbox>
 					)}
 				</Form.Item>

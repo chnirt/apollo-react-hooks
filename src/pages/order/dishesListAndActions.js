@@ -4,7 +4,7 @@ import gql from 'graphql-tag'
 import { graphql, compose } from 'react-apollo'
 import openNotificationWithIcon from '../../components/shared/openNotificationWithIcon'
 import ConfirmButton from './comfirmButton'
-// import NoteButton from './noteButton'
+import NoteButton from './noteButton'
 
 function DishesListAndActions(props) {
 	const [ordersCountedByUser, setOrdersCountedByUser] = useState({})
@@ -18,8 +18,7 @@ function DishesListAndActions(props) {
 		dishes,
 		orderDish,
 		isPublished,
-		isLocked,
-		menuLockedSubscription
+		isLocked
 	} = props
 
 	const { ordersByUser } = getOrdersByUser
@@ -161,11 +160,7 @@ function DishesListAndActions(props) {
 											loading={loading}
 											id={`minus-order-${item._id}`}
 											className="minus-order"
-											disabled={
-												menuLockedSubscription.menuLocked ||
-												ordersCountedByUser[item._id] <= 0 ||
-												isLocked
-											}
+											disabled={ordersCountedByUser[item._id] <= 0 || isLocked}
 											onClick={() => handleMinus(item)}
 										/>,
 										<Button
@@ -174,27 +169,20 @@ function DishesListAndActions(props) {
 											loading={loading}
 											id={`plus-order-${item._id}`}
 											className="plus-order"
-											disabled={
-												menuLockedSubscription.menuLocked ||
-												total >= item.count ||
-												isLocked
-											}
+											disabled={total >= item.count || isLocked}
 											onClick={() => handlePlus(item)}
 										/>
 									]}
-									// extra={
-									// 	<NoteButton
-									// 		t={t}
-									// 		dishId={item._id}
-									// 		menuId={menuId}
-									// 		quantity={ordersCountedByUser[item._id]}
-									// 		isLocked={
-									// 			menuLockedSubscription.menuLocked ||
-									// 			ordersCountedByUser[item._id] <= 0 ||
-									// 			isLocked
-									// 		}
-									// 	/>
-									// }
+									extra={
+										<NoteButton
+											t={t}
+											dishId={item._id}
+											menuId={menuId}
+											quantity={ordersCountedByUser[item._id]}
+											isLocked={ordersCountedByUser[item._id] <= 0 || isLocked}
+											loading={loading}
+										/>
+									}
 								>
 									<List.Item.Meta
 										title={item.name}
@@ -251,12 +239,6 @@ const ORDER_DISH = gql`
 	}
 `
 
-const SUBSCRIPTION_LOCKED_MENU = gql`
-	subscription {
-		menuLocked
-	}
-`
-
 const ORDERS_BY_MENU_SUBSCRIPTION = gql`
 	subscription {
 		ordersByMenuCreated {
@@ -291,8 +273,5 @@ export default compose(
 	}),
 	graphql(ORDERS_BY_MENU_SUBSCRIPTION, {
 		name: 'ordersByMenuCreated'
-	}),
-	graphql(SUBSCRIPTION_LOCKED_MENU, {
-		name: 'menuLockedSubscription'
 	})
 )(DishesListAndActions)

@@ -53,7 +53,7 @@ function ConfirmButton(props) {
 					marginTop: 20,
 					marginBottom: 20
 				}}
-				type="submit"
+				type="primary"
 			>
 				{t('src.pages.common.confirm')}
 			</Button>
