@@ -88,7 +88,7 @@ function ReportF(props) {
 				}
 			}
 		]
-
+		console.log('aaaa')
 		ws['!merges'] = merge
 		ws['!formatRows'] = true
 		ws[`D${dishes.length - 2}`] = {
