@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { compose, graphql } from 'react-apollo'
 import { withTranslation } from 'react-i18next'
-import { Collapse, Button } from 'antd'
+import { Button, Card, Typography, Row, List } from 'antd'
 import XLSX from 'xlsx'
 import openNotificationWithIcon from '../../components/shared/openNotificationWithIcon'
 
@@ -16,11 +16,14 @@ import {
 import ReportItemDish from './reportItemDish'
 import './index.css'
 
-const { Panel } = Collapse
+const { Title } = Typography
 
 function ReportF(props) {
 	const { menuPublish, countOrderByMenu, me } = props
 	const { menuPublishBySite } = menuPublish
+	const [loading, setLoading] = useState(false)
+	const [loadingLock, setLoadingLock] = useState(false)
+	const [loadingButton, setLoadingButton] = useState(false)
 
 	function exportFile(menu, e) {
 		e.stopPropagation()
@@ -104,7 +107,7 @@ function ReportF(props) {
 
 	function onLock(e) {
 		e.stopPropagation()
-
+		setLoadingLock(true)
 		props
 			.lockAndUnlock({
 				variables: {
@@ -120,10 +123,12 @@ function ReportF(props) {
 				if (res.data.lockAndUnlockMenu) {
 					openNotificationWithIcon('success', 'success', 'Success')
 				}
+				setLoadingLock(false)
 			})
 	}
 
 	function onPlus(e, dishId, currentCount) {
+		setLoadingButton(true)
 		e.stopPropagation()
 		props
 			.orderDish({
@@ -141,10 +146,12 @@ function ReportF(props) {
 						menuId: menuPublishBySite._id
 					}
 				})
+				setLoadingButton(false)
 			})
 	}
 
 	function onMinus(userId, dishId, count) {
+		setLoadingButton(true)
 		props
 			.updateOrder({
 				variables: {
@@ -162,10 +169,12 @@ function ReportF(props) {
 						menuId: menuPublishBySite._id
 					}
 				})
+				setLoadingButton(false)
 			})
 	}
 
 	function onCloseMenu(e) {
+		setLoading(true)
 		e.stopPropagation()
 		props
 			.closeMenuToExport({
@@ -182,59 +191,94 @@ function ReportF(props) {
 				if (res.data.closeMenu) {
 					openNotificationWithIcon('success', 'success', 'Success')
 				}
+				setLoading(false)
 			})
 	}
 
 	return (
 		<React.Fragment>
-			<div className="report">
+			<Row>
+				{' '}
 				{menuPublish.menuPublishBySite && (
-					<Collapse>
-						<Panel
-							header={menuPublishBySite.name}
-							extra={
-								<div>
-									<Button
-										className="btn-report bottom"
-										onClick={e => onLock(e)}
-										type="link"
-										icon={menuPublishBySite.isLocked ? 'lock' : 'unlock'}
-										shape="circle"
-									/>
-									<Button
-										className="btn-report bottom"
-										icon="snippets"
-										type="link"
-										disabled={!menuPublishBySite.isLocked}
-										shape="circle"
-										onClick={e => onCloseMenu(e)}
-									/>
-									<Button
-										className="btn-report bottom"
-										type="link"
-										icon="file-excel"
-										shape="circle"
-										disabled={!menuPublishBySite.isLocked}
-										onClick={e => exportFile(menuPublish.menuPublishBySite, e)}
-									/>
-								</div>
+					<Card
+						title={
+							<div>
+								<Title style={{ color: '#ffffff' }} level={3}>
+									{menuPublishBySite.name}
+								</Title>
+							</div>
+						}
+						bordered={false}
+						extra={
+							<div style={{ display: 'flex' }}>
+								<Button
+									type="primary"
+									block
+									onClick={e => onLock(e)}
+									loading={loadingLock}
+									disabled={countOrderByMenu.countByMenuJ ? false : true}
+								>
+									{menuPublishBySite.isLocked ? 'Lock' : 'Unlock'}
+								</Button>
+								<Button
+									style={{ marginLeft: '5px' }}
+									disabled={!menuPublishBySite.isLocked || loadingLock}
+									type="primary"
+									block
+									loading={loading}
+									onClick={e => onCloseMenu(e)}
+								>
+									Complete
+								</Button>
+								<Button
+									style={{ marginLeft: '5px' }}
+									disabled={
+										!menuPublishBySite.isLocked || loadingLock || loading
+									}
+									type="primary"
+									block
+									onClick={e => exportFile(menuPublish.menuPublishBySite, e)}
+								>
+									Export
+								</Button>
+							</div>
+						}
+						headStyle={{
+							border: 0
+						}}
+						bodyStyle={{
+							padding: 0
+						}}
+						style={{ backgroundColor: 'transparent' }}
+					>
+						<List
+							style={{
+								margin: '1em',
+								padding: '1em',
+								backgroundColor: '#fff',
+								borderRadius: '.5em'
+							}}
+							loading={loadingButton}
+							dataSource={
+								countOrderByMenu.countByMenuJ && menuPublishBySite.dishes
 							}
-						>
-							{countOrderByMenu.countByMenuJ &&
-								menuPublishBySite.dishes.map(dish => (
+							renderItem={dish => (
+								<List.Item style={{ display: 'block' }}>
 									<ReportItemDish
 										key={dish._id}
 										{...dish}
+										loadingButton={loadingButton}
 										onPlus={onPlus}
 										onMinus={onMinus}
 										me={me}
 										menu={countOrderByMenu.countByMenuJ}
 									/>
-								))}
-						</Panel>
-					</Collapse>
+								</List.Item>
+							)}
+						/>
+					</Card>
 				)}
-			</div>
+			</Row>
 		</React.Fragment>
 	)
 }
