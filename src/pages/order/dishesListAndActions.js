@@ -123,6 +123,7 @@ function DishesListAndActions(props) {
 					<List
 						style={{
 							padding: '1em',
+							marginBottom: '2em',
 							backgroundColor: '#fff',
 							borderRadius: '.5em'
 						}}
