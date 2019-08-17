@@ -36,10 +36,12 @@ function ModalNoteForm(props) {
 	}, [data])
 
 	function onChange(e) {
+		setExtraRice(`${e.target.value}`)
+	}
+
+	function changeOptions(option) {
 		let note = ''
-		if (e.target.id === 'note') {
-			note = `${e.target.value}`
-		} else if (e.target.checked) {
+		if (option[0]) {
 			note = `${t('src.pages.order.moreRice')}, ${extraRice}`
 		} else {
 			note = extraRice.substr(`${t('src.pages.order.moreRice')}`.length + 2)
@@ -99,14 +101,12 @@ function ModalNoteForm(props) {
 			visible={visible}
 			title={t('src.pages.order.note')}
 			onCancel={() => closeModal()}
+			afterClose={() => form.resetFields()}
 			footer={[
 				<Button
 					key="cancel"
 					type="danger"
-					onClick={() => {
-						closeModal()
-						form.resetFields()
-					}}
+					onClick={() => closeModal()}
 					name="cancelNote"
 				>
 					{t('src.pages.common.cancel')}
@@ -134,11 +134,13 @@ function ModalNoteForm(props) {
 				</Form.Item>
 				<Form.Item>
 					{getFieldDecorator('extraRiceOption', {
-						rules: [{ required: false }]
+						initialValue: []
 					})(
-						<Checkbox id="extraRiceCheckbox" onChange={onChange}>
-							{t('src.pages.order.moreRice')}
-						</Checkbox>
+						<Checkbox.Group
+							options={[t('src.pages.order.moreRice')]}
+							id="extraRiceCheckbox"
+							onChange={changeOptions}
+						/>
 					)}
 				</Form.Item>
 			</Form>
