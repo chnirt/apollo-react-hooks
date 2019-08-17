@@ -295,7 +295,7 @@ function UserModal(props) {
 						/>
 					)}
 				</Form.Item>
-				<Form.Item label={t('src.pages.user.fullName')}>
+				<Form.Item label={t('src.pages.user.fullname')}>
 					{getFieldDecorator('fullName', {
 						initialValue: userId && getUser.user && getUser.user.fullName,
 						rules: [

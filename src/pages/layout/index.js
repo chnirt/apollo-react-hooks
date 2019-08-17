@@ -83,23 +83,23 @@ function Layout(props) {
 
 	function changeLocale({ key }) {
 		// console.log(key)
-		if (key === 'vi') {
-			props.i18n.changeLanguage('vi')
-			props.store.i18nStore.changeLanguage('vi')
+		if (key === 'vi-VN') {
+			props.i18n.changeLanguage('vi-VN')
+			// props.store.i18nStore.changeLanguage(key)
 		} else {
-			props.i18n.changeLanguage('en')
-			props.store.i18nStore.changeLanguage('en')
+			props.i18n.changeLanguage('en-US')
+			// props.store.i18nStore.changeLanguage(key)
 		}
 	}
 
 	const languages = (
 		<Menu onClick={changeLocale}>
-			<Menu.Item key="vi" value="vi">
+			<Menu.Item key="vi-VN" value="vi-VN">
 				<span role="img" aria-label="vi">
 					🇻🇳
 				</span>
 			</Menu.Item>
-			<Menu.Item key="en" value="en">
+			<Menu.Item key="en-US" value="en-US">
 				<span role="img" aria-label="en">
 					🇬🇧
 				</span>
@@ -181,7 +181,7 @@ function Layout(props) {
 							<span
 								style={{ color: '#fff', cursor: 'pointer', paddingBottom: 9 }}
 							>
-								{window.localStorage.getItem('i18nextLng') === 'vi'
+								{window.localStorage.getItem('i18nextLng') === 'vi-VN'
 									? 'VI'
 									: 'EN'}
 							</span>
