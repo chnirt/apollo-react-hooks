@@ -58,7 +58,7 @@
 				"username": "Username",
 				"password": "Password",
 				"confirmPassword": "Confirm Password",
-				"fullName": "Fullname",
+				"fullname": "Fullname",
 				"usernameRequired": "Please input your username!",
 				"userNameMin4Characters": "Your username must be at least 4 characters",
 				"passwordRequired": "Please input your password!",

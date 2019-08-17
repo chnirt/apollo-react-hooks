@@ -167,7 +167,7 @@ function User(props) {
 				bordered={false}
 				extra={
 					<div>
-						<Button type="primary" block onClick={() => showModal()}>
+						<Button icon="plus" type="primary" block onClick={() => showModal()}>
 							{t('src.pages.common.add')}
 						</Button>
 					</div>

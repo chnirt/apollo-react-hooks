@@ -11,7 +11,6 @@ class AuthStore {
 			'user-permissions',
 			JSON.stringify(userPermissions)
 		)
-		window.localStorage.setItem('i18nextLng', 'vi')
 		this.isAuth = true
 	}
 

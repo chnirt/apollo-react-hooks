@@ -7,11 +7,11 @@ moment.locale('en')
 
 class i18nStore {
 	@observable locale =
-		window.localStorage.getItem('i18nextLng') === 'vi' ? vi_VN : null
+		window.localStorage.getItem('i18nextLng') === 'vi-VN' ? vi_VN : null
 
 	@action
 	changeLanguage = locale => {
-		this.locale = locale === 'vi' ? vi_VN : null
+		this.locale = locale === 'vi-VN' ? vi_VN : null
 	}
 }
 
