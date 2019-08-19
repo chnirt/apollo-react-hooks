@@ -1,55 +1,55 @@
-cache:
-  key: ${CI_COMMIT_REF_SLUG}
-  paths:
-    - node_modules/
+# cache:
+#   key: ${CI_COMMIT_REF_SLUG}
+#   paths:
+#     - node_modules/
 
-before_script:
-  - export PATH=$PATH:/home/gitlab-runner/.nvm/versions/node/v11.11.0/bin/
-  #- export URL=http://translatetest.mdlib.vn/
-  - npm i
-  - NODE_OPTIONS=--max-old-space-size=4096
+# before_script:
+#   - export PATH=$PATH:/home/gitlab-runner/.nvm/versions/node/v11.11.0/bin/
+#   #- export URL=http://translatetest.mdlib.vn/
+#   - npm i
+#   - NODE_OPTIONS=--max-old-space-size=4096
 
-stages:
-  - deployTest
-  - test
-  - deploy
+# stages:
+#   - deployTest
+#   - test
+#   - deploy
 
-deployTest:
-  stage: deployTest
-  only:
-    refs:
-      - cicd
-      - master
-  script:
-    #- sed -i "s/HTTP/http/g" package.json
-    #- sed -i "s/DOMAIN/lunch4.digihcs.com/g" package.json
-    #- sed -i "s/WS/ws/g" .env.production
-    #- sed -i "s/HTTP/http/g" .env.production
-    #- sed -i "s/DOMAIN/lunch4.digihcs.com/g" .env.production
-    #- cat package.json | grep homepage
-    - CI="" REACT_APP_GRAPHQL_URN="lunch4test.digihcs.com/graphqllunch" npm run build
-    - rsync -a -e "ssh -p 1210" ./build/ deploy@192.168.88.104:/var/www/erp_beta/lunch4test --delete
+# deployTest:
+#   stage: deployTest
+#   only:
+#     refs:
+#       - cicd
+#       - master
+#   script:
+#     #- sed -i "s/HTTP/http/g" package.json
+#     #- sed -i "s/DOMAIN/lunch4.digihcs.com/g" package.json
+#     #- sed -i "s/WS/ws/g" .env.production
+#     #- sed -i "s/HTTP/http/g" .env.production
+#     #- sed -i "s/DOMAIN/lunch4.digihcs.com/g" .env.production
+#     #- cat package.json | grep homepage
+#     - CI="" REACT_APP_GRAPHQL_URN="lunch4test.digihcs.com/graphqllunch" npm run build
+#     - rsync -a -e "ssh -p 1210" ./build/ deploy@192.168.88.104:/var/www/erp_beta/lunch4test --delete
 
-test:
-  stage: test
-  only:
-    refs:
-      - cicd
-      - master
-  script:
-    - npm run test
+# test:
+#   stage: test
+#   only:
+#     refs:
+#       - cicd
+#       - master
+#   script:
+#     - npm run test
 
-deployN4:
-  stage: deploy
-  only:
-    refs:
-      - master
-  script:
-    #- sed -i "s/HTTP/http/g" package.json
-    #- sed -i "s/DOMAIN/lunch4.digihcs.com/g" package.json
-    #- sed -i "s/WS/ws/g" .env.production
-    #- sed -i "s/HTTP/http/g" .env.production
-    #- sed -i "s/DOMAIN/lunch4.digihcs.com/g" .env.production
-    #- cat package.json | grep homepage
-    - CI="" REACT_APP_GRAPHQL_URN="lunch4.digihcs.com/graphqllunch" npm run build
-    - rsync -a -e "ssh -p 1210" ./build/ deploy@192.168.88.104:/var/www/erp_beta/lunch4 --delete
+# deployN4:
+#   stage: deploy
+#   only:
+#     refs:
+#       - master
+#   script:
+#     #- sed -i "s/HTTP/http/g" package.json
+#     #- sed -i "s/DOMAIN/lunch4.digihcs.com/g" package.json
+#     #- sed -i "s/WS/ws/g" .env.production
+#     #- sed -i "s/HTTP/http/g" .env.production
+#     #- sed -i "s/DOMAIN/lunch4.digihcs.com/g" .env.production
+#     #- cat package.json | grep homepage
+#     - CI="" REACT_APP_GRAPHQL_URN="lunch4.digihcs.com/graphqllunch" npm run build
+#     - rsync -a -e "ssh -p 1210" ./build/ deploy@192.168.88.104:/var/www/erp_beta/lunch4 --delete
