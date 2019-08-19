@@ -22,7 +22,8 @@ const httpLink = new HttpLink({
 const wsLink = new WebSocketLink({
 	uri: `ws://${urn}`,
 	options: {
-		// reconnect: true
+		// reconnect: true,
+		// lazy: true,
 		connectionParams: () => ({
 			token: window.localStorage.getItem('access-token') || '',
 			currentsite: window.localStorage.getItem('currentsite') || ''
