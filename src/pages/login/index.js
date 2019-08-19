@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { withApollo } from 'react-apollo'
 import gql from 'graphql-tag'
+import { useMutation } from '@apollo/react-hooks'
 import { inject, observer } from 'mobx-react'
 import { Row, Col, Form, Typography, Icon, Input, Button } from 'antd'
 import './index.scss'
@@ -11,6 +11,8 @@ const { Title } = Typography
 
 function Login(props) {
 	const [loading, setLoading] = useState(false)
+	const [login] = useMutation(USER_LOGIN)
+
 	function handleSubmit(e) {
 		e.preventDefault()
 		setLoading(true)
@@ -18,16 +20,15 @@ function Login(props) {
 			if (!err) {
 				// console.log('Received values of form: ', values)
 				const { username, password } = values
-				props.client
-					.mutate({
-						mutation: USER_LOGIN,
-						variables: {
-							input: {
-								username,
-								password
-							}
+
+				login({
+					variables: {
+						input: {
+							username,
+							password
 						}
-					})
+					}
+				})
 					.then(res => {
 						// console.log(res.data.login)
 						const mess = "Your account doesn't have any permissions"
@@ -167,6 +168,6 @@ const USER_LOGIN = gql`
 	}
 `
 
-export default withApollo(
-	inject('store')(observer(Form.create({ name: 'normal_login' })(Login)))
+export default inject('store')(
+	observer(Form.create({ name: 'normal_login' })(Login))
 )

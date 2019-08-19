@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import {
 	Divider,
 	Select,
@@ -9,9 +9,9 @@ import {
 	ConfigProvider,
 	Row
 } from 'antd'
-import { withApollo } from 'react-apollo'
 import { withRouter } from 'react-router-dom'
 import gql from 'graphql-tag'
+import { useQuery, useApolloClient } from '@apollo/react-hooks'
 import { withTranslation } from 'react-i18next'
 import { inject, observer } from 'mobx-react'
 import BgDashboard from '../../assets/images/bg-dashboard.jpg'
@@ -22,25 +22,14 @@ function Layout(props) {
 		window.localStorage.getItem('currentsite')
 	)
 	const { children, t, store } = props
+	const { loading, data } = useQuery(ME)
+	const client = useApolloClient()
 
-	const [me, setMe] = useState('')
-
-	useEffect(() => {
-		// code to run on component mount
-		props.client
-			.query({ query: ME })
-			.then(res => {
-				// console.log(res.data.me)
-				setMe(res.data.me)
-			})
-			.catch(err => {
-				console.log(err)
-			})
-	})
+	console.log(data)
 
 	function onLogout() {
 		props.store.authStore.logout()
-		props.client.resetStore()
+		client.resetStore()
 		props.history.push('/login')
 	}
 
@@ -71,7 +60,7 @@ function Layout(props) {
 		<Menu>
 			<Menu.Item disabled>
 				<Icon type="user" />
-				<span>{me.username}</span>
+				<span>{!loading && data.me.username}</span>
 			</Menu.Item>
 			<Menu.Divider />
 			<Menu.Item onClick={onLogout}>
@@ -85,10 +74,8 @@ function Layout(props) {
 		// console.log(key)
 		if (key === 'vi-VN') {
 			props.i18n.changeLanguage('vi-VN')
-			// props.store.i18nStore.changeLanguage(key)
 		} else {
 			props.i18n.changeLanguage('en-US')
-			// props.store.i18nStore.changeLanguage(key)
 		}
 	}
 
@@ -106,6 +93,8 @@ function Layout(props) {
 			</Menu.Item>
 		</Menu>
 	)
+
+	const { me } = data
 
 	return (
 		<div
@@ -211,6 +200,6 @@ const ME = gql`
 	}
 `
 
-export default withApollo(
-	withRouter(inject('store')(observer(withTranslation('translations')(Layout))))
+export default withRouter(
+	inject('store')(observer(withTranslation('translations')(Layout)))
 )

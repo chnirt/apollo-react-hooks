@@ -1,5 +1,5 @@
 import React from 'react'
-import { ApolloProvider } from 'react-apollo'
+import { ApolloProvider } from '@apollo/react-hooks'
 import { I18nextProvider } from 'react-i18next'
 import { Provider } from 'mobx-react'
 import './App.scss'
