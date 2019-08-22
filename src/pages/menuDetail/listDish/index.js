@@ -11,8 +11,8 @@ import {
 	List
 } from 'antd'
 import gql from 'graphql-tag'
-import { compose, graphql } from 'react-apollo'
 
+import { useQuery } from '@apollo/react-hooks'
 import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
 
 function ListDish(props) {
@@ -29,13 +29,17 @@ function ListDish(props) {
 
 	const [dishes, setDishes] = useState([])
 
+	const { data: menuData, loading: menuLoading } = useQuery(GET_MENU, {
+		variables: { id: menuId }
+	})
+
 	useEffect(() => {
-		if (menuById.menu) {
-			if (shopId !== '' && shopId !== menuById.menu.shopId) {
+		if (menuData.menu) {
+			if (shopId !== '' && shopId !== menuData.menu.shopId) {
 				setDishes([])
 				setHasChange(false)
 			} else {
-				setDishes(menuById.menu.dishes)
+				setDishes(menuData.menu.dishes)
 				setHasChange(false)
 			}
 		} else {
@@ -209,7 +213,7 @@ function ListDish(props) {
 						onClick={updateMenu}
 						style={{ marginRight: '1em' }}
 						hidden={
-							shopId === '' || (menuById.menu && menuById.menu.isPublished)
+							shopId === '' || (menuData.menu && menuData.menu.isPublished)
 						}
 					>
 						{t('src.pages.common.save')}
@@ -220,7 +224,7 @@ function ListDish(props) {
 						loading={loading}
 						onClick={() => publishAndUnpublish(hasChange)}
 					>
-						{menuById.menu && menuById.menu.isPublished
+						{menuData.menu && menuData.menu.isPublished
 							? t('src.pages.menu.unpublish')
 							: t('src.pages.menu.publish')}
 					</Button>
@@ -234,7 +238,7 @@ function ListDish(props) {
 							backgroundColor: '#fff',
 							borderRadius: '.5em'
 						}}
-						loading={data.loading}
+						loading={menuLoading}
 						pagination={{
 							pageSize: 6
 						}}
@@ -248,7 +252,7 @@ function ListDish(props) {
 								</Col>
 							</Row>
 						}
-						dataSource={menuById.menu ? menuById.menu.dishes : []}
+						dataSource={menuData.menu ? menuData.menu.dishes : []}
 						renderItem={dish => (
 							<List.Item>
 								<Col span={12} offset={1}>
@@ -354,26 +358,26 @@ function ListDish(props) {
 	)
 }
 
-const GET_DISHES_BY_SHOP = gql`
-	query($shopId: String!) {
-		dishesByShop(shopId: $shopId) {
-			_id
-			name
-		}
-	}
-`
+// const GET_DISHES_BY_SHOP = gql`
+// 	query($shopId: String!) {
+// 		dishesByShop(shopId: $shopId) {
+// 			_id
+// 			name
+// 		}
+// 	}
+// `
 
-const DELETE_DISH = gql`
-	mutation($id: String!) {
-		deleteDish(id: $id)
-	}
-`
+// const DELETE_DISH = gql`
+// 	mutation($id: String!) {
+// 		deleteDish(id: $id)
+// 	}
+// `
 
-const ADD_DISH_TO_SHOP = gql`
-	mutation($name: String!, $shopId: String!) {
-		createDish(name: $name, shopId: $shopId)
-	}
-`
+// const ADD_DISH_TO_SHOP = gql`
+// 	mutation($name: String!, $shopId: String!) {
+// 		createDish(name: $name, shopId: $shopId)
+// 	}
+// `
 
 const GET_MENU = gql`
 	query menu($id: String!) {
@@ -392,37 +396,10 @@ const GET_MENU = gql`
 	}
 `
 
-const UPDATE_MENU = gql`
-	mutation updateMenu($id: String!, $menuInfo: MenuInfo!) {
-		updateMenu(id: $id, menuInfo: $menuInfo)
-	}
-`
+// const UPDATE_MENU = gql`
+// 	mutation updateMenu($id: String!, $menuInfo: MenuInfo!) {
+// 		updateMenu(id: $id, menuInfo: $menuInfo)
+// 	}
+// `
 
-export default compose(
-	graphql(GET_DISHES_BY_SHOP, {
-		skip: props => props.shopId === '',
-		options: props => ({
-			variables: {
-				shopId: props.shopId
-			},
-			fetchPolicy: 'no-cache'
-		})
-	}),
-	graphql(GET_MENU, {
-		options: props => ({
-			variables: {
-				id: props.menuId
-			}
-		}),
-		name: 'menuById'
-	}),
-	graphql(DELETE_DISH, {
-		name: 'deleteDish'
-	}),
-	graphql(ADD_DISH_TO_SHOP, {
-		name: 'addDish'
-	}),
-	graphql(UPDATE_MENU, {
-		name: 'updateMenu'
-	})
-)(Form.create()(ListDish))
+export default Form.create()(ListDish)

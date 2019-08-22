@@ -1,15 +1,22 @@
 import React, { useState } from 'react'
 import { Form, Col, Row, Select, Typography } from 'antd'
 import gql from 'graphql-tag'
-import { compose, graphql } from 'react-apollo'
+import { useQuery } from '@apollo/react-hooks'
 import openNotificationWithIcon from '../../components/shared/openNotificationWithIcon'
 import ListDish from './listDish'
 
 function MenuDetail(props) {
-	const { form, data, menuById, match, t } = props
-	const { menuId } = match.params
+	const { form, menuById, match, t } = props
+	const { menuId, siteId } = match.params
 	const [shopId, setShopId] = useState('')
 	const [loading, setLoading] = useState(false)
+
+	const { data: menuData, loading: menuLoading } = useQuery(GET_MENU, {
+		variables: { id: menuId }
+	})
+	const { data: shopData } = useQuery(GET_SHOPS_BY_SITE, {
+		variables: { siteId }
+	})
 
 	function changeShop(value) {
 		setShopId(value)
@@ -100,7 +107,7 @@ function MenuDetail(props) {
 					level={3}
 					editable={{ onChange: changeNameMenu }}
 				>
-					{menuById.menu && menuById.menu.name}
+					{menuData.menu && menuData.menu.name}
 				</Typography.Title>
 			</Col>
 			<Col span={22} offset={1} order={2}>
@@ -109,11 +116,11 @@ function MenuDetail(props) {
 						onChange={changeShop}
 						placeholder={t('src.pages.menu.selectShop')}
 						style={{ width: '100%' }}
-						disabled={menuById.menu && menuById.menu.isPublished}
+						disabled={menuData.menu && menuData.menu.isPublished}
 					>
-						{data.loading
+						{menuLoading
 							? null
-							: data.siteShopsBySiteId.map(shop => (
+							: shopData.siteShopsBySiteId.map(shop => (
 									<Select.Option key={shop} value={shop.shopId}>
 										{shop.name}
 									</Select.Option>
@@ -149,11 +156,11 @@ const GET_MENU = gql`
 	}
 `
 
-const PUBLISH_UNPUBLISH = gql`
-	mutation publishAndUnpublish($id: String!) {
-		publishAndUnpublish(id: $id)
-	}
-`
+// const PUBLISH_UNPUBLISH = gql`
+// 	mutation publishAndUnpublish($id: String!) {
+// 		publishAndUnpublish(id: $id)
+// 	}
+// `
 
 const GET_SHOPS_BY_SITE = gql`
 	query($siteId: String!) {
@@ -165,32 +172,10 @@ const GET_SHOPS_BY_SITE = gql`
 	}
 `
 
-const UPDATE_MENU = gql`
-	mutation updateMenu($id: String!, $menuInfo: MenuInfo!) {
-		updateMenu(id: $id, menuInfo: $menuInfo)
-	}
-`
+// const UPDATE_MENU = gql`
+// 	mutation updateMenu($id: String!, $menuInfo: MenuInfo!) {
+// 		updateMenu(id: $id, menuInfo: $menuInfo)
+// 	}
+// `
 
-export default compose(
-	graphql(GET_SHOPS_BY_SITE, {
-		options: props => ({
-			variables: {
-				siteId: props.match.params.siteId
-			}
-		})
-	}),
-	graphql(GET_MENU, {
-		options: props => ({
-			variables: {
-				id: props.match.params.menuId
-			}
-		}),
-		name: 'menuById'
-	}),
-	graphql(PUBLISH_UNPUBLISH, {
-		name: 'publishAndUnpublish'
-	}),
-	graphql(UPDATE_MENU, {
-		name: 'updateMenu'
-	})
-)(Form.create()(MenuDetail))
+export default Form.create()(MenuDetail)

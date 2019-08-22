@@ -6,6 +6,7 @@ import { onError as OnError } from 'apollo-link-error'
 import { setContext } from 'apollo-link-context'
 import { WebSocketLink } from 'apollo-link-ws'
 import { getMainDefinition } from 'apollo-utilities'
+import { createUploadLink } from 'apollo-upload-client'
 import store from '../mobx'
 
 const domain = 'devcloud4.digihcs.com'
@@ -14,6 +15,8 @@ const port = process.env.REACT_APP_BE_PORT || 11068
 const end_point = 'graphqllunch'
 
 const urn = process.env.REACT_APP_GRAPHQL_URN || `${domain}:${port}/${end_point}`
+
+const uploadLink = createUploadLink({ uri: `http://${urn}` })
 
 const httpLink = new HttpLink({
 	uri: `http://${urn}`
@@ -31,6 +34,12 @@ const wsLink = new WebSocketLink({
 	}
 })
 
+const isFile = value =>
+	(typeof File !== 'undefined' && value instanceof File) ||
+	(typeof Blob !== 'undefined' && value instanceof Blob)
+
+const isUpload = ({ variables }) => Object.values(variables).some(isFile)
+
 const link = split(
 	// split based on operation type
 	({ query }) => {
@@ -43,6 +52,8 @@ const link = split(
 	wsLink,
 	httpLink
 )
+
+const terminalLink = split(isUpload, uploadLink, link)
 
 const errorLink = new OnError(({ graphQLErrors, networkError, operation }) => {
 	if (graphQLErrors) {
@@ -92,7 +103,7 @@ const client = new ApolloClient({
 	// cache: new InMemoryCache(),
 	defaultOptions,
 	cache: new InMemoryCache().restore(window.__APOLLO_STATE__),
-	link: ApolloLink.from([errorLink, authLink, link]),
+	link: ApolloLink.from([errorLink, authLink, terminalLink]),
 	ssrForceFetchDelay: 100
 })
 

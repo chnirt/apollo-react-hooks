@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react'
+import { useQuery, useMutation } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
-import { graphql, compose } from 'react-apollo'
+// import { graphql, compose } from 'react-apollo'
 import {
 	Button,
 	Card,
@@ -24,6 +25,16 @@ function User(props) {
 	const [loading, setLoading] = useState(false)
 	const inputEl = useRef(null)
 
+	const { data: dataUsers } = useQuery(GET_ALL_USERS, {
+		variables: { offset: 0, limit: 100 }
+	})
+
+	const [lockAndUnlockUser] = useMutation(USER_LOCK_AND_UNLOCK, {
+		variables: {}
+	})
+
+	const [deleteUser] = useMutation(USER_DELETE)
+
 	function showModal(_id) {
 		// console.log(_id)
 		setUserId(_id)
@@ -36,23 +47,21 @@ function User(props) {
 	}
 
 	function onLockAndUnlock(_id, reason) {
-		// console.log("onLockAndUnlock", _id)
-		props
-			.lockAndUnlockUser({
-				variables: {
-					_id,
-					reason
-				},
-				refetchQueries: [
-					{
-						query: GET_ALL_USERS,
-						variables: {
-							offset: 0,
-							limit: 100
-						}
+		lockAndUnlockUser({
+			variables: {
+				_id,
+				reason
+			},
+			refetchQueries: [
+				{
+					query: GET_ALL_USERS,
+					variables: {
+						offset: 0,
+						limit: 100
 					}
-				]
-			})
+				}
+			]
+		})
 			.then(res => {
 				//  console.log('hello', res)
 				if (res.data.lockAndUnlockUser === true)
@@ -84,21 +93,20 @@ function User(props) {
 			content: t('src.pages.common.confirmDelete'),
 			onOk() {
 				// console.log('OK');
-				props
-					.deleteUser({
-						variables: {
-							_id
-						},
-						refetchQueries: [
-							{
-								query: GET_ALL_USERS,
-								variables: {
-									offset: 0,
-									limit: 100
-								}
+				deleteUser({
+					variables: {
+						_id
+					},
+					refetchQueries: [
+						{
+							query: GET_ALL_USERS,
+							variables: {
+								offset: 0,
+								limit: 100
 							}
-						]
-					})
+						}
+					]
+				})
 					.then(res => {
 						// console.log(res)
 						if (res.data.lockAndUnlockUser === true)
@@ -151,8 +159,8 @@ function User(props) {
 		})
 	}
 
-	const { getUsers, t } = props
-	const { users } = getUsers
+	const { t } = props
+	const { users } = dataUsers
 
 	return (
 		<>
@@ -265,20 +273,4 @@ const USER_DELETE = gql`
 	}
 `
 
-export default compose(
-	graphql(GET_ALL_USERS, {
-		name: 'getUsers',
-		options: {
-			variables: {
-				offset: 0,
-				limit: 100
-			}
-		}
-	}),
-	graphql(USER_LOCK_AND_UNLOCK, {
-		name: 'lockAndUnlockUser'
-	}),
-	graphql(USER_DELETE, {
-		name: 'deleteUser'
-	})
-)(User)
+export default User

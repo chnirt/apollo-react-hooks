@@ -75,6 +75,43 @@ function Dashboard(props) {
 							</Col>
 						)
 				)}
+				{menuRoutes.map(
+					item =>
+						item.code === 'UPLOAD' && (
+							<Col
+								key={item.label}
+								xs={{
+									span: 10,
+									offset: 1
+								}}
+								sm={{
+									span: 10,
+									offset: 1
+								}}
+								md={{
+									span: 10,
+									offset: 1
+								}}
+								lg={{
+									span: 4,
+									offset: 1
+								}}
+								onClick={() => {
+									props.history.push(item.path)
+								}}
+							>
+								<Card.Grid id={item.id} style={gridStyle}>
+									<Icon
+										style={{
+											paddingRight: '10px'
+										}}
+										type={item.icon}
+									/>
+									Upload File
+								</Card.Grid>
+							</Col>
+						)
+				)}
 			</Card>
 		</>
 	)
