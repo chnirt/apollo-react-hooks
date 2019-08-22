@@ -12,45 +12,49 @@ import {
 	Typography
 } from 'antd'
 import gql from 'graphql-tag'
-import { compose, graphql } from 'react-apollo'
+import { useQuery, useMutation } from '@apollo/react-hooks'
 import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
 
 const { Title } = Typography
 
 function MenuList(props) {
-	const { data, form } = props
+	const { form, siteId } = props
 	const [visible, setVisible] = useState(false)
 	const [hasPublished, setHasPublished] = useState(false)
 
-	async function deleteMenu(id) {
+	const { data: dataMenu, loading: loadingMenu } = useQuery(GET_MENUS_BY_SITE, {
+		variables: { siteId }
+	})
+	const [createMenu] = useMutation(ADD_MENU)
+	const [deleteMenu] = useMutation(DELETE_MENU)
+
+	async function onDelete(id) {
 		Modal.confirm({
 			title: t('src.pages.menu.deleteMenu'),
 			content: t('src.pages.common.confirmDelete'),
 			onOk: async () => {
-				await props
-					.deleteMenu({
-						variables: {
-							id
-						},
-						refetchQueries: [
-							{
-								query: GET_MENUS_BY_SITE,
-								variables: {
-									siteId: props.siteId
-								}
+				await deleteMenu({
+					variables: {
+						id
+					},
+					refetchQueries: [
+						{
+							query: GET_MENUS_BY_SITE,
+							variables: {
+								siteId: props.siteId
 							}
-						]
-					})
-					.then(
-						res =>
-							res &&
-							openNotificationWithIcon(
-								'success',
-								'delete',
-								t('src.pages.common.success'),
-								''
-							)
-					)
+						}
+					]
+				}).then(
+					res =>
+						res &&
+						openNotificationWithIcon(
+							'success',
+							'delete',
+							t('src.pages.common.success'),
+							''
+						)
+				)
 			}
 		})
 	}
@@ -59,33 +63,31 @@ function MenuList(props) {
 		e.preventDefault()
 		form.validateFieldsAndScroll(async err => {
 			if (!err) {
-				await props
-					.addMenu({
-						variables: {
-							name: form.getFieldValue('name'),
-							siteId: window.localStorage.getItem('currentsite')
-						},
-						refetchQueries: [
-							{
-								query: GET_MENUS_BY_SITE,
-								variables: {
-									siteId: props.siteId
-								}
+				await createMenu({
+					variables: {
+						name: form.getFieldValue('name'),
+						siteId: window.localStorage.getItem('currentsite')
+					},
+					refetchQueries: [
+						{
+							query: GET_MENUS_BY_SITE,
+							variables: {
+								siteId: props.siteId
 							}
-						]
-					})
-					.then(res => {
-						if (res) {
-							openNotificationWithIcon(
-								'success',
-								'add',
-								t('src.pages.menu.addMenuSuccess'),
-								''
-							)
-							form.resetFields()
-							setVisible(false)
 						}
-					})
+					]
+				}).then(res => {
+					if (res) {
+						openNotificationWithIcon(
+							'success',
+							'add',
+							t('src.pages.menu.addMenuSuccess'),
+							''
+						)
+						form.resetFields()
+						setVisible(false)
+					}
+				})
 			}
 		})
 	}
@@ -132,8 +134,8 @@ function MenuList(props) {
 						backgroundColor: '#fff',
 						borderRadius: '.5em'
 					}}
-					loading={data.loading}
-					dataSource={data.menusBySite}
+					loading={loadingMenu}
+					dataSource={dataMenu.menusBySite}
 					renderItem={menu => {
 						if (menu.isPublished) {
 							setHasPublished(true)
@@ -166,7 +168,7 @@ function MenuList(props) {
 													name="btnEditMenu"
 												/>,
 												<Button
-													onClick={() => deleteMenu(menu._id)}
+													onClick={() => onDelete(menu._id)}
 													icon="delete"
 													type="link"
 													name="btnDeleteMenu"
@@ -254,19 +256,4 @@ const DELETE_MENU = gql`
 	}
 `
 
-export default compose(
-	graphql(GET_MENUS_BY_SITE, {
-		options: props => ({
-			variables: {
-				siteId: props.siteId
-			},
-			fetchPolicy: 'network-only'
-		})
-	}),
-	graphql(ADD_MENU, {
-		name: 'addMenu'
-	}),
-	graphql(DELETE_MENU, {
-		name: 'deleteMenu'
-	})
-)(Form.create()(MenuList))
+export default Form.create()(MenuList)

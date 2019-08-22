@@ -41,7 +41,12 @@ export const routes = [
 			{
 				label: 'Report',
 				path: '/🥢/report',
-				component: 'report'
+				component: 'reportF'
+			},
+			{
+				label: 'Upload File',
+				path: '/🥢/upload',
+				component: 'upload'
 			}
 		]
 	}
@@ -75,5 +80,12 @@ export const menuRoutes = [
 		path: '/🥢/report',
 		icon: 'file-done',
 		code: 'REPORT'
+	},
+	{
+		id: 'upload',
+		label: 'Upload File',
+		path: '/🥢/upload',
+		icon: 'upload',
+		code: 'UPLOAD'
 	}
 ]

@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import gql from 'graphql-tag'
-import { graphql, compose } from 'react-apollo'
+// import { graphql, compose } from 'react-apollo'
 import { Modal, Form, Input, Select } from 'antd'
 import { withTranslation } from 'react-i18next'
+import { useMutation, useQuery } from '@apollo/react-hooks'
 import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
 
 const { Option } = Select
@@ -100,37 +101,35 @@ function UserModal(props) {
 				// console.log(copyValues)
 
 				props.userId
-					? props
-							.updateUser({
-								mutation: UPDATE_USER,
-								variables: {
-									_id: props.userId,
-									input: {
-										...copyValues
+					? updateUser({
+							variables: {
+								_id: props.userId,
+								input: {
+									...copyValues
+								}
+							},
+							refetchQueries: () => [
+								{
+									query: GET_ALL_USERS,
+									variables: {
+										offset: 0,
+										limit: 100
 									}
 								},
-								refetchQueries: () => [
-									{
-										query: GET_ALL_USERS,
-										variables: {
-											offset: 0,
-											limit: 100
-										}
-									},
-									{
-										query: GET_ALL_PERMISSIONS_BY_USERID,
-										variables: {
-											_id: props.userId
-										}
-									},
-									{
-										query: GET_USER,
-										variables: {
-											_id: props.userId
-										}
+								{
+									query: GET_ALL_PERMISSIONS_BY_USERID,
+									variables: {
+										_id: props.userId
 									}
-								]
-							})
+								},
+								{
+									query: GET_USER,
+									variables: {
+										_id: props.userId
+									}
+								}
+							]
+					  })
 							.then(res => {
 								// console.log(res)
 								if (res.data.updateUser)
@@ -156,24 +155,22 @@ function UserModal(props) {
 								)
 								setConfirmLoading(false)
 							})
-					: props
-							.createUser({
-								mutation: CREATE_USER,
-								variables: {
-									input: {
-										...copyValues
+					: createUser({
+							variables: {
+								input: {
+									...copyValues
+								}
+							},
+							refetchQueries: () => [
+								{
+									query: GET_ALL_USERS,
+									variables: {
+										offset: 0,
+										limit: 100
 									}
-								},
-								refetchQueries: () => [
-									{
-										query: GET_ALL_USERS,
-										variables: {
-											offset: 0,
-											limit: 100
-										}
-									}
-								]
-							})
+								}
+							]
+					  })
 							.then(res => {
 								// console.log(res)
 								if (res.data.createUser)
@@ -216,17 +213,20 @@ function UserModal(props) {
 
 	// console.log(props)
 
-	const {
-		form,
-		userId,
-		visible,
-		getAllSites,
-		getAllPermissionsByUserId,
-		getUser,
-		hideModal,
-		t
-	} = props
+	const { form, userId, visible, hideModal, t } = props
 	const { getFieldDecorator } = form
+
+	const [updateUser] = useMutation(UPDATE_USER)
+	const [createUser] = useMutation(CREATE_USER)
+	const { data: dataSites } = useQuery(GET_ALL_SITES)
+	const { data: dataPermissions } = useQuery(GET_ALL_PERMISSIONS)
+	const { data: dataPermissionsByUser } = useQuery(
+		GET_ALL_PERMISSIONS_BY_USERID,
+		{
+			variables: { _id: userId }
+		}
+	)
+	const { data: dataUser } = useQuery(GET_USER, { variables: { _id: userId } })
 
 	return (
 		<Modal
@@ -297,7 +297,7 @@ function UserModal(props) {
 				</Form.Item>
 				<Form.Item label={t('src.pages.user.fullname')}>
 					{getFieldDecorator('fullName', {
-						initialValue: userId && getUser.user && getUser.user.fullName,
+						initialValue: userId && dataUser.user && dataUser.user.fullName,
 						rules: [
 							{
 								required: true,
@@ -315,18 +315,18 @@ function UserModal(props) {
 					})(<Input style={{ fontSize: 16 }} />)}
 				</Form.Item>
 				{visible &&
-					getAllSites.sites &&
-					getAllSites.sites.map(item => {
+					dataSites.sites &&
+					dataSites.sites.map(item => {
 						// console.log('Chin', props.getAllPermissionsByUserId.findAllByUserId)
 						let array = []
 						const newArray = []
 						if (userId) {
 							array =
-								getAllPermissionsByUserId.findAllByUserId &&
-								getAllPermissionsByUserId.findAllByUserId.filter(
+								dataPermissionsByUser.findAllByUserId &&
+								dataPermissionsByUser.findAllByUserId.filter(
 									item1 => item1.siteId === item._id
 								)
-							getAllPermissionsByUserId.findAllByUserId &&
+							dataPermissionsByUser.findAllByUserId &&
 								array[0] &&
 								array[0].permissions.map(item => {
 									newArray.push(`${item._id},${item.code}`)
@@ -342,8 +342,8 @@ function UserModal(props) {
 										mode="multiple"
 										placeholder={t('src.pages.user.selectPermissions')}
 									>
-										{props.getAllPermissions.permissions &&
-											props.getAllPermissions.permissions.map(item1 => {
+										{dataPermissions.permissions &&
+											dataPermissions.permissions.map(item1 => {
 												return (
 													<Option
 														key={item1._id}
@@ -429,42 +429,6 @@ const GET_USER = gql`
 	}
 `
 
-export default compose(
-	graphql(GET_ALL_SITES, {
-		name: 'getAllSites',
-		skip: props => !props.visible
-	}),
-	graphql(GET_ALL_PERMISSIONS, {
-		name: 'getAllPermissions',
-		skip: props => !props.visible
-	}),
-	graphql(GET_USER, {
-		name: 'getUser',
-		skip: props => !props.userId,
-		options: props => ({
-			variables: {
-				_id: props.userId
-			}
-		})
-	}),
-	graphql(GET_ALL_PERMISSIONS_BY_USERID, {
-		name: 'getAllPermissionsByUserId',
-		skip: props => !props.userId,
-		options: props => ({
-			variables: {
-				_id: props.userId
-			},
-			fetchPolicy: 'no-cache'
-		})
-	}),
-	graphql(CREATE_USER, {
-		name: 'createUser'
-	}),
-	graphql(UPDATE_USER, {
-		name: 'updateUser'
-	})
-)(
-	withTranslation('translations')(
-		Form.create({ name: 'createUserForm' })(UserModal)
-	)
+export default withTranslation('translations')(
+	Form.create({ name: 'createUserForm' })(UserModal)
 )
