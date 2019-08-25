@@ -17,6 +17,7 @@ import { inject, observer } from 'mobx-react'
 import BgDashboard from '../../assets/images/bg-dashboard.jpg'
 
 const { Option } = Select
+
 function Layout(props) {
 	const [currentsite, setCurrentsite] = useState(
 		window.localStorage.getItem('currentsite')
@@ -25,7 +26,7 @@ function Layout(props) {
 	const { loading, data } = useQuery(ME)
 	const client = useApolloClient()
 
-	console.log(data)
+	// console.log(data)
 
 	function onLogout() {
 		props.store.authStore.logout()
@@ -60,7 +61,7 @@ function Layout(props) {
 		<Menu>
 			<Menu.Item disabled>
 				<Icon type="user" />
-				<span>{!loading && data.me.username}</span>
+				<span>{!loading && data.me.fullName}</span>
 			</Menu.Item>
 			<Menu.Divider />
 			<Menu.Item onClick={onLogout}>
@@ -193,9 +194,8 @@ function Layout(props) {
 const ME = gql`
 	query {
 		me {
-			username
-			fullName
 			_id
+			fullName
 		}
 	}
 `

@@ -19,12 +19,12 @@ function Login(props) {
 		props.form.validateFields((err, values) => {
 			if (!err) {
 				// console.log('Received values of form: ', values)
-				const { username, password } = values
+				const { email, password } = values
 
 				login({
 					variables: {
 						input: {
-							username,
+							email,
 							password
 						}
 					}
@@ -87,13 +87,17 @@ function Login(props) {
 								<Title level={1}>Luncheon</Title>
 							</div>
 							<Form.Item>
-								{getFieldDecorator('username', {
+								{getFieldDecorator('email', {
 									valuePropName: 'defaultValue',
-									initialValue: 'admin',
+									initialValue: 'nhocpo.juzo@gmail.com',
 									rules: [
 										{
+											type: 'email',
+											message: 'The input is not valid E-mail!'
+										},
+										{
 											required: true,
-											message: 'Please input your username!'
+											message: 'Please input your email!'
 										}
 									]
 								})(
@@ -101,7 +105,7 @@ function Login(props) {
 										prefix={
 											<Icon type="mail" style={{ color: 'rgba(0,0,0,.25)' }} />
 										}
-										placeholder="username"
+										placeholder="email"
 										style={{ fontSize: '16px' }}
 									/>
 								)}
