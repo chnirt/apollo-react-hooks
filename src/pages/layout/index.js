@@ -25,7 +25,7 @@ function Layout(props) {
 	const { loading, data } = useQuery(ME)
 	const client = useApolloClient()
 
-	console.log(data)
+	// console.log(data)
 
 	function onLogout() {
 		props.store.authStore.logout()
