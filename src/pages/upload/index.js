@@ -31,7 +31,7 @@ function UploadFile(props) {
 
 const UPLOAD_FILE = gql`
 	mutation($file: Upload!) {
-		singleUpload(file: $file)
+		uploadFile(file: $file)
 	}
 `
 

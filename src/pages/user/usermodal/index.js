@@ -1,16 +1,36 @@
 import React, { useState } from 'react'
 import gql from 'graphql-tag'
-// import { graphql, compose } from 'react-apollo'
 import { Modal, Form, Input, Select } from 'antd'
-import { withTranslation } from 'react-i18next'
 import { useMutation, useQuery } from '@apollo/react-hooks'
 import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
 
 const { Option } = Select
 
 function UserModal(props) {
+	const { form, userId, visible, hideModal, t } = props
+	const { getFieldDecorator } = form
+
 	const [confirmDirty, setConfirmDirty] = useState(false)
 	const [confirmLoading, setConfirmLoading] = useState(false)
+	const [updateUser] = useMutation(UPDATE_USER)
+	const [createUser] = useMutation(CREATE_USER)
+	const { data: dataSites } = useQuery(GET_ALL_SITES, {
+		skip: !visible
+	})
+	const { data: dataPermissions } = useQuery(GET_ALL_PERMISSIONS, {
+		skip: !visible
+	})
+	const { data: dataPermissionsByUser } = useQuery(
+		GET_ALL_PERMISSIONS_BY_USERID,
+		{
+			skip: !userId,
+			variables: { _id: userId }
+		}
+	)
+	const { data: dataUser } = useQuery(GET_USER, {
+		skip: !userId,
+		variables: { _id: userId }
+	})
 
 	function handleConfirmBlur(e) {
 		const { value } = e.target
@@ -18,7 +38,6 @@ function UserModal(props) {
 	}
 
 	function compareToFirstPassword(rule, value, callback) {
-		const { form } = props
 		if (value && value !== form.getFieldValue('password')) {
 			callback(t('src.pages.user.inconsistentPassword'))
 		} else {
@@ -27,7 +46,6 @@ function UserModal(props) {
 	}
 
 	function validateToNextPassword(rule, value, callback) {
-		const { form } = props
 		if (value && confirmDirty) {
 			form.validateFields(['confirm'], { force: true })
 		}
@@ -36,7 +54,7 @@ function UserModal(props) {
 
 	function handleOk() {
 		// console.log('OK')
-		props.form.validateFieldsAndScroll((err, values) => {
+		form.validateFieldsAndScroll((err, values) => {
 			if (!err) {
 				setConfirmLoading(true)
 				// console.log('Received values of form: ', values)
@@ -213,21 +231,6 @@ function UserModal(props) {
 
 	// console.log(props)
 
-	const { form, userId, visible, hideModal, t } = props
-	const { getFieldDecorator } = form
-
-	const [updateUser] = useMutation(UPDATE_USER)
-	const [createUser] = useMutation(CREATE_USER)
-	const { data: dataSites } = useQuery(GET_ALL_SITES)
-	const { data: dataPermissions } = useQuery(GET_ALL_PERMISSIONS)
-	const { data: dataPermissionsByUser } = useQuery(
-		GET_ALL_PERMISSIONS_BY_USERID,
-		{
-			variables: { _id: userId }
-		}
-	)
-	const { data: dataUser } = useQuery(GET_USER, { variables: { _id: userId } })
-
 	return (
 		<Modal
 			title={userId ? t('src.pages.common.update') : t('src.pages.common.add')}
@@ -239,17 +242,55 @@ function UserModal(props) {
 			cancelText={t('src.pages.common.cancel')}
 		>
 			<Form {...formItemLayout}>
+				<Form.Item label={t('src.pages.user.firstName')}>
+					{getFieldDecorator('firstName', {
+						initialValue: userId && dataUser.user && dataUser.user.firstName,
+						rules: [
+							{
+								required: true,
+								message: t('src.pages.user.firstNameRequired')
+							},
+							{
+								min: 3,
+								message: t('src.pages.user.firstNameMin3Max20')
+							},
+							{
+								max: 20,
+								message: t('src.pages.user.firstNameMin3Max20')
+							}
+						]
+					})(<Input style={{ fontSize: 16 }} />)}
+				</Form.Item>
+				<Form.Item label={t('src.pages.user.lastName')}>
+					{getFieldDecorator('lastName', {
+						initialValue: userId && dataUser.user && dataUser.user.lastName,
+						rules: [
+							{
+								required: true,
+								message: t('src.pages.user.lastNameRequired')
+							},
+							{
+								min: 3,
+								message: t('src.pages.user.lastNameMin3Max20')
+							},
+							{
+								max: 20,
+								message: t('src.pages.user.lastNameMin3Max20')
+							}
+						]
+					})(<Input style={{ fontSize: 16 }} />)}
+				</Form.Item>
 				{!userId && (
-					<Form.Item label={t('src.pages.user.username')}>
-						{getFieldDecorator('username', {
+					<Form.Item label={t('src.pages.user.email')}>
+						{getFieldDecorator('email', {
 							rules: [
 								{
-									required: true,
-									message: t('src.pages.user.usernameRequired')
+									type: 'email',
+									message: 'The input is not valid E-mail!'
 								},
 								{
-									min: 4,
-									message: t('src.pages.user.userNameMin4Characters')
+									required: true,
+									message: 'Please input your email!'
 								}
 							]
 						})(<Input style={{ fontSize: 16 }} />)}
@@ -295,26 +336,8 @@ function UserModal(props) {
 						/>
 					)}
 				</Form.Item>
-				<Form.Item label={t('src.pages.user.fullname')}>
-					{getFieldDecorator('fullName', {
-						initialValue: userId && dataUser.user && dataUser.user.fullName,
-						rules: [
-							{
-								required: true,
-								message: t('src.pages.user.fullNameRequired')
-							},
-							{
-								min: 3,
-								message: t('src.pages.user.fullNameMin3Max20')
-							},
-							{
-								max: 20,
-								message: t('src.pages.user.fullNameMin3Max20')
-							}
-						]
-					})(<Input style={{ fontSize: 16 }} />)}
-				</Form.Item>
 				{visible &&
+					dataSites &&
 					dataSites.sites &&
 					dataSites.sites.map(item => {
 						// console.log('Chin', props.getAllPermissionsByUserId.findAllByUserId)
@@ -384,8 +407,13 @@ const GET_ALL_PERMISSIONS = gql`
 const CREATE_USER = gql`
 	mutation createUser($input: CreateUserInput!) {
 		createUser(input: $input) {
-			username
+			_id
+			lastName
+			firstName
 			fullName
+			reason
+			isActive
+			isLocked
 		}
 	}
 `
@@ -400,7 +428,6 @@ const GET_ALL_USERS = gql`
 	query($offset: Int!, $limit: Int!) {
 		users(offset: $offset, limit: $limit) {
 			_id
-			username
 			fullName
 			reason
 			isActive
@@ -424,11 +451,10 @@ const GET_ALL_PERMISSIONS_BY_USERID = gql`
 const GET_USER = gql`
 	query($_id: ID!) {
 		user(_id: $_id) {
-			fullName
+			firstName
+			lastName
 		}
 	}
 `
 
-export default withTranslation('translations')(
-	Form.create({ name: 'createUserForm' })(UserModal)
-)
+export default Form.create({ name: 'createUserForm' })(UserModal)

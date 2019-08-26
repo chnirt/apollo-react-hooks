@@ -1,7 +1,6 @@
 import React, { useState, useRef } from 'react'
 import { useQuery, useMutation } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
-// import { graphql, compose } from 'react-apollo'
 import {
 	Button,
 	Card,
@@ -243,7 +242,12 @@ function User(props) {
 					)}
 				/>
 			</Card>
-			<UserModal userId={userId} visible={visible} hideModal={hideModal} />
+			<UserModal
+				userId={userId}
+				visible={visible}
+				hideModal={hideModal}
+				{...props}
+			/>
 		</>
 	)
 }
@@ -252,7 +256,6 @@ const GET_ALL_USERS = gql`
 	query($offset: Int!, $limit: Int!) {
 		users(offset: $offset, limit: $limit) {
 			_id
-			username
 			fullName
 			reason
 			isActive
