@@ -1,7 +1,15 @@
 import React, { useState } from 'react'
-import gql from 'graphql-tag'
 import { Modal, Form, Input, Select } from 'antd'
 import { useMutation, useQuery } from '@apollo/react-hooks'
+import {
+	GET_ALL_SITES,
+	GET_ALL_PERMISSIONS,
+	CREATE_USER,
+	UPDATE_USER,
+	GET_ALL_USERS,
+	GET_ALL_PERMISSIONS_BY_USERID,
+	GET_USER
+} from '../queries'
 import openNotificationWithIcon from '../../../components/shared/openNotificationWithIcon'
 
 const { Option } = Select
@@ -385,76 +393,5 @@ function UserModal(props) {
 		</Modal>
 	)
 }
-
-const GET_ALL_SITES = gql`
-	query {
-		sites {
-			_id
-			name
-		}
-	}
-`
-const GET_ALL_PERMISSIONS = gql`
-	query {
-		permissions {
-			_id
-			code
-			description
-		}
-	}
-`
-
-const CREATE_USER = gql`
-	mutation createUser($input: CreateUserInput!) {
-		createUser(input: $input) {
-			_id
-			lastName
-			firstName
-			fullName
-			reason
-			isActive
-			isLocked
-		}
-	}
-`
-
-const UPDATE_USER = gql`
-	mutation updateUser($_id: ID!, $input: UpdateUserInput!) {
-		updateUser(_id: $_id, input: $input)
-	}
-`
-
-const GET_ALL_USERS = gql`
-	query($offset: Int!, $limit: Int!) {
-		users(offset: $offset, limit: $limit) {
-			_id
-			fullName
-			reason
-			isActive
-			isLocked
-		}
-	}
-`
-
-const GET_ALL_PERMISSIONS_BY_USERID = gql`
-	query($_id: ID!) {
-		findAllByUserId(_id: $_id) {
-			siteId
-			permissions {
-				_id
-				code
-			}
-		}
-	}
-`
-
-const GET_USER = gql`
-	query($_id: ID!) {
-		user(_id: $_id) {
-			firstName
-			lastName
-		}
-	}
-`
 
 export default Form.create({ name: 'createUserForm' })(UserModal)

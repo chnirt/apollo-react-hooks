@@ -1,6 +1,5 @@
 import React, { useState, useRef } from 'react'
 import { useQuery, useMutation } from '@apollo/react-hooks'
-import gql from 'graphql-tag'
 import {
 	Button,
 	Card,
@@ -11,6 +10,7 @@ import {
 	Tooltip,
 	Icon
 } from 'antd'
+import { GET_ALL_USERS, USER_LOCK_AND_UNLOCK, USER_DELETE } from './queries'
 import openNotificationWithIcon from '../../components/shared/openNotificationWithIcon'
 
 import UserModal from './usermodal'
@@ -146,6 +146,9 @@ function User(props) {
 					placeholder={t('src.pages.user.reasonRequired')}
 				/>
 			),
+			// okButtonProps: {
+			// 	disabled: true
+			// },
 			onOk() {
 				// console.log('OK')
 				// console.log(_id, inputEl.current.state.value)
@@ -251,29 +254,5 @@ function User(props) {
 		</>
 	)
 }
-
-const GET_ALL_USERS = gql`
-	query($offset: Int!, $limit: Int!) {
-		users(offset: $offset, limit: $limit) {
-			_id
-			fullName
-			reason
-			isActive
-			isLocked
-		}
-	}
-`
-
-const USER_LOCK_AND_UNLOCK = gql`
-	mutation($_id: ID!, $reason: String!) {
-		lockAndUnlockUser(_id: $_id, reason: $reason)
-	}
-`
-
-const USER_DELETE = gql`
-	mutation($_id: ID!) {
-		deleteUser(_id: $_id)
-	}
-`
 
 export default User
