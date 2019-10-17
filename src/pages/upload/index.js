@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import gql from 'graphql-tag'
 // import { useMutation } from '@apollo/react-hooks'
-import { Button } from 'antd'
+import { Upload, Button, Icon } from 'antd'
 import { graphql, compose } from 'react-apollo'
+import './index.scss'
 
 function UploadFile(props) {
 	const [fileUpload, setFileUpload] = useState('')
@@ -13,6 +14,7 @@ function UploadFile(props) {
 		const arr = [...fileUpload]
 		console.log(arr)
 	}
+
 	function exportToDB() {
 		console.log(fileUpload)
 		props.uploadFile({
@@ -21,8 +23,33 @@ function UploadFile(props) {
 			}
 		})
 	}
+
+	const props1 = {
+		// name: 'file',
+		// action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
+		// headers: {
+		// 	authorization: 'authorization-text'
+		// },
+		onChange(info) {
+			console.log(info)
+			// if (info.file.status !== 'uploading') {
+			// 	console.log(info.file, info.fileList)
+			// }
+			// if (info.file.status === 'done') {
+			// 	message.success(`${info.file.name} file uploaded successfully`)
+			// } else if (info.file.status === 'error') {
+			// 	message.error(`${info.file.name} file upload failed.`)
+			// }
+		}
+	}
+
 	return (
 		<>
+			<Upload {...props1}>
+				<Button>
+					<Icon type="upload" /> Upload
+				</Button>
+			</Upload>
 			<input type="file" required onChange={uploadFile} />
 			<Button onClick={exportToDB}>Upload</Button>
 		</>
